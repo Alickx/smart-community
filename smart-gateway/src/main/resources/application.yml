@@ -1,0 +1,10 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: route_member
+          uri: lb://smart-member # 负载均衡
+          predicates: # 断言
+            - Path=/api/member/**
+          filters: #过滤器
+            - RewritePath=/api/(?<segment>.*),/$\{segment} # 将跳转路径中包含的api替换成空
