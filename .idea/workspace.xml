@@ -5,105 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="82005242-f926-48c3-a56e-685af41654ae" name="变更" comment="">
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/renren-generator" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-comment/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-comment/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-comment/src/main/java/cn/goroute/smart/comment/SmartCommentApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-comment/src/main/java/cn/goroute/smart/comment/controller/CommentController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-comment/src/main/java/cn/goroute/smart/comment/dao/CommentDao.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-comment/src/main/java/cn/goroute/smart/comment/entity/CommentEntity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-comment/src/main/java/cn/goroute/smart/comment/service/CommentService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-comment/src/main/java/cn/goroute/smart/comment/service/impl/CommentServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-comment/src/main/resources/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-comment/src/main/resources/bootstrap.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-comment/src/main/resources/mapper/comment/CommentDao.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-comment/src/main/resources/src/views/modules/comment/comment-add-or-update.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-comment/src/main/resources/src/views/modules/comment/comment.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-comment/src/test/java/cn/goroute/smart/comment/SmartCommentApplicationTests.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-common/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/config/MybatisMetaObjectHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/exception/BizCodeEnum.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/exception/SmartCommunityExceptionControllerAdvice.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/utils/AliyunGroup.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/utils/Constant.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/utils/PageUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/utils/QcloudGroup.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/utils/QiniuGroup.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/utils/Query.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/utils/R.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/utils/RRException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/xss/HTMLFilter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/xss/SQLFilter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-gateway/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-gateway/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-gateway/src/main/java/cn/goroute/smart/gateway/SmartGatewayApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-gateway/src/main/resources/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-gateway/src/main/resources/application.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-gateway/src/main/resources/bootstrap.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-gateway/src/test/java/cn/goroute/smart/gateway/SmartGatewayApplicationTests.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-member/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-member/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-member/src/main/java/cn/goroute/smart/member/SmartMemberApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-member/src/main/java/cn/goroute/smart/member/controller/CollectController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-member/src/main/java/cn/goroute/smart/member/controller/MemberController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-member/src/main/java/cn/goroute/smart/member/dao/CollectDao.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-member/src/main/java/cn/goroute/smart/member/dao/MemberDao.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-member/src/main/java/cn/goroute/smart/member/entity/CollectEntity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-member/src/main/java/cn/goroute/smart/member/entity/MemberEntity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-member/src/main/java/cn/goroute/smart/member/service/CollectService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-member/src/main/java/cn/goroute/smart/member/service/MemberService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-member/src/main/java/cn/goroute/smart/member/service/impl/CollectServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-member/src/main/java/cn/goroute/smart/member/service/impl/MemberServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-member/src/main/resources/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-member/src/main/resources/bootstrap.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-member/src/main/resources/mapper/member/CollectDao.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-member/src/main/resources/mapper/member/MemberDao.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-member/src/main/resources/src/views/modules/member/collect-add-or-update.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-member/src/main/resources/src/views/modules/member/collect.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-member/src/main/resources/src/views/modules/member/member-add-or-update.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-member/src/main/resources/src/views/modules/member/member.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-member/src/test/java/cn/goroute/smart/member/SmartMemberApplicationTests.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/SmartPostApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/controller/PostController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/controller/PostTagController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/controller/SectionController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/controller/TagController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/dao/PostDao.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/dao/PostTagDao.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/dao/SectionDao.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/dao/TagDao.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/entity/PostEntity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/entity/PostTagEntity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/entity/SectionEntity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/entity/TagEntity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/service/PostService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/service/PostTagService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/service/SectionService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/service/TagService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/service/impl/PostServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/service/impl/PostTagServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/service/impl/SectionServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/service/impl/TagServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/src/main/resources/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/src/main/resources/application.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/src/main/resources/bootstrap.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/src/main/resources/mapper/post/PostDao.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/src/main/resources/mapper/post/PostTagDao.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/src/main/resources/mapper/post/SectionDao.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/src/main/resources/mapper/post/TagDao.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/src/main/resources/src/views/modules/post/post-add-or-update.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/src/main/resources/src/views/modules/post/post.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/src/main/resources/src/views/modules/post/posttag-add-or-update.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/src/main/resources/src/views/modules/post/posttag.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/src/main/resources/src/views/modules/post/section-add-or-update.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/src/main/resources/src/views/modules/post/section.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/src/main/resources/src/views/modules/post/tag-add-or-update.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/src/main/resources/src/views/modules/post/tag.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/smart-post/src/test/java/cn/goroute/smart/post/SmartPostApplicationTests.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/renren-fast" beforeDir="false" afterPath="$PROJECT_DIR$/renren-fast" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/renren-fast/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/renren-fast/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/renren-generator" beforeDir="false" afterPath="$PROJECT_DIR$/renren-generator" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/renren-generator/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/renren-generator/src/main/resources/application.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/renren-generator/src/main/resources/generator.properties" beforeDir="false" afterPath="$PROJECT_DIR$/renren-generator/src/main/resources/generator.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/renren-generator/src/main/resources/template/Controller.java.vm" beforeDir="false" afterPath="$PROJECT_DIR$/renren-generator/src/main/resources/template/Controller.java.vm" afterDir="false" />
@@ -163,7 +68,7 @@
     <property name="project.structure.last.edited" value="模块" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="com.sjhy.plugin.ui.MainSettingForm" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -285,7 +190,7 @@
       <workItem from="1645529822479" duration="10123000" />
       <workItem from="1645607487037" duration="808000" />
       <workItem from="1645748698109" duration="5777000" />
-      <workItem from="1645770270684" duration="6816000" />
+      <workItem from="1645770270684" duration="7911000" />
     </task>
     <servers />
   </component>
