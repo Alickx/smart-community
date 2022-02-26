@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="82005242-f926-48c3-a56e-685af41654ae" name="变更" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/renren-fast" beforeDir="false" afterPath="$PROJECT_DIR$/renren-fast" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/renren-fast/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/renren-fast/pom.xml" afterDir="false" />
+    <list default="true" id="82005242-f926-48c3-a56e-685af41654ae" name="变更" comment="更正gitignore文件">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/renren-generator" beforeDir="false" afterPath="$PROJECT_DIR$/renren-generator" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/renren-generator/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/renren-generator/src/main/resources/application.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/renren-generator/src/main/resources/generator.properties" beforeDir="false" afterPath="$PROJECT_DIR$/renren-generator/src/main/resources/generator.properties" afterDir="false" />
@@ -68,7 +66,7 @@
     <property name="project.structure.last.edited" value="模块" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.DirectoryMappings" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -190,8 +188,18 @@
       <workItem from="1645529822479" duration="10123000" />
       <workItem from="1645607487037" duration="808000" />
       <workItem from="1645748698109" duration="5777000" />
-      <workItem from="1645770270684" duration="7911000" />
+      <workItem from="1645770270684" duration="8978000" />
+      <workItem from="1645779341446" duration="82000" />
+      <workItem from="1645845159612" duration="79000" />
     </task>
+    <task id="LOCAL-00001" summary="更正gitignore文件">
+      <created>1645778824580</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1645778824580</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -222,5 +230,11 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/renren-fast" />
+      <path value="$PROJECT_DIR$/renren-generator" />
+    </ignored-roots>
+    <MESSAGE value="更正gitignore文件" />
+    <option name="LAST_COMMIT_MESSAGE" value="更正gitignore文件" />
   </component>
 </project>
