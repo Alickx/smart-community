@@ -13,7 +13,9 @@
         <introspection-scope>
           <node kind="schema">
             <name qname="@" />
-            <name qname="smart_community" />
+            <name qname="smart_cms" />
+            <name qname="smart_pms" />
+            <name qname="smart_ums" />
           </node>
         </introspection-scope>
       </schema-mapping>

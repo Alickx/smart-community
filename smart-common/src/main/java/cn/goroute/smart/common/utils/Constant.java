@@ -44,6 +44,22 @@ public class Constant {
      */
     public static final String ASC = "asc";
 
+    public static final String PERMISSION_LIST_KEY = "auth:permission:";
+
+    public static final String ROLE_LIST_KEY = "auth:role:";
+
+    public static final String REG_SEND_BAN_KEY = ("reg:SendBan:");
+
+    public static final String REG_CAPTCHA_KEY = "reg:Captcha:";
+
+    public static final String REG_SEND_COUNT_KEY = "reg:SendCount:";
+
+    public static final String REG_SEND_SLEEP_KEY = "reg:SendSleep:";
+
+    public static final String USER_PERMISSION_KEY = "user:Permission:";
+
+    public static final String USER_ROLE_KEY = "user:Role:";
+
     /**
      * 菜单类型
      *

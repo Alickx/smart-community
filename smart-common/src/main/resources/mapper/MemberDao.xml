@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.goroute.smart.common.dao.MemberDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="cn.goroute.smart.common.entity.MemberEntity" id="memberMap">
+        <result property="uid" column="uid"/>
+        <result property="nickName" column="nick_name"/>
+        <result property="email" column="email"/>
+        <result property="passWord" column="pass_word"/>
+        <result property="gender" column="gender"/>
+        <result property="phone" column="phone"/>
+        <result property="avatar" column="avatar"/>
+        <result property="intro" column="intro"/>
+        <result property="fans" column="fans"/>
+        <result property="follow" column="follow"/>
+        <result property="score" column="score"/>
+        <result property="birthday" column="birthday"/>
+        <result property="gitee" column="gitee"/>
+        <result property="github" column="github"/>
+        <result property="os" column="os"/>
+        <result property="qqNumber" column="qq_number"/>
+        <result property="commentStatus" column="comment_status"/>
+        <result property="browser" column="browser"/>
+        <result property="userTag" column="user_tag"/>
+        <result property="status" column="status"/>
+        <result property="lastLoginTime" column="last_login_time"/>
+        <result property="lastLoginIp" column="last_login_ip"/>
+        <result property="updatedTime" column="updated_time"/>
+        <result property="createdTime" column="created_time"/>
+    </resultMap>
+
+
+</mapper>

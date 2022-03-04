@@ -1,19 +1,13 @@
 package cn.goroute.smart.post.controller;
 
-import java.util.Arrays;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import cn.goroute.smart.post.entity.SectionEntity;
-import cn.goroute.smart.post.service.SectionService;
-import cn.goroute.smart.common.utils.PageUtils;
+import cn.goroute.smart.common.entity.SectionEntity;
 import cn.goroute.smart.common.utils.R;
+import cn.goroute.smart.post.service.SectionService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.List;
 
 
 
@@ -33,18 +27,17 @@ public class SectionController {
     /**
      * 列表
      */
-    @RequestMapping("/list")
-    public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = sectionService.queryPage(params);
-
-        return R.ok().put("page", page);
+    @GetMapping("/list")
+    public R list(){
+        List<SectionEntity> list = sectionService.list();
+        return R.ok().put("data", list);
     }
 
 
     /**
      * 信息
      */
-    @RequestMapping("/info/{uid}")
+    @GetMapping("/info/{uid}")
     public R info(@PathVariable("uid") String uid){
 		SectionEntity section = sectionService.getById(uid);
 

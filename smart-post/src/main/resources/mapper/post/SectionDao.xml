@@ -4,7 +4,7 @@
 <mapper namespace="cn.goroute.smart.post.dao.SectionDao">
 
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="cn.goroute.smart.post.entity.SectionEntity" id="sectionMap">
+    <resultMap type="cn.goroute.smart.common.entity.SectionEntity" id="sectionMap">
         <result property="uid" column="uid"/>
         <result property="name" column="name"/>
         <result property="icon" column="icon"/>

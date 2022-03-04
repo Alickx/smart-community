@@ -4,7 +4,7 @@
 <mapper namespace="cn.goroute.smart.post.dao.PostTagDao">
 
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="cn.goroute.smart.post.entity.PostTagEntity" id="postTagMap">
+    <resultMap type="cn.goroute.smart.common.entity.PostTagEntity" id="postTagMap">
         <result property="uid" column="uid"/>
         <result property="postUid" column="post_uid"/>
         <result property="tagUid" column="tag_uid"/>

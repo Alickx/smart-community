@@ -2,7 +2,7 @@ package cn.goroute.smart.member.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import cn.goroute.smart.common.utils.PageUtils;
-import cn.goroute.smart.member.entity.CollectEntity;
+import cn.goroute.smart.common.entity.CollectEntity;
 
 import java.util.Map;
 

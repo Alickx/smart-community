@@ -10,14 +10,16 @@
         <option value="$PROJECT_DIR$/smart_utils/pom.xml" />
         <option value="$PROJECT_DIR$/smart-post/pom.xml" />
         <option value="$PROJECT_DIR$/smart-member/pom.xml" />
-        <option value="$PROJECT_DIR$/smart-comment/pom.xml" />
         <option value="$PROJECT_DIR$/renren-generator/pom.xml" />
         <option value="$PROJECT_DIR$/renren-fast/pom.xml" />
         <option value="$PROJECT_DIR$/smart-gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/smart-thirdparty/pom.xml" />
+        <option value="$PROJECT_DIR$/smart-thirdpart/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
       <set>
+        <option value="$PROJECT_DIR$/smart-auth-common/pom.xml" />
         <option value="$PROJECT_DIR$/smart-commons/pom.xml" />
         <option value="$PROJECT_DIR$/smart-utils/pom.xml" />
         <option value="$PROJECT_DIR$/smart_web/pom.xml" />

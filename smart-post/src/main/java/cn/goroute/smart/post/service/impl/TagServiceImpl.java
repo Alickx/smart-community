@@ -9,7 +9,7 @@ import cn.goroute.smart.common.utils.PageUtils;
 import cn.goroute.smart.common.utils.Query;
 
 import cn.goroute.smart.post.dao.TagDao;
-import cn.goroute.smart.post.entity.TagEntity;
+import cn.goroute.smart.common.entity.TagEntity;
 import cn.goroute.smart.post.service.TagService;
 
 

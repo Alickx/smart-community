@@ -3,22 +3,178 @@
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
+  <component name="AutomaticModuleUnloader">
+    <loaded-modules>
+      <module name="smart-thirdpart" />
+      <module name="smart-post" />
+      <module name="smart-common" />
+      <module name="smart-auth" />
+      <module name="renren-generator" />
+      <module name="smart-comment" />
+      <module name="smart-member" />
+      <module name="smart-gateway" />
+      <module name="SmartCommunity" />
+    </loaded-modules>
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="82005242-f926-48c3-a56e-685af41654ae" name="变更" comment="更正gitignore文件">
+      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/config/RedisConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/dao/OauthClientDetailsDao.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/dao/PermissionDao.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/dao/RoleDao.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/dao/RolePermissionDao.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/dao/ThumbDao.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/dao/UserRoleDao.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/entity/MemberDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/entity/MemberLoginVo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/entity/MemberRegisterVo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/entity/OauthClientDetails.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/entity/PermissionEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/entity/PostDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/entity/PostVo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/entity/RoleEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/entity/RolePermissionEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/entity/ThumbEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/entity/UserRoleEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/service/PermissionService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/service/RolePermissionService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/service/RoleService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/service/UserRoleService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/service/impl/PermissionServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/service/impl/RolePermissionServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/service/impl/RoleServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/service/impl/UserRoleServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/utils/RedisUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/utils/RespCode.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/utils/ResponseUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-common/src/main/resources/application.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-common/src/main/resources/mapper/PermissionDao.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-common/src/main/resources/mapper/RoleDao.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-common/src/main/resources/mapper/RolePermissionDao.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-common/src/main/resources/mapper/ThumbDao.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-common/src/main/resources/mapper/UserRoleDao.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-gateway/src/main/java/cn/goroute/smart/gateway/config/CorsConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-gateway/src/main/java/cn/goroute/smart/gateway/config/satoken/SaTokenConfigure.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-gateway/src/main/java/cn/goroute/smart/gateway/config/satoken/StpInterfaceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-gateway/src/main/java/cn/goroute/smart/gateway/controller/LoginApi.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-gateway/src/main/java/cn/goroute/smart/gateway/controller/RegisterApi.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-member/src/main/java/cn/goroute/smart/member/controller/ThumbController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-member/src/main/java/cn/goroute/smart/member/feign/AuthFeignService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-member/src/main/java/cn/goroute/smart/member/feign/thirdpartFeignService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-member/src/main/java/cn/goroute/smart/member/service/ThumbService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-member/src/main/java/cn/goroute/smart/member/service/impl/ThumbServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-member/src/main/resources/src/views/modules/member/permission-add-or-update.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-member/src/main/resources/src/views/modules/member/permission.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-member/src/main/resources/src/views/modules/member/role-add-or-update.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-member/src/main/resources/src/views/modules/member/role.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-member/src/main/resources/src/views/modules/member/rolepermission-add-or-update.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-member/src/main/resources/src/views/modules/member/rolepermission.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-member/src/main/resources/src/views/modules/member/thumb-add-or-update.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-member/src/main/resources/src/views/modules/member/thumb.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-member/src/main/resources/src/views/modules/member/userrole-add-or-update.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/feign/MemberFeignService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-thirdpart/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-thirdpart/src/main/java/cn/goroute/smart/thirdpart/SmartThirdpartApplication.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-thirdpart/src/main/java/cn/goroute/smart/thirdpart/config/CorsConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-thirdpart/src/main/java/cn/goroute/smart/thirdpart/controller/CaptchaController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-thirdpart/src/main/java/cn/goroute/smart/thirdpart/feign/MemberFeignService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smart-thirdpart/src/main/resources/bootstrap.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/renren-generator" beforeDir="false" afterPath="$PROJECT_DIR$/renren-generator" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/renren-generator/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/renren-generator/src/main/resources/application.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/renren-generator/src/main/resources/generator.properties" beforeDir="false" afterPath="$PROJECT_DIR$/renren-generator/src/main/resources/generator.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/renren-generator/src/main/resources/template/Controller.java.vm" beforeDir="false" afterPath="$PROJECT_DIR$/renren-generator/src/main/resources/template/Controller.java.vm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/renren-generator/src/main/resources/template/Entity.java.vm" beforeDir="false" afterPath="$PROJECT_DIR$/renren-generator/src/main/resources/template/Entity.java.vm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-comment/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/smart-thirdpart/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-comment/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-comment/src/main/java/cn/goroute/smart/comment/SmartCommentApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-comment/src/main/java/cn/goroute/smart/comment/controller/CommentController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-comment/src/main/java/cn/goroute/smart/comment/dao/CommentDao.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-comment/src/main/java/cn/goroute/smart/comment/entity/CommentEntity.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-comment/src/main/java/cn/goroute/smart/comment/service/CommentService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-comment/src/main/java/cn/goroute/smart/comment/service/impl/CommentServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-comment/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/smart-thirdpart/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-comment/src/main/resources/bootstrap.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-comment/src/main/resources/mapper/comment/CommentDao.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-comment/src/main/resources/src/views/modules/comment/comment-add-or-update.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-comment/src/main/resources/src/views/modules/comment/comment.vue" beforeDir="false" afterPath="$PROJECT_DIR$/smart-member/src/main/resources/src/views/modules/member/userrole.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-comment/src/test/java/cn/goroute/smart/comment/SmartCommentApplicationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-thirdpart/src/test/java/cn/goroute/smart/thirdpart/SmartThirdpartApplicationTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-common/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/smart-common/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/config/MybatisMetaObjectHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/config/MybatisMetaObjectHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/exception/SmartCommunityExceptionControllerAdvice.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/exception/SmartCommunityExceptionControllerAdvice.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/utils/Constant.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/utils/Constant.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/utils/Query.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/utils/Query.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/utils/R.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/utils/R.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/utils/RRException.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/utils/RRException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-common/target/classes/cn/goroute/smart/common/config/MybatisMetaObjectHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/smart-common/target/classes/cn/goroute/smart/common/config/MybatisMetaObjectHandler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-common/target/classes/cn/goroute/smart/common/exception/SmartCommunityExceptionControllerAdvice.class" beforeDir="false" afterPath="$PROJECT_DIR$/smart-common/target/classes/cn/goroute/smart/common/exception/SmartCommunityExceptionControllerAdvice.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-common/target/classes/cn/goroute/smart/common/utils/Constant$CloudService.class" beforeDir="false" afterPath="$PROJECT_DIR$/smart-common/target/classes/cn/goroute/smart/common/utils/Constant$CloudService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-common/target/classes/cn/goroute/smart/common/utils/Constant$MenuType.class" beforeDir="false" afterPath="$PROJECT_DIR$/smart-common/target/classes/cn/goroute/smart/common/utils/Constant$MenuType.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-common/target/classes/cn/goroute/smart/common/utils/Constant$ScheduleStatus.class" beforeDir="false" afterPath="$PROJECT_DIR$/smart-common/target/classes/cn/goroute/smart/common/utils/Constant$ScheduleStatus.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-common/target/classes/cn/goroute/smart/common/utils/Constant.class" beforeDir="false" afterPath="$PROJECT_DIR$/smart-common/target/classes/cn/goroute/smart/common/utils/Constant.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-common/target/classes/cn/goroute/smart/common/utils/Query.class" beforeDir="false" afterPath="$PROJECT_DIR$/smart-common/target/classes/cn/goroute/smart/common/utils/Query.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-common/target/classes/cn/goroute/smart/common/utils/R.class" beforeDir="false" afterPath="$PROJECT_DIR$/smart-common/target/classes/cn/goroute/smart/common/utils/R.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-common/target/classes/cn/goroute/smart/common/utils/RRException.class" beforeDir="false" afterPath="$PROJECT_DIR$/smart-common/target/classes/cn/goroute/smart/common/utils/RRException.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-gateway/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/smart-gateway/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-gateway/src/main/java/cn/goroute/smart/gateway/SmartGatewayApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-gateway/src/main/java/cn/goroute/smart/gateway/SmartGatewayApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-gateway/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/smart-gateway/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-gateway/src/main/resources/bootstrap.properties" beforeDir="false" afterPath="$PROJECT_DIR$/smart-gateway/src/main/resources/bootstrap.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-member/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/smart-member/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-member/src/main/java/cn/goroute/smart/member/SmartMemberApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-member/src/main/java/cn/goroute/smart/member/SmartMemberApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-member/src/main/java/cn/goroute/smart/member/controller/CollectController.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-member/src/main/java/cn/goroute/smart/member/controller/CollectController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-member/src/main/java/cn/goroute/smart/member/controller/MemberController.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-member/src/main/java/cn/goroute/smart/member/controller/MemberController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-member/src/main/java/cn/goroute/smart/member/dao/CollectDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/dao/CollectDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-member/src/main/java/cn/goroute/smart/member/dao/MemberDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/dao/MemberDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-member/src/main/java/cn/goroute/smart/member/entity/CollectEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/entity/CollectEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-member/src/main/java/cn/goroute/smart/member/entity/MemberEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/entity/MemberEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-member/src/main/java/cn/goroute/smart/member/service/CollectService.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-member/src/main/java/cn/goroute/smart/member/service/CollectService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-member/src/main/java/cn/goroute/smart/member/service/MemberService.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-member/src/main/java/cn/goroute/smart/member/service/MemberService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-member/src/main/java/cn/goroute/smart/member/service/impl/CollectServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-member/src/main/java/cn/goroute/smart/member/service/impl/CollectServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-member/src/main/java/cn/goroute/smart/member/service/impl/MemberServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-member/src/main/java/cn/goroute/smart/member/service/impl/MemberServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-member/src/main/resources/bootstrap.properties" beforeDir="false" afterPath="$PROJECT_DIR$/smart-member/src/main/resources/bootstrap.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-member/src/main/resources/mapper/member/CollectDao.xml" beforeDir="false" afterPath="$PROJECT_DIR$/smart-common/src/main/resources/mapper/CollectDao.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-member/src/main/resources/mapper/member/MemberDao.xml" beforeDir="false" afterPath="$PROJECT_DIR$/smart-common/src/main/resources/mapper/MemberDao.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-post/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/smart-post/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/SmartPostApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/SmartPostApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/controller/PostController.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/controller/PostController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/controller/PostTagController.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/controller/PostTagController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/controller/SectionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/controller/SectionController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/controller/TagController.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/controller/TagController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/dao/PostDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/dao/PostDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/dao/PostTagDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/dao/PostTagDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/dao/SectionDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/dao/SectionDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/dao/TagDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/dao/TagDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/entity/PostEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/entity/PostEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/entity/PostTagEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/entity/PostTagEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/entity/SectionEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/entity/SectionEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/entity/TagEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-common/src/main/java/cn/goroute/smart/common/entity/TagEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/service/PostService.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/service/PostService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/service/PostTagService.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/service/PostTagService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/service/SectionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/service/SectionService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/service/TagService.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/service/TagService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/service/impl/PostServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/service/impl/PostServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/service/impl/PostTagServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/service/impl/PostTagServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/service/impl/SectionServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/service/impl/SectionServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/service/impl/TagServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/service/impl/TagServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-post/src/main/resources/bootstrap.properties" beforeDir="false" afterPath="$PROJECT_DIR$/smart-post/src/main/resources/bootstrap.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-post/src/main/resources/mapper/post/PostDao.xml" beforeDir="false" afterPath="$PROJECT_DIR$/smart-post/src/main/resources/mapper/post/PostDao.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-post/src/main/resources/mapper/post/PostTagDao.xml" beforeDir="false" afterPath="$PROJECT_DIR$/smart-post/src/main/resources/mapper/post/PostTagDao.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-post/src/main/resources/mapper/post/SectionDao.xml" beforeDir="false" afterPath="$PROJECT_DIR$/smart-post/src/main/resources/mapper/post/SectionDao.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart-post/src/main/resources/mapper/post/TagDao.xml" beforeDir="false" afterPath="$PROJECT_DIR$/smart-post/src/main/resources/mapper/post/TagDao.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="CodeInsightWorkspaceSettings">
+    <option name="optimizeImportsOnTheFly" value="true" />
+  </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Enum" />
         <option value="Interface" />
         <option value="Class" />
       </list>
@@ -26,6 +182,14 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/pom.xml" root0="FORCE_HIGHLIGHTING" />
@@ -61,24 +225,40 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="jdk.selected.JAVA_MODULE" value="temurin-1.8" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/smart-post/src/main/java/cn/goroute/smart/post/exception" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="project.structure.last.edited" value="模块" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.DirectoryMappings" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.import" />
+  </component>
+  <component name="ReactorSettings">
+    <option name="notificationShown" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\code\SmartCommunity\smart-post\src\main\java\cn\goroute\smart\post\exception" />
+      <recent name="D:\code\SmartCommunity\smart-common\src\main\java\cn\goroute\smart\common" />
+      <recent name="D:\code\SmartCommunity\smart-auth\src\main\resources\mapper" />
+      <recent name="D:\code\SmartCommunity\smart-member\src" />
       <recent name="D:\code\SmartCommunity\smart-post\src\main\java\cn\goroute\smart\post" />
-      <recent name="D:\code\SmartCommunity\smart-comment\src\main\java\cn\goroute\smart\comment\exception" />
-      <recent name="D:\code\SmartCommunity\smart-member\src\main\java\cn\goroute\smart\member" />
-      <recent name="D:\code\SmartCommunity\smart-gateway\src\main\resources" />
-      <recent name="D:\code\SmartCommunity\smart-post\src\main\resources" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\code\SmartCommunity\smart-common\src\main\resources\mapper" />
+      <recent name="D:\code\SmartCommunity\smart-common\src\main\resources" />
+      <recent name="D:\code\SmartCommunity\smart-member\src\main\resources\mapper" />
+      <recent name="D:\code\SmartCommunity\smart-auth\src\main\resources" />
+      <recent name="D:\code\SmartCommunity\smart-auth\src\main\resources\mapper" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="cn.goroute.smart.common" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="cn.goroute.common.utils" />
-      <recent name="cn.goroute.smart_member.config" />
+      <recent name="cn.goroute.smart.post.config" />
+      <recent name="cn.goroute.smart.member.config" />
+      <recent name="cn.goroute.smart.gateway.config" />
+      <recent name="cn.goroute.smart.thirdpart.config" />
+      <recent name="cn.goroute.smart.auth.dao" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -88,7 +268,7 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="Spring Boot.SmartGatewayApplication">
+  <component name="RunManager" selected="Spring Boot.SmartThirdpartApplication">
     <configuration name="RenrenApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="io.renren.RenrenApplication" />
       <module name="renren-generator" />
@@ -102,9 +282,31 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="RenrenApplication (1)" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <configuration name="SmartAuthApplicationTests.contextLoads" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="smart-auth" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="cn.goroute.smart.auth.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="cn.goroute.smart.auth" />
+      <option name="MAIN_CLASS_NAME" value="cn.goroute.smart.auth.SmartAuthApplicationTests" />
+      <option name="METHOD_NAME" value="contextLoads" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
       <module name="renren-fast" />
-      <option name="SPRING_BOOT_MAIN_CLASS" value="io.renren.RenrenApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="renren-fast" />
+      <option name="filePath" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -112,6 +314,19 @@
     <configuration name="RenrenApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="renren-generator" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="io.renren.RenrenApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SmartAuthApplication (1)" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <module name="smart-auth" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="cn.goroute.smart.auth.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="SPRING_BOOT_MAIN_CLASS" value="cn.goroute.smart.auth.SmartAuthApplication" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -137,14 +352,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="SmartMemberApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
-      <module name="smart-member" />
-      <option name="SPRING_BOOT_MAIN_CLASS" value="cn.goroute.smart_member.MemberApplication" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="SmartPostApplication (1)" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="smart-post" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="cn.goroute.smart.post.SmartPostApplication" />
@@ -152,20 +359,39 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="SmartPostApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
-      <module name="smart-post" />
-      <option name="SPRING_BOOT_MAIN_CLASS" value="cn.goroute.smart_post.SmartPostApplication" />
+    <configuration name="SmartThirdpartApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="smart-thirdpart" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="cn.goroute.smart.thirdpart.SmartThirdpartApplication" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <list>
+      <item itemvalue="JUnit.SmartAuthApplicationTests.contextLoads" />
+      <item itemvalue="Spring Boot.SmartGatewayApplication" />
+      <item itemvalue="Spring Boot.RenrenApplication" />
+      <item itemvalue="Spring Boot.SmartMemberApplication (1)" />
+      <item itemvalue="Spring Boot.SmartCommentApplication" />
+      <item itemvalue="Spring Boot.SmartPostApplication (1)" />
+      <item itemvalue="Spring Boot.SmartThirdpartApplication" />
+      <item itemvalue="Spring Boot.SmartAuthApplication (1)" />
+      <item itemvalue="应用程序.RenrenApplication" />
+    </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Spring Boot.SmartAuthApplication (1)" />
+        <item itemvalue="JUnit.SmartAuthApplicationTests.contextLoads" />
         <item itemvalue="应用程序.RenrenApplication" />
       </list>
     </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
+  <component name="SpringBeansView">
+    <option name="beanDetailsProportion" value="0.3" />
+  </component>
+  <component name="SpringBootOptions">
+    <option name="showAdditionalConfigNotification" value="false" />
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="默认任务">
       <changelist id="82005242-f926-48c3-a56e-685af41654ae" name="变更" comment="" />
@@ -190,7 +416,23 @@
       <workItem from="1645748698109" duration="5777000" />
       <workItem from="1645770270684" duration="8978000" />
       <workItem from="1645779341446" duration="82000" />
-      <workItem from="1645845159612" duration="79000" />
+      <workItem from="1645845159612" duration="16451000" />
+      <workItem from="1645880345317" duration="10333000" />
+      <workItem from="1645926154174" duration="2896000" />
+      <workItem from="1645940133160" duration="52000" />
+      <workItem from="1645940233348" duration="5843000" />
+      <workItem from="1645946128000" duration="225000" />
+      <workItem from="1645946385929" duration="124000" />
+      <workItem from="1645946535800" duration="20125000" />
+      <workItem from="1645976043419" duration="694000" />
+      <workItem from="1646031835813" duration="22498000" />
+      <workItem from="1646092973561" duration="31803000" />
+      <workItem from="1646136985224" duration="12283000" />
+      <workItem from="1646197442792" duration="594000" />
+      <workItem from="1646202727433" duration="27452000" />
+      <workItem from="1646235627784" duration="595000" />
+      <workItem from="1646266159917" duration="21136000" />
+      <workItem from="1646354516687" duration="810000" />
     </task>
     <task id="LOCAL-00001" summary="更正gitignore文件">
       <created>1645778824580</created>
@@ -236,5 +478,30 @@
     </ignored-roots>
     <MESSAGE value="更正gitignore文件" />
     <option name="LAST_COMMIT_MESSAGE" value="更正gitignore文件" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/smart-gateway/src/main/java/cn/goroute/smart/gateway/config/security/JwtAccessManager.java</url>
+          <line>37</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <pin-to-top-manager>
+      <pinned-members>
+        <PinnedItemInfo parentTag="java.util.HashMap$Node" memberName="key" />
+      </pinned-members>
+    </pin-to-top-manager>
+    <watches-manager>
+      <configuration name="SpringBootApplicationConfigurationType">
+        <watch expression="authentication.details" />
+      </configuration>
+    </watches-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

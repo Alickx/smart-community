@@ -1,10 +1,41 @@
 spring:
   cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
     gateway:
       routes:
         - id: route_member
           uri: lb://smart-member # 负载均衡
           predicates: # 断言
-            - Path=/api/member/**
+            - Path=/api/v1/member/**
           filters: #过滤器
-            - RewritePath=/api/(?<segment>.*),/$\{segment} # 将跳转路径中包含的api替换成空
+            - RewritePath=/api/v1/(?<segment>.*),/$\{segment} # 将跳转路径中包含的api v1替换成空
+
+        - id: route_post
+          uri: lb://smart-post # 负载均衡
+          predicates: # 断言
+            - Path=/api/v1/post/**
+          filters: #过滤器
+            - RewritePath=/api/v1/(?<segment>.*),/$\{segment}
+
+        - id: route_thirdpart
+          uri: lb://smart-thirdpart # 负载均衡
+          predicates: # 断言
+            - Path=/api/v1/thirdpart/**
+          filters: #过滤器
+            - RewritePath=/api/v1/(?<segment>.*),/$\{segment}
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/smart_ums?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+
+oauth2:
+  cloud:
+    sys:
+      parameter:
+        ignoreUrls:
+          - /oauth/token
+          - /oauth/authorize

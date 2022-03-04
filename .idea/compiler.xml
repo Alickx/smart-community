@@ -8,10 +8,8 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="smart-member" />
-        <module name="smart-comment" />
         <module name="smart-common" />
-        <module name="renren-fast" />
-        <module name="smart_xo" />
+        <module name="smart-thirdpart" />
         <module name="smart-gateway" />
         <module name="smart-post" />
         <module name="renren-generator" />
@@ -21,12 +19,15 @@
       <module name="renren-fast" target="1.8" />
       <module name="renren-generator" target="1.8" />
       <module name="sc_xo" target="1.8" />
+      <module name="smart-auth" target="1.8" />
+      <module name="smart-auth-common" target="1.8" />
       <module name="smart-comment" target="1.8" />
       <module name="smart-common" target="1.8" />
       <module name="smart-commons" target="1.8" />
       <module name="smart-gateway" target="1.8" />
       <module name="smart-member" target="1.8" />
       <module name="smart-post" target="1.8" />
+      <module name="smart-thirdpart" target="1.8" />
       <module name="smart-utils" target="1.8" />
       <module name="smart_commons" target="1.8" />
       <module name="smart_member" target="1.8" />
@@ -42,11 +43,13 @@
       <module name="SmartCommunity" options="-parameters" />
       <module name="renren-fast" options="-parameters" />
       <module name="renren-generator" options="-parameters" />
+      <module name="smart-auth" options="-parameters" />
       <module name="smart-comment" options="-parameters" />
       <module name="smart-common" options="" />
       <module name="smart-gateway" options="-parameters" />
       <module name="smart-member" options="-parameters" />
       <module name="smart-post" options="-parameters" />
+      <module name="smart-thirdpart" options="-parameters" />
       <module name="smart-utils" options="" />
     </option>
   </component>

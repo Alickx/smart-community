@@ -8,8 +8,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import cn.goroute.smart.common.utils.PageUtils;
 import cn.goroute.smart.common.utils.Query;
 
-import cn.goroute.smart.member.dao.CollectDao;
-import cn.goroute.smart.member.entity.CollectEntity;
+import cn.goroute.smart.common.dao.CollectDao;
+import cn.goroute.smart.common.entity.CollectEntity;
 import cn.goroute.smart.member.service.CollectService;
 
 

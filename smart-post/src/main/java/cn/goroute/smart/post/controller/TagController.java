@@ -1,17 +1,14 @@
 package cn.goroute.smart.post.controller;
 
-import java.util.Arrays;
-import java.util.Map;
-
+import cn.goroute.smart.common.entity.TagEntity;
+import cn.goroute.smart.common.utils.R;
+import cn.goroute.smart.post.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import cn.goroute.smart.post.entity.TagEntity;
-import cn.goroute.smart.post.service.TagService;
-import cn.goroute.smart.common.utils.PageUtils;
-import cn.goroute.smart.common.utils.R;
-
 import javax.validation.Valid;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -30,18 +27,17 @@ public class TagController {
     /**
      * 列表
      */
-    @RequestMapping("/list")
-    public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = tagService.queryPage(params);
-
-        return R.ok().put("page", page);
+    @GetMapping("/list")
+    public R list(){
+        List<TagEntity> list = tagService.list();
+        return R.ok().put("data", list);
     }
 
 
     /**
      * 信息
      */
-    @RequestMapping("/info/{uid}")
+    @GetMapping("/info/{uid}")
     public R info(@PathVariable("uid") String uid){
 		TagEntity tag = tagService.getById(uid);
 

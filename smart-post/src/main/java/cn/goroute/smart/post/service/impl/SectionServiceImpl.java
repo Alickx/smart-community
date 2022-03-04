@@ -9,7 +9,7 @@ import cn.goroute.smart.common.utils.PageUtils;
 import cn.goroute.smart.common.utils.Query;
 
 import cn.goroute.smart.post.dao.SectionDao;
-import cn.goroute.smart.post.entity.SectionEntity;
+import cn.goroute.smart.common.entity.SectionEntity;
 import cn.goroute.smart.post.service.SectionService;
 
 

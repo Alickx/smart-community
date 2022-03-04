@@ -2,7 +2,7 @@ package cn.goroute.smart.post.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import cn.goroute.smart.common.utils.PageUtils;
-import cn.goroute.smart.post.entity.PostTagEntity;
+import cn.goroute.smart.common.entity.PostTagEntity;
 
 import java.util.Map;
 

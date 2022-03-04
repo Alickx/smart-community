@@ -4,13 +4,9 @@ import java.util.Arrays;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import cn.goroute.smart.member.entity.CollectEntity;
+import cn.goroute.smart.common.entity.CollectEntity;
 import cn.goroute.smart.member.service.CollectService;
 import cn.goroute.smart.common.utils.PageUtils;
 import cn.goroute.smart.common.utils.R;
@@ -25,10 +21,11 @@ import cn.goroute.smart.common.utils.R;
  * @date 2022-02-25 09:45:33
  */
 @RestController
-@RequestMapping("member/collect")
+@RequestMapping("/member/collect")
 public class CollectController {
     @Autowired
     private CollectService collectService;
+
 
     /**
      * 列表
@@ -36,7 +33,6 @@ public class CollectController {
     @RequestMapping("/list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = collectService.queryPage(params);
-
         return R.ok().put("page", page);
     }
 

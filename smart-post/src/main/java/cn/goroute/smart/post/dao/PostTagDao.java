@@ -1,6 +1,6 @@
 package cn.goroute.smart.post.dao;
 
-import cn.goroute.smart.post.entity.PostTagEntity;
+import cn.goroute.smart.common.entity.PostTagEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 

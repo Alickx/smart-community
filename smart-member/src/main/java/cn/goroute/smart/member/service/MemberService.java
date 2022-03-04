@@ -1,8 +1,8 @@
 package cn.goroute.smart.member.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import cn.goroute.smart.common.entity.MemberEntity;
 import cn.goroute.smart.common.utils.PageUtils;
-import cn.goroute.smart.member.entity.MemberEntity;
+import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.Map;
 
@@ -16,5 +16,7 @@ import java.util.Map;
 public interface MemberService extends IService<MemberEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
 }
+
 
