@@ -37,6 +37,7 @@ public class SmartCommunityExceptionControllerAdvice {
     @ExceptionHandler(NotLoginException.class)
     public R handlerNotLoginException(NotLoginException nle) {
 
+
         // 打印堆栈，以供调试
         nle.printStackTrace();
 
@@ -63,6 +64,12 @@ public class SmartCommunityExceptionControllerAdvice {
 
         // 返回给前端
         return R.error(message);
+    }
+
+    @ExceptionHandler(value = ServiceException.class)
+    public R serviceExceptionHandler(ServiceException e){
+        log.error("发生业务错误,e=>{}",e.getMessage());
+        return R.error();
     }
 
 }

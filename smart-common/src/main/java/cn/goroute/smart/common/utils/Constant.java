@@ -31,6 +31,8 @@ public class Constant {
      * 每页显示记录数
      */
     public static final String LIMIT = "limit";
+
+    public static final Long DEFAULT_LIMIT_SIZE = 10L;
     /**
      * 排序字段
      */
@@ -56,9 +58,19 @@ public class Constant {
 
     public static final String REG_SEND_SLEEP_KEY = "reg:SendSleep:";
 
-    public static final String USER_PERMISSION_KEY = "user:Permission:";
+    public static final Integer POST_THUMB_TYPE = 0;
 
-    public static final String USER_ROLE_KEY = "user:Role:";
+    public static final Integer DEFAULT_STATUS = 0;
+
+    public static final String POST_THUMB_KEY = "post:thumb";
+
+    public static final String POST_CACHE_KEY = "post:cache:";
+
+    public static final String POST_COLLECT_KEY = "post:collect";
+
+
+    public static final String POST_ES_INDEX= "smart-post";
+
 
     /**
      * 菜单类型
@@ -160,6 +172,14 @@ public class Constant {
                 throw new IllegalArgumentException("非法的枚举值:" + value);
             }
             return first.get();
+        }
+
+        public static String getThumbOrCollectKey(String memberUid, String toUid) {
+            StringBuilder builder = new StringBuilder();
+            builder.append(memberUid);
+            builder.append("::");
+            builder.append(toUid);
+            return builder.toString();
         }
     }
 

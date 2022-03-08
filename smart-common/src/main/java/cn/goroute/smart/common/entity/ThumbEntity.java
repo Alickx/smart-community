@@ -1,9 +1,6 @@
 package cn.goroute.smart.common.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -25,8 +22,7 @@ public class ThumbEntity implements Serializable {
 	 * 
 	 */
 	@TableId
-	@TableField(fill = FieldFill.INSERT)
-	private String uid;
+	private Integer uid;
 	/**
 	 * 点赞用户的id
 	 */

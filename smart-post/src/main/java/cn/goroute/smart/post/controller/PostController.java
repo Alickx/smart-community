@@ -1,21 +1,21 @@
 package cn.goroute.smart.post.controller;
 
-import cn.goroute.smart.common.entity.PostDTO;
 import cn.goroute.smart.common.entity.PostEntity;
 import cn.goroute.smart.common.entity.PostVo;
 import cn.goroute.smart.common.utils.PageUtils;
 import cn.goroute.smart.common.utils.R;
+import cn.goroute.smart.common.utils.RedisUtil;
 import cn.goroute.smart.post.feign.MemberFeignService;
+import cn.goroute.smart.post.service.CollectService;
+import cn.goroute.smart.post.service.CommentService;
 import cn.goroute.smart.post.service.PostService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.Arrays;
-import java.util.Map;
-import java.util.Objects;
 
 
 /**
@@ -30,31 +30,26 @@ import java.util.Objects;
 @RequestMapping("post/post")
 public class PostController {
     @Autowired
-    private PostService postService;
+    PostService postService;
+
+    @Autowired
+    CommentService commentService;
+
+    @Autowired
+    CollectService collectService;
 
     @Autowired
     MemberFeignService memberFeignService;
 
-    /**
-     * 指定板块标签列表
-     */
-    @GetMapping("/list/{sectionUid}/{tagUid}")
-    public R withSectionAndTagList(@RequestParam Map<String, Object> params
-            , @PathVariable String sectionUid, @PathVariable String tagUid) {
-        PageUtils page = postService.queryPage(params, sectionUid, tagUid);
-        return R.ok().put("page", page);
-    }
-
-    @GetMapping("/list/{sectionUid}")
-    public R withSectionList(@RequestParam Map<String, Object> params, @PathVariable String sectionUid) {
-        PageUtils page = postService.queryPage(params, sectionUid);
-        return R.ok().put("page", page);
-    }
+    @Autowired
+    RedisUtil redisUtil;
 
 
     @GetMapping("/list")
-    public R withSectionList(@RequestParam Map<String, Object> params) {
-        PageUtils page = postService.queryPage(params);
+    public R withSectionList(@RequestParam Integer curPage
+            , @RequestParam(required = false) Integer sectionUid
+            , @RequestParam(required = false) Integer tagUid) throws IOException {
+        PageUtils page = postService.queryPage(curPage, sectionUid, tagUid);
         return R.ok().put("page", page);
     }
 
@@ -63,11 +58,7 @@ public class PostController {
      */
     @GetMapping("/info/{uid}")
     public R info(@PathVariable("uid") String uid) {
-        PostEntity post = postService.getById(uid);
-        R memberInfo = memberFeignService.info(post.getMemberUid());
-        PostDTO postDTO = new PostDTO();
-        BeanUtils.copyProperties(post, postDTO);
-        return Objects.requireNonNull(R.ok().put("post", postDTO)).put("memberInfo", memberInfo.get("memberInfo"));
+        return postService.getPostByUid(uid);
     }
 
     /**

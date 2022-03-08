@@ -1,10 +1,7 @@
 package cn.goroute.smart.post.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
-import cn.goroute.smart.common.utils.PageUtils;
 import cn.goroute.smart.common.entity.PostTagEntity;
-
-import java.util.Map;
+import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * 文章标签表
@@ -15,6 +12,5 @@ import java.util.Map;
  */
 public interface PostTagService extends IService<PostTagEntity> {
 
-    PageUtils queryPage(Map<String, Object> params);
 }
 

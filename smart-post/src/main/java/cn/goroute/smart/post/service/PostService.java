@@ -6,7 +6,7 @@ import cn.goroute.smart.common.utils.PageUtils;
 import cn.goroute.smart.common.utils.R;
 import com.baomidou.mybatisplus.extension.service.IService;
 
-import java.util.Map;
+import java.io.IOException;
 
 /**
  * 文章表
@@ -17,10 +17,10 @@ import java.util.Map;
  */
 public interface PostService extends IService<PostEntity> {
 
-    PageUtils queryPage(Map<String, Object> params);
-    PageUtils queryPage(Map<String, Object> params,String sectionUid);
-    PageUtils queryPage(Map<String, Object> params,String sectionUid,String tag);
+    PageUtils queryPage(Integer curPage,Integer sectionUid,Integer tagUid) throws IOException;
 
     R savePost(PostVo postVo);
+
+    R getPostByUid(String uid);
 }
 

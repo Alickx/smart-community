@@ -7,9 +7,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="smart-task" />
         <module name="smart-member" />
         <module name="smart-common" />
         <module name="smart-thirdpart" />
+        <module name="smart-search" />
         <module name="smart-gateway" />
         <module name="smart-post" />
         <module name="renren-generator" />
@@ -27,6 +29,8 @@
       <module name="smart-gateway" target="1.8" />
       <module name="smart-member" target="1.8" />
       <module name="smart-post" target="1.8" />
+      <module name="smart-search" target="1.8" />
+      <module name="smart-task" target="1.8" />
       <module name="smart-thirdpart" target="1.8" />
       <module name="smart-utils" target="1.8" />
       <module name="smart_commons" target="1.8" />
@@ -49,6 +53,8 @@
       <module name="smart-gateway" options="-parameters" />
       <module name="smart-member" options="-parameters" />
       <module name="smart-post" options="-parameters" />
+      <module name="smart-search" options="-parameters" />
+      <module name="smart-task" options="-parameters" />
       <module name="smart-thirdpart" options="-parameters" />
       <module name="smart-utils" options="" />
     </option>

@@ -16,14 +16,5 @@ import java.util.Map;
 @Service("rolePermissionService")
 public class RolePermissionServiceImpl extends ServiceImpl<RolePermissionDao, RolePermissionEntity> implements RolePermissionService {
 
-    @Override
-    public PageUtils queryPage(Map<String, Object> params) {
-        IPage<RolePermissionEntity> page = this.page(
-                new Query<RolePermissionEntity>().getPage(params),
-                new QueryWrapper<RolePermissionEntity>()
-        );
-
-        return new PageUtils(page);
-    }
 
 }

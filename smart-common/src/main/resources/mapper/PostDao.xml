@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.goroute.smart.common.dao.PostDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="cn.goroute.smart.common.entity.PostEntity" id="postMap">
+        <result property="uid" column="uid"/>
+        <result property="sectionUid" column="section_uid"/>
+        <result property="memberUid" column="member_uid"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="status" column="status"/>
+        <result property="headImg" column="head_img"/>
+        <result property="collectCount" column="collect_count"/>
+        <result property="thumbCount" column="thumb_count"/>
+        <result property="isPublish" column="is_publish"/>
+        <result property="summary" column="summary"/>
+        <result property="clickCount" column="click_count"/>
+        <result property="updatedTime" column="updated_time"/>
+        <result property="createdTime" column="created_time"/>
+    </resultMap>
+    <select id="getPostBySectionTag" resultType="cn.goroute.smart.common.entity.PostEntity">
+        select distinct p.uid,
+                        p.title,
+                        p.head_img,
+                        p.member_uid,
+                        p.collect_count,
+                        p.thumb_count,
+                        p.summary,
+                        p.click_count,
+                        p.created_time
+        FROM t_post p,
+             t_post_tag pt
+        WHERE p.section_uid = #{sectionUid}
+          AND pt.tag_uid = #{tagUid}
+
+    </select>
+
+
+</mapper>

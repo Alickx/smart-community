@@ -1,21 +1,20 @@
 package cn.goroute.smart.member.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
-import cn.goroute.smart.common.entity.*;
-import cn.goroute.smart.common.utils.PageUtils;
+import cn.goroute.smart.common.entity.MemberDTO;
+import cn.goroute.smart.common.entity.MemberEntity;
 import cn.goroute.smart.common.utils.R;
-import cn.goroute.smart.member.service.CollectService;
+import cn.goroute.smart.common.utils.RedisUtil;
 import cn.goroute.smart.member.service.MemberService;
-import cn.goroute.smart.member.service.ThumbService;
 import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 
@@ -34,44 +33,25 @@ public class MemberController {
     private MemberService memberService;
 
     @Autowired
-    private ThumbService thumbService;
-
-    @Autowired
-    private CollectService collectService;
+    RedisUtil redisUtil;
 
     /**
      * 列表
      */
-    @RequestMapping("/list")
-    public R list(@RequestParam Map<String, Object> params) {
-        PageUtils page = memberService.queryPage(params);
-
-        return R.ok().put("page", page);
-    }
-
     @GetMapping("/list/post")
-    public R getMemberInfoWithPost(@RequestParam String memberUid,
-                                   @RequestParam Integer thumbType,
-                                   @RequestParam String postUid) {
+    public List<MemberDTO> getMemberInfoWithPost(@RequestParam List<String> memberUidList) {
 
-        QueryChainWrapper<MemberEntity> memberQueryChainWrapper = memberService.query().eq("uid", memberUid);
-        MemberEntity member = memberService.getOne(memberQueryChainWrapper.getWrapper());
-        MemberDTO memberDTO = new MemberDTO();
-        BeanUtils.copyProperties(member, memberDTO);
-        QueryChainWrapper<ThumbEntity> thumbEntityQueryChainWrapper = thumbService.query().eq("member_uid", memberUid).
-                eq("thumb_type", thumbType).
-                eq("to_uid", postUid);
-        ThumbEntity thumbDTO = thumbService.getOne(thumbEntityQueryChainWrapper.getWrapper());
-        QueryChainWrapper<CollectEntity> queryChainWrapper = collectService.query()
-                .eq("member_uid", memberUid)
-                .eq("post_uid", postUid);
+        List<MemberDTO> res = new ArrayList<>();
 
-        CollectEntity collectDTO = collectService.getOne(queryChainWrapper.getWrapper());
+        MemberDTO memberDTO;
+        for (String uid : memberUidList) {
+            memberDTO = new MemberDTO();
+            MemberEntity memberEntity = memberService.getById(uid);
+            BeanUtils.copyProperties(memberEntity,memberDTO);
+            res.add(memberDTO);
+        }
 
-        return R.ok().put("authorInfo", memberDTO).
-                put("isLike", thumbDTO != null).
-                put("isCollect", collectDTO != null);
-
+        return res;
     }
 
     @GetMapping("/info/email}")
@@ -91,9 +71,9 @@ public class MemberController {
     }
 
     @GetMapping("/getRole")
-    public R getRole(){
+    public R getRole() {
         List<String> roleList = StpUtil.getRoleList();
-        return R.ok().put("role",roleList);
+        return R.ok().put("role", roleList);
     }
 
     /**
@@ -104,8 +84,18 @@ public class MemberController {
         MemberEntity member = memberService.getById(uid);
         MemberDTO memberDTO = new MemberDTO();
         BeanUtils.copyProperties(Objects.requireNonNull(member), memberDTO);
-
         return R.ok().put("memberInfo", memberDTO);
+    }
+
+    /**
+     * 微服务间调用
+     */
+    @GetMapping("/getMemberByUid")
+    public MemberDTO getMemberByUid(@RequestParam String uid) {
+        MemberEntity member = memberService.getById(uid);
+        MemberDTO memberDTO = new MemberDTO();
+        BeanUtils.copyProperties(Objects.requireNonNull(member), memberDTO);
+        return memberDTO;
     }
 
     /**
@@ -125,6 +115,15 @@ public class MemberController {
         memberService.updateById(member);
 
         return R.ok();
+    }
+
+
+    @GetMapping("/logout")
+    public R logout(){
+        if (StpUtil.isLogin()) {
+            StpUtil.logout();
+        }
+        return R.ok("登出成功!");
     }
 
     /**

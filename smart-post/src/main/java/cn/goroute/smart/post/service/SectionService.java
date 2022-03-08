@@ -1,10 +1,7 @@
 package cn.goroute.smart.post.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
-import cn.goroute.smart.common.utils.PageUtils;
 import cn.goroute.smart.common.entity.SectionEntity;
-
-import java.util.Map;
+import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * 板块表
@@ -15,6 +12,5 @@ import java.util.Map;
  */
 public interface SectionService extends IService<SectionEntity> {
 
-    PageUtils queryPage(Map<String, Object> params);
 }
 

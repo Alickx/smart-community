@@ -1,9 +1,6 @@
 package cn.goroute.smart.common.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -24,8 +21,8 @@ public class SectionEntity implements Serializable {
 	/**
 	 * 板块uid
 	 */
-	@TableId
-	private int uid;
+	@TableId(type = IdType.AUTO)
+	private Integer uid;
 	/**
 	 * 板块名称
 	 */

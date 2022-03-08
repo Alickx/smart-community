@@ -1,13 +1,10 @@
 package cn.goroute.smart.common.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * 文章标签表
@@ -24,8 +21,8 @@ public class PostTagEntity implements Serializable {
 	/**
 	 * 
 	 */
-	@TableId
-	private int uid;
+	@TableId(type = IdType.AUTO)
+	private Integer uid;
 	/**
 	 * 
 	 */
@@ -33,11 +30,11 @@ public class PostTagEntity implements Serializable {
 	/**
 	 * 
 	 */
-	private String tagUid;
+	private int tagUid;
 	/**
 	 * 
 	 */
 	@TableField(fill = FieldFill.INSERT)
-	private Date createdTime;
+	private LocalDateTime createdTime;
 
 }

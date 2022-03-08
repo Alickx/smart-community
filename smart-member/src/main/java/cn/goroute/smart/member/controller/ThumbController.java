@@ -1,14 +1,15 @@
 package cn.goroute.smart.member.controller;
 
 import cn.goroute.smart.common.entity.ThumbEntity;
-import cn.goroute.smart.common.utils.PageUtils;
 import cn.goroute.smart.common.utils.R;
 import cn.goroute.smart.member.service.ThumbService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
-import java.util.Map;
 
 
 /**
@@ -27,12 +28,12 @@ public class ThumbController {
     /**
      * 列表
      */
-    @RequestMapping("/list")
-    public R list(@RequestParam Map<String, Object> params) {
-        PageUtils page = thumbService.queryPage(params);
-
-        return R.ok().put("page", page);
-    }
+//    @RequestMapping("/list")
+//    public R list(@RequestParam Map<String, Object> params) {
+//        PageUtils page = thumbService.queryPage(params);
+//
+//        return R.ok().put("page", page);
+//    }
 
     /**
      * 信息
@@ -50,7 +51,6 @@ public class ThumbController {
     @RequestMapping("/save")
     public R save(@RequestBody ThumbEntity thumb) {
         thumbService.save(thumb);
-
         return R.ok();
     }
 

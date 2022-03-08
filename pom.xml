@@ -20,6 +20,8 @@
         <module>smart-post</module>
         <module>smart-gateway</module>
         <module>smart-thirdpart</module>
+        <module>smart-task</module>
+        <module>smart-search</module>
     </modules>
     <packaging>pom</packaging>
 

@@ -16,14 +16,5 @@ import java.util.Map;
 @Service("userRoleService")
 public class UserRoleServiceImpl extends ServiceImpl<UserRoleDao, UserRoleEntity> implements UserRoleService {
 
-    @Override
-    public PageUtils queryPage(Map<String, Object> params) {
-        IPage<UserRoleEntity> page = this.page(
-                new Query<UserRoleEntity>().getPage(params),
-                new QueryWrapper<UserRoleEntity>()
-        );
-
-        return new PageUtils(page);
-    }
 
 }

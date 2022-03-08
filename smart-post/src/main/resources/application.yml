@@ -1,0 +1,11 @@
+xxl:
+  job:
+    accessToken:
+    executor:
+      appname: smart-post
+      ip:
+      logpath: /data/applogs/xxl-job/jobhandler
+      logretentiondays: -1
+      port: 9999
+    admin:
+      addresses: http://localhost:13000/xxl-job-admin

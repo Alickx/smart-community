@@ -8,11 +8,11 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
 
-@SpringBootApplication(scanBasePackages = "cn.goroute")
+@MapperScan("cn.goroute.smart.common.dao")
+@SpringBootApplication
 @EnableDiscoveryClient
 @RefreshScope
 @EnableFeignClients("cn.goroute.smart.thirdpart.feign")
-@MapperScan("cn.goroute.smart.common.dao")
 public class SmartThirdpartApplication {
 
     public static void main(String[] args) {

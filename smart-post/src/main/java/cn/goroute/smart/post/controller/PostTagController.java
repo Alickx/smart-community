@@ -1,14 +1,16 @@
 package cn.goroute.smart.post.controller;
 
 import cn.goroute.smart.common.entity.PostTagEntity;
-import cn.goroute.smart.common.utils.PageUtils;
 import cn.goroute.smart.common.utils.R;
 import cn.goroute.smart.post.service.PostTagService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
-import java.util.Map;
+import java.util.List;
 
 
 
@@ -29,10 +31,10 @@ public class PostTagController {
      * 列表
      */
     @RequestMapping("/list")
-    public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = postTagService.queryPage(params);
+    public R list(){
+        List<PostTagEntity> list = postTagService.list();
 
-        return R.ok().put("page", page);
+        return R.ok().put("data", list);
     }
 
 

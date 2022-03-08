@@ -1,14 +1,12 @@
 package cn.goroute.smart.common.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-
-import lombok.Data;
 
 /**
  * 收藏表
@@ -25,9 +23,8 @@ public class CollectEntity implements Serializable {
 	/**
 	 * 主键uid
 	 */
-	@TableId
-	@TableField(fill = FieldFill.INSERT)
-	private String uid;
+	@TableId(type = IdType.AUTO)
+	private int uid;
 	/**
 	 * 用户uid
 	 */

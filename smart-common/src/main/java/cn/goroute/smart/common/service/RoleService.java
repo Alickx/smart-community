@@ -1,10 +1,7 @@
 package cn.goroute.smart.common.service;
 
 import cn.goroute.smart.common.entity.RoleEntity;
-import cn.goroute.smart.common.utils.PageUtils;
 import com.baomidou.mybatisplus.extension.service.IService;
-
-import java.util.Map;
 
 /**
  * 角色表
@@ -15,6 +12,5 @@ import java.util.Map;
  */
 public interface RoleService extends IService<RoleEntity> {
 
-    PageUtils queryPage(Map<String, Object> params);
 }
 

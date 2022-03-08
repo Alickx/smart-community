@@ -16,14 +16,5 @@ import java.util.Map;
 @Service("permissionService")
 public class PermissionServiceImpl extends ServiceImpl<PermissionDao, PermissionEntity> implements PermissionService {
 
-    @Override
-    public PageUtils queryPage(Map<String, Object> params) {
-        IPage<PermissionEntity> page = this.page(
-                new Query<PermissionEntity>().getPage(params),
-                new QueryWrapper<PermissionEntity>()
-        );
-
-        return new PageUtils(page);
-    }
 
 }

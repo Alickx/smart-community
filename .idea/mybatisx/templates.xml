@@ -6,14 +6,14 @@
         <option name="generateConfig">
           <GenerateConfig>
             <option name="annotationType" value="MYBATIS_PLUS3" />
-            <option name="basePackage" value="cn.goroute.smart" />
+            <option name="basePackage" value="cn.goroute.smart.common" />
             <option name="basePath" value="src/main/java" />
             <option name="classNameStrategy" value="camel" />
             <option name="encoding" value="UTF-8" />
             <option name="extraClassSuffix" value="" />
             <option name="ignoreFieldPrefix" value="" />
             <option name="ignoreFieldSuffix" value="" />
-            <option name="ignoreTablePrefix" value="" />
+            <option name="ignoreTablePrefix" value="t_" />
             <option name="ignoreTableSuffix" value="" />
             <option name="jsr310Support" value="true" />
             <option name="moduleName" value="smart-common" />
@@ -63,8 +63,8 @@
             <option name="tableUIInfoList">
               <list>
                 <TableUIInfo>
-                  <option name="className" value="OauthClientDetails" />
-                  <option name="tableName" value="oauth_client_details" />
+                  <option name="className" value="SchedulerJobLogs" />
+                  <option name="tableName" value="scheduler_job_logs" />
                 </TableUIInfo>
               </list>
             </option>

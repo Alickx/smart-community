@@ -9,6 +9,8 @@
       <module fileurl="file://$PROJECT_DIR$/smart-gateway/smart-gateway.iml" filepath="$PROJECT_DIR$/smart-gateway/smart-gateway.iml" />
       <module fileurl="file://$PROJECT_DIR$/smart-member/smart-member.iml" filepath="$PROJECT_DIR$/smart-member/smart-member.iml" />
       <module fileurl="file://$PROJECT_DIR$/smart-post/smart-post.iml" filepath="$PROJECT_DIR$/smart-post/smart-post.iml" />
+      <module fileurl="file://$PROJECT_DIR$/smart-search/smart-search.iml" filepath="$PROJECT_DIR$/smart-search/smart-search.iml" />
+      <module fileurl="file://$PROJECT_DIR$/smart-task/smart-task.iml" filepath="$PROJECT_DIR$/smart-task/smart-task.iml" />
       <module fileurl="file://$PROJECT_DIR$/smart-thirdpart/smart-thirdpart.iml" filepath="$PROJECT_DIR$/smart-thirdpart/smart-thirdpart.iml" />
     </modules>
   </component>

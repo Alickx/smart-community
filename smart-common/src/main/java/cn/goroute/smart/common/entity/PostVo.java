@@ -17,7 +17,10 @@ public class PostVo {
      */
     private String sectionUid;
 
-    private List<String> tagUid;
+    /**
+     * 标签id
+     */
+    private List<Integer> tagUid;
     /**
      *
      */
@@ -40,4 +43,8 @@ public class PostVo {
      *
      */
     private String summary;
+    /**
+     * HTML标签
+     */
+    private String contentHtml;
 }

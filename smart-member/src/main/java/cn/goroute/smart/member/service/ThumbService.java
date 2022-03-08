@@ -1,10 +1,7 @@
 package cn.goroute.smart.member.service;
 
-import cn.goroute.smart.common.utils.PageUtils;
-import com.baomidou.mybatisplus.extension.service.IService;
 import cn.goroute.smart.common.entity.ThumbEntity;
-
-import java.util.Map;
+import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * 点赞记录表
@@ -15,6 +12,6 @@ import java.util.Map;
  */
 public interface ThumbService extends IService<ThumbEntity> {
 
-    PageUtils queryPage(Map<String, Object> params);
+//    PageUtils queryPage(Map<String, Object> params);
 }
 
