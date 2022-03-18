@@ -2,10 +2,10 @@ package cn.goroute.smart.post.service.impl;
 
 import cn.goroute.smart.common.dao.SectionTagDao;
 import cn.goroute.smart.common.dao.TagDao;
-import cn.goroute.smart.common.entity.SectionTag;
-import cn.goroute.smart.common.entity.TagEntity;
+import cn.goroute.smart.common.entity.pojo.SectionTag;
+import cn.goroute.smart.common.entity.pojo.TagEntity;
+import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.post.service.SectionTagService;
-import cn.goroute.smart.common.utils.R;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -35,21 +35,21 @@ public class SectionTagServiceImpl extends ServiceImpl<SectionTagDao, SectionTag
 
 
     @Override
-    public R getTagBySection(Long sectionUid) {
+    public Result getTagBySection(Long sectionUid) {
 
         List<SectionTag> sectionTagList = sectionTagDao
                 .selectList(new QueryWrapper<SectionTag>()
                         .eq("section_uid", sectionUid));
 
         if (CollectionUtil.isEmpty(sectionTagList)) {
-            return R.error("没有此分类标签数据");
+            return Result.error("没有此分类标签数据");
         }
 
         List<Integer> tagIds = sectionTagList.stream()
                 .map(SectionTag::getTagUid).collect(Collectors.toList());
 
         if (CollectionUtil.isEmpty(tagIds)) {
-            return R.error("该分类下没有标签");
+            return Result.error("该分类下没有标签");
         }
 
         List<Map<String,Object>> tagContentList = new ArrayList<>();
@@ -61,7 +61,7 @@ public class SectionTagServiceImpl extends ServiceImpl<SectionTagDao, SectionTag
             tagContentList.add(map);
         });
 
-        return R.ok().put("data",tagContentList);
+        return Result.ok().put("data",tagContentList);
 
     }
 }

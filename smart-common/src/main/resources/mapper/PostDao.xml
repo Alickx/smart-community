@@ -4,7 +4,7 @@
 <mapper namespace="cn.goroute.smart.common.dao.PostDao">
 
     <!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="cn.goroute.smart.common.entity.PostEntity" id="postMap">
+    <resultMap type="cn.goroute.smart.common.entity.pojo.PostEntity" id="postMap">
         <result property="uid" column="uid"/>
         <result property="sectionUid" column="section_uid"/>
         <result property="memberUid" column="member_uid"/>
@@ -20,7 +20,7 @@
         <result property="updatedTime" column="updated_time"/>
         <result property="createdTime" column="created_time"/>
     </resultMap>
-    <select id="getPostBySectionTag" resultType="cn.goroute.smart.common.entity.PostEntity">
+    <select id="getPostBySectionTag" resultType="cn.goroute.smart.common.entity.pojo.PostEntity">
         select distinct p.uid,
                         p.title,
                         p.head_img,
@@ -33,8 +33,9 @@
         FROM t_post p,
              t_post_tag pt
         WHERE p.section_uid = #{sectionUid}
+          AND p.status = #{status}
+          AND p.is_publish = #{publish}
           AND pt.tag_uid = #{tagUid}
-
     </select>
 
 

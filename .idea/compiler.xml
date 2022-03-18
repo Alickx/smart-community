@@ -14,7 +14,6 @@
         <module name="smart-search" />
         <module name="smart-gateway" />
         <module name="smart-post" />
-        <module name="renren-generator" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

@@ -1,7 +1,7 @@
 package cn.goroute.smart.post.controller;
 
-import cn.goroute.smart.common.entity.PostTagEntity;
-import cn.goroute.smart.common.utils.R;
+import cn.goroute.smart.common.entity.pojo.PostTagEntity;
+import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.post.service.PostTagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,10 +31,10 @@ public class PostTagController {
      * 列表
      */
     @RequestMapping("/list")
-    public R list(){
+    public Result list(){
         List<PostTagEntity> list = postTagService.list();
 
-        return R.ok().put("data", list);
+        return Result.ok().put("data", list);
     }
 
 
@@ -42,40 +42,40 @@ public class PostTagController {
      * 信息
      */
     @RequestMapping("/info/{uid}")
-    public R info(@PathVariable("uid") String uid){
+    public Result info(@PathVariable("uid") String uid){
 		PostTagEntity postTag = postTagService.getById(uid);
 
-        return R.ok().put("postTag", postTag);
+        return Result.ok().put("postTag", postTag);
     }
 
     /**
      * 保存
      */
     @RequestMapping("/save")
-    public R save(@RequestBody PostTagEntity postTag){
+    public Result save(@RequestBody PostTagEntity postTag){
 		postTagService.save(postTag);
 
-        return R.ok();
+        return Result.ok();
     }
 
     /**
      * 修改
      */
     @RequestMapping("/update")
-    public R update(@RequestBody PostTagEntity postTag){
+    public Result update(@RequestBody PostTagEntity postTag){
 		postTagService.updateById(postTag);
 
-        return R.ok();
+        return Result.ok();
     }
 
     /**
      * 删除
      */
     @RequestMapping("/delete")
-    public R delete(@RequestBody String[] uids){
+    public Result delete(@RequestBody String[] uids){
 		postTagService.removeByIds(Arrays.asList(uids));
 
-        return R.ok();
+        return Result.ok();
     }
 
 }

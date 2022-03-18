@@ -2,10 +2,10 @@ package cn.goroute.smart.gateway.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.common.dao.MemberDao;
-import cn.goroute.smart.common.entity.MemberDTO;
-import cn.goroute.smart.common.entity.MemberEntity;
-import cn.goroute.smart.common.entity.MemberLoginVo;
-import cn.goroute.smart.common.utils.R;
+import cn.goroute.smart.common.entity.dto.MemberDTO;
+import cn.goroute.smart.common.entity.pojo.MemberEntity;
+import cn.goroute.smart.common.entity.vo.MemberLoginVO;
+import cn.goroute.smart.common.utils.Result;
 import cn.hutool.crypto.digest.DigestUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.BeanUtils;
@@ -23,7 +23,7 @@ public class LoginApi {
     MemberDao memberDao;
 
     @PostMapping
-    public R login(@RequestBody MemberLoginVo memberLoginVo) {
+    public Result login(@RequestBody MemberLoginVO memberLoginVo) {
 
         String username = memberLoginVo.getUsername();
 
@@ -31,11 +31,11 @@ public class LoginApi {
 
 
         if (memberEntity == null) {
-            return R.error("用户名不存在");
+            return Result.error("用户名不存在");
         }
 
         if (!DigestUtil.bcryptCheck(memberLoginVo.getPassWord(), memberEntity.getPassWord())) {
-            return R.error("用户名或密码错误");
+            return Result.error("用户名或密码错误");
         }
 
 
@@ -44,7 +44,7 @@ public class LoginApi {
 
         StpUtil.login(memberEntity.getUid());
 
-        return R.ok()
+        return Result.ok()
                 .put("access_token", StpUtil.getTokenValue())
                 .put("user_info",memberDTO)
                 .put("permission_list",StpUtil.getPermissionList())

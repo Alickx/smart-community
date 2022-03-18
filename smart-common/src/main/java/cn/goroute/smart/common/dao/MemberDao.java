@@ -1,6 +1,6 @@
 package cn.goroute.smart.common.dao;
 
-import cn.goroute.smart.common.entity.MemberEntity;
+import cn.goroute.smart.common.entity.pojo.MemberEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 

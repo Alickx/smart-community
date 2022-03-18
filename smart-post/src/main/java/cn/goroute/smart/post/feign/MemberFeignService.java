@@ -1,6 +1,6 @@
 package cn.goroute.smart.post.feign;
 
-import cn.goroute.smart.common.entity.MemberDTO;
+import cn.goroute.smart.common.entity.dto.MemberDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;

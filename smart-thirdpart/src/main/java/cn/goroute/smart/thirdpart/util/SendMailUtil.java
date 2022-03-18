@@ -8,13 +8,14 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import javax.annotation.Resource;
 import javax.mail.internet.MimeMessage;
 import java.util.Map;
 
 @Service
 public class SendMailUtil {
 
-    @Autowired
+    @Resource
     private JavaMailSender javaMailSender;
 
     @Autowired
@@ -30,7 +31,6 @@ public class SendMailUtil {
      * @param subject 邮件的主题email
      * @param emailTemplate 邮件的模板名称
      * @param dataMap 邮件中变量 email:接收人邮箱，code:验证码 createTime:创建时间
-     * @throws Exception
      */
     public void sendTemplateMail(String receiver, String subject, String emailTemplate, Map<String, Object> dataMap) throws Exception {
         Context context = new Context();

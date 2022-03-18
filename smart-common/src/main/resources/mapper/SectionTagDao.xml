@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.goroute.smart.common.dao.SectionTagDao">
 
-    <resultMap id="BaseResultMap" type="cn.goroute.smart.common.entity.SectionTag">
+    <resultMap id="BaseResultMap" type="cn.goroute.smart.common.entity.pojo.SectionTag">
             <id property="uid" column="uid" jdbcType="INTEGER"/>
             <result property="sectionUid" column="section_uid" jdbcType="INTEGER"/>
             <result property="tagUid" column="tag_uid" jdbcType="INTEGER"/>

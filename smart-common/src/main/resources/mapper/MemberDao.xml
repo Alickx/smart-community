@@ -4,7 +4,7 @@
 <mapper namespace="cn.goroute.smart.common.dao.MemberDao">
 
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="cn.goroute.smart.common.entity.MemberEntity" id="memberMap">
+    <resultMap type="cn.goroute.smart.common.entity.pojo.MemberEntity" id="memberMap">
         <result property="uid" column="uid"/>
         <result property="nickName" column="nick_name"/>
         <result property="email" column="email"/>

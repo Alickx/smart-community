@@ -6,10 +6,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
-@SpringBootApplication(scanBasePackages = {"cn.goroute"})
+@SpringBootApplication(scanBasePackages = {"cn.goroute.smart"})
 @RefreshScope
 @MapperScan("cn.goroute.smart.common.dao")
-@MapperScan("cn.goroute.smart.post.dao")
 @EnableFeignClients(basePackages = "cn.goroute.smart.post.feign")
 public class SmartPostApplication {
 

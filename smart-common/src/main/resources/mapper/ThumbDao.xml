@@ -4,7 +4,7 @@
 <mapper namespace="cn.goroute.smart.common.dao.ThumbDao">
 
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="cn.goroute.smart.common.entity.ThumbEntity" id="thumbMap">
+    <resultMap type="cn.goroute.smart.common.entity.pojo.ThumbEntity" id="thumbMap">
         <result property="uid" column="uid"/>
         <result property="memberUid" column="member_uid"/>
         <result property="toUid" column="to_uid"/>

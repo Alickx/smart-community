@@ -1,6 +1,6 @@
 package cn.goroute.smart.common.dao;
 
-import cn.goroute.smart.common.entity.SectionEntity;
+import cn.goroute.smart.common.entity.pojo.SectionEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 

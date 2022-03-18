@@ -1,9 +1,11 @@
 package cn.goroute.smart.post.service;
 
-import cn.goroute.smart.common.entity.PostEntity;
-import cn.goroute.smart.common.entity.PostVo;
+import cn.goroute.smart.common.entity.pojo.PostEntity;
+import cn.goroute.smart.common.entity.vo.PostQueryListVO;
+import cn.goroute.smart.common.entity.vo.PostVO;
 import cn.goroute.smart.common.utils.PageUtils;
-import cn.goroute.smart.common.utils.R;
+import cn.goroute.smart.common.utils.QueryParam;
+import cn.goroute.smart.common.utils.Result;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.io.IOException;
@@ -17,10 +19,14 @@ import java.io.IOException;
  */
 public interface PostService extends IService<PostEntity> {
 
-    PageUtils queryPage(Integer curPage,Integer sectionUid,Integer tagUid) throws IOException;
+    PageUtils queryPage(QueryParam queryParam, Integer sectionUid, Integer tagUid) throws IOException;
 
-    R savePost(PostVo postVo);
+    Result savePost(PostVO postVo);
 
-    R getPostByUid(String uid);
+    Result getPostByUid(String uid);
+
+    Result deletePost(String postUid);
+
+    Result listByMemberUid(PostQueryListVO postQueryListVo);
 }
 

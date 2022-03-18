@@ -1,6 +1,6 @@
 package cn.goroute.smart.common.service;
 
-import cn.goroute.smart.common.entity.RolePermissionEntity;
+import cn.goroute.smart.common.entity.pojo.RolePermissionEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

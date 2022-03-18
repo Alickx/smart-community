@@ -1,7 +1,7 @@
 package cn.goroute.smart.post.controller;
 
-import cn.goroute.smart.common.entity.SectionEntity;
-import cn.goroute.smart.common.utils.R;
+import cn.goroute.smart.common.entity.pojo.SectionEntity;
+import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.post.service.SectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -28,9 +28,9 @@ public class SectionController {
      * 列表
      */
     @GetMapping("/list")
-    public R list(){
+    public Result list(){
         List<SectionEntity> list = sectionService.list();
-        return R.ok().put("data", list);
+        return Result.ok().put("data", list);
     }
 
 
@@ -38,40 +38,40 @@ public class SectionController {
      * 信息
      */
     @GetMapping("/info/{uid}")
-    public R info(@PathVariable("uid") String uid){
+    public Result info(@PathVariable("uid") String uid){
 		SectionEntity section = sectionService.getById(uid);
 
-        return R.ok().put("section", section);
+        return Result.ok().put("section", section);
     }
 
     /**
      * 保存
      */
     @RequestMapping("/save")
-    public R save(@RequestBody SectionEntity section){
+    public Result save(@RequestBody SectionEntity section){
 		sectionService.save(section);
 
-        return R.ok();
+        return Result.ok();
     }
 
     /**
      * 修改
      */
     @RequestMapping("/update")
-    public R update(@RequestBody SectionEntity section){
+    public Result update(@RequestBody SectionEntity section){
 		sectionService.updateById(section);
 
-        return R.ok();
+        return Result.ok();
     }
 
     /**
      * 删除
      */
     @RequestMapping("/delete")
-    public R delete(@RequestBody String[] uids){
+    public Result delete(@RequestBody String[] uids){
 		sectionService.removeByIds(Arrays.asList(uids));
 
-        return R.ok();
+        return Result.ok();
     }
 
 }

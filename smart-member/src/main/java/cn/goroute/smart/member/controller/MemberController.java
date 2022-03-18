@@ -1,10 +1,11 @@
 package cn.goroute.smart.member.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
-import cn.goroute.smart.common.entity.MemberDTO;
-import cn.goroute.smart.common.entity.MemberEntity;
-import cn.goroute.smart.common.utils.R;
+import cn.goroute.smart.common.entity.dto.MemberDTO;
+import cn.goroute.smart.common.entity.pojo.MemberEntity;
+import cn.goroute.smart.common.entity.vo.MemberInfoUpdateVO;
 import cn.goroute.smart.common.utils.RedisUtil;
+import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.member.service.MemberService;
 import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -36,10 +36,13 @@ public class MemberController {
     RedisUtil redisUtil;
 
     /**
-     * 列表
+     * 用户id集合查询用户信
+     *
+     * @param memberUidList uid集合
+     * @return 用户信息集合
      */
     @GetMapping("/list/post")
-    public List<MemberDTO> getMemberInfoWithPost(@RequestParam List<String> memberUidList) {
+    public List<MemberDTO> getInfoByMemberUids(@RequestParam List<String> memberUidList) {
 
         List<MemberDTO> res = new ArrayList<>();
 
@@ -47,48 +50,67 @@ public class MemberController {
         for (String uid : memberUidList) {
             memberDTO = new MemberDTO();
             MemberEntity memberEntity = memberService.getById(uid);
-            BeanUtils.copyProperties(memberEntity,memberDTO);
+            if (memberEntity != null) {
+                BeanUtils.copyProperties(memberEntity, memberDTO);
+            }
             res.add(memberDTO);
         }
 
         return res;
     }
 
-    @GetMapping("/info/email}")
-    public R infoMemberEmail(@RequestParam String email) {
+    /**
+     * 查询邮箱是否注册
+     *
+     * @param email 邮箱地址
+     * @return true 已注册
+     * false 未注册
+     */
+    @GetMapping("/info/email")
+    public Result infoMemberEmail(@RequestParam String email) {
         QueryChainWrapper<MemberEntity> emailQueryChainWrapper = memberService.query().eq("email", email);
 
         MemberEntity member = memberService.getOne(emailQueryChainWrapper.getWrapper());
-
         /*
           如果该邮箱已经注册则返回true，没注册则返回false
          */
         if (member == null) {
-            return R.ok().put("data", false);
+            return Result.ok().put("data", false);
         } else {
-            return R.ok().put("data", true);
+            return Result.ok().put("data", true);
         }
     }
 
+    /**
+     * 查询用户的角色
+     *
+     * @return 用户角色列表
+     */
     @GetMapping("/getRole")
-    public R getRole() {
+    public Result getRole() {
         List<String> roleList = StpUtil.getRoleList();
-        return R.ok().put("role", roleList);
+        return Result.ok().put("data", roleList);
     }
 
     /**
-     * 信息
+     * 获取用户信息
+     *
+     * @param uid 用户uid
+     * @return 用户信息
      */
     @GetMapping("/info/{uid}")
-    public R info(@PathVariable("uid") String uid) {
+    public Result info(@PathVariable("uid") String uid) {
         MemberEntity member = memberService.getById(uid);
         MemberDTO memberDTO = new MemberDTO();
         BeanUtils.copyProperties(Objects.requireNonNull(member), memberDTO);
-        return R.ok().put("memberInfo", memberDTO);
+        return Result.ok().put("data", memberDTO);
     }
 
     /**
-     * 微服务间调用
+     * 微服务间调用 TODO 用户信息更合适的方式
+     *
+     * @param uid 用户uid
+     * @return 用户DTO实体类
      */
     @GetMapping("/getMemberByUid")
     public MemberDTO getMemberByUid(@RequestParam String uid) {
@@ -99,41 +121,29 @@ public class MemberController {
     }
 
     /**
-     * 保存
+     * 更新用户信息
+     *
+     * @param memberInfoUpdateVO 用户信息vo
+     * @return 更新后的用户信息
      */
-    @PostMapping("/save")
-    public R save(@RequestBody MemberEntity member) {
-        memberService.save(member);
-        return R.ok();
+    @PostMapping("/profile/update")
+    public Result update(@RequestBody MemberInfoUpdateVO memberInfoUpdateVO) {
+
+        return memberService.updateMemberInfo(memberInfoUpdateVO);
     }
+
 
     /**
-     * 修改
+     * 注销用户登录
+     *
+     * @return 注销结果
      */
-    @PostMapping("/update")
-    public R update(@RequestBody MemberEntity member) {
-        memberService.updateById(member);
-
-        return R.ok();
-    }
-
-
     @GetMapping("/logout")
-    public R logout(){
+    public Result logout() {
         if (StpUtil.isLogin()) {
             StpUtil.logout();
         }
-        return R.ok("登出成功!");
-    }
-
-    /**
-     * 删除
-     */
-    @PostMapping("/delete")
-    public R delete(@RequestBody String[] uids) {
-        memberService.removeByIds(Arrays.asList(uids));
-
-        return R.ok();
+        return Result.ok("登出成功!");
     }
 
 }

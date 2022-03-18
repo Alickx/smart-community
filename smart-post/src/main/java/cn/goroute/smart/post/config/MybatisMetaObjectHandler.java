@@ -20,6 +20,10 @@ public class MybatisMetaObjectHandler implements MetaObjectHandler {
         this.strictInsertFill(metaObject, "updatedTime", LocalDateTime::now, LocalDateTime.class);
         this.strictInsertFill(metaObject, "nickName", () -> defaultNickName + RandomUtil.randomString(5), String.class);
         this.strictInsertFill(metaObject, "avatar", () -> defaultAvatar, String.class);
+        this.strictInsertFill(metaObject, "thumbCount", () -> 0, Integer.class);
+        this.strictInsertFill(metaObject, "collectCount", () -> 0, Integer.class);
+        this.strictInsertFill(metaObject, "clickCount", () -> 0, Integer.class);
+        this.strictInsertFill(metaObject, "commentCount", () -> 0, Integer.class);
     }
 
     @Override

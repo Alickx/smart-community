@@ -1,6 +1,6 @@
 package cn.goroute.smart.common.dao;
 
-import cn.goroute.smart.common.entity.PostEntity;
+import cn.goroute.smart.common.entity.pojo.PostEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.ibatis.annotations.Mapper;
@@ -16,5 +16,10 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface PostDao extends BaseMapper<PostEntity> {
 
-    IPage<PostEntity> getPostBySectionTag(IPage<?> page, @Param("sectionUid") Integer sectionUid,@Param("tagUid") Integer tagUid);
+    IPage<PostEntity> getPostBySectionTag(IPage<?> page,
+                                          @Param("order") String field,
+                                          @Param("sectionUid") Integer sectionUid,
+                                          @Param("tagUid") Integer tagUid,
+                                          @Param("publish") String isPublish,
+                                          @Param("status") Integer status);
 }

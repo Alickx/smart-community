@@ -1,7 +1,8 @@
 package cn.goroute.smart.common.utils;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.*;
+import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -17,6 +18,9 @@ public final class RedisUtil {
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
     // =============================common============================
 
     /**
@@ -538,18 +542,32 @@ public final class RedisUtil {
     /**
      * 移除N个值为value
      *
-     * @param key 键
+     * @param key   键
      * @param count 移除多少个
      * @param value 值
      * @return 移除的个数
      */
-    public long lRemove (String key,long count, Object value){
+    public long lRemove(String key, long count, Object value) {
         try {
-            Long remove = redisTemplate.opsForList().remove(key, count,value);
+            Long remove = redisTemplate.opsForList().remove(key, count, value);
             return remove;
         } catch (Exception e) {
             e.printStackTrace();
             return 0;
         }
+    }
+
+    /**
+     * 模糊匹配多个key
+     *
+     * @param match 模糊匹配键值 例如 post:count:*
+     * @param count 获取的数量
+     * @return key
+     */
+    public Cursor<String> scan(String match, int count) {
+        ScanOptions scanOptions = ScanOptions.scanOptions().match(match).count(count).build();
+        RedisSerializer<String> redisSerializer = (RedisSerializer<String>) stringRedisTemplate.getKeySerializer();
+        return (Cursor) stringRedisTemplate.executeWithStickyConnection((RedisCallback) redisConnection ->
+                new ConvertingCursor<>(redisConnection.scan(scanOptions), redisSerializer::deserialize));
     }
 }

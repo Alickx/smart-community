@@ -1,6 +1,6 @@
 package cn.goroute.smart.common.service;
 
-import cn.goroute.smart.common.entity.RoleEntity;
+import cn.goroute.smart.common.entity.pojo.RoleEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

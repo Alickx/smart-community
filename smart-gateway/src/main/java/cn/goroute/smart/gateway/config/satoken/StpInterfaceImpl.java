@@ -5,9 +5,10 @@ import cn.goroute.smart.common.dao.PermissionDao;
 import cn.goroute.smart.common.dao.RoleDao;
 import cn.goroute.smart.common.dao.RolePermissionDao;
 import cn.goroute.smart.common.dao.UserRoleDao;
-import cn.goroute.smart.common.entity.PermissionEntity;
-import cn.goroute.smart.common.entity.RolePermissionEntity;
-import cn.goroute.smart.common.entity.UserRoleEntity;
+import cn.goroute.smart.common.entity.pojo.PermissionEntity;
+import cn.goroute.smart.common.entity.pojo.RolePermissionEntity;
+import cn.goroute.smart.common.entity.pojo.UserRoleEntity;
+import cn.goroute.smart.common.utils.RedisKeyConstant;
 import cn.goroute.smart.common.utils.RedisUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
@@ -16,9 +17,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static cn.goroute.smart.common.utils.Constant.PERMISSION_LIST_KEY;
-import static cn.goroute.smart.common.utils.Constant.ROLE_LIST_KEY;
 
 @Component
 @Slf4j
@@ -45,8 +43,8 @@ public class StpInterfaceImpl implements StpInterface{
         List<String> permissionList = new ArrayList<>();
 
         //先查看缓存
-        if (redisUtil.hasKey(PERMISSION_LIST_KEY + loginId)){
-            permissionList = (List<String>) redisUtil.get(PERMISSION_LIST_KEY + loginId);
+        if (redisUtil.hasKey(RedisKeyConstant.PERMISSION_LIST_KEY + loginId)){
+            permissionList = (List<String>) redisUtil.get(RedisKeyConstant.PERMISSION_LIST_KEY + loginId);
             return permissionList;
         }
 
@@ -67,7 +65,7 @@ public class StpInterfaceImpl implements StpInterface{
             }
         }
 
-        redisUtil.set(PERMISSION_LIST_KEY+loginId,permissionList);
+        redisUtil.set(RedisKeyConstant.PERMISSION_LIST_KEY+loginId,permissionList);
 
         return permissionList;
     }
@@ -77,14 +75,14 @@ public class StpInterfaceImpl implements StpInterface{
 
         List<String> roleList;
 
-        if (redisUtil.hasKey(ROLE_LIST_KEY + loginId)) {
-            roleList = (List<String>) redisUtil.get(ROLE_LIST_KEY + loginId);
+        if (redisUtil.hasKey(RedisKeyConstant.ROLE_LIST_KEY + loginId)) {
+            roleList = (List<String>) redisUtil.get(RedisKeyConstant.ROLE_LIST_KEY + loginId);
             return roleList;
         }
 
         roleList = roleDao.getRoleNameByMemberUid((String) loginId);
 
-        redisUtil.set(ROLE_LIST_KEY + loginId,roleList);
+        redisUtil.set(RedisKeyConstant.ROLE_LIST_KEY + loginId,roleList);
 
         return roleList;
     }

@@ -19,6 +19,13 @@ public class PostJobHandler{
         XxlJobHelper.log("=>调度任务结束，一共持久化{}条数据",transSize);
     }
 
+    @XxlJob("transCountFromRedis2DHandler")
+    public void transCountFromRedis2DHandler(){
+        XxlJobHelper.log("=>调度任务:{} 开始执行文章点赞评论数量持久化",this.getClass().getName());
+        int transSize = thumbService.transCount();
+        XxlJobHelper.log("=>调度任务结束，一共持久化{}条数据",transSize);
+    }
+
 
 
 

@@ -4,7 +4,7 @@
 <mapper namespace="cn.goroute.smart.common.dao.TagDao">
 
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="cn.goroute.smart.common.entity.TagEntity" id="tagMap">
+    <resultMap type="cn.goroute.smart.common.entity.pojo.TagEntity" id="tagMap">
         <result property="uid" column="uid"/>
         <result property="content" column="content"/>
         <result property="status" column="status"/>

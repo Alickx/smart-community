@@ -1,7 +1,7 @@
 package cn.goroute.smart.post.service;
 
-import cn.goroute.smart.common.entity.SectionTag;
-import cn.goroute.smart.common.utils.R;
+import cn.goroute.smart.common.entity.pojo.SectionTag;
+import cn.goroute.smart.common.utils.Result;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -11,5 +11,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface SectionTagService extends IService<SectionTag> {
 
-    R getTagBySection(Long sectionUid);
+    Result getTagBySection(Long sectionUid);
 }

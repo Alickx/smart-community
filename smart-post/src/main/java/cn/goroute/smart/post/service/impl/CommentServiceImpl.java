@@ -2,15 +2,17 @@ package cn.goroute.smart.post.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.common.dao.CommentDao;
-import cn.goroute.smart.common.entity.Comment;
-import cn.goroute.smart.common.entity.CommentDTO;
-import cn.goroute.smart.common.entity.MemberDTO;
-import cn.goroute.smart.common.utils.R;
-import cn.goroute.smart.common.utils.RedisUtil;
+import cn.goroute.smart.common.entity.dto.CommentDTO;
+import cn.goroute.smart.common.entity.dto.MemberDTO;
+import cn.goroute.smart.common.entity.pojo.Comment;
+import cn.goroute.smart.common.utils.*;
 import cn.goroute.smart.post.feign.MemberFeignService;
 import cn.goroute.smart.post.service.CommentService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -22,10 +24,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import static cn.goroute.smart.common.utils.Constant.CloudService.getThumbOrCollectKey;
-import static cn.goroute.smart.common.utils.Constant.DEFAULT_STATUS;
-import static cn.goroute.smart.common.utils.Constant.POST_THUMB_KEY;
 
 /**
  * @author Alickx
@@ -50,12 +48,15 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
     RedisTemplate redisTemplate;
 
     @Override
-    public R getCommentByPost(String postUid) throws IOException {
+    public Result getCommentByPost(QueryParam queryParam, String postUid) throws IOException {
 
-        List<Comment> commentList = commentDao.selectList(new QueryWrapper<Comment>()
-                .eq("post_uid", postUid)
-                .eq("status", DEFAULT_STATUS));
+        IPage<Comment> pageResult = commentDao.selectPage(new Query<Comment>().getPage(queryParam),
+                new QueryWrapper<Comment>()
+                        .eq("post_uid", postUid)
+                        .isNull("first_comment_uid")
+                        .eq("status", Constant.DEFAULT_STATUS));
 
+        List<Comment> commentList = pageResult.getRecords();
 
         List<CommentDTO> commentDTOList = new ArrayList<>();
 
@@ -68,20 +69,27 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
             MemberDTO toMember = memberFeignService.getMemberByUid(comment.getToMemberUid());
 
             int thumbCount = getThumbCount(comment);
-
             boolean isLike = isLike(comment);
+
+            PageUtils reply = getReply(comment.getUid());
             commentDTO.setUid(comment.getUid());
             commentDTO.setFromMember(fromMember);
             commentDTO.setToMember(toMember);
             commentDTO.setContent(comment.getContent());
             commentDTO.setCreatedTime(comment.getCreatedTime());
-            commentDTO.setReplyInfo(getSonCommentPage(comment.getUid()));
+            commentDTO.setReplyInfo((List<CommentDTO>) reply.getList());
             commentDTO.setThumbCount(thumbCount);
             commentDTO.setIsLike(isLike);
+            commentDTO.setHasMore(reply.getTotalPage() > 1);
             commentDTOList.add(commentDTO);
-
         }
-        return R.ok().put("data", commentDTOList);
+        IPage<CommentDTO> commentDTOIPage = new Page<>();
+        BeanUtils.copyProperties(pageResult, commentDTOIPage);
+        commentDTOIPage.setRecords(commentDTOList);
+
+
+        PageUtils page = new PageUtils(commentDTOIPage);
+        return Result.ok().put("data", page);
     }
 
     private int getThumbCount(Comment comment) throws IOException {
@@ -95,7 +103,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
 
         String thumbScanKey = "*::" + comment.getUid();
         Cursor<Map.Entry<Object, Object>> cursor = redisTemplate.opsForHash()
-                .scan(POST_THUMB_KEY, ScanOptions.scanOptions().match(thumbScanKey).build());
+                .scan(RedisKeyConstant.POST_THUMB_KEY, ScanOptions.scanOptions().match(thumbScanKey).build());
 
 
         while (cursor.hasNext()) {
@@ -114,9 +122,9 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
         if (StpUtil.isLogin()) {
             String loginIdAsString = StpUtil.getLoginIdAsString();
 
-            String redisKey = getThumbOrCollectKey(loginIdAsString, comment.getUid());
+            String redisKey = RedisKeyConstant.getThumbOrCollectKey(loginIdAsString, comment.getUid());
 
-            Object thumbRedis = redisUtil.hget(POST_THUMB_KEY, redisKey);
+            Object thumbRedis = redisUtil.hget(RedisKeyConstant.POST_THUMB_KEY, redisKey);
 
             if (thumbRedis == null) {
                 Comment thumb = commentDao.selectOne(new QueryWrapper<Comment>()
@@ -131,11 +139,15 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
     }
 
 
-    private List<CommentDTO> getSonCommentPage(String firstCommentUid) throws IOException {
-        List<Comment> commentList = commentDao.selectList(new QueryWrapper<Comment>()
+    private PageUtils getReply(String firstCommentUid) throws IOException {
+        QueryParam queryParam = new QueryParam();
+        queryParam.setLimit("3");
+        queryParam.setSidx("created_time");
+        IPage<Comment> pageResult = commentDao.selectPage(new Query<Comment>().getPage(queryParam), new QueryWrapper<Comment>()
                 .eq("first_comment_uid", firstCommentUid)
-                .eq("status", DEFAULT_STATUS));
+                .eq("status", Constant.DEFAULT_STATUS));
 
+        List<Comment> commentList = pageResult.getRecords();
         List<CommentDTO> commentDTOList = new ArrayList<>();
 
         CommentDTO commentDTO;
@@ -145,9 +157,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
 
             MemberDTO fromMember = memberFeignService.getMemberByUid(comment.getMemberUid());
             MemberDTO toMember = memberFeignService.getMemberByUid(comment.getToMemberUid());
-
             int thumbCount = getThumbCount(comment);
-
             boolean isLike = isLike(comment);
             commentDTO.setUid(comment.getUid());
             commentDTO.setFromMember(fromMember);
@@ -156,10 +166,15 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
             commentDTO.setCreatedTime(comment.getCreatedTime());
             commentDTO.setThumbCount(thumbCount);
             commentDTO.setIsLike(isLike);
+            commentDTO.setHasMore(false);
             commentDTOList.add(commentDTO);
         }
+        IPage<CommentDTO> commentDTOIPage = new Page<>();
+        BeanUtils.copyProperties(pageResult, commentDTOIPage);
+        commentDTOIPage.setRecords(commentDTOList);
 
-        return commentDTOList;
+
+        return new PageUtils(commentDTOIPage);
 
     }
 }

@@ -14,12 +14,15 @@ public class MybatisMetaObjectHandler implements MetaObjectHandler {
 
     public static final String defaultAvatar = "https://songtiancloud-1300061766.cos.ap-guangzhou.myqcloud.com/img/OIP.jpg";
 
+    public static final String defaultGender = "2";
+
     @Override
     public void insertFill(MetaObject metaObject) {
         this.strictInsertFill(metaObject, "createdTime", LocalDateTime::now, LocalDateTime.class);
         this.strictInsertFill(metaObject, "updatedTime", LocalDateTime::now, LocalDateTime.class);
         this.strictInsertFill(metaObject, "nickName", () -> defaultNickName + RandomUtil.randomString(5), String.class);
         this.strictInsertFill(metaObject, "avatar", () -> defaultAvatar, String.class);
+        this.strictInsertFill(metaObject, "gender", () -> defaultGender, String.class);
     }
 
     @Override

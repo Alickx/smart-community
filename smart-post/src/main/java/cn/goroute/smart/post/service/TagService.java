@@ -1,6 +1,6 @@
 package cn.goroute.smart.post.service;
 
-import cn.goroute.smart.common.entity.TagEntity;
+import cn.goroute.smart.common.entity.pojo.TagEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

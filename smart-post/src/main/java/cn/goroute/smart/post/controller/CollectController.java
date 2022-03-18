@@ -1,7 +1,7 @@
 package cn.goroute.smart.post.controller;
 
-import cn.goroute.smart.common.entity.CollectEntity;
-import cn.goroute.smart.common.utils.R;
+import cn.goroute.smart.common.entity.pojo.CollectEntity;
+import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.post.service.CollectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,40 +41,40 @@ public class CollectController {
      * 信息
      */
     @RequestMapping("/info/{uid}")
-    public R info(@PathVariable("uid") String uid){
+    public Result info(@PathVariable("uid") String uid){
 		CollectEntity collect = collectService.getById(uid);
 
-        return R.ok().put("collect", collect);
+        return Result.ok().put("collect", collect);
     }
 
     /**
      * 保存
      */
     @RequestMapping("/save")
-    public R save(@RequestBody CollectEntity collect){
+    public Result save(@RequestBody CollectEntity collect){
 		collectService.save(collect);
 
-        return R.ok();
+        return Result.ok();
     }
 
     /**
      * 修改
      */
     @RequestMapping("/update")
-    public R update(@RequestBody CollectEntity collect){
+    public Result update(@RequestBody CollectEntity collect){
 		collectService.updateById(collect);
 
-        return R.ok();
+        return Result.ok();
     }
 
     /**
      * 删除
      */
     @RequestMapping("/delete")
-    public R delete(@RequestBody String[] uids){
+    public Result delete(@RequestBody String[] uids){
 		collectService.removeByIds(Arrays.asList(uids));
 
-        return R.ok();
+        return Result.ok();
     }
 
 }

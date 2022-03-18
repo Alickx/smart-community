@@ -7,36 +7,39 @@ import java.time.LocalDateTime;
 @Data
 public class PostEsModel {
     /**
-     *
+     * 文章uid
      */
     private String uid;
     /**
-     *
+     * 文章题目
      */
     private String title;
     /**
-     *
-     */
-    private String content;
-    /**
-     * 0 = 不公布  1 = 公布
-     */
-    private String isPublish;
-    /**
-     *
+     * 文章作者Uid
      */
     private String memberUid;
     /**
-     *
+     * 文章摘要
      */
     private String summary;
     /**
-     *
+     * 文章内容
      */
-    private LocalDateTime updateTime;
+    private String content;
     /**
-     *
+     * 文章创建时间
      */
     private LocalDateTime createdTime;
-
+    /**
+     *文章点赞总数
+     */
+    private Integer thumbCount;
+    /**
+     * 文章评论总数
+     */
+    private Integer commentCount;
+    /**
+     * 文章状态
+     */
+    private Integer status;
 }

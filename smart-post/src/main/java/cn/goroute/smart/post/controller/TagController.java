@@ -1,7 +1,7 @@
 package cn.goroute.smart.post.controller;
 
-import cn.goroute.smart.common.entity.TagEntity;
-import cn.goroute.smart.common.utils.R;
+import cn.goroute.smart.common.entity.pojo.TagEntity;
+import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.post.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -28,9 +28,9 @@ public class TagController {
      * 列表
      */
     @GetMapping("/list")
-    public R list(){
+    public Result list(){
         List<TagEntity> list = tagService.list();
-        return R.ok().put("data", list);
+        return Result.ok().put("data", list);
     }
 
 
@@ -38,40 +38,40 @@ public class TagController {
      * 信息
      */
     @GetMapping("/info/{uid}")
-    public R info(@PathVariable("uid") String uid){
+    public Result info(@PathVariable("uid") String uid){
 		TagEntity tag = tagService.getById(uid);
 
-        return R.ok().put("tag", tag);
+        return Result.ok().put("tag", tag);
     }
 
     /**
      * 保存
      */
     @RequestMapping("/save")
-    public R save(@Valid @RequestBody TagEntity tag){
+    public Result save(@Valid @RequestBody TagEntity tag){
 		tagService.save(tag);
 
-        return R.ok();
+        return Result.ok();
     }
 
     /**
      * 修改
      */
     @RequestMapping("/update")
-    public R update(@RequestBody TagEntity tag){
+    public Result update(@RequestBody TagEntity tag){
 		tagService.updateById(tag);
 
-        return R.ok();
+        return Result.ok();
     }
 
     /**
      * 删除
      */
     @RequestMapping("/delete")
-    public R delete(@RequestBody String[] uids){
+    public Result delete(@RequestBody String[] uids){
 		tagService.removeByIds(Arrays.asList(uids));
 
-        return R.ok();
+        return Result.ok();
     }
 
 }

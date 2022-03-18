@@ -1,10 +1,11 @@
 package cn.goroute.smart.post.controller;
 
-import cn.goroute.smart.common.entity.PostEntity;
-import cn.goroute.smart.common.entity.PostVo;
+import cn.goroute.smart.common.entity.pojo.PostEntity;
+import cn.goroute.smart.common.entity.vo.PostQueryListVO;
+import cn.goroute.smart.common.entity.vo.PostVO;
 import cn.goroute.smart.common.utils.PageUtils;
-import cn.goroute.smart.common.utils.R;
-import cn.goroute.smart.common.utils.RedisUtil;
+import cn.goroute.smart.common.utils.QueryParam;
+import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.post.feign.MemberFeignService;
 import cn.goroute.smart.post.service.CollectService;
 import cn.goroute.smart.post.service.CommentService;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.Arrays;
 
 
 /**
@@ -41,31 +41,29 @@ public class PostController {
     @Autowired
     MemberFeignService memberFeignService;
 
-    @Autowired
-    RedisUtil redisUtil;
-
-
-    @GetMapping("/list")
-    public R withSectionList(@RequestParam Integer curPage
+    @PostMapping("/list")
+    public Result withSectionList(@RequestBody QueryParam queryParam
             , @RequestParam(required = false) Integer sectionUid
             , @RequestParam(required = false) Integer tagUid) throws IOException {
-        PageUtils page = postService.queryPage(curPage, sectionUid, tagUid);
-        return R.ok().put("page", page);
+        PageUtils page = postService.queryPage(queryParam, sectionUid, tagUid);
+        return Result.ok().put("data", page);
     }
 
     /**
      * 信息
      */
     @GetMapping("/info/{uid}")
-    public R info(@PathVariable("uid") String uid) {
+    public Result info(@PathVariable("uid") String uid) {
         return postService.getPostByUid(uid);
     }
 
     /**
-     * 保存
+     * 发布/编辑文章
+     * @param postVo 文章接受类
+     * @return 发布/编辑结果
      */
     @PostMapping("/save")
-    public R save(@Valid @RequestBody PostVo postVo) {
+    public Result save(@Valid @RequestBody PostVO postVo) {
         return postService.savePost(postVo);
     }
 
@@ -73,20 +71,28 @@ public class PostController {
      * 修改
      */
     @PostMapping("/update")
-    public R update(@RequestBody PostEntity post) {
+    public Result update(@RequestBody PostEntity post) {
         postService.updateById(post);
 
-        return R.ok();
+        return Result.ok();
     }
 
     /**
-     * 删除
+     * 删除文章
      */
-    @RequestMapping("/delete")
-    public R delete(@RequestBody String[] uids) {
-        postService.removeByIds(Arrays.asList(uids));
+    @PostMapping("/delete")
+    public Result delete(@RequestParam String postUid) {
+        return postService.deletePost(postUid);
+    }
 
-        return R.ok();
+    /**
+     * 用户id查询文章列表
+     * @param postQueryVo 文章查询vo
+     * @return 文章集合
+     */
+    @PostMapping("/query_list")
+    public Result listByMemberUid(@RequestBody PostQueryListVO postQueryVo){
+        return postService.listByMemberUid(postQueryVo);
     }
 
 }

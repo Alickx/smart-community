@@ -4,7 +4,7 @@
 <mapper namespace="cn.goroute.smart.common.dao.RoleDao">
 
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="cn.goroute.smart.common.entity.RoleEntity" id="roleMap">
+    <resultMap type="cn.goroute.smart.common.entity.pojo.RoleEntity" id="roleMap">
         <result property="uid" column="uid"/>
         <result property="roleName" column="role_name"/>
         <result property="description" column="description"/>
