@@ -31,12 +31,23 @@ public class CommentController {
     @Autowired
     PostDao postDao;
 
+    /**
+     * 分页获取文章评论
+     * @param queryParam 分页参数
+     * @param postUid 文章uid
+     * @return 评论结果
+     */
     @PostMapping("/list")
     public Result getCommentByPost(@RequestBody QueryParam queryParam, @RequestParam String postUid) throws IOException {
         return commentService.getCommentByPost(queryParam,postUid);
     }
 
 
+    /**
+     * 发布评论/回复
+     * @param commentVo 评论vo
+     * @return 评论结果
+     */
     @PostMapping("/save")
     public Result save(@RequestBody CommentVO commentVo){
 
@@ -63,4 +74,8 @@ public class CommentController {
         return Result.ok().put("data",comment.getUid());
     }
 
+    @PostMapping("/del")
+    public Result del(@RequestBody CommentVO commentVo){
+        return commentService.del(commentVo);
+    }
 }

@@ -12,6 +12,7 @@
         <module name="smart-common" />
         <module name="smart-thirdpart" />
         <module name="smart-search" />
+        <module name="smart-product" />
         <module name="smart-gateway" />
         <module name="smart-post" />
       </profile>
@@ -28,6 +29,7 @@
       <module name="smart-gateway" target="1.8" />
       <module name="smart-member" target="1.8" />
       <module name="smart-post" target="1.8" />
+      <module name="smart-product" target="1.8" />
       <module name="smart-search" target="1.8" />
       <module name="smart-task" target="1.8" />
       <module name="smart-thirdpart" target="1.8" />
@@ -52,6 +54,7 @@
       <module name="smart-gateway" options="-parameters" />
       <module name="smart-member" options="-parameters" />
       <module name="smart-post" options="-parameters" />
+      <module name="smart-product" options="-parameters" />
       <module name="smart-search" options="-parameters" />
       <module name="smart-task" options="-parameters" />
       <module name="smart-thirdpart" options="-parameters" />

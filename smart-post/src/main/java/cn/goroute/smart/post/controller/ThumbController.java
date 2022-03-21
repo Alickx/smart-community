@@ -9,10 +9,12 @@ import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.post.service.CommentService;
 import cn.goroute.smart.post.service.ThumbService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * @author Alickx
+ */
 @RestController
 @RequestMapping("post/thumb")
 public class ThumbController {
@@ -45,7 +47,7 @@ public class ThumbController {
     }
 
     @RequestMapping("/is_like")
-    private @NotNull Boolean isLike(@RequestParam String loginIdAsString,@RequestParam String uid) {
+    public Boolean isLike(@RequestParam String loginIdAsString,@RequestParam String uid) {
         String thumbRedisKey = RedisKeyConstant.getThumbOrCollectKey(loginIdAsString, uid);
         if (redisUtil.hHasKey(RedisKeyConstant.POST_THUMB_KEY, thumbRedisKey)) {
             return true;

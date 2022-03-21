@@ -33,6 +33,13 @@ spring:
           filters: #过滤器
             - RewritePath=/api/v1/(?<segment>.*),/$\{segment}
 
+        - id: route_product
+          uri: lb://smart-product # 负载均衡
+          predicates: # 断言
+            - Path=/api/v1/product/**
+          filters: #过滤器
+            - RewritePath=/api/v1/(?<segment>.*),/$\{segment}
+
         - id: route_task
           uri: lb://smart-task # 负载均衡
           predicates: # 断言

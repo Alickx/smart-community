@@ -24,7 +24,7 @@ import java.util.Objects;
 
 @RestController
 @Slf4j
-@RequestMapping("/register")
+@RequestMapping("/api/v1/register")
 public class RegisterApi {
 
     private static final int BAN_TIME = 10 * 60;

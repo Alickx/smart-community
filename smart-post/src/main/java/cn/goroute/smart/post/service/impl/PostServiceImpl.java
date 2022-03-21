@@ -11,9 +11,9 @@ import cn.goroute.smart.common.entity.vo.PostVO;
 import cn.goroute.smart.common.utils.*;
 import cn.goroute.smart.post.feign.MemberFeignService;
 import cn.goroute.smart.post.feign.SearchFeignService;
-import cn.goroute.smart.post.listener.PostReviewListener;
 import cn.goroute.smart.post.service.PostService;
 import cn.goroute.smart.post.util.Html2TextUtil;
+import cn.goroute.smart.post.util.PostRabbitmqUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -46,6 +46,9 @@ public class PostServiceImpl extends ServiceImpl<PostDao, PostEntity> implements
     SearchFeignService searchFeignService;
 
     @Autowired
+    PostRabbitmqUtil rabbitmqUtil;
+
+    @Autowired
     TagDao tagDao;
 
     @Autowired
@@ -68,9 +71,6 @@ public class PostServiceImpl extends ServiceImpl<PostDao, PostEntity> implements
 
     @Autowired
     CollectDao collectDao;
-
-    @Autowired
-    PostReviewListener postReviewListener;
 
     /**
      * 文章分页方法
@@ -245,7 +245,7 @@ public class PostServiceImpl extends ServiceImpl<PostDao, PostEntity> implements
         int result = postDao.insert(postEntity);
         if (result == 1) {
             //插入后通过消息队列对文章进行异步审核
-            postReviewListener.review(postEntity, tageUidList);
+            rabbitmqUtil.reviewPost(postEntity, tageUidList);
             return Result.ok().put("url", postEntity.getUid());
         } else {
             log.error("用户={}发布文章失败,文章对象为={}", StpUtil.getLoginIdAsString(), postVo);

@@ -9,12 +9,14 @@ import cn.goroute.smart.common.utils.IllegalTextCheckUtil;
 import cn.goroute.smart.common.utils.PostConstant;
 import cn.goroute.smart.post.util.PostRabbitmqUtil;
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -35,9 +37,13 @@ public class PostReviewListener {
     PostDao postDao;
 
     @RabbitListener(queues = "smart.post.review")
-    public void review(PostEntity postEntity, List<Integer> tageUidList) {
+    public void review(Map<String, Object> map) {
         log.info("开始审核文章内容");
 
+        String post = (String) map.get("post");
+        String tagUidList = (String) map.get("tagUidList");
+        PostEntity postEntity = JSONUtil.toBean(post, PostEntity.class);
+        List<Integer> tagList = JSONUtil.toBean(tagUidList, List.class);
         List<String> titleCheckResult = textCheckUtil.checkText(postEntity.getTitle());
         List<String> contentCheckResult = textCheckUtil.checkText(postEntity.getContent());
 
@@ -63,7 +69,7 @@ public class PostReviewListener {
             log.info("文章正常，开始存入es");
             postRabbitmqUtil.saveEs(postEntity);
         }
-        tageUidList.forEach(t -> {
+        tagList.forEach(t -> {
             PostTagEntity postTagEntity = new PostTagEntity();
             postTagEntity.setPostUid(postEntity.getUid());
             postTagEntity.setTagUid(t);

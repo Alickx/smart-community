@@ -120,6 +120,7 @@ public class PostSearchService {
 
             List<PostEsModel> postEsModelList = new ArrayList<>();
             if (hits.getHits() != null && hits.getHits().length > 0) {
+                PostEsModel postEsModel = new PostEsModel();
                 for (SearchHit hit : searchHits) {
                     Map<String, HighlightField> highlightFields = hit.getHighlightFields();
                     HighlightField title = highlightFields.get("title");
@@ -141,7 +142,6 @@ public class PostSearchService {
                         }
                         sourceAsMap.put("summary", sb.toString());
                     }
-                    PostEsModel postEsModel = new PostEsModel();
                     //TODO Map转bean
                     String jsonStr = JSONUtil.toJsonStr(sourceAsMap);
                     postEsModel = JSONUtil.toBean(jsonStr, PostEsModel.class);
@@ -152,8 +152,8 @@ public class PostSearchService {
             PostSearchResponse postSearchResponse = new PostSearchResponse();
 
             List<PostListDTO> PostListDTOs = new ArrayList<>();
+            PostListDTO postListDTO = new PostListDTO();
             for (PostEsModel postEsModel : postEsModelList) {
-                PostListDTO postListDTO = new PostListDTO();
                 BeanUtils.copyProperties(postEsModel, postListDTO);
                 postListDTO.setAuthorInfo(memberFeignService.getMemberByUid(postEsModel.getMemberUid()));
                 if (StpUtil.isLogin()) {

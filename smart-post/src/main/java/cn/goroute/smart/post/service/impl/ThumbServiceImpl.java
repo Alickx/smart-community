@@ -183,8 +183,7 @@ public class ThumbServiceImpl extends ServiceImpl<CommentDao, Comment>
      */
     @Override
     public Result listByMemberUid(PostQueryListVO postQueryListVO) {
-
-
+        //TODO 加上redis刚缓存完的点赞数
         IPage<Comment> page = this.page(
                 new Query<Comment>().getPage(postQueryListVO),
                 new QueryWrapper<Comment>().eq("type", Constant.POST_THUMB_TYPE)

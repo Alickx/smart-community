@@ -27,7 +27,7 @@
                   <option name="fileName" value="${domain.fileName}Mapper" />
                   <option name="fileNameWithSuffix" value="${domain.fileName}Mapper.java" />
                   <option name="modulePath" value="$PROJECT_DIR$/smart-common" />
-                  <option name="packageName" value="${domain.basePackage}.mapper" />
+                  <option name="packageName" value="cn.goroute.smart.common.dao" />
                 </ModuleInfoGo>
                 <ModuleInfoGo>
                   <option name="basePath" value="src/main/resources" />
@@ -58,13 +58,13 @@
                 </ModuleInfoGo>
               </list>
             </option>
-            <option name="relativePackage" value="entity" />
+            <option name="relativePackage" value="entity.pojo" />
             <option name="superClass" value="" />
             <option name="tableUIInfoList">
               <list>
                 <TableUIInfo>
-                  <option name="className" value="SchedulerJobLogs" />
-                  <option name="tableName" value="scheduler_job_logs" />
+                  <option name="className" value="ProductStock" />
+                  <option name="tableName" value="t_product_stock" />
                 </TableUIInfo>
               </list>
             </option>

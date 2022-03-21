@@ -2,9 +2,12 @@ package cn.goroute.smart.post.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.common.dao.CommentDao;
+import cn.goroute.smart.common.dao.PostDao;
 import cn.goroute.smart.common.entity.dto.CommentDTO;
 import cn.goroute.smart.common.entity.dto.MemberDTO;
 import cn.goroute.smart.common.entity.pojo.Comment;
+import cn.goroute.smart.common.entity.pojo.PostEntity;
+import cn.goroute.smart.common.entity.vo.CommentVO;
 import cn.goroute.smart.common.utils.*;
 import cn.goroute.smart.post.feign.MemberFeignService;
 import cn.goroute.smart.post.service.CommentService;
@@ -24,6 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Alickx
@@ -46,6 +50,10 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
 
     @Autowired
     RedisTemplate redisTemplate;
+
+    @Autowired
+    PostDao postDao;
+
 
     @Override
     public Result getCommentByPost(QueryParam queryParam, String postUid) throws IOException {
@@ -90,6 +98,42 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
 
         PageUtils page = new PageUtils(commentDTOIPage);
         return Result.ok().put("data", page);
+    }
+
+    /**
+     * 删除评论
+     * @param commentVo 评论VO
+     * @return 删除结果
+     */
+    @Override
+    public Result del(CommentVO commentVo) {
+
+        Comment comment = commentDao.selectById(commentVo.getUid());
+        if (comment != null) {
+            String memberUid = comment.getMemberUid();
+            if (!Objects.equals(memberUid,StpUtil.getLoginIdAsString())) {
+                return Result.error();
+            }
+            int result = commentDao.deleteById(commentVo.getUid());
+            if (result != 1) {
+                return Result.error();
+            }
+            //更新redis中的数据
+            String key = RedisKeyConstant.POST_COUNT_KEY + comment.getPostUid();
+            if (redisUtil.hHasKey(key,RedisKeyConstant.POST_COMMENT_COUNT_KEY)) {
+                redisUtil.hdecr(key,RedisKeyConstant.POST_COMMENT_COUNT_KEY,1);
+            } else {
+                synchronized (this) {
+                    PostEntity postEntity = postDao.selectById(comment.getPostUid());
+                    if (postEntity != null) {
+                        redisUtil.hset(key,RedisKeyConstant.POST_COMMENT_COUNT_KEY,postEntity.getCommentCount());
+                        redisUtil.hdecr(key,RedisKeyConstant.POST_COMMENT_COUNT_KEY,1);
+                    }
+                }
+            }
+            return Result.ok();
+        }
+        return Result.error();
     }
 
     private int getThumbCount(Comment comment) throws IOException {

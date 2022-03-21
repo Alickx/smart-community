@@ -6,9 +6,8 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.2.6.RELEASE</version>
-        <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>cn.goroute</groupId>
+    <groupId>cn.goroute.smart</groupId>
     <artifactId>smart-thirdpart</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>smart-thirdpart</name>
@@ -28,7 +27,7 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>cn.goroute</groupId>
+            <groupId>cn.goroute.smart</groupId>
             <artifactId>smart-common</artifactId>
             <version>1.0-SNAPSHOT</version>
             <exclusions>
