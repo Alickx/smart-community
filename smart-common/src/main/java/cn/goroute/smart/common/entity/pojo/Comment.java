@@ -28,14 +28,6 @@ public class Comment implements Serializable {
      * 文章uid
      */
     private String postUid;
-    /**
-     * 评论 = 0 点赞 = 1
-     */
-    private Integer type;
-    /**
-     * 回复某条评论的uid
-     */
-    private String toUid;
 
     /**
      * 回复某个人的uid
@@ -48,9 +40,14 @@ public class Comment implements Serializable {
     private String content;
 
     /**
-     * 状态
+     * 逻辑删除状态 0:未删除 1:已删除
      */
     private Integer status;
+
+    /**
+     * 0 = 一级评论 1 = 评论中回复
+     */
+    private Integer type;
 
     /**
      * 一级评论uid

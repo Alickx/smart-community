@@ -1,9 +1,11 @@
 package cn.goroute.smart.member.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.common.entity.dto.MemberDTO;
-import cn.goroute.smart.common.entity.pojo.MemberEntity;
+import cn.goroute.smart.common.entity.pojo.Member;
 import cn.goroute.smart.common.entity.vo.MemberInfoUpdateVO;
+import cn.goroute.smart.common.exception.BizCodeEnum;
 import cn.goroute.smart.common.utils.RedisUtil;
 import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.member.service.MemberService;
@@ -41,17 +43,17 @@ public class MemberController {
      * @param memberUidList uid集合
      * @return 用户信息集合
      */
-    @GetMapping("/list/post")
-    public List<MemberDTO> getInfoByMemberUids(@RequestParam List<String> memberUidList) {
+    @PostMapping("/list/post")
+    public List<MemberDTO> getInfoByMemberUids(@RequestBody List<String> memberUidList) {
 
         List<MemberDTO> res = new ArrayList<>();
 
         MemberDTO memberDTO;
         for (String uid : memberUidList) {
             memberDTO = new MemberDTO();
-            MemberEntity memberEntity = memberService.getById(uid);
-            if (memberEntity != null) {
-                BeanUtils.copyProperties(memberEntity, memberDTO);
+            Member member = memberService.getById(uid);
+            if (member != null) {
+                BeanUtils.copyProperties(member, memberDTO);
             }
             res.add(memberDTO);
         }
@@ -68,9 +70,9 @@ public class MemberController {
      */
     @GetMapping("/info/email")
     public Result infoMemberEmail(@RequestParam String email) {
-        QueryChainWrapper<MemberEntity> emailQueryChainWrapper = memberService.query().eq("email", email);
+        QueryChainWrapper<Member> emailQueryChainWrapper = memberService.query().eq("email", email);
 
-        MemberEntity member = memberService.getOne(emailQueryChainWrapper.getWrapper());
+        Member member = memberService.getOne(emailQueryChainWrapper.getWrapper());
         /*
           如果该邮箱已经注册则返回true，没注册则返回false
          */
@@ -100,21 +102,25 @@ public class MemberController {
      */
     @GetMapping("/info/{uid}")
     public Result info(@PathVariable("uid") String uid) {
-        MemberEntity member = memberService.getById(uid);
-        MemberDTO memberDTO = new MemberDTO();
-        BeanUtils.copyProperties(Objects.requireNonNull(member), memberDTO);
-        return Result.ok().put("data", memberDTO);
+        Member member = memberService.getById(uid);
+        if (member != null) {
+            MemberDTO memberDTO = new MemberDTO();
+            BeanUtils.copyProperties(Objects.requireNonNull(member), memberDTO);
+            return Result.ok().put("data", memberDTO);
+        } else {
+            return Result.error(BizCodeEnum.NOT_FOUND_MEMBER.getCode(), BizCodeEnum.NOT_FOUND_MEMBER.getMessage());
+        }
     }
 
     /**
-     * 微服务间调用 TODO 用户信息更合适的方式
+     * 微服务间调用
      *
      * @param uid 用户uid
      * @return 用户DTO实体类
      */
     @GetMapping("/getMemberByUid")
     public MemberDTO getMemberByUid(@RequestParam String uid) {
-        MemberEntity member = memberService.getById(uid);
+        Member member = memberService.getById(uid);
         MemberDTO memberDTO = new MemberDTO();
         BeanUtils.copyProperties(Objects.requireNonNull(member), memberDTO);
         return memberDTO;
@@ -126,6 +132,7 @@ public class MemberController {
      * @param memberInfoUpdateVO 用户信息vo
      * @return 更新后的用户信息
      */
+    @SaCheckLogin
     @PostMapping("/profile/update")
     public Result update(@RequestBody MemberInfoUpdateVO memberInfoUpdateVO) {
 
@@ -138,6 +145,7 @@ public class MemberController {
      *
      * @return 注销结果
      */
+    @SaCheckLogin
     @GetMapping("/logout")
     public Result logout() {
         if (StpUtil.isLogin()) {

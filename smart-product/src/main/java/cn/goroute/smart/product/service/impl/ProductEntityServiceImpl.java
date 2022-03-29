@@ -1,11 +1,11 @@
 package cn.goroute.smart.product.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
-import cn.goroute.smart.common.dao.ProductEntityDao;
+import cn.goroute.smart.common.dao.ProductDao;
 import cn.goroute.smart.common.dao.ProductStockDao;
 import cn.goroute.smart.common.entity.dto.MemberConchDTO;
 import cn.goroute.smart.common.entity.dto.ProductDTO;
-import cn.goroute.smart.common.entity.pojo.ProductEntity;
+import cn.goroute.smart.common.entity.pojo.Product;
 import cn.goroute.smart.common.entity.pojo.ProductStock;
 import cn.goroute.smart.common.entity.vo.MemberPayConchVO;
 import cn.goroute.smart.common.entity.vo.ProductPayVO;
@@ -39,11 +39,11 @@ import java.util.List;
  * @createDate 2022-03-19 14:56:37
  */
 @Service
-public class ProductEntityServiceImpl extends ServiceImpl<ProductEntityDao, ProductEntity>
+public class ProductEntityServiceImpl extends ServiceImpl<ProductDao, Product>
         implements ProductEntityService {
 
     @Resource
-    ProductEntityDao productEntityDao;
+    ProductDao productDao;
 
     @Resource
     ProductStockDao productStockDao;
@@ -62,10 +62,10 @@ public class ProductEntityServiceImpl extends ServiceImpl<ProductEntityDao, Prod
      */
     @Override
     public Result queryList(QueryParam queryParam) {
-        IPage<ProductEntity> productEntityIPage = productEntityDao.selectPage(new Query<ProductEntity>().getPage(queryParam),
+        IPage<Product> productEntityIPage = productDao.selectPage(new Query<Product>().getPage(queryParam),
                 new QueryWrapper<>());
 
-        List<ProductEntity> records = productEntityIPage.getRecords();
+        List<Product> records = productEntityIPage.getRecords();
         List<ProductDTO> productDTOList = new ArrayList<>(10);
         ProductDTO productDTO = new ProductDTO();
         records.forEach(r -> {
@@ -103,9 +103,9 @@ public class ProductEntityServiceImpl extends ServiceImpl<ProductEntityDao, Prod
         Result result = memberFeignService.queryConchInfoByMemberUid(memberUid);
         String memberConchDTOJson = JSONUtil.toJsonStr(result.get("data"));
         MemberConchDTO memberConchDTO = JSONUtil.toBean(memberConchDTOJson, MemberConchDTO.class);
-        ProductEntity productEntity = productEntityDao.selectById(productPayVO.getProductUid());
-        if (productEntity != null) {
-            if (memberConchDTO.getConch().compareTo(productEntity.getPrice()) < 0) {
+        Product product = productDao.selectById(productPayVO.getProductUid());
+        if (product != null) {
+            if (memberConchDTO.getConch().compareTo(product.getPrice()) < 0) {
                 return Result.error("用户贝壳余额不足");
             }
         } else {
@@ -119,11 +119,11 @@ public class ProductEntityServiceImpl extends ServiceImpl<ProductEntityDao, Prod
 
         //扣减用户贝壳余额
         MemberPayConchVO memberPayConchVO = new MemberPayConchVO();
-        memberPayConchVO.setProductName(productEntity.getName());
-        memberPayConchVO.setPrice(productEntity.getPrice());
+        memberPayConchVO.setProductName(product.getName());
+        memberPayConchVO.setPrice(product.getPrice());
         memberPayConchVO.setMemberUid(memberUid);
         memberPayConchVO.setType(productPayVO.getType());
-        memberPayConchVO.setProductUid(productEntity.getUid());
+        memberPayConchVO.setProductUid(product.getUid());
         if (productPayVO.getType() == 1) {
             memberPayConchVO.setToUid(productPayVO.getToUid());
         }

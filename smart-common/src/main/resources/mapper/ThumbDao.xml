@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.goroute.smart.common.dao.ThumbDao">
 
-	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="cn.goroute.smart.common.entity.pojo.ThumbEntity" id="thumbMap">
-        <result property="uid" column="uid"/>
-        <result property="memberUid" column="member_uid"/>
-        <result property="toUid" column="to_uid"/>
-        <result property="thumbType" column="thumb_type"/>
-        <result property="createdTime" column="created_time"/>
+    <resultMap id="BaseResultMap" type="cn.goroute.smart.common.entity.pojo.Thumb">
+            <id property="uid" column="uid" jdbcType="INTEGER"/>
+            <result property="memberUid" column="member_uid" jdbcType="VARCHAR"/>
+            <result property="toMemberUid" column="to_member_uid" jdbcType="VARCHAR"/>
+            <result property="postUid" column="post_uid" jdbcType="VARCHAR"/>
+            <result property="type" column="type" jdbcType="INTEGER"/>
+            <result property="content" column="content" jdbcType="VARCHAR"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
-
+    <sql id="Base_Column_List">
+        uid,member_uid,to_member_uid,
+        post_uid,type,content,
+        created_time
+    </sql>
 </mapper>

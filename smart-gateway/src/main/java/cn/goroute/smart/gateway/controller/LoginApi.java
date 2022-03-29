@@ -3,7 +3,7 @@ package cn.goroute.smart.gateway.controller;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.common.dao.MemberDao;
 import cn.goroute.smart.common.entity.dto.MemberDTO;
-import cn.goroute.smart.common.entity.pojo.MemberEntity;
+import cn.goroute.smart.common.entity.pojo.Member;
 import cn.goroute.smart.common.entity.vo.MemberLoginVO;
 import cn.goroute.smart.common.utils.Result;
 import cn.hutool.crypto.digest.DigestUtil;
@@ -27,22 +27,22 @@ public class LoginApi {
 
         String username = memberLoginVo.getUsername();
 
-        MemberEntity memberEntity = memberDao.selectOne(new QueryWrapper<MemberEntity>().eq("email", username));
+        Member member = memberDao.selectOne(new QueryWrapper<Member>().eq("email", username));
 
 
-        if (memberEntity == null) {
+        if (member == null) {
             return Result.error("用户名不存在");
         }
 
-        if (!DigestUtil.bcryptCheck(memberLoginVo.getPassWord(), memberEntity.getPassWord())) {
+        if (!DigestUtil.bcryptCheck(memberLoginVo.getPassWord(), member.getPassWord())) {
             return Result.error("用户名或密码错误");
         }
 
 
         MemberDTO memberDTO = new MemberDTO();
-        BeanUtils.copyProperties(memberEntity,memberDTO);
+        BeanUtils.copyProperties(member,memberDTO);
 
-        StpUtil.login(memberEntity.getUid());
+        StpUtil.login(member.getUid());
 
         return Result.ok()
                 .put("access_token", StpUtil.getTokenValue())

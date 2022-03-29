@@ -1,21 +1,25 @@
 package cn.goroute.smart.post.service;
 
-
-import cn.goroute.smart.common.entity.pojo.Comment;
-import cn.goroute.smart.common.entity.vo.CommentVO;
+import cn.goroute.smart.common.entity.pojo.Thumb;
 import cn.goroute.smart.common.entity.vo.PostQueryListVO;
 import cn.goroute.smart.common.utils.Result;
 import com.baomidou.mybatisplus.extension.service.IService;
 
-public interface ThumbService extends IService<Comment> {
+/**
+* @author Alickx
+* @description 针对表【t_thumb(点赞表)】的数据库操作Service
+* @createDate 2022-03-23 16:44:34
+*/
+public interface ThumbService extends IService<Thumb> {
 
-    Result thumbSave(CommentVO thumbVo);
+    Result thumbSave(Thumb thumb);
 
-    Result thumbCancel(CommentVO thumbVo);
+    Result thumbCancel(Thumb thumb);
 
     int trans();
 
     Result listByMemberUid(PostQueryListVO postQueryListVO);
 
     int transCount();
+
 }

@@ -3,14 +3,22 @@ package cn.goroute.smart.post.service.impl;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.common.dao.CommentDao;
 import cn.goroute.smart.common.dao.PostDao;
+import cn.goroute.smart.common.dao.ThumbDao;
 import cn.goroute.smart.common.entity.dto.CommentDTO;
 import cn.goroute.smart.common.entity.dto.MemberDTO;
 import cn.goroute.smart.common.entity.pojo.Comment;
-import cn.goroute.smart.common.entity.pojo.PostEntity;
+import cn.goroute.smart.common.entity.pojo.EventRemind;
+import cn.goroute.smart.common.entity.pojo.Post;
+import cn.goroute.smart.common.entity.pojo.Thumb;
 import cn.goroute.smart.common.entity.vo.CommentVO;
+import cn.goroute.smart.common.exception.BizCodeEnum;
+import cn.goroute.smart.common.exception.ServiceException;
 import cn.goroute.smart.common.utils.*;
 import cn.goroute.smart.post.feign.MemberFeignService;
 import cn.goroute.smart.post.service.CommentService;
+import cn.goroute.smart.post.util.ConvertRemindUtil;
+import cn.goroute.smart.post.util.RabbitmqUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -38,7 +46,6 @@ import java.util.Objects;
 public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
         implements CommentService {
 
-
     @Resource
     CommentDao commentDao;
 
@@ -46,23 +53,42 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
     MemberFeignService memberFeignService;
 
     @Autowired
+    IllegalTextCheckUtil illegalTextCheckUtil;
+
+    @Autowired
     RedisUtil redisUtil;
 
     @Autowired
-    RedisTemplate redisTemplate;
+    RedisTemplate<String, Object> redisTemplate;
 
     @Autowired
     PostDao postDao;
 
+    @Resource
+    ThumbDao thumbDao;
 
+    @Autowired
+    RabbitmqUtil rabbitmqUtil;
+
+    /**
+     * 根据文章id获取文章评论列表
+     *
+     * @param queryParam 查询参数
+     * @param postUid    文章id
+     * @return 评论列表
+     * @throws IOException io异常
+     */
     @Override
     public Result getCommentByPost(QueryParam queryParam, String postUid) throws IOException {
 
         IPage<Comment> pageResult = commentDao.selectPage(new Query<Comment>().getPage(queryParam),
-                new QueryWrapper<Comment>()
-                        .eq("post_uid", postUid)
-                        .isNull("first_comment_uid")
-                        .eq("status", Constant.DEFAULT_STATUS));
+                new LambdaQueryWrapper<Comment>().eq(Comment::getPostUid, postUid)
+                        .isNull(Comment::getFirstCommentUid)
+                        .eq(Comment::getStatus, PostConstant.NORMAL_STATUS));
+
+        if (pageResult.getRecords().isEmpty()) {
+            return Result.ok().put("data",new PageUtils(pageResult));
+        }
 
         List<Comment> commentList = pageResult.getRecords();
 
@@ -102,6 +128,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
 
     /**
      * 删除评论
+     *
      * @param commentVo 评论VO
      * @return 删除结果
      */
@@ -111,44 +138,109 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
         Comment comment = commentDao.selectById(commentVo.getUid());
         if (comment != null) {
             String memberUid = comment.getMemberUid();
-            if (!Objects.equals(memberUid,StpUtil.getLoginIdAsString())) {
+            // 判断是否是评论者
+            if (!Objects.equals(memberUid, StpUtil.getLoginIdAsString())) {
                 return Result.error();
             }
-            int result = commentDao.deleteById(commentVo.getUid());
+            // 逻辑删除
+            comment.setStatus(PostConstant.DELETE_STATUS);
+            int result = commentDao.updateById(comment);
             if (result != 1) {
                 return Result.error();
             }
             //更新redis中的数据
             String key = RedisKeyConstant.POST_COUNT_KEY + comment.getPostUid();
-            if (redisUtil.hHasKey(key,RedisKeyConstant.POST_COMMENT_COUNT_KEY)) {
-                redisUtil.hdecr(key,RedisKeyConstant.POST_COMMENT_COUNT_KEY,1);
+            if (redisUtil.hHasKey(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY)) {
+                redisUtil.hdecr(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY, 1);
             } else {
                 synchronized (this) {
-                    PostEntity postEntity = postDao.selectById(comment.getPostUid());
-                    if (postEntity != null) {
-                        redisUtil.hset(key,RedisKeyConstant.POST_COMMENT_COUNT_KEY,postEntity.getCommentCount());
-                        redisUtil.hdecr(key,RedisKeyConstant.POST_COMMENT_COUNT_KEY,1);
+                    if (redisUtil.hHasKey(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY)) {
+                        redisUtil.hdecr(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY, 1);
+                    } else {
+                        Post post = postDao.selectById(comment.getPostUid());
+                        if (post != null) {
+                            redisUtil.hset(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY, post.getCommentCount());
+                            redisUtil.hdecr(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY, 1);
+                        }
                     }
                 }
             }
             return Result.ok();
         }
-        return Result.error();
+        return Result.error(BizCodeEnum.NOT_DATA.getCode(), BizCodeEnum.NOT_DATA.getMessage());
     }
 
+    /**
+     * 保存评论
+     *
+     * @param commentVo 评论VO
+     * @return 保存结果
+     */
+    @Override
+    public Result saveComment(CommentVO commentVo) {
+        //审核评论
+        boolean checkResult = illegalTextCheckUtil.checkText(commentVo.getContent());
+        if (checkResult) {
+            return Result.error("请不要发送含有违禁词的评论");
+        }
+
+        //判断点赞文章是否存在
+        Post post = postDao.selectOne(new LambdaQueryWrapper<Post>()
+                .eq(Post::getUid, commentVo.getPostUid())
+                .eq(Post::getStatus, PostConstant.NORMAL_STATUS)
+                .eq(Post::getIsPublish, PostConstant.PUBLISH));
+
+        if (post == null) {
+            return Result.error(BizCodeEnum.POST_NOT_EXIST.getCode(), BizCodeEnum.POST_NOT_EXIST.getMessage());
+        }
+
+        Comment comment = new Comment();
+        BeanUtils.copyProperties(commentVo, comment);
+
+        comment.setMemberUid(StpUtil.getLoginIdAsString());
+        int result = commentDao.insert(comment);
+        if (result != 1) {
+            throw new ServiceException("评论发布失败");
+        }
+        //发送消息通知
+        EventRemind eventRemind = ConvertRemindUtil.convertCommentNotification(comment, post.getTitle());
+        rabbitmqUtil.sendEventRemind(eventRemind);
+
+        String key = RedisKeyConstant.POST_COUNT_KEY + commentVo.getPostUid();
+        //如果redis存在key，则直接增加
+        if (redisUtil.hHasKey(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY)) {
+            redisUtil.hincr(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY, 1);
+        } else {
+            synchronized (this) {
+                if (redisUtil.hHasKey(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY)) {
+                    redisUtil.hincr(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY, 1);
+                } else {
+                    redisUtil.hset(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY, post.getCommentCount());
+                    redisUtil.hincr(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY, 1);
+                }
+            }
+        }
+
+        return Result.ok().put("data", comment.getUid());
+    }
+
+    /**
+     * 查询评论点赞数量
+     *
+     * @param comment 评论
+     * @return 点赞数量
+     * @throws IOException IO异常
+     */
     private int getThumbCount(Comment comment) throws IOException {
-        int thumbCount = 0;
+        int thumbCount;
+        thumbCount = thumbDao.selectCount(new LambdaQueryWrapper<Thumb>()
+                .eq(Thumb::getToUid, comment.getUid())
+                .eq(Thumb::getType, PostConstant.THUMB_COMMENT_TYPE));
 
-        List<Comment> thumbList = commentDao.selectList(new QueryWrapper<Comment>()
-                .eq("type", 1)
-                .eq("to_uid", comment.getUid()));
 
-        thumbCount = thumbList.size();
-
-        String thumbScanKey = "*::" + comment.getUid();
+        String thumbScanKey = "*:" + comment.getUid();
         Cursor<Map.Entry<Object, Object>> cursor = redisTemplate.opsForHash()
                 .scan(RedisKeyConstant.POST_THUMB_KEY, ScanOptions.scanOptions().match(thumbScanKey).build());
-
 
         while (cursor.hasNext()) {
             thumbCount++;
@@ -160,36 +252,48 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
         return thumbCount;
     }
 
+    /**
+     * 查询评论点赞状态
+     *
+     * @param comment 评论
+     * @return 点赞状态
+     */
     private boolean isLike(Comment comment) {
         boolean isLike = false;
 
         if (StpUtil.isLogin()) {
             String loginIdAsString = StpUtil.getLoginIdAsString();
 
-            String redisKey = RedisKeyConstant.getThumbOrCollectKey(loginIdAsString, comment.getUid());
+            String redisKey = RedisKeyConstant.getThumbKey(loginIdAsString, comment.getUid());
 
-            Object thumbRedis = redisUtil.hget(RedisKeyConstant.POST_THUMB_KEY, redisKey);
-
-            if (thumbRedis == null) {
-                Comment thumb = commentDao.selectOne(new QueryWrapper<Comment>()
-                        .eq("to_uid", comment.getUid())
-                        .eq("member_uid", loginIdAsString));
-                if (thumb != null) isLike = true;
-            } else if ((int) thumbRedis == 1) {
+            if (!redisUtil.hHasKey(RedisKeyConstant.POST_THUMB_KEY, redisKey)) {
+                //数据库点赞记录
+                Thumb thumb = thumbDao.selectOne(new LambdaQueryWrapper<Thumb>().eq(Thumb::getMemberUid, loginIdAsString)
+                        .eq(Thumb::getToUid, comment.getUid()));
+                if (thumb != null) {
+                    isLike = true;
+                }
+            } else {
                 isLike = true;
             }
         }
         return isLike;
     }
 
-
+    /**
+     * 查询子评论列表
+     *
+     * @param firstCommentUid 父评论UID
+     * @return 子评论列表
+     * @throws IOException IO异常
+     */
     private PageUtils getReply(String firstCommentUid) throws IOException {
         QueryParam queryParam = new QueryParam();
         queryParam.setLimit("3");
         queryParam.setSidx("created_time");
         IPage<Comment> pageResult = commentDao.selectPage(new Query<Comment>().getPage(queryParam), new QueryWrapper<Comment>()
                 .eq("first_comment_uid", firstCommentUid)
-                .eq("status", Constant.DEFAULT_STATUS));
+                .eq("status", PostConstant.NORMAL_STATUS));
 
         List<Comment> commentList = pageResult.getRecords();
         List<CommentDTO> commentDTOList = new ArrayList<>();

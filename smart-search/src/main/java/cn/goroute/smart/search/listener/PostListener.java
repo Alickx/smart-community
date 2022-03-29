@@ -1,6 +1,6 @@
 package cn.goroute.smart.search.listener;
 
-import cn.goroute.smart.common.entity.pojo.PostEntity;
+import cn.goroute.smart.common.entity.pojo.Post;
 import cn.goroute.smart.search.model.PostEsModel;
 import cn.goroute.smart.search.service.PostSearchService;
 import cn.hutool.json.JSONUtil;
@@ -20,10 +20,10 @@ public class PostListener {
     PostSearchService service;
 
     @RabbitListener(queues = "smart.search.post")
-    public void savePost(String message) throws Exception {
+    public void savePost(String message) throws IOException {
         log.info("=>接收到消息,开始存入es中,message=>{}",message);
         PostEsModel postEsModel = new PostEsModel();
-        PostEntity post = JSONUtil.toBean(message,PostEntity.class);
+        Post post = JSONUtil.toBean(message, Post.class);
         BeanUtils.copyProperties(post, postEsModel);
         postEsModel.setCommentCount(0);
         String resp = service.save(postEsModel);
@@ -33,8 +33,8 @@ public class PostListener {
     @RabbitListener(queues = "smart.search.post.durability")
     public void transPostCount2ES(String message) throws IOException {
         log.info("接收到消息，开始同步文章信息=>{}",message);
-        PostEntity postEntity = JSONUtil.toBean(message, PostEntity.class);
-        service.transPostCount2ES(postEntity);
+        Post post = JSONUtil.toBean(message, Post.class);
+        service.transPostCount2ES(post);
     }
 
 

@@ -1,6 +1,6 @@
 package cn.goroute.smart.post.controller;
 
-import cn.goroute.smart.common.entity.pojo.TagEntity;
+import cn.goroute.smart.common.entity.pojo.Tag;
 import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.post.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ public class TagController {
      */
     @GetMapping("/list")
     public Result list(){
-        List<TagEntity> list = tagService.list();
+        List<Tag> list = tagService.list();
         return Result.ok().put("data", list);
     }
 
@@ -39,7 +39,7 @@ public class TagController {
      */
     @GetMapping("/info/{uid}")
     public Result info(@PathVariable("uid") String uid){
-		TagEntity tag = tagService.getById(uid);
+		Tag tag = tagService.getById(uid);
 
         return Result.ok().put("tag", tag);
     }
@@ -48,7 +48,7 @@ public class TagController {
      * 保存
      */
     @RequestMapping("/save")
-    public Result save(@Valid @RequestBody TagEntity tag){
+    public Result save(@Valid @RequestBody Tag tag){
 		tagService.save(tag);
 
         return Result.ok();
@@ -58,7 +58,7 @@ public class TagController {
      * 修改
      */
     @RequestMapping("/update")
-    public Result update(@RequestBody TagEntity tag){
+    public Result update(@RequestBody Tag tag){
 		tagService.updateById(tag);
 
         return Result.ok();

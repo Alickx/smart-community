@@ -15,6 +15,7 @@
             <name qname="@" />
             <name qname="smart_admin" />
             <name qname="smart_config" />
+            <name qname="smart_notify" />
             <name qname="smart_pms" />
             <name qname="smart_product" />
             <name qname="smart_task" />

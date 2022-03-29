@@ -6,7 +6,9 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.2.6.RELEASE</version>
+        <relativePath/>
     </parent>
+    <packaging>jar</packaging>
     <groupId>cn.goroute.smart</groupId>
     <artifactId>smart-gateway</artifactId>
     <version>0.0.1-SNAPSHOT</version>
@@ -17,17 +19,17 @@
         <spring-cloud.version>Hoxton.SR3</spring-cloud.version>
     </properties>
     <dependencies>
-<!--        微服务网关-->
+        <!--        微服务网关-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-gateway</artifactId>
         </dependency>
-<!--        openfeign远程调用-->
+        <!--        openfeign远程调用-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
-<!--        spring test-->
+        <!--        spring test-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -44,24 +46,24 @@
                 </exclusion>
             </exclusions>
         </dependency>
-<!--        Mybatis-plus依赖-->
+        <!--        Mybatis-plus依赖-->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
             <version>3.4.3.1</version>
         </dependency>
-<!--        mysql驱动-->
+        <!--        mysql驱动-->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <scope>runtime</scope>
         </dependency>
-<!--        redis中间件-->
+        <!--        redis中间件-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
-<!--        satoken 权限认证框架-->
+        <!--        satoken 权限认证框架-->
         <dependency>
             <groupId>cn.dev33</groupId>
             <artifactId>sa-token-reactor-spring-boot-starter</artifactId>
@@ -72,7 +74,7 @@
             <artifactId>sa-token-dao-redis-jackson</artifactId>
             <version>1.29.0</version>
         </dependency>
-<!--        druid 数据库连接池-->
+        <!--        druid 数据库连接池-->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
@@ -95,6 +97,7 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
 
     <build>
         <plugins>

@@ -18,4 +18,6 @@ public interface CommentService extends IService<Comment> {
     Result getCommentByPost(QueryParam queryParam, String postUid) throws IOException;
 
     Result del(CommentVO commentVo);
+
+    Result saveComment(CommentVO commentVo);
 }

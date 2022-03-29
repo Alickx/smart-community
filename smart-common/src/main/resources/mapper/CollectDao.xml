@@ -4,7 +4,7 @@
 <mapper namespace="cn.goroute.smart.common.dao.CollectDao">
 
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="cn.goroute.smart.common.entity.pojo.CollectEntity" id="collectMap">
+    <resultMap type="cn.goroute.smart.common.entity.pojo.Collect" id="collectMap">
         <result property="uid" column="uid"/>
         <result property="memberUid" column="member_uid"/>
         <result property="postUid" column="post_uid"/>

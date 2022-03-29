@@ -30,6 +30,11 @@ public class CommentDTO {
     private String content;
 
     /**
+     * 0 = 一级评论 1 = 评论中回复
+     */
+    private Integer type;
+
+    /**
      * 点赞数量
      */
     private Integer thumbCount;

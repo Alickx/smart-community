@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/smart-common/smart-common.iml" filepath="$PROJECT_DIR$/smart-common/smart-common.iml" />
       <module fileurl="file://$PROJECT_DIR$/smart-gateway/smart-gateway.iml" filepath="$PROJECT_DIR$/smart-gateway/smart-gateway.iml" />
       <module fileurl="file://$PROJECT_DIR$/smart-member/smart-member.iml" filepath="$PROJECT_DIR$/smart-member/smart-member.iml" />
+      <module fileurl="file://$PROJECT_DIR$/smart-notify/smart-notify.iml" filepath="$PROJECT_DIR$/smart-notify/smart-notify.iml" />
       <module fileurl="file://$PROJECT_DIR$/smart-post/smart-post.iml" filepath="$PROJECT_DIR$/smart-post/smart-post.iml" />
       <module fileurl="file://$PROJECT_DIR$/smart-product/smart-product.iml" filepath="$PROJECT_DIR$/smart-product/smart-product.iml" />
       <module fileurl="file://$PROJECT_DIR$/smart-search/smart-search.iml" filepath="$PROJECT_DIR$/smart-search/smart-search.iml" />

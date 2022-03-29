@@ -1,5 +1,6 @@
 package cn.goroute.smart.product.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.goroute.smart.common.entity.vo.ProductPayVO;
 import cn.goroute.smart.common.utils.QueryParam;
 import cn.goroute.smart.common.utils.Result;
@@ -32,6 +33,7 @@ public class ProductController {
         return productEntityService.queryList(queryParam);
     }
 
+    @SaCheckLogin
     @PostMapping("/pay")
     public Result buyProduct(@RequestBody ProductPayVO productPayVO) {
         return productEntityService.buyProduct(productPayVO);

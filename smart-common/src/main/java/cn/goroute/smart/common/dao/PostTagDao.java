@@ -1,6 +1,6 @@
 package cn.goroute.smart.common.dao;
 
-import cn.goroute.smart.common.entity.pojo.PostTagEntity;
+import cn.goroute.smart.common.entity.pojo.PostTag;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -12,6 +12,6 @@ import org.apache.ibatis.annotations.Mapper;
  * @date 2022-02-25 09:44:39
  */
 @Mapper
-public interface PostTagDao extends BaseMapper<PostTagEntity> {
+public interface PostTagDao extends BaseMapper<PostTag> {
 	
 }

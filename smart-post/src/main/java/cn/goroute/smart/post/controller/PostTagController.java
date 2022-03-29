@@ -1,6 +1,6 @@
 package cn.goroute.smart.post.controller;
 
-import cn.goroute.smart.common.entity.pojo.PostTagEntity;
+import cn.goroute.smart.common.entity.pojo.PostTag;
 import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.post.service.PostTagService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ public class PostTagController {
      */
     @RequestMapping("/list")
     public Result list(){
-        List<PostTagEntity> list = postTagService.list();
+        List<PostTag> list = postTagService.list();
 
         return Result.ok().put("data", list);
     }
@@ -43,7 +43,7 @@ public class PostTagController {
      */
     @RequestMapping("/info/{uid}")
     public Result info(@PathVariable("uid") String uid){
-		PostTagEntity postTag = postTagService.getById(uid);
+		PostTag postTag = postTagService.getById(uid);
 
         return Result.ok().put("postTag", postTag);
     }
@@ -52,7 +52,7 @@ public class PostTagController {
      * 保存
      */
     @RequestMapping("/save")
-    public Result save(@RequestBody PostTagEntity postTag){
+    public Result save(@RequestBody PostTag postTag){
 		postTagService.save(postTag);
 
         return Result.ok();
@@ -62,7 +62,7 @@ public class PostTagController {
      * 修改
      */
     @RequestMapping("/update")
-    public Result update(@RequestBody PostTagEntity postTag){
+    public Result update(@RequestBody PostTag postTag){
 		postTagService.updateById(postTag);
 
         return Result.ok();

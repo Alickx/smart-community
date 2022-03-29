@@ -1,7 +1,7 @@
 package cn.goroute.smart.gateway.controller;
 
 import cn.goroute.smart.common.dao.MemberDao;
-import cn.goroute.smart.common.entity.pojo.MemberEntity;
+import cn.goroute.smart.common.entity.pojo.Member;
 import cn.goroute.smart.common.entity.vo.MemberRegisterVO;
 import cn.goroute.smart.common.exception.ServiceException;
 import cn.goroute.smart.common.utils.*;
@@ -63,7 +63,7 @@ public class RegisterApi {
         }
 
         //校验是否存在该用户
-        MemberEntity memberIsExist = memberDao.selectOne(new QueryWrapper<MemberEntity>().eq("email", memberRegEmail));
+        Member memberIsExist = memberDao.selectOne(new QueryWrapper<Member>().eq("email", memberRegEmail));
 
         if (memberIsExist != null) {
             return Result.error("该邮箱已经注册，请换一个吧");
@@ -100,7 +100,7 @@ public class RegisterApi {
         }
 
         //正确则执行注册流程
-        MemberEntity member = new MemberEntity();
+        Member member = new Member();
         String memberRegVoPassWord = memberVo.getPassWord();
         String bcryptPassWord = DigestUtil.bcrypt(memberRegVoPassWord);
 

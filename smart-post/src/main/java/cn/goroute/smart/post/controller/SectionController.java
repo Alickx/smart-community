@@ -1,6 +1,6 @@
 package cn.goroute.smart.post.controller;
 
-import cn.goroute.smart.common.entity.pojo.SectionEntity;
+import cn.goroute.smart.common.entity.pojo.Section;
 import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.post.service.SectionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ public class SectionController {
      */
     @GetMapping("/list")
     public Result list(){
-        List<SectionEntity> list = sectionService.list();
+        List<Section> list = sectionService.list();
         return Result.ok().put("data", list);
     }
 
@@ -39,7 +39,7 @@ public class SectionController {
      */
     @GetMapping("/info/{uid}")
     public Result info(@PathVariable("uid") String uid){
-		SectionEntity section = sectionService.getById(uid);
+		Section section = sectionService.getById(uid);
 
         return Result.ok().put("section", section);
     }
@@ -48,7 +48,7 @@ public class SectionController {
      * 保存
      */
     @RequestMapping("/save")
-    public Result save(@RequestBody SectionEntity section){
+    public Result save(@RequestBody Section section){
 		sectionService.save(section);
 
         return Result.ok();
@@ -58,7 +58,7 @@ public class SectionController {
      * 修改
      */
     @RequestMapping("/update")
-    public Result update(@RequestBody SectionEntity section){
+    public Result update(@RequestBody Section section){
 		sectionService.updateById(section);
 
         return Result.ok();

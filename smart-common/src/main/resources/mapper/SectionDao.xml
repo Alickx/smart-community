@@ -4,7 +4,7 @@
 <mapper namespace="cn.goroute.smart.common.dao.SectionDao">
 
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="cn.goroute.smart.common.entity.pojo.SectionEntity" id="sectionMap">
+    <resultMap type="cn.goroute.smart.common.entity.pojo.Section" id="sectionMap">
         <result property="uid" column="uid"/>
         <result property="name" column="name"/>
         <result property="icon" column="icon"/>

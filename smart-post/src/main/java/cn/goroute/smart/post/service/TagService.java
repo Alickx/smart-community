@@ -1,6 +1,6 @@
 package cn.goroute.smart.post.service;
 
-import cn.goroute.smart.common.entity.pojo.TagEntity;
+import cn.goroute.smart.common.entity.pojo.Tag;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -10,7 +10,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @email llwstu@gmail.com
  * @date 2022-02-25 09:44:39
  */
-public interface TagService extends IService<TagEntity> {
+public interface TagService extends IService<Tag> {
 
 }
 

@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
+/**
+ * @author Alickx
+ */
 @RestController
 @RequestMapping("/search")
 public class SearchPostController {
@@ -20,6 +23,7 @@ public class SearchPostController {
     public Result searchPost(@RequestBody PostSearchParam postSearchParam) {
         return postSearchService.search(postSearchParam);
     }
+
 
     @GetMapping("/delete")
     public void deleteSearchPost(@RequestParam String uid) throws IOException {

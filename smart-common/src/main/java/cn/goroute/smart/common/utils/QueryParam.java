@@ -2,7 +2,7 @@ package cn.goroute.smart.common.utils;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 
 @Data
 public class QueryParam {
@@ -10,7 +10,7 @@ public class QueryParam {
     /**
      * 页数
      */
-    @NotNull
+    @NotBlank
     private String curPage;
 
     /**
@@ -28,5 +28,10 @@ public class QueryParam {
      * desc：反序排序
      */
     private String order;
+
+    /**
+     * 查询类型
+     */
+    private Integer type;
 
 }

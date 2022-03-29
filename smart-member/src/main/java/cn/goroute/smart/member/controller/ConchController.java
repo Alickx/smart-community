@@ -1,7 +1,8 @@
 package cn.goroute.smart.member.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.goroute.smart.common.entity.dto.MemberConchDTO;
-import cn.goroute.smart.common.entity.pojo.MemberConchEntity;
+import cn.goroute.smart.common.entity.pojo.MemberConch;
 import cn.goroute.smart.common.entity.vo.MemberPayConchVO;
 import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.member.service.MemberConchEntityService;
@@ -22,20 +23,21 @@ public class ConchController {
     @Autowired
     MemberConchEntityService memberConchEntityService;
 
+    @SaCheckLogin
     @GetMapping("/query_info")
     public Result queryConchInfoByMemberUid(@RequestParam String uid) {
-        MemberConchEntity memberConchEntity = memberConchEntityService.getOne(new LambdaQueryWrapper<MemberConchEntity>()
-                .eq(MemberConchEntity::getMemberUid, uid));
+        MemberConch memberConch = memberConchEntityService.getOne(new LambdaQueryWrapper<MemberConch>()
+                .eq(MemberConch::getMemberUid, uid));
         MemberConchDTO memberConchDTO = new MemberConchDTO();
 
-        if (memberConchEntity != null) {
-            BeanUtils.copyProperties(memberConchEntity, memberConchDTO);
+        if (memberConch != null) {
+            BeanUtils.copyProperties(memberConch, memberConchDTO);
         }
 
         return Result.ok().put("data", memberConchDTO);
     }
 
-
+    @SaCheckLogin
     @PostMapping("/pay")
     public Result decrConchByPay(@RequestBody MemberPayConchVO memberPayConchVO){
         return memberConchEntityService.decrConchByPay(memberPayConchVO);

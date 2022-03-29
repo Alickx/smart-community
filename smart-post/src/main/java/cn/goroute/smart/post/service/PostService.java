@@ -1,6 +1,6 @@
 package cn.goroute.smart.post.service;
 
-import cn.goroute.smart.common.entity.pojo.PostEntity;
+import cn.goroute.smart.common.entity.pojo.Post;
 import cn.goroute.smart.common.entity.vo.PostQueryListVO;
 import cn.goroute.smart.common.entity.vo.PostVO;
 import cn.goroute.smart.common.utils.PageUtils;
@@ -17,7 +17,7 @@ import java.io.IOException;
  * @email llwstu@gmail.com
  * @date 2022-02-25 09:44:39
  */
-public interface PostService extends IService<PostEntity> {
+public interface PostService extends IService<Post> {
 
     PageUtils queryPage(QueryParam queryParam, Integer sectionUid, Integer tagUid) throws IOException;
 

@@ -5,9 +5,9 @@ import cn.goroute.smart.common.dao.PermissionDao;
 import cn.goroute.smart.common.dao.RoleDao;
 import cn.goroute.smart.common.dao.RolePermissionDao;
 import cn.goroute.smart.common.dao.UserRoleDao;
-import cn.goroute.smart.common.entity.pojo.PermissionEntity;
-import cn.goroute.smart.common.entity.pojo.RolePermissionEntity;
-import cn.goroute.smart.common.entity.pojo.UserRoleEntity;
+import cn.goroute.smart.common.entity.pojo.Permission;
+import cn.goroute.smart.common.entity.pojo.RolePermission;
+import cn.goroute.smart.common.entity.pojo.UserRole;
 import cn.goroute.smart.common.utils.RedisKeyConstant;
 import cn.goroute.smart.common.utils.RedisUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -48,19 +48,19 @@ public class StpInterfaceImpl implements StpInterface{
             return permissionList;
         }
 
-        List<UserRoleEntity> userRoleList = userRoleDao.selectList(new QueryWrapper<UserRoleEntity>()
+        List<UserRole> userRoleList = userRoleDao.selectList(new QueryWrapper<UserRole>()
                 .eq("user_uid", loginId));
         if (userRoleList == null) return permissionList;
-        for (UserRoleEntity userRoleEntity : userRoleList) {
-            int roleUid = userRoleEntity.getRoleUid();
-            List<RolePermissionEntity> rolePermissionEntityList = rolePermissionDao
-                    .selectList(new QueryWrapper<RolePermissionEntity>()
+        for (UserRole userRole : userRoleList) {
+            int roleUid = userRole.getRoleUid();
+            List<RolePermission> rolePermissionList = rolePermissionDao
+                    .selectList(new QueryWrapper<RolePermission>()
                             .eq("role_uid", roleUid));
-            if (rolePermissionEntityList == null) return permissionList;
-            for (RolePermissionEntity rolePermissionEntity : rolePermissionEntityList) {
-                PermissionEntity permissionEntity = permissionDao.selectById(rolePermissionEntity.getPermissionUid());
-                if (permissionEntity != null) {
-                    permissionList.add(permissionEntity.getPermissionName());
+            if (rolePermissionList == null) return permissionList;
+            for (RolePermission rolePermission : rolePermissionList) {
+                Permission permission = permissionDao.selectById(rolePermission.getPermissionUid());
+                if (permission != null) {
+                    permissionList.add(permission.getPermissionName());
                 }
             }
         }

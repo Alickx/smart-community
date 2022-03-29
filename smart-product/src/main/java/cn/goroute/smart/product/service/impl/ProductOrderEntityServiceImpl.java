@@ -1,7 +1,7 @@
 package cn.goroute.smart.product.service.impl;
 
-import cn.goroute.smart.common.dao.ProductOrderEntityDao;
-import cn.goroute.smart.common.entity.pojo.ProductOrderEntity;
+import cn.goroute.smart.common.dao.ProductOrderDao;
+import cn.goroute.smart.common.entity.pojo.ProductOrder;
 import cn.goroute.smart.product.service.ProductOrderEntityService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 * @createDate 2022-03-19 15:01:42
 */
 @Service
-public class ProductOrderEntityServiceImpl extends ServiceImpl<ProductOrderEntityDao, ProductOrderEntity>
+public class ProductOrderEntityServiceImpl extends ServiceImpl<ProductOrderDao, ProductOrder>
     implements ProductOrderEntityService {
 
 }

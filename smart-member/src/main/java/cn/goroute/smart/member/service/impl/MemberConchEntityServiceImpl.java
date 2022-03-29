@@ -1,12 +1,12 @@
 package cn.goroute.smart.member.service.impl;
 
 
-import cn.goroute.smart.common.dao.MemberConchEntityDao;
+import cn.goroute.smart.common.dao.MemberConchDao;
 import cn.goroute.smart.common.dao.MemberDao;
-import cn.goroute.smart.common.dao.TransactionRecordEntityDao;
-import cn.goroute.smart.common.entity.pojo.MemberConchEntity;
-import cn.goroute.smart.common.entity.pojo.MemberEntity;
-import cn.goroute.smart.common.entity.pojo.TransactionRecordEntity;
+import cn.goroute.smart.common.dao.TransactionRecordDao;
+import cn.goroute.smart.common.entity.pojo.MemberConch;
+import cn.goroute.smart.common.entity.pojo.Member;
+import cn.goroute.smart.common.entity.pojo.TransactionRecord;
 import cn.goroute.smart.common.entity.vo.MemberPayConchVO;
 import cn.goroute.smart.common.exception.ServiceException;
 import cn.goroute.smart.common.utils.Result;
@@ -26,14 +26,14 @@ import java.math.BigDecimal;
 * @createDate 2022-03-19 15:02:35
 */
 @Service
-public class MemberConchEntityServiceImpl extends ServiceImpl<MemberConchEntityDao, MemberConchEntity>
+public class MemberConchEntityServiceImpl extends ServiceImpl<MemberConchDao, MemberConch>
     implements MemberConchEntityService {
 
     @Resource
-    MemberConchEntityDao memberConchEntityDao;
+    MemberConchDao memberConchDao;
 
     @Resource
-    TransactionRecordEntityDao transactionRecordDao;
+    TransactionRecordDao transactionRecordDao;
 
     @Resource
     MemberDao memberDao;
@@ -48,32 +48,32 @@ public class MemberConchEntityServiceImpl extends ServiceImpl<MemberConchEntityD
     public Result decrConchByPay(MemberPayConchVO memberPayConchVO) {
 
         //检查用户余额是否足够
-        MemberConchEntity memberConchEntity = memberConchEntityDao.selectOne(new LambdaQueryWrapper<MemberConchEntity>()
-                .eq(MemberConchEntity::getMemberUid, memberPayConchVO.getMemberUid()));
-        if (memberConchEntity.getConch().compareTo(memberPayConchVO.getPrice()) < 0) {
+        MemberConch memberConch = memberConchDao.selectOne(new LambdaQueryWrapper<MemberConch>()
+                .eq(MemberConch::getMemberUid, memberPayConchVO.getMemberUid()));
+        if (memberConch.getConch().compareTo(memberPayConchVO.getPrice()) < 0) {
             return Result.error();
         }
 
-        MemberEntity member = memberDao.selectById(memberPayConchVO.getMemberUid());
+        Member member = memberDao.selectById(memberPayConchVO.getMemberUid());
 
-        BigDecimal beforeConch = memberConchEntity.getConch();
+        BigDecimal beforeConch = memberConch.getConch();
 
         //开始扣除余额
-        memberConchEntity.setConch(memberConchEntity.getConch().subtract(memberPayConchVO.getPrice()));
-        int result = memberConchEntityDao.updateById(memberConchEntity);
+        memberConch.setConch(memberConch.getConch().subtract(memberPayConchVO.getPrice()));
+        int result = memberConchDao.updateById(memberConch);
         if (result != 1) {
             return Result.error();
         }
 
-        BigDecimal transactionConch = memberConchEntity.getConch();
+        BigDecimal transactionConch = memberConch.getConch();
 
-        TransactionRecordEntity transactionRecordEntity = new TransactionRecordEntity();
-        BeanUtils.copyProperties(memberPayConchVO,transactionRecordEntity);
-        transactionRecordEntity.setMemberTransactionConch(transactionConch);
-        transactionRecordEntity.setMemberConch(beforeConch);
-        transactionRecordEntity.setMemberNickName(member.getNickName());
-        transactionRecordEntity.setCost(memberPayConchVO.getPrice());
-        int insert = transactionRecordDao.insert(transactionRecordEntity);
+        TransactionRecord transactionRecord = new TransactionRecord();
+        BeanUtils.copyProperties(memberPayConchVO, transactionRecord);
+        transactionRecord.setMemberTransactionConch(transactionConch);
+        transactionRecord.setMemberConch(beforeConch);
+        transactionRecord.setMemberNickName(member.getNickName());
+        transactionRecord.setCost(memberPayConchVO.getPrice());
+        int insert = transactionRecordDao.insert(transactionRecord);
         if (insert != 1) {
             throw new ServiceException("交易记录错误");
         }

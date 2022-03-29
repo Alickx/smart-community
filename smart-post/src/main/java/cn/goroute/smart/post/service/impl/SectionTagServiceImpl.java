@@ -3,7 +3,7 @@ package cn.goroute.smart.post.service.impl;
 import cn.goroute.smart.common.dao.SectionTagDao;
 import cn.goroute.smart.common.dao.TagDao;
 import cn.goroute.smart.common.entity.pojo.SectionTag;
-import cn.goroute.smart.common.entity.pojo.TagEntity;
+import cn.goroute.smart.common.entity.pojo.Tag;
 import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.post.service.SectionTagService;
 import cn.hutool.core.collection.CollectionUtil;
@@ -54,10 +54,10 @@ public class SectionTagServiceImpl extends ServiceImpl<SectionTagDao, SectionTag
 
         List<Map<String,Object>> tagContentList = new ArrayList<>();
         tagIds.forEach( t -> {
-            TagEntity tagEntity = tagDao.selectById(t);
+            Tag tag = tagDao.selectById(t);
             Map<String,Object> map = new HashMap<>();
-            map.put("label",tagEntity.getContent());
-            map.put("value",tagEntity.getUid());
+            map.put("label", tag.getContent());
+            map.put("value", tag.getUid());
             tagContentList.add(map);
         });
 

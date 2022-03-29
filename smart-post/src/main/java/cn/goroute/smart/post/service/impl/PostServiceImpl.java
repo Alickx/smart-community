@@ -13,9 +13,10 @@ import cn.goroute.smart.post.feign.MemberFeignService;
 import cn.goroute.smart.post.feign.SearchFeignService;
 import cn.goroute.smart.post.service.PostService;
 import cn.goroute.smart.post.util.Html2TextUtil;
-import cn.goroute.smart.post.util.PostRabbitmqUtil;
-import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.util.StrUtil;
+import cn.goroute.smart.post.util.RabbitmqUtil;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.text.CharSequenceUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -37,7 +38,7 @@ import java.util.stream.Collectors;
 
 @Service("postService")
 @Slf4j
-public class PostServiceImpl extends ServiceImpl<PostDao, PostEntity> implements PostService {
+public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostService {
 
     @Resource
     MemberFeignService memberFeignService;
@@ -46,7 +47,7 @@ public class PostServiceImpl extends ServiceImpl<PostDao, PostEntity> implements
     SearchFeignService searchFeignService;
 
     @Autowired
-    PostRabbitmqUtil rabbitmqUtil;
+    RabbitmqUtil rabbitmqUtil;
 
     @Autowired
     TagDao tagDao;
@@ -64,13 +65,20 @@ public class PostServiceImpl extends ServiceImpl<PostDao, PostEntity> implements
     CommentDao commentDao;
 
     @Autowired
-    RedisTemplate redisTemplate;
+    RedisTemplate<String, Object> redisTemplate;
 
     @Autowired
     RedisUtil redisUtil;
 
     @Autowired
     CollectDao collectDao;
+
+    @Resource
+    ThumbDao thumbDao;
+
+    private static final String MEMBER_UID = "member_uid";
+
+    private static final String POST_STATUS = "status";
 
     /**
      * 文章分页方法
@@ -84,26 +92,26 @@ public class PostServiceImpl extends ServiceImpl<PostDao, PostEntity> implements
     @Override
     public PageUtils queryPage(QueryParam queryParam, Integer sectionUid, Integer tagUid) throws IOException {
 
-        IPage<PostEntity> page;
+        IPage<Post> page;
 
         if (sectionUid == null) {
             page = this.page(
-                    new Query<PostEntity>().getPage(queryParam),
-                    new QueryWrapper<PostEntity>()
+                    new Query<Post>().getPage(queryParam),
+                    new QueryWrapper<Post>()
                             .eq("is_publish", PostConstant.PUBLISH)
-                            .eq("status", PostConstant.NORMAL_STATUS)
+                            .eq(POST_STATUS, PostConstant.NORMAL_STATUS)
             );
         } else if (tagUid == null) {
 
             page = this.page(
-                    new Query<PostEntity>().getPage(queryParam),
-                    new QueryWrapper<PostEntity>()
+                    new Query<Post>().getPage(queryParam),
+                    new QueryWrapper<Post>()
                             .eq("section_uid", sectionUid)
-                            .eq("status", PostConstant.NORMAL_STATUS)
+                            .eq(POST_STATUS, PostConstant.NORMAL_STATUS)
             );
         } else {
 
-            page = postDao.getPostBySectionTag(new Query<PostEntity>()
+            page = postDao.getPostBySectionTag(new Query<Post>()
                             .getPage(queryParam),
                     queryParam.getSidx(),
                     sectionUid,
@@ -113,31 +121,19 @@ public class PostServiceImpl extends ServiceImpl<PostDao, PostEntity> implements
 
         }
 
-        List<PostListDTO> postDTOList = getPostDTOList(page);
+        boolean isLogin = StpUtil.isLogin();
+
+        List<Post> records = page.getRecords();
+
+        List<PostListDTO> postListDTOs = getPostListDTOS(isLogin, records);
 
         PageUtils pageUtils = new PageUtils(page);
 
-        pageUtils.setList(postDTOList);
+        pageUtils.setList(postListDTOs);
 
         return pageUtils;
     }
 
-
-    /**
-     * 根据文章page获取所有文章DTO对象
-     *
-     * @param page
-     * @return
-     * @throws IOException
-     */
-    public List<PostListDTO> getPostDTOList(IPage<PostEntity> page) throws IOException {
-
-        boolean isLogin = StpUtil.isLogin();
-
-        List<PostEntity> records = page.getRecords();
-
-        return getPostListDTOS(isLogin, records);
-    }
 
     /**
      * 获取文章DTO集合的核心方法
@@ -147,12 +143,12 @@ public class PostServiceImpl extends ServiceImpl<PostDao, PostEntity> implements
      * @return List<PostListDTO> 文章DTO集合
      * @throws IOException
      */
-    private List<PostListDTO> getPostListDTOS(boolean isLogin, List<PostEntity> records) throws IOException {
+    private List<PostListDTO> getPostListDTOS(boolean isLogin, List<Post> records) {
 
-        List<PostListDTO> postDTOList = new ArrayList<>(10);
+        List<PostListDTO> postDTOList = new ArrayList<>(12);
 
         //通过stream处理获取到所有文章作者的id
-        List<String> memberIds = records.stream().map(PostEntity::getMemberUid).collect(Collectors.toList());
+        List<String> memberIds = records.parallelStream().map(Post::getMemberUid).collect(Collectors.toList());
 
         //调用用户微服务，查询用户信息
         List<MemberDTO> memberInfoWithPost = memberFeignService.getMemberInfoWithPost(memberIds);
@@ -179,22 +175,6 @@ public class PostServiceImpl extends ServiceImpl<PostDao, PostEntity> implements
     }
 
     /**
-     * 返回一个文章DTO集合
-     *
-     * @param postUids 文章id集合
-     * @return 文章DTO List
-     */
-    public List<PostListDTO> getPostDTOList(List<String> postUids) throws IOException {
-
-        boolean isLogin = StpUtil.isLogin();
-
-        List<PostEntity> postEntities = postDao.selectBatchIds(postUids);
-
-        return getPostListDTOS(isLogin, postEntities);
-
-    }
-
-    /**
      * 发布/编辑文章
      *
      * @param postVo 文章vo
@@ -206,47 +186,47 @@ public class PostServiceImpl extends ServiceImpl<PostDao, PostEntity> implements
 
         StpUtil.checkLogin();
 
-        SectionEntity sectionEntity = sectionDao.selectById(postVo.getSectionUid());
-        if (sectionEntity == null) {
+        Section section = sectionDao.selectById(postVo.getSectionUid());
+        if (section == null) {
             return Result.error("分类不存在");
         }
 
         List<Integer> tageUidList = postVo.getTagUid();
-        if (CollectionUtil.isNotEmpty(tageUidList)) {
+        if (CollUtil.isNotEmpty(tageUidList)) {
             for (int tageUid : tageUidList) {
-                TagEntity tagEntity = tagDao.selectById(tageUid);
-                if (tagEntity == null) {
+                Tag tag = tagDao.selectById(tageUid);
+                if (tag == null) {
                     return Result.error("标签不存在!");
                 }
             }
         }
 
-        PostEntity postEntity = new PostEntity();
+        Post post = new Post();
 
         //使用正则，过滤掉Html标签
         String htmlContent = postVo.getContentHtml();
         String text = Html2TextUtil.Html2Text(htmlContent);
 
 
-        if (StrUtil.isEmpty(postVo.getSummary())) {
-            String summary = StrUtil.sub(text, 0, 150);
-            postEntity.setSummary(summary);
+        if (CharSequenceUtil.isEmpty(postVo.getSummary())) {
+            String summary = CharSequenceUtil.sub(text, 0, 150);
+            post.setSummary(summary);
         } else {
-            postEntity.setSummary(postVo.getSummary());
+            post.setSummary(postVo.getSummary());
         }
 
-        postEntity.setIsPublish(postVo.getIsPublish() ? PostConstant.PUBLISH : PostConstant.NOT_PUBLISH);
-        postEntity.setTitle(postVo.getTitle());
-        postEntity.setContent(postVo.getContent());
-        postEntity.setSectionUid(postVo.getSectionUid());
-        postEntity.setMemberUid(StpUtil.getLoginIdAsString());
-        postEntity.setStatus(PostConstant.CHECK_STATUS);
+        post.setIsPublish(Boolean.TRUE.equals(postVo.getIsPublish()) ? PostConstant.PUBLISH : PostConstant.NOT_PUBLISH);
+        post.setTitle(postVo.getTitle());
+        post.setContent(postVo.getContent());
+        post.setSectionUid(postVo.getSectionUid());
+        post.setMemberUid(StpUtil.getLoginIdAsString());
+        post.setStatus(PostConstant.CHECK_STATUS);
 
-        int result = postDao.insert(postEntity);
+        int result = postDao.insert(post);
         if (result == 1) {
             //插入后通过消息队列对文章进行异步审核
-            rabbitmqUtil.reviewPost(postEntity, tageUidList);
-            return Result.ok().put("url", postEntity.getUid());
+            rabbitmqUtil.reviewPost(post, tageUidList);
+            return Result.ok().put("url", post.getUid());
         } else {
             log.error("用户={}发布文章失败,文章对象为={}", StpUtil.getLoginIdAsString(), postVo);
             return Result.error("发布文章失败");
@@ -265,7 +245,7 @@ public class PostServiceImpl extends ServiceImpl<PostDao, PostEntity> implements
         boolean isLogin = StpUtil.isLogin();
 
         String key = RedisKeyConstant.POST_CACHE_KEY + uid;
-        PostEntity post;
+        Post post;
 
         if (redisUtil.hasKey(key)) {
             return Result.error("没有该文章");
@@ -287,12 +267,12 @@ public class PostServiceImpl extends ServiceImpl<PostDao, PostEntity> implements
         }
 
         List<MemberDTO> memberInfoWithPost = memberFeignService
-                .getMemberInfoWithPost(CollectionUtil.toList(post.getMemberUid()));
+                .getMemberInfoWithPost(CollUtil.toList(post.getMemberUid()));
 
 
         PostDTO postDTO = new PostDTO();
         BeanUtils.copyProperties(post, postDTO);
-        if (CollectionUtil.isNotEmpty(memberInfoWithPost)) {
+        if (CollUtil.isNotEmpty(memberInfoWithPost)) {
             postDTO.setAuthorInfo(memberInfoWithPost.get(0));
             if (isLogin) {
                 postDTO.setIsCollect(checkIsThumbOrCollect(uid, StpUtil.getLoginIdAsString(), 1));
@@ -310,26 +290,25 @@ public class PostServiceImpl extends ServiceImpl<PostDao, PostEntity> implements
      * 删除文章
      *
      * @param postUid 文章uid
-     * @return
+     * @return 删除结果
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public Result deletePost(String postUid) {
-        if (StrUtil.isEmpty(postUid)) {
+        if (CharSequenceUtil.isEmpty(postUid)) {
             return Result.error();
         }
 
-        PostEntity postEntity = postDao.selectById(postUid);
+        Post post = postDao.selectById(postUid);
 
-        if (!Objects.equals(postEntity.getMemberUid(), StpUtil.getLoginIdAsString())) {
+        if (!Objects.equals(post.getMemberUid(), StpUtil.getLoginIdAsString())) {
             return Result.error();
         }
 
-        postEntity.setStatus(PostConstant.DELETE_STATUS);
-        postDao.updateById(postEntity);
+        post.setStatus(PostConstant.DELETE_STATUS);
+        postDao.updateById(post);
         //调用es接口逻辑删除文章
-        searchFeignService.deleteSearchPost(postUid);
-        return Result.ok("文章删除成功");
+        searchFeignService.deleteSearchPost(post.getUid());
+        return Result.ok();
     }
 
     /**
@@ -344,28 +323,34 @@ public class PostServiceImpl extends ServiceImpl<PostDao, PostEntity> implements
         QueryParam queryParam = new QueryParam();
         BeanUtils.copyProperties(postQueryListVO, queryParam);
 
-        IPage<PostEntity> page = this.page(new Query<PostEntity>()
-                .getPage(queryParam), new QueryWrapper<PostEntity>()
-                .eq("member_uid", postQueryListVO.getMemberUid())
-                .eq("status", PostConstant.NORMAL_STATUS)
-                .orderByAsc("created_time")
-                .eq("is_publish", PostConstant.PUBLISH));
+        IPage<Post> page = null;
+        if (!StpUtil.isLogin() || !Objects.equals(postQueryListVO.getMemberUid(), StpUtil.getLoginIdAsString())) {
+            page = this.page(new Query<Post>()
+                    .getPage(queryParam), new QueryWrapper<Post>()
+                    .eq(MEMBER_UID, postQueryListVO.getMemberUid())
+                    .eq(POST_STATUS, PostConstant.NORMAL_STATUS)
+                    .orderByAsc("created_time")
+                    .eq("is_publish", PostConstant.PUBLISH));
+        } else if (Objects.equals(postQueryListVO.getMemberUid(), StpUtil.getLoginIdAsString())) {
+            page = this.page(new Query<Post>()
+                    .getPage(queryParam), new QueryWrapper<Post>()
+                    .eq(MEMBER_UID, postQueryListVO.getMemberUid())
+                    .eq(POST_STATUS, PostConstant.NORMAL_STATUS)
+                    .orderByAsc("created_time"));
+        }
 
-        List<PostEntity> postEntityList = page.getRecords();
-        if (CollectionUtil.isEmpty(postEntityList)) {
+        assert page != null;
+        List<Post> postList = page.getRecords();
+        if (CollUtil.isEmpty(postList)) {
             return Result.ok().put("data", new PageUtils(page));
         }
         List<PostListDTO> postListDTOs = new ArrayList<>(10);
         MemberDTO memberDTO = memberFeignService.getMemberByUid(postQueryListVO.getMemberUid());
-        postEntityList.forEach(postEntity -> {
+        postList.forEach(postEntity -> {
             PostListDTO postListDTO = new PostListDTO();
             BeanUtils.copyProperties(postEntity, postListDTO);
             postListDTO.setAuthorInfo(memberDTO);
-            try {
-                postListDTO.setThumbCount(getThumbCount(postEntity));
-            } catch (IOException e) {
-                log.error("获取文章总点赞数失败,e={}", e.getMessage());
-            }
+            postListDTO.setThumbCount(getThumbCount(postEntity));
             if (StpUtil.isLogin()) {
                 postListDTO.setIsLike(checkIsThumbOrCollect(postEntity.getUid(), StpUtil.getLoginIdAsString(), 0));
                 postListDTO.setIsCollect(checkIsThumbOrCollect(postEntity.getUid(), StpUtil.getLoginIdAsString(), 1));
@@ -395,40 +380,39 @@ public class PostServiceImpl extends ServiceImpl<PostDao, PostEntity> implements
      */
     private boolean checkIsThumbOrCollect(String uid, String loginIdAsString, int type) {
         boolean result = false;
-        /*
-           type = 0 获取是否点赞
-           type = 1 获取是否收藏
+        /**
+         * 判断是否点赞或是否收藏
          */
-        switch (type) {
-            case 0: {
-                //如果缓存存在，则证明点赞
-                String thumbRedisKey = RedisKeyConstant.getThumbOrCollectKey(loginIdAsString, uid);
-                if (redisUtil.hHasKey(RedisKeyConstant.POST_THUMB_KEY, thumbRedisKey)) {
+
+        if (type == 0) {
+            String thumbRedisKey = RedisKeyConstant.getThumbKey(loginIdAsString, uid);
+            if (redisUtil.hHasKey(RedisKeyConstant.POST_THUMB_KEY, thumbRedisKey)) {
+                result = true;
+            } else {
+                //如果缓存不存在则去数据库中获取
+                Thumb thumbResult = thumbDao.selectOne(new LambdaQueryWrapper<Thumb>()
+                        .eq(Thumb::getMemberUid, loginIdAsString)
+                        .eq(Thumb::getType, PostConstant.THUMB_POST_TYPE)
+                        .eq(Thumb::getStatus, PostConstant.NORMAL_STATUS)
+                        .eq(Thumb::getPostUid, uid));
+                if (thumbResult != null) {
                     result = true;
-                } else {
-                    //如果缓存不存在则去数据库中获取
-                    Comment thumbResult = commentDao.selectOne(new QueryWrapper<Comment>()
-                            .eq("member_uid", loginIdAsString)
-                            .eq("to_uid", uid));
-                    if (thumbResult != null) {
-                        result = true;
-                    }
-                }
-                break;
-            }
-            case 1: {
-                String collectRedisKey = RedisKeyConstant.getThumbOrCollectKey(loginIdAsString, uid);
-                if (redisUtil.hHasKey(RedisKeyConstant.POST_COLLECT_KEY, collectRedisKey)) {
-                    result = true;
-                } else {
-                    CollectEntity collectResult = collectDao.selectOne(new QueryWrapper<CollectEntity>()
-                            .eq("member_uid", loginIdAsString)
-                            .eq("post_uid", uid));
-                    if (collectResult != null) {
-                        result = true;
-                    }
                 }
             }
+        } else if (type == 1) {
+            String collectRedisKey = RedisKeyConstant.getThumbKey(loginIdAsString, uid);
+            if (redisUtil.hHasKey(RedisKeyConstant.POST_COLLECT_KEY, collectRedisKey)) {
+                result = true;
+            } else {
+                Collect collectResult = collectDao.selectOne(new QueryWrapper<Collect>()
+                        .eq(MEMBER_UID, loginIdAsString)
+                        .eq("post_uid", uid));
+                if (collectResult != null) {
+                    result = true;
+                }
+            }
+        } else {
+            return false;
         }
         return result;
     }
@@ -439,7 +423,7 @@ public class PostServiceImpl extends ServiceImpl<PostDao, PostEntity> implements
      * @param post 文章实体
      * @return 点赞数
      */
-    private int getThumbCount(PostEntity post) throws IOException {
+    private int getThumbCount(Post post) {
 
         //先从缓存中获取再去数据库中获取
         String key = RedisKeyConstant.POST_COUNT_KEY + post.getUid();
@@ -450,11 +434,13 @@ public class PostServiceImpl extends ServiceImpl<PostDao, PostEntity> implements
         //缓存获取不到就数据库获取
         int thumbCount;
         synchronized (this) {
-            PostEntity postEntity = postDao.selectOne(new QueryWrapper<PostEntity>().eq("uid", post.getUid()));
+            if (redisUtil.hHasKey(key, RedisKeyConstant.POST_THUMB_COUNT_KEY)) {
+                return (int) redisUtil.hget(key, RedisKeyConstant.POST_THUMB_COUNT_KEY);
+            }
+            Post postEntity = postDao.selectOne(new QueryWrapper<Post>().eq("uid", post.getUid()));
             thumbCount = postEntity.getThumbCount();
+            redisUtil.hset(key, RedisKeyConstant.POST_THUMB_COUNT_KEY, thumbCount);
         }
-        //同时存储到redis中
-        redisUtil.hset(key, RedisKeyConstant.POST_THUMB_COUNT_KEY, thumbCount);
         return thumbCount;
     }
 
@@ -464,7 +450,7 @@ public class PostServiceImpl extends ServiceImpl<PostDao, PostEntity> implements
      * @param post 文章实体类
      * @return 文章评论总数
      */
-    private int getCommentCount(PostEntity post) {
+    private int getCommentCount(Post post) {
 
         String postUid = post.getUid();
 
@@ -474,11 +460,13 @@ public class PostServiceImpl extends ServiceImpl<PostDao, PostEntity> implements
         }
         int commentCount;
         synchronized (this) {
-            PostEntity postEntity = postDao.selectOne(new QueryWrapper<PostEntity>().eq("uid", post.getUid()));
+            if (redisUtil.hHasKey(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY)) {
+                return (int) redisUtil.hget(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY);
+            }
+            Post postEntity = postDao.selectOne(new QueryWrapper<Post>().eq("uid", post.getUid()));
             commentCount = postEntity.getCommentCount();
+            redisUtil.hset(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY, commentCount);
         }
-
-        redisUtil.hset(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY, commentCount);
         return commentCount;
     }
 

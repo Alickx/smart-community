@@ -1,6 +1,6 @@
 package cn.goroute.smart.post.controller;
 
-import cn.goroute.smart.common.entity.pojo.CollectEntity;
+import cn.goroute.smart.common.entity.pojo.Collect;
 import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.post.service.CollectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ public class CollectController {
      */
     @RequestMapping("/info/{uid}")
     public Result info(@PathVariable("uid") String uid){
-		CollectEntity collect = collectService.getById(uid);
+		Collect collect = collectService.getById(uid);
 
         return Result.ok().put("collect", collect);
     }
@@ -51,7 +51,7 @@ public class CollectController {
      * 保存
      */
     @RequestMapping("/save")
-    public Result save(@RequestBody CollectEntity collect){
+    public Result save(@RequestBody Collect collect){
 		collectService.save(collect);
 
         return Result.ok();
@@ -61,7 +61,7 @@ public class CollectController {
      * 修改
      */
     @RequestMapping("/update")
-    public Result update(@RequestBody CollectEntity collect){
+    public Result update(@RequestBody Collect collect){
 		collectService.updateById(collect);
 
         return Result.ok();

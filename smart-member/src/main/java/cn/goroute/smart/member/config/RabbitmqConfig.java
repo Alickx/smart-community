@@ -19,11 +19,21 @@ public class RabbitmqConfig {
 
     private static final String SMART_MEMBER_CONCH_PAY_QUEUE = "smart.member.conch.pay";
 
+    private static final String ROUTING_KEY_NOTIFY_CREATE = "smart.notify.create";
+
+    private static final String SMART_NOTIFY_CREATE_QUEUE = "smart.notify.create";
+
     public static final String EXCHANGE_DIRECT = "exchange.direct";
 
     @Bean(SMART_MEMBER_CONCH_PAY_QUEUE)
     public Queue SMART_MEMBER_CONCH_PAY() {
         return new Queue(SMART_MEMBER_CONCH_PAY_QUEUE);
+    }
+
+
+    @Bean(SMART_NOTIFY_CREATE_QUEUE)
+    public Queue SMART_MESSAGE_CREATE_QUEUE() {
+        return new Queue(SMART_NOTIFY_CREATE_QUEUE);
     }
 
     /**
@@ -38,6 +48,11 @@ public class RabbitmqConfig {
     @Bean
     public Binding BINDING_QUEUE_INFORM_SEARCH_POST_DURABILITY(@Qualifier(SMART_MEMBER_CONCH_PAY_QUEUE) Queue queue, @Qualifier(EXCHANGE_DIRECT) Exchange exchange) {
         return BindingBuilder.bind(queue).to(exchange).with(ROUTING_KEY_MEMBER_CONCH_PAY).noargs();
+    }
+
+    @Bean
+    public Binding BINDING_QUEUE_INFORM_MESSAGE_CREATE(@Qualifier(SMART_NOTIFY_CREATE_QUEUE) Queue queue, @Qualifier(EXCHANGE_DIRECT) Exchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with(ROUTING_KEY_NOTIFY_CREATE).noargs();
     }
 
     @Bean

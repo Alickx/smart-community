@@ -1,6 +1,6 @@
 package cn.goroute.smart.member.listener;
 
-import cn.goroute.smart.common.entity.pojo.TransactionRecordEntity;
+import cn.goroute.smart.common.entity.pojo.TransactionRecord;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
@@ -16,10 +16,8 @@ public class MemberConchPayListener {
 
 
     @RabbitListener(queues = "smart.member.conch.pay")
-    public void memberConchPayHandler(TransactionRecordEntity transactionRecord){
-
-
-
+    public void memberConchPayHandler(TransactionRecord transactionRecord){
+        // TODO 用户贝壳扣款后的处理
     }
 
 }

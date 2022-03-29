@@ -4,7 +4,7 @@
 <mapper namespace="cn.goroute.smart.common.dao.RolePermissionDao">
 
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="cn.goroute.smart.common.entity.pojo.RolePermissionEntity" id="rolePermissionMap">
+    <resultMap type="cn.goroute.smart.common.entity.pojo.RolePermission" id="rolePermissionMap">
         <result property="uid" column="uid"/>
         <result property="roleUid" column="role_uid"/>
         <result property="permissionUid" column="permission_uid"/>

@@ -14,10 +14,6 @@ public class CommentVO {
      */
     private String postUid;
     /**
-     * 点赞某条评论的uid
-     */
-    private String toUid;
-    /**
      * 回复某个人的uid或点赞评论的uid
      */
     private String toMemberUid;
@@ -26,12 +22,13 @@ public class CommentVO {
      */
     private String content;
     /**
-     * 评论 = 0 点赞 = 1
-     */
-    private Integer type;
-    /**
      * 一级评论uid
      */
     private String firstCommentUid;
+
+    /**
+     * 0 = 一级评论 1 = 评论中回复
+     */
+    private Integer type;
 
 }

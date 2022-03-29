@@ -2,9 +2,12 @@ package cn.goroute.smart.search.service;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.common.entity.dto.PostListDTO;
-import cn.goroute.smart.common.entity.pojo.PostEntity;
+import cn.goroute.smart.common.entity.pojo.Post;
 import cn.goroute.smart.common.exception.ServiceException;
-import cn.goroute.smart.common.utils.*;
+import cn.goroute.smart.common.utils.PostConstant;
+import cn.goroute.smart.common.utils.RedisKeyConstant;
+import cn.goroute.smart.common.utils.RedisUtil;
+import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.search.config.EsConstant;
 import cn.goroute.smart.search.feign.MemberFeignService;
 import cn.goroute.smart.search.feign.PostFeignService;
@@ -12,7 +15,8 @@ import cn.goroute.smart.search.model.PostEsModel;
 import cn.goroute.smart.search.model.PostSearchParam;
 import cn.goroute.smart.search.model.PostSearchResponse;
 import cn.hutool.core.exceptions.ExceptionUtil;
-import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.lang.Assert;
+import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
@@ -44,8 +48,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static cn.goroute.smart.common.utils.Constant.POST_ES_INDEX;
-
 @Service
 @Slf4j
 public class PostSearchService {
@@ -61,6 +63,8 @@ public class PostSearchService {
 
     @Autowired
     RedisUtil redisUtil;
+
+    private static final String POST_ES_INDEX = "smart-post";
 
     public String save(PostEsModel postEsModel) throws IOException {
         log.info("=>存储文章数据到es中");
@@ -84,43 +88,31 @@ public class PostSearchService {
      * @return 查询结果
      */
     public Result search(PostSearchParam postSearchParam) {
-        //构建DSL语句
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
-        if (!StrUtil.isEmpty(postSearchParam.getKeyword())) {
+        if (!CharSequenceUtil.isEmpty(postSearchParam.getKeyword())) {
             boolQuery.must(QueryBuilders.multiMatchQuery(postSearchParam.getKeyword(), "title", "summary", "content"));
         } else {
             return Result.error("搜索字段不存在");
         }
-        //只有status为0的才能查询出来
         boolQuery.filter(QueryBuilders.termQuery("status", 0));
         searchSourceBuilder.query(boolQuery);
-
-
-        //分页
         searchSourceBuilder.from((postSearchParam.getCurPage() - 1) * EsConstant.pageSize);
         searchSourceBuilder.size(EsConstant.pageSize);
-
-        //高亮
-        HighlightBuilder highlightBuilder = new HighlightBuilder();
-        highlightBuilder.requireFieldMatch(false).field("title")
+        searchSourceBuilder.highlighter(new HighlightBuilder()
+                .requireFieldMatch(false).field("title")
                 .field("summary")
                 .preTags("<span style='color:red;'>")
-                .postTags("</span>");
-        searchSourceBuilder.highlighter(highlightBuilder);
-
+                .postTags("</span>"));
         SearchRequest searchRequest = new SearchRequest(new String[]{EsConstant.POST_INDEX}, searchSourceBuilder);
-
         try {
             SearchResponse searchResponse = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
-            //获取查询到的结果
             SearchHits hits = searchResponse.getHits();
-            //获取命中的结果
             SearchHit[] searchHits = hits.getHits();
 
             List<PostEsModel> postEsModelList = new ArrayList<>();
             if (hits.getHits() != null && hits.getHits().length > 0) {
-                PostEsModel postEsModel = new PostEsModel();
+                PostEsModel postEsModel;
                 for (SearchHit hit : searchHits) {
                     Map<String, HighlightField> highlightFields = hit.getHighlightFields();
                     HighlightField title = highlightFields.get("title");
@@ -148,12 +140,10 @@ public class PostSearchService {
                     postEsModelList.add(postEsModel);
                 }
             }
-
             PostSearchResponse postSearchResponse = new PostSearchResponse();
-
             List<PostListDTO> PostListDTOs = new ArrayList<>();
-            PostListDTO postListDTO = new PostListDTO();
             for (PostEsModel postEsModel : postEsModelList) {
+                PostListDTO postListDTO = new PostListDTO();
                 BeanUtils.copyProperties(postEsModel, postListDTO);
                 postListDTO.setAuthorInfo(memberFeignService.getMemberByUid(postEsModel.getMemberUid()));
                 if (StpUtil.isLogin()) {
@@ -174,6 +164,7 @@ public class PostSearchService {
             postSearchResponse.setPostList(PostListDTOs);
 
             //分页参数
+            Assert.notNull(hits.getTotalHits());
             long total = hits.getTotalHits().value;
             postSearchResponse.setTotal(total);
             postSearchResponse.setPageNum(postSearchParam.getCurPage());
@@ -207,13 +198,13 @@ public class PostSearchService {
     /**
      * 持久化文章点赞评论数量等数据到es中
      *
-     * @param postEntity 文章实体类
+     * @param post 文章实体类
      */
-    public void transPostCount2ES(PostEntity postEntity) throws IOException {
+    public void transPostCount2ES(Post post) throws IOException {
 
-        String uid = postEntity.getUid();
-        Integer thumbCount = postEntity.getThumbCount();
-        Integer commentCount = postEntity.getCommentCount();
+        String uid = post.getUid();
+        Integer thumbCount = post.getThumbCount();
+        Integer commentCount = post.getCommentCount();
 
         PostEsModel postEsModel = new PostEsModel();
         postEsModel.setCommentCount(commentCount);
@@ -223,10 +214,6 @@ public class PostSearchService {
         UpdateRequest request = new UpdateRequest("smart-post", uid);
         request.doc(jsonStr, XContentType.JSON);
         UpdateResponse updateResponse = restHighLevelClient.update(request, RequestOptions.DEFAULT);
-        if (updateResponse.getResult() == DocWriteResponse.Result.UPDATED) {
-            log.info("文章点赞评论数量更新成功！更新结果结果");
-        } else {
-            log.info("文章点赞评论数量更新失败!");
-        }
+        log.info("ElasticSearch文章信息更新完成，updateResponse=>{}",updateResponse);
     }
 }

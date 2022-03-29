@@ -1,6 +1,6 @@
 package cn.goroute.smart.common.dao;
 
-import cn.goroute.smart.common.entity.pojo.PermissionEntity;
+import cn.goroute.smart.common.entity.pojo.Permission;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -12,7 +12,7 @@ import org.apache.ibatis.annotations.Mapper;
  * @date 2022-02-28 18:52:38
  */
 @Mapper
-public interface PermissionDao extends BaseMapper<PermissionEntity> {
+public interface PermissionDao extends BaseMapper<Permission> {
 
 	
 }

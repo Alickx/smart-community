@@ -13,7 +13,7 @@ public class PostJobHandler{
     ThumbService thumbService;
 
     @XxlJob("transThumbFromRedis2DHandler")
-    public void transThumbFromRedis2DHandler() throws Exception {
+    public void transThumbFromRedis2DHandler() {
         XxlJobHelper.log("=>调度任务:{} 开始执行点赞数据持久化",this.getClass().getName());
         int transSize = thumbService.trans();
         XxlJobHelper.log("=>调度任务结束，一共持久化{}条数据",transSize);
