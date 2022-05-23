@@ -15,21 +15,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitmqConfig {
 
-    private static final String ROUTING_KEY_MEMBER_CONCH_PAY = "smart.member.conch.pay";
-
-    private static final String SMART_MEMBER_CONCH_PAY_QUEUE = "smart.member.conch.pay";
-
     private static final String ROUTING_KEY_NOTIFY_CREATE = "smart.notify.create";
 
     private static final String SMART_NOTIFY_CREATE_QUEUE = "smart.notify.create";
 
     public static final String EXCHANGE_DIRECT = "exchange.direct";
-
-    @Bean(SMART_MEMBER_CONCH_PAY_QUEUE)
-    public Queue SMART_MEMBER_CONCH_PAY() {
-        return new Queue(SMART_MEMBER_CONCH_PAY_QUEUE);
-    }
-
 
     @Bean(SMART_NOTIFY_CREATE_QUEUE)
     public Queue SMART_MESSAGE_CREATE_QUEUE() {
@@ -43,11 +33,6 @@ public class RabbitmqConfig {
     public Exchange EXCHANGE_DIRECT() {
         // 声明路由交换机，durable:在rabbitmq重启后，交换机还在
         return ExchangeBuilder.directExchange(EXCHANGE_DIRECT).durable(true).build();
-    }
-
-    @Bean
-    public Binding BINDING_QUEUE_INFORM_SEARCH_POST_DURABILITY(@Qualifier(SMART_MEMBER_CONCH_PAY_QUEUE) Queue queue, @Qualifier(EXCHANGE_DIRECT) Exchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(ROUTING_KEY_MEMBER_CONCH_PAY).noargs();
     }
 
     @Bean

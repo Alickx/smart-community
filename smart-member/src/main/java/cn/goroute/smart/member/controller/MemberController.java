@@ -5,7 +5,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.common.entity.dto.MemberDTO;
 import cn.goroute.smart.common.entity.pojo.Member;
 import cn.goroute.smart.common.entity.vo.MemberInfoUpdateVO;
-import cn.goroute.smart.common.exception.BizCodeEnum;
+import cn.goroute.smart.common.api.ResultCode;
 import cn.goroute.smart.common.utils.RedisUtil;
 import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.member.service.MemberService;
@@ -43,8 +43,8 @@ public class MemberController {
      * @param memberUidList uid集合
      * @return 用户信息集合
      */
-    @PostMapping("/list/post")
-    public List<MemberDTO> getInfoByMemberUids(@RequestBody List<String> memberUidList) {
+    @PostMapping("/list")
+    public List<MemberDTO> batchQueryUsers(@RequestBody List<String> memberUidList) {
 
         List<MemberDTO> res = new ArrayList<>();
 
@@ -69,8 +69,9 @@ public class MemberController {
      * false 未注册
      */
     @GetMapping("/info/email")
-    public Result infoMemberEmail(@RequestParam String email) {
-        QueryChainWrapper<Member> emailQueryChainWrapper = memberService.query().eq("email", email);
+    public Result queryUserEmail(@RequestParam String email) {
+        QueryChainWrapper<Member> emailQueryChainWrapper = memberService.query()
+                .eq("email", email);
 
         Member member = memberService.getOne(emailQueryChainWrapper.getWrapper());
         /*
@@ -108,7 +109,7 @@ public class MemberController {
             BeanUtils.copyProperties(Objects.requireNonNull(member), memberDTO);
             return Result.ok().put("data", memberDTO);
         } else {
-            return Result.error(BizCodeEnum.NOT_FOUND_MEMBER.getCode(), BizCodeEnum.NOT_FOUND_MEMBER.getMessage());
+            return Result.error(ResultCode.FAILED.getCode(), ResultCode.FAILED.getMessage());
         }
     }
 
@@ -137,21 +138,6 @@ public class MemberController {
     public Result update(@RequestBody MemberInfoUpdateVO memberInfoUpdateVO) {
 
         return memberService.updateMemberInfo(memberInfoUpdateVO);
-    }
-
-
-    /**
-     * 注销用户登录
-     *
-     * @return 注销结果
-     */
-    @SaCheckLogin
-    @GetMapping("/logout")
-    public Result logout() {
-        if (StpUtil.isLogin()) {
-            StpUtil.logout();
-        }
-        return Result.ok("登出成功!");
     }
 
 }

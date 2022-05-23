@@ -1,24 +1,24 @@
 package cn.goroute.smart.common.entity.pojo;
 
-import com.baomidou.mybatisplus.annotation.*;
+import cn.goroute.smart.common.entity.base.BaseEntity;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * 事件提醒表
  * @author Alickx
  * @TableName t_event_remind
  */
+@EqualsAndHashCode(callSuper = true)
 @TableName(value ="t_event_remind")
 @Data
-public class EventRemind implements Serializable {
-    /**
-     * 主键id
-     */
-    @TableId(type = IdType.AUTO)
-    private Integer uid;
+public class EventRemind extends BaseEntity implements Serializable {
 
     /**
      * 操作类型
@@ -28,7 +28,8 @@ public class EventRemind implements Serializable {
     /**
      * 事件源id
      */
-    private String sourceUid;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private Long sourceUid;
 
     /**
      * 事件源类型
@@ -58,24 +59,16 @@ public class EventRemind implements Serializable {
     /**
      * 操作者uid
      */
-    private String senderUid;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    @NotNull(message = "操作者uid不能为空")
+    private Long senderUid;
 
     /**
      * 接受通知的用户uid
      */
-    private String recipientUid;
-
-    /**
-     * 提醒时间
-     */
-    @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime createdTime;
-
-    /**
-     * 读取的时间
-     */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    private LocalDateTime updatedTime;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    @NotNull(message = "接受通知的用户uid不能为空")
+    private Long recipientUid;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

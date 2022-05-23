@@ -1,12 +1,12 @@
 package cn.goroute.smart.post.listener;
 
+import cn.goroute.smart.common.constant.PostConstant;
 import cn.goroute.smart.common.dao.PostDao;
 import cn.goroute.smart.common.dao.PostTagDao;
 import cn.goroute.smart.common.entity.pojo.Post;
 import cn.goroute.smart.common.entity.pojo.PostTag;
 import cn.goroute.smart.common.exception.ServiceException;
-import cn.goroute.smart.common.utils.IllegalTextCheckUtil;
-import cn.goroute.smart.common.utils.PostConstant;
+import cn.goroute.smart.post.util.IllegalTextCheckUtil;
 import cn.goroute.smart.post.util.RabbitmqUtil;
 import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;

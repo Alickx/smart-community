@@ -9,6 +9,9 @@ import org.springframework.http.converter.HttpMessageConverter;
 
 import java.util.stream.Collectors;
 
+/**
+ * @author Alickx
+ */
 @Configuration
 public class FeignConfig {
 

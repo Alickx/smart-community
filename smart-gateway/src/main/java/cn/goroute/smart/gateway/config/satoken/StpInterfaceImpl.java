@@ -8,7 +8,7 @@ import cn.goroute.smart.common.dao.UserRoleDao;
 import cn.goroute.smart.common.entity.pojo.Permission;
 import cn.goroute.smart.common.entity.pojo.RolePermission;
 import cn.goroute.smart.common.entity.pojo.UserRole;
-import cn.goroute.smart.common.utils.RedisKeyConstant;
+import cn.goroute.smart.common.constant.RedisKeyConstant;
 import cn.goroute.smart.common.utils.RedisUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
@@ -50,13 +50,17 @@ public class StpInterfaceImpl implements StpInterface{
 
         List<UserRole> userRoleList = userRoleDao.selectList(new QueryWrapper<UserRole>()
                 .eq("user_uid", loginId));
-        if (userRoleList == null) return permissionList;
+        if (userRoleList == null) {
+            return permissionList;
+        }
         for (UserRole userRole : userRoleList) {
-            int roleUid = userRole.getRoleUid();
+            Long roleUid = userRole.getRoleUid();
             List<RolePermission> rolePermissionList = rolePermissionDao
                     .selectList(new QueryWrapper<RolePermission>()
                             .eq("role_uid", roleUid));
-            if (rolePermissionList == null) return permissionList;
+            if (rolePermissionList == null) {
+                return permissionList;
+            }
             for (RolePermission rolePermission : rolePermissionList) {
                 Permission permission = permissionDao.selectById(rolePermission.getPermissionUid());
                 if (permission != null) {

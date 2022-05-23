@@ -1,10 +1,12 @@
 package cn.goroute.smart.common.entity.pojo;
 
-import com.baomidou.mybatisplus.annotation.*;
+import cn.goroute.smart.common.entity.base.BaseEntity;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * 文章标签表
@@ -13,28 +15,20 @@ import java.time.LocalDateTime;
  * @email llwstu@gmail.com
  * @date 2022-02-25 09:44:39
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @TableName("t_post_tag")
-public class PostTag implements Serializable {
+public class PostTag extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * 
 	 */
-	@TableId(type = IdType.AUTO)
-	private Integer uid;
-	/**
-	 * 
-	 */
-	private String postUid;
+	@JsonFormat(shape = JsonFormat.Shape.STRING)
+	private Long postUid;
 	/**
 	 * 
 	 */
 	private int tagUid;
-	/**
-	 * 
-	 */
-	@TableField(fill = FieldFill.INSERT)
-	private LocalDateTime createdTime;
 
 }

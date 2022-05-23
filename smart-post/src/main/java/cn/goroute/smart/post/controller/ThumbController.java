@@ -1,9 +1,9 @@
 package cn.goroute.smart.post.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
+import cn.goroute.smart.common.constant.RedisKeyConstant;
 import cn.goroute.smart.common.entity.pojo.Thumb;
-import cn.goroute.smart.common.entity.vo.PostQueryListVO;
-import cn.goroute.smart.common.utils.RedisKeyConstant;
+import cn.goroute.smart.common.utils.QueryParam;
 import cn.goroute.smart.common.utils.RedisUtil;
 import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.post.service.CommentService;
@@ -43,15 +43,15 @@ public class ThumbController {
     }
 
 
-    @PostMapping("/query_list")
-    public Result listByMemberUid(@RequestBody PostQueryListVO postQueryListVO) {
-        return thumbService.listByMemberUid(postQueryListVO);
+    @PostMapping("/query/list")
+    public Result listByMemberUid(@RequestBody QueryParam queryParam) {
+        return thumbService.listByMemberUid(queryParam);
     }
 
 
     @RequestMapping("/is_like")
-    public Boolean isLike(@RequestParam String loginIdAsString,@RequestParam String uid) {
-        String thumbRedisKey = RedisKeyConstant.getThumbKey(loginIdAsString, uid);
+    public Boolean isLike(@RequestParam Long loginUid, @RequestParam Long uid) {
+        String thumbRedisKey = RedisKeyConstant.getThumbKey(loginUid, uid);
         if (redisUtil.hHasKey(RedisKeyConstant.POST_THUMB_KEY, thumbRedisKey)) {
             return true;
         } else {

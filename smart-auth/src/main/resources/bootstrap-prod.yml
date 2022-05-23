@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: smart-auth
+  cloud:
+    nacos:
+      config:
+        server-addr: 124.223.80.135:8848
+        namespace: 1aa9abdc-0de8-4c77-8550-f0407c310388
+        extension-configs:
+          - data-id: prod.yml
+            group: prod
+            refresh: true

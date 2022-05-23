@@ -1,12 +1,13 @@
 package cn.goroute.smart.notify.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.goroute.smart.common.constant.NotificationConstant;
 import cn.goroute.smart.common.dao.EventRemindDao;
 import cn.goroute.smart.common.entity.dto.EventRemindDTO;
 import cn.goroute.smart.common.entity.dto.MemberDTO;
 import cn.goroute.smart.common.entity.pojo.EventRemind;
+import cn.goroute.smart.common.feign.MemberFeignService;
 import cn.goroute.smart.common.utils.*;
-import cn.goroute.smart.notify.feign.MemberFeignService;
 import cn.goroute.smart.notify.service.EventRemindService;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -71,11 +72,11 @@ public class EventRemindServiceImpl extends ServiceImpl<EventRemindDao, EventRem
 
         //获取用户信息
         List<EventRemind> records = page.getRecords();
-        List<String> senderIds = records.parallelStream()
+        List<Long> senderIds = records.parallelStream()
                 .map(EventRemind::getSenderUid)
                 .collect(Collectors.toList());
 
-        List<MemberDTO> infoByMemberUids = memberFeignService.getInfoByMemberUids(senderIds);
+        List<MemberDTO> infoByMemberUids = memberFeignService.batchQueryUsers(senderIds);
 
         List<EventRemindDTO> eventRemindDTOs = new ArrayList<>(12);
 

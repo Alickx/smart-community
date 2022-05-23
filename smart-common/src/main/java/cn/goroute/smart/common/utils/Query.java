@@ -1,5 +1,6 @@
 package cn.goroute.smart.common.utils;
 
+import cn.goroute.smart.common.constant.Constant;
 import cn.goroute.smart.common.xss.SQLFilter;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
@@ -25,8 +26,9 @@ public class Query<T> {
             curPage = Long.parseLong(queryParam.getCurPage());
         }
         if (queryParam.getLimit() != null) {
-            if (Long.parseLong(queryParam.getLimit()) <= maxLimit)
+            if (Long.parseLong(queryParam.getLimit()) <= maxLimit) {
                 limit = Long.parseLong(queryParam.getLimit());
+            }
         }
 
         //分页对象

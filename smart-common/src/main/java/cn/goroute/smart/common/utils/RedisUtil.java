@@ -14,13 +14,14 @@ import java.util.concurrent.TimeUnit;
 
 //在真实开发中，经常使用
 @Component
-public final class RedisUtil {
+public class RedisUtil {
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+
     // =============================common============================
 
     /**

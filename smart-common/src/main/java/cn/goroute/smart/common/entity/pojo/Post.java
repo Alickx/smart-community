@@ -1,11 +1,13 @@
 package cn.goroute.smart.common.entity.pojo;
 
-import com.baomidou.mybatisplus.annotation.*;
+import cn.goroute.smart.common.entity.base.BaseEntity;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * 文章表
@@ -14,31 +16,26 @@ import java.time.LocalDateTime;
  * @email llwstu@gmail.com
  * @date 2022-02-25 09:44:39
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @TableName("t_post")
-public class Post implements Serializable {
+public class Post extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * 
+	 * 分类uid
 	 */
-	@TableId(type = IdType.ASSIGN_ID)
-	private String uid;
+	private Long categoryUid;
 	/**
-	 * 
+	 * 用户uid
 	 */
-	private String sectionUid;
+	private Long memberUid;
 	/**
-	 * 
+	 * 文章标题
 	 */
-	private String memberUid;
-	/**
-	 * 
-	 */
-	@NotBlank
 	private String title;
 	/**
-	 * 
+	 * 文章内容
 	 */
 	private String content;
 	/**
@@ -46,16 +43,12 @@ public class Post implements Serializable {
 	 */
 	private Integer status;
 	/**
-	 * 
-	 */
-	private String headImg;
-	/**
-	 * 
+	 *
 	 */
 	@TableField(fill = FieldFill.INSERT)
 	private Integer collectCount;
 	/**
-	 * 
+	 *
 	 */
 	@TableField(fill = FieldFill.INSERT)
 	private Integer thumbCount;
@@ -64,26 +57,11 @@ public class Post implements Serializable {
 	 */
 	private String isPublish;
 	/**
-	 * 
+	 * 文章摘要
 	 */
 	private String summary;
-	/**
-	 * 
-	 */
-	@TableField(fill = FieldFill.INSERT)
-	private Integer clickCount;
 
 	@TableField(fill = FieldFill.INSERT)
 	private Integer commentCount;
-	/**
-	 * 
-	 */
-	@TableField(fill = FieldFill.INSERT_UPDATE)
-	private LocalDateTime updatedTime;
-	/**
-	 * 
-	 */
-	@TableField(fill = FieldFill.INSERT)
-	private LocalDateTime createdTime;
 
 }

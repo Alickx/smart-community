@@ -8,6 +8,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient("smart-thirdpart")
 public interface thirdpartFeignService {
 
+    /**
+     * @param emailAddress 邮箱地址
+     * @return Result
+     */
     @GetMapping("/sendEmailCaptcha")
-    Result sendCaptcha(@RequestParam String emailAddress);
+    Result sendCaptcha(@RequestParam(value = "emailAddress") String emailAddress);
 }

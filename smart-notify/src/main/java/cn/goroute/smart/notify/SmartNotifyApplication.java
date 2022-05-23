@@ -11,7 +11,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  */
 @SpringBootApplication(scanBasePackages = {"cn.goroute.smart"})
 @RefreshScope
-@EnableFeignClients("cn.goroute.smart.notify.feign")
+@EnableFeignClients("cn.goroute.smart.common.feign")
 @MapperScan("cn.goroute.smart.common.dao")
 public class SmartNotifyApplication {
 

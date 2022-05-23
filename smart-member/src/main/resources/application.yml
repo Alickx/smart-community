@@ -1,0 +1,50 @@
+server:
+  port: 9000
+spring:
+  application:
+    name: smart-thirdpart
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 124.223.80.135:8848
+  redis:
+    database: 0
+    host: 127.0.0.1
+    port: 6379
+    timeout: 10s
+    lettuce:
+      pool:
+        max-active: 200
+        max-wait: -1ms
+        max-idle: 10
+        min-idle: 0
+  rabbitmq:
+    host: 127.0.0.1
+    username: guest
+    password: guest
+    virtual-host: /
+    port: 5672
+    listener:
+      simple:
+        retry:
+          enabled: true
+sa-token:
+  token-name: access_token
+  timeout: 2592000
+  activity-timeout: -1
+  is-concurrent: false
+  is-share: true
+  token-style: simple-uuid
+  is-log: true
+  isReadBody: true
+  isReadHead: true
+  isReadCookie: true
+  autoRenew: true
+  isPrint: false
+
+oss:
+  accessId: LTAI5tBnY4eyEV8kSFS6rarc
+  accessKey: IttK06X141orMOErq6H0WFCeLG4Bam
+  endpoint: oss-cn-guangzhou.aliyuncs.com
+  bucket: passjava-oss-bucket
+  dir: img

@@ -8,5 +8,5 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface SearchFeignService {
 
     @GetMapping("search/delete")
-    void deleteSearchPost(@RequestParam String uid);
+    void deleteSearchPost(@RequestParam(value = "uid") Long uid);
 }

@@ -1,10 +1,10 @@
 package cn.goroute.smart.common.entity.pojo;
 
-import com.baomidou.mybatisplus.annotation.*;
+import cn.goroute.smart.common.entity.base.BaseEntity;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * 角色表
@@ -15,14 +15,9 @@ import java.time.LocalDateTime;
  */
 @Data
 @TableName("t_role")
-public class Role implements Serializable {
+public class Role extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    /**
-     * 主键uid
-     */
-    @TableId(type = IdType.AUTO)
-    private Integer uid;
     /**
      * 角色名称
      */
@@ -31,15 +26,5 @@ public class Role implements Serializable {
      * 角色的描述
      */
     private String description;
-    /**
-     *
-     */
-    @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime createdTime;
-    /**
-     *
-     */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    private LocalDateTime updatedTime;
 
 }

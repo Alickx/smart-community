@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface PostFeignService {
 
     @GetMapping("/post/thumb/is_like")
-    Boolean isLike(@RequestParam String loginIdAsString, @RequestParam String uid);
+    Boolean isLike(@RequestParam(value = "loginUid") Long loginIdAsString, @RequestParam(value = "uid") Long uid);
 
 }

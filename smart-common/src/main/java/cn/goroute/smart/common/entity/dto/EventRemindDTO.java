@@ -1,5 +1,6 @@
 package cn.goroute.smart.common.entity.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -11,7 +12,6 @@ import java.time.LocalDateTime;
  */
 @Data
 @ToString
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class EventRemindDTO {
@@ -24,7 +24,8 @@ public class EventRemindDTO {
     /**
      * 主键id
      */
-    private Integer uid;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private Long uid;
 
     /**
      * 操作类型
@@ -34,7 +35,8 @@ public class EventRemindDTO {
     /**
      * 事件源id
      */
-    private String sourceUid;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private Long sourceId;
 
     /**
      * 事件源类型
@@ -64,7 +66,8 @@ public class EventRemindDTO {
     /**
      * 操作者uid
      */
-    private String senderUid;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private Long senderUid;
 
     /**
      * 提醒时间

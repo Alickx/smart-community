@@ -1,5 +1,6 @@
 package cn.goroute.smart.common.entity.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,20 +8,24 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * @author Alickx
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class CommentDTO {
 
-    private String uid;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private Long uid;
 
     /**
-     * 用户uid
+     * 发送者
      */
     private MemberDTO fromMember;
 
     /**
-     * 回复某个人的uid
+     * 接受者
      */
     private MemberDTO toMember;
 
@@ -56,7 +61,7 @@ public class CommentDTO {
     /**
      * 是否有更多
      */
-    private boolean hasMore;
+    private Boolean hasMore;
 
 
 }

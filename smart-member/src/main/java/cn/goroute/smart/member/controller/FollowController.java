@@ -20,13 +20,13 @@ public class FollowController {
 
     @SaCheckLogin
     @PostMapping("/save")
-    public Result followMember(@RequestBody String followMemberId) {
+    public Result followMember(@RequestBody Long followMemberId) {
         return followService.saveFollow(followMemberId);
     }
 
 
     @GetMapping("/query")
-    public Result queryFollow(@RequestParam String followMemberId) {
+    public Result queryFollow(@RequestParam Long followMemberId) {
         return followService.queryFollow(followMemberId);
     }
 

@@ -9,7 +9,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @SpringBootApplication(scanBasePackages = {"cn.goroute.smart"})
 @RefreshScope
 @MapperScan("cn.goroute.smart.common.dao")
-@EnableFeignClients(basePackages = "cn.goroute.smart.post.feign")
+@EnableFeignClients(basePackages = {"cn.goroute.smart.post.feign","cn.goroute.smart.common.feign"})
 public class SmartPostApplication {
 
     public static void main(String[] args) {

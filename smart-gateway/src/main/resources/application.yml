@@ -1,0 +1,85 @@
+#server:
+#  port: 8602
+#spring:
+#  application:
+#    name: smart-gateway
+#  cloud:
+#    nacos:
+#      discovery:
+#        server-addr: 124.223.80.135:8848
+#    gateway:
+#      routes:
+#        - id: route_member
+#          uri: 'lb://smart-member'
+#          predicates:
+#            - Path=/api/v1/member/**
+#          filters:
+#            - 'RewritePath=/api/v1/(?<segment>.*),/$\{segment}'
+#        - id: route_post
+#          uri: 'lb://smart-post'
+#          predicates:
+#            - Path=/api/v1/post/**
+#          filters:
+#            - 'RewritePath=/api/v1/(?<segment>.*),/$\{segment}'
+#        - id: route_notify
+#          uri: 'lb://smart-notify'
+#          predicates:
+#            - Path=/api/v1/notification/**
+#          filters:
+#            - 'RewritePath=/api/v1/(?<segment>.*),/$\{segment}'
+#        - id: route_thirdpart
+#          uri: 'lb://smart-thirdpart'
+#          predicates:
+#            - Path=/api/v1/thirdpart/**
+#          filters:
+#            - 'RewritePath=/api/v1/(?<segment>.*),/$\{segment}'
+#        - id: route_search
+#          uri: 'lb://smart-search'
+#          predicates:
+#            - Path=/api/v1/search/**
+#          filters:
+#            - 'RewritePath=/api/v1/(?<segment>.*),/$\{segment}'
+#        - id: route_product
+#          uri: 'lb://smart-product'
+#          predicates:
+#            - Path=/api/v1/product/**
+#          filters:
+#            - 'RewritePath=/api/v1/(?<segment>.*),/$\{segment}'
+#        - id: route_task
+#          uri: 'lb://smart-task'
+#          predicates:
+#            - Path=/api/v1/task/**
+#          filters:
+#            - 'RewritePath=/api/v1/(?<segment>.*),/$\{segment}'
+#  redis:
+#    database: 0
+#    host: 127.0.0.1
+#    port: 6379
+#    timeout: 10s
+#    lettuce:
+#      pool:
+#        max-active: 200
+#        max-wait: -1ms
+#        max-idle: 10
+#        min-idle: 0
+#  datasource:
+#    type: com.alibaba.druid.pool.DruidDataSource
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://sh-cynosdbmysql-grp-jvc08dqy.sql.tencentcdb.com:25311/smart_member?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+#    username: smart
+#    password: '!@#AKak87715700'
+#mybatis-plus:
+#  mapper-locations: 'classpath:/mapper/**/*.xml'
+#sa-token:
+#  token-name: access_token
+#  timeout: 2592000
+#  activity-timeout: -1
+#  is-concurrent: false
+#  is-share: true
+#  token-style: simple-uuid
+#  is-log: true
+#  isReadBody: true
+#  isReadHead: true
+#  isReadCookie: true
+#  autoRenew: true
+#  isPrint: false

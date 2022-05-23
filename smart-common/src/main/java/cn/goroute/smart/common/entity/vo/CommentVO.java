@@ -4,19 +4,23 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author Alickx
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class CommentVO {
-    private String uid;
+
+    private Long uid;
     /**
      * 文章uid
      */
-    private String postUid;
+    private Long postUid;
     /**
      * 回复某个人的uid或点赞评论的uid
      */
-    private String toMemberUid;
+    private Long toMemberUid;
     /**
      * 评论内容
      */
@@ -24,7 +28,7 @@ public class CommentVO {
     /**
      * 一级评论uid
      */
-    private String firstCommentUid;
+    private Long firstCommentUid;
 
     /**
      * 0 = 一级评论 1 = 评论中回复

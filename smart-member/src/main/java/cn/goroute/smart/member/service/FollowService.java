@@ -16,7 +16,7 @@ public interface FollowService extends IService<Follow> {
      * @param followMemberId 关注目标的uid
      * @return 关注结果
      */
-    Result saveFollow(String followMemberId);
+    Result saveFollow(Long followMemberId);
 
-    Result queryFollow(String followMemberId);
+    Result queryFollow(Long followMemberId);
 }

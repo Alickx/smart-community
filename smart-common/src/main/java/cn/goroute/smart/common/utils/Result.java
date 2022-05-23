@@ -1,11 +1,10 @@
 package cn.goroute.smart.common.utils;
 
-import org.apache.http.HttpStatus;
-
 import java.util.HashMap;
 
 /**
  * 返回数据
+ * @author Alickx
  */
 public class Result extends HashMap<String, Object> {
     private static final long serialVersionUID = 1L;
@@ -16,21 +15,14 @@ public class Result extends HashMap<String, Object> {
     }
 
     public static Result error() {
-        return error(HttpStatus.SC_INTERNAL_SERVER_ERROR, "未知异常，请联系管理员");
+        return error(500, "未知异常，请联系管理员");
     }
 
     public static Result error(String message) {
-        return error(HttpStatus.SC_INTERNAL_SERVER_ERROR, message);
+        return error(500, message);
     }
 
-    public static Result error(int code, String message) {
-        Result r = new Result();
-        r.put("code", code);
-        r.put("message", message);
-        return r;
-    }
-
-    public static Result error(RespCode code, String message) {
+    public static Result error(long code, String message) {
         Result r = new Result();
         r.put("code", code);
         r.put("message", message);
@@ -48,6 +40,7 @@ public class Result extends HashMap<String, Object> {
     }
 
 
+    @Override
     public Result put(String key, Object value) {
         super.put(key, value);
         return this;

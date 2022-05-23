@@ -65,7 +65,7 @@ public class RabbitmqUtil {
      * @param post       文章实体类
      * @param tagUidList 文章标签集合
      */
-    public void reviewPost(Post post, List<Integer> tagUidList) {
+    public void reviewPost(Post post, List<Long> tagUidList) {
         log.info("发送消息队列，审查文章内容");
         Map<String, Object> map = new HashMap<>(4);
         map.put("post", JSONUtil.toJsonStr(post));

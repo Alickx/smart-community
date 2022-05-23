@@ -1,44 +1,48 @@
 package cn.goroute.smart.common.entity.pojo;
 
-import com.baomidou.mybatisplus.annotation.*;
+import cn.goroute.smart.common.entity.base.BaseEntity;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * 点赞表
+ * @author Alickx
  * @TableName t_thumb
  */
+@EqualsAndHashCode(callSuper = true)
 @TableName(value ="t_thumb")
 @Data
-public class Thumb implements Serializable {
-    /**
-     * 主键uid
-     */
-    @TableId(type = IdType.AUTO)
-    private Integer uid;
+public class Thumb extends BaseEntity implements Serializable {
 
     /**
      * 点赞用户uid
      */
-    private String memberUid;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private Long memberUid;
 
     /**
      * 点赞目标的uid
      */
-    private String toMemberUid;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private Long toMemberUid;
 
     /**
      * 点赞内容的uid 评论uid或是文章uid
      */
-    private String toUid;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private Long toUid;
 
 
     /**
      * 点赞所在的帖子uid
      */
-    private String postUid;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private Long postUid;
 
     /**
      * 点赞类型 0 = 评论 1 = 文章
@@ -46,15 +50,9 @@ public class Thumb implements Serializable {
     private Integer type;
 
     /**
-     * 逻辑删除状态 0 = 正常 1 = 已删除
+     * 点赞状态 0 = 取消 1 = 点赞
      */
     private Integer status;
-
-    /**
-     * 点赞时间
-     */
-    @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime createdTime;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

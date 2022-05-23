@@ -1,6 +1,7 @@
 package cn.goroute.smart.common.exception;
 
 import cn.dev33.satoken.exception.NotLoginException;
+import cn.goroute.smart.common.api.ResultCode;
 import cn.goroute.smart.common.utils.Result;
 import cn.hutool.extra.servlet.ServletUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringJoiner;
 
+/**
+ * @author Alickx
+ */
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
@@ -38,7 +42,7 @@ public class GlobalExceptionHandler {
     public Result missingServletRequestParameterExceptionHandler(HttpServletRequest request, MissingServletRequestParameterException e) {
         log.error("MissingServletRequestParameterException, uri:{}", request.getRequestURI());
         log.error("msg={}", e.getParameterName());
-        return Result.error(BizCodeEnum.DEFAULT_PARAM.getCode(), "参数缺失异常: [" + e.getParameterName() + "]");
+        return Result.error(ResultCode.FAILED.getCode(), "参数缺失异常: [" + e.getParameterName() + "]");
     }
 
     /**
@@ -63,7 +67,7 @@ public class GlobalExceptionHandler {
             }
         }
         log.error("msg={},uri={}", errMsgJoiner,request.getRequestURI());
-        return Result.error(BizCodeEnum.VALID_EXCEPTION.getCode(), "参数检验失败: " + errMsgJoiner);
+        return Result.error(ResultCode.FAILED.getCode(), "参数检验失败: " + errMsgJoiner);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -79,7 +83,7 @@ public class GlobalExceptionHandler {
             }
         }
         log.warn("msg={}", errMsgJoiner);
-        return Result.error(BizCodeEnum.VALID_EXCEPTION.getCode(), "参数校验失败: " + errMsgJoiner);
+        return Result.error(ResultCode.VALIDATE_FAILED.getCode(), "参数校验失败: " + errMsgJoiner);
     }
 
     /**
@@ -106,7 +110,7 @@ public class GlobalExceptionHandler {
     public Result httpRequestMethodNotSupportedExceptionHandler(HttpServletRequest request,HttpRequestMethodNotSupportedException e){
 
         log.info("错误的请求方法,请求ip={},请求uri={},msg=>{}", ServletUtil.getClientIP(request),request.getRequestURI(),e.getMessage());
-        return Result.error(BizCodeEnum.ERROR_REQUEST_METHOD.getCode(),BizCodeEnum.ERROR_REQUEST_METHOD.getMessage());
+        return Result.error(ResultCode.FAILED.getCode(), ResultCode.FAILED.getMessage());
     }
 
 
@@ -143,7 +147,7 @@ public class GlobalExceptionHandler {
             message = "当前未登录账号，请登陆后再访问！";
         }
         // 返回给前端
-        return Result.error(BizCodeEnum.NOT_LOGIN_EXCEPTION.getCode(),message);
+        return Result.error(ResultCode.UNAUTHORIZED.getCode(),message);
     }
 
     /**

@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface MemberFeignService {
 
     @GetMapping("/member/member/getMemberByUid")
-    MemberDTO getMemberByUid(@RequestParam String uid);
+    MemberDTO getMemberByUid(@RequestParam(value = "uid") Long uid);
 
 }

@@ -5,39 +5,42 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
+/**
+ * @author Alickx
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostVO {
 
     /**
-     *
+     * 分类id
      */
-    private String sectionUid;
+    @NotNull(message = "分类id不能为空")
+    private Long categoryUid;
 
     /**
      * 标签id
      */
-    private List<Integer> tagUid;
+    @NotNull(message = "标签id不能为空")
+    private List<Long> tagUid;
     /**
      *
      */
-    @NotBlank
+    @NotBlank(message = "标题不能为空")
     private String title;
     /**
      *
      */
-    @NotBlank
+    @NotBlank(message = "内容不能为空")
     private String content;
-    /**
-     *
-     */
-    private String headImg;
     /**
      * 0 = 不公布  1 = 公布
      */
+    @NotNull(message = "公布状态不能为空")
     private Boolean isPublish;
     /**
      *
@@ -46,5 +49,6 @@ public class PostVO {
     /**
      * HTML标签
      */
+    @NotBlank(message = "文章内容错误")
     private String contentHtml;
 }

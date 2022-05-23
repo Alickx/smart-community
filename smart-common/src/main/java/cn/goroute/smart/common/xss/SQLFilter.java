@@ -8,7 +8,7 @@
 
 package cn.goroute.smart.common.xss;
 
-import cn.goroute.smart.common.utils.RRException;
+import cn.goroute.smart.common.exception.ServiceException;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -40,8 +40,8 @@ public class SQLFilter {
 
         //判断是否包含非法字符
         for(String keyword : keywords){
-            if(str.indexOf(keyword) != -1){
-                throw new RRException("包含非法字符");
+            if(str.contains(keyword)){
+                throw new ServiceException("包含非法字符");
             }
         }
 

@@ -2,8 +2,9 @@ package cn.goroute.smart.common.entity.vo;
 
 import lombok.Data;
 
-import java.util.Date;
-
+/**
+ * @author Alickx
+ */
 @Data
 public class MemberInfoUpdateVO {
 
@@ -23,9 +24,5 @@ public class MemberInfoUpdateVO {
      * 个人介绍
      */
     private String intro;
-    /**
-     * 生日
-     */
-    private Date birthday;
 
 }

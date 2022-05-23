@@ -1,10 +1,12 @@
 package cn.goroute.smart.common.entity.pojo;
 
-import com.baomidou.mybatisplus.annotation.*;
+import cn.goroute.smart.common.entity.base.BaseEntity;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * 用户角色关联表
@@ -13,33 +15,21 @@ import java.time.LocalDateTime;
  * @email llwstu@gmail.com
  * @date 2022-02-28 18:52:38
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @TableName("t_user_role")
-public class UserRole implements Serializable {
+public class UserRole extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     *
-     */
-    @TableId
-    private Integer uid;
-    /**
      * 用户的uid
      */
-    private String userUid;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private Long userUid;
     /**
      * 角色的uid
      */
-    private int roleUid;
-    /**
-     *
-     */
-    @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime createdTime;
-    /**
-     *
-     */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    private LocalDateTime updatedTime;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private Long roleUid;
 
 }

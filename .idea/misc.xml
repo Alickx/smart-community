@@ -22,8 +22,8 @@
         <option value="$PROJECT_DIR$/smart-thirdpart/pom.xml" />
         <option value="$PROJECT_DIR$/smart-task/pom.xml" />
         <option value="$PROJECT_DIR$/smart-search/pom.xml" />
-        <option value="$PROJECT_DIR$/smart-product/pom.xml" />
         <option value="$PROJECT_DIR$/smart-notify/pom.xml" />
+        <option value="$PROJECT_DIR$/smart-auth/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
@@ -38,5 +38,10 @@
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="temurin-1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
+  </component>
+  <component name="SwUserDefinedSpecifications">
+    <option name="specTypeByUrl">
+      <map />
+    </option>
   </component>
 </project>

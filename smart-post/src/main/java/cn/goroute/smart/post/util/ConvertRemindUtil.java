@@ -3,9 +3,9 @@ package cn.goroute.smart.post.util;
 import cn.goroute.smart.common.entity.pojo.Comment;
 import cn.goroute.smart.common.entity.pojo.EventRemind;
 import cn.goroute.smart.common.entity.pojo.Thumb;
-import cn.goroute.smart.common.utils.Constant;
-import cn.goroute.smart.common.utils.NotificationConstant;
-import cn.goroute.smart.common.utils.PostConstant;
+import cn.goroute.smart.common.constant.Constant;
+import cn.goroute.smart.common.constant.NotificationConstant;
+import cn.goroute.smart.common.constant.PostConstant;
 
 /**
  * @Author: Alickx
@@ -61,11 +61,11 @@ public class ConvertRemindUtil {
         return eventRemind;
     }
 
-    private static String getRemindUrl(String uid) {
+    private static String getRemindUrl(Long uid) {
 
         return String.valueOf(Constant.URL_PREFIX) +
                 // TODO url修改
-                "localhost:3000/post/" +
+                "/post/" +
                 uid;
     }
 

@@ -1,6 +1,9 @@
 package cn.goroute.smart.post.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.goroute.smart.common.api.ResultCode;
+import cn.goroute.smart.common.constant.PostConstant;
+import cn.goroute.smart.common.constant.RedisKeyConstant;
 import cn.goroute.smart.common.dao.CommentDao;
 import cn.goroute.smart.common.dao.PostDao;
 import cn.goroute.smart.common.dao.ThumbDao;
@@ -11,12 +14,12 @@ import cn.goroute.smart.common.entity.pojo.EventRemind;
 import cn.goroute.smart.common.entity.pojo.Post;
 import cn.goroute.smart.common.entity.pojo.Thumb;
 import cn.goroute.smart.common.entity.vo.CommentVO;
-import cn.goroute.smart.common.exception.BizCodeEnum;
 import cn.goroute.smart.common.exception.ServiceException;
+import cn.goroute.smart.common.feign.MemberFeignService;
 import cn.goroute.smart.common.utils.*;
-import cn.goroute.smart.post.feign.MemberFeignService;
 import cn.goroute.smart.post.service.CommentService;
 import cn.goroute.smart.post.util.ConvertRemindUtil;
+import cn.goroute.smart.post.util.IllegalTextCheckUtil;
 import cn.goroute.smart.post.util.RabbitmqUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -79,7 +82,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
      * @throws IOException io异常
      */
     @Override
-    public Result getCommentByPost(QueryParam queryParam, String postUid) throws IOException {
+    public Result getCommentByPost(QueryParam queryParam, Long postUid) throws IOException {
 
         IPage<Comment> pageResult = commentDao.selectPage(new Query<Comment>().getPage(queryParam),
                 new LambdaQueryWrapper<Comment>().eq(Comment::getPostUid, postUid)
@@ -117,12 +120,12 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
             commentDTO.setHasMore(reply.getTotalPage() > 1);
             commentDTOList.add(commentDTO);
         }
-        IPage<CommentDTO> commentDTOIPage = new Page<>();
-        BeanUtils.copyProperties(pageResult, commentDTOIPage);
-        commentDTOIPage.setRecords(commentDTOList);
+        IPage<CommentDTO> commentDTOPage = new Page<>();
+        BeanUtils.copyProperties(pageResult, commentDTOPage);
+        commentDTOPage.setRecords(commentDTOList);
 
 
-        PageUtils page = new PageUtils(commentDTOIPage);
+        PageUtils page = new PageUtils(commentDTOPage);
         return Result.ok().put("data", page);
     }
 
@@ -137,9 +140,9 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
 
         Comment comment = commentDao.selectById(commentVo.getUid());
         if (comment != null) {
-            String memberUid = comment.getMemberUid();
+            long memberUid = comment.getMemberUid();
             // 判断是否是评论者
-            if (!Objects.equals(memberUid, StpUtil.getLoginIdAsString())) {
+            if (!Objects.equals(memberUid, StpUtil.getLoginIdAsLong())) {
                 return Result.error();
             }
             // 逻辑删除
@@ -167,7 +170,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
             }
             return Result.ok();
         }
-        return Result.error(BizCodeEnum.NOT_DATA.getCode(), BizCodeEnum.NOT_DATA.getMessage());
+        return Result.error(ResultCode.FAILED.getCode(), ResultCode.FAILED.getMessage());
     }
 
     /**
@@ -191,13 +194,13 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
                 .eq(Post::getIsPublish, PostConstant.PUBLISH));
 
         if (post == null) {
-            return Result.error(BizCodeEnum.POST_NOT_EXIST.getCode(), BizCodeEnum.POST_NOT_EXIST.getMessage());
+            return Result.error(ResultCode.FAILED.getCode(), ResultCode.FAILED.getMessage());
         }
 
         Comment comment = new Comment();
         BeanUtils.copyProperties(commentVo, comment);
 
-        comment.setMemberUid(StpUtil.getLoginIdAsString());
+        comment.setMemberUid(StpUtil.getLoginIdAsLong());
         int result = commentDao.insert(comment);
         if (result != 1) {
             throw new ServiceException("评论发布失败");
@@ -262,13 +265,13 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
         boolean isLike = false;
 
         if (StpUtil.isLogin()) {
-            String loginIdAsString = StpUtil.getLoginIdAsString();
+            long loginUid = StpUtil.getLoginIdAsLong();
 
-            String redisKey = RedisKeyConstant.getThumbKey(loginIdAsString, comment.getUid());
+            String redisKey = RedisKeyConstant.getThumbKey(loginUid, comment.getUid());
 
             if (!redisUtil.hHasKey(RedisKeyConstant.POST_THUMB_KEY, redisKey)) {
                 //数据库点赞记录
-                Thumb thumb = thumbDao.selectOne(new LambdaQueryWrapper<Thumb>().eq(Thumb::getMemberUid, loginIdAsString)
+                Thumb thumb = thumbDao.selectOne(new LambdaQueryWrapper<Thumb>().eq(Thumb::getMemberUid, loginUid)
                         .eq(Thumb::getToUid, comment.getUid()));
                 if (thumb != null) {
                     isLike = true;
@@ -287,7 +290,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
      * @return 子评论列表
      * @throws IOException IO异常
      */
-    private PageUtils getReply(String firstCommentUid) throws IOException {
+    private PageUtils getReply(Long firstCommentUid) throws IOException {
         QueryParam queryParam = new QueryParam();
         queryParam.setLimit("3");
         queryParam.setSidx("created_time");

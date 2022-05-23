@@ -25,7 +25,6 @@ public class PostListener {
         PostEsModel postEsModel = new PostEsModel();
         Post post = JSONUtil.toBean(message, Post.class);
         BeanUtils.copyProperties(post, postEsModel);
-        postEsModel.setCommentCount(0);
         String resp = service.save(postEsModel);
         log.info("=>保存结束，resp=>{}",resp);
     }

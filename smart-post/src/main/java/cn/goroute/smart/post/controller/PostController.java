@@ -1,20 +1,16 @@
 package cn.goroute.smart.post.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
-import cn.goroute.smart.common.entity.vo.PostQueryListVO;
+import cn.goroute.smart.common.entity.vo.PostQueryVO;
 import cn.goroute.smart.common.entity.vo.PostVO;
-import cn.goroute.smart.common.utils.PageUtils;
 import cn.goroute.smart.common.utils.QueryParam;
 import cn.goroute.smart.common.utils.Result;
-import cn.goroute.smart.post.feign.MemberFeignService;
-import cn.goroute.smart.post.service.CollectService;
-import cn.goroute.smart.post.service.CommentService;
 import cn.goroute.smart.post.service.PostService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.io.IOException;
 
 
@@ -32,28 +28,16 @@ public class PostController {
     @Autowired
     PostService postService;
 
-    @Autowired
-    CommentService commentService;
-
-    @Autowired
-    CollectService collectService;
-
-    @Autowired
-    MemberFeignService memberFeignService;
-
-    @PostMapping("/list")
-    public Result withSectionList(@RequestBody QueryParam queryParam
-            , @RequestParam(required = false) Integer sectionUid
-            , @RequestParam(required = false) Integer tagUid) throws IOException {
-        PageUtils page = postService.queryPage(queryParam, sectionUid, tagUid);
-        return Result.ok().put("data", page);
+    @PostMapping("/query/list")
+    public Result withSectionList(@RequestBody PostQueryVO postQueryVO) throws IOException {
+        return postService.queryPage(postQueryVO);
     }
 
     /**
      * 信息
      */
     @GetMapping("/info/{uid}")
-    public Result info(@PathVariable("uid") String uid) {
+    public Result info(@PathVariable("uid") Long uid) {
         return postService.getPostByUid(uid);
     }
 
@@ -64,7 +48,7 @@ public class PostController {
      */
     @SaCheckLogin
     @PostMapping("/save")
-    public Result save(@Valid @RequestBody PostVO postVo) {
+    public Result save(@Validated @RequestBody PostVO postVo) {
         return postService.savePost(postVo);
     }
     /**
@@ -72,18 +56,18 @@ public class PostController {
      */
     @SaCheckLogin
     @PostMapping("/delete")
-    public Result delete(@RequestParam String postUid) {
+    public Result delete(@RequestParam Long postUid) {
         return postService.deletePost(postUid);
     }
 
     /**
      * 用户id查询文章列表
-     * @param postQueryVo 文章查询vo
+     * @param uid 用户id
      * @return 文章集合
      */
-    @PostMapping("/query_list")
-    public Result listByMemberUid(@RequestBody PostQueryListVO postQueryVo){
-        return postService.listByMemberUid(postQueryVo);
+    @PostMapping("/query/list/{uid}")
+    public Result listByMemberUid(@RequestBody QueryParam queryParam){
+        return postService.listByMemberUid(queryParam);
     }
 
 }

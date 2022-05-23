@@ -22,7 +22,7 @@ import java.util.List;
  * @date 2022-02-25 09:44:39
  */
 @RestController
-@RequestMapping("post/posttag")
+@RequestMapping("post/post/tag")
 public class PostTagController {
     @Autowired
     private PostTagService postTagService;

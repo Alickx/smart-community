@@ -5,7 +5,7 @@ import cn.goroute.smart.common.dao.FollowDao;
 import cn.goroute.smart.common.dao.MemberDao;
 import cn.goroute.smart.common.entity.pojo.Follow;
 import cn.goroute.smart.common.entity.pojo.Member;
-import cn.goroute.smart.common.exception.BizCodeEnum;
+import cn.goroute.smart.common.api.ResultCode;
 import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.member.service.FollowService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -30,17 +30,17 @@ public class FollowServiceImpl extends ServiceImpl<FollowDao, Follow>
     MemberDao memberDao;
 
     @Override
-    public Result saveFollow(String followMemberId) {
+    public Result saveFollow(Long followMemberId) {
 
         Member member = memberDao.selectById(followMemberId);
 
         if (member == null) {
-            return Result.error(BizCodeEnum.USER_NOT_EXIST.getCode(), BizCodeEnum.USER_NOT_EXIST.getMessage());
+            return Result.error(ResultCode.FAILED.getCode(), ResultCode.FAILED.getMessage());
         }
 
         Follow follow = new Follow();
         follow.setToMemberUid(followMemberId);
-        follow.setMemberUid(StpUtil.getLoginIdAsString());
+        follow.setMemberUid(StpUtil.getLoginIdAsLong());
 
         int insert = followDao.insert(follow);
 
@@ -58,7 +58,7 @@ public class FollowServiceImpl extends ServiceImpl<FollowDao, Follow>
      * @return 是否关注
      */
     @Override
-    public Result queryFollow(String followMemberId) {
+    public Result queryFollow(Long followMemberId) {
 
         if (!StpUtil.isLogin()) {
             return Result.ok().put("data",false);

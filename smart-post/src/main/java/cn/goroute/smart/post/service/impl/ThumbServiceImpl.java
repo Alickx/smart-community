@@ -1,14 +1,14 @@
 package cn.goroute.smart.post.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.goroute.smart.common.api.ResultCode;
+import cn.goroute.smart.common.constant.PostConstant;
+import cn.goroute.smart.common.constant.RedisKeyConstant;
 import cn.goroute.smart.common.dao.PostDao;
 import cn.goroute.smart.common.dao.ThumbDao;
-
 import cn.goroute.smart.common.entity.pojo.EventRemind;
 import cn.goroute.smart.common.entity.pojo.Post;
 import cn.goroute.smart.common.entity.pojo.Thumb;
-import cn.goroute.smart.common.entity.vo.PostQueryListVO;
-import cn.goroute.smart.common.exception.BizCodeEnum;
 import cn.goroute.smart.common.exception.ServiceException;
 import cn.goroute.smart.common.utils.*;
 import cn.goroute.smart.post.service.ThumbService;
@@ -72,12 +72,12 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbDao, Thumb>
                 .eq(Post::getIsPublish, PostConstant.PUBLISH));
 
         if (post == null) {
-            return Result.error(BizCodeEnum.POST_NOT_EXIST.getCode(), BizCodeEnum.POST_NOT_EXIST.getMessage());
+            return Result.error(ResultCode.FAILED.getCode(), ResultCode.FAILED.getMessage());
         }
 
         // 判断是否已经点赞
-        String loginIdAsString = StpUtil.getLoginIdAsString();
-        String redisKey = RedisKeyConstant.getThumbKey(loginIdAsString, thumb.getToUid());
+        long loginUid = StpUtil.getLoginIdAsLong();
+        String redisKey = RedisKeyConstant.getThumbKey(loginUid, thumb.getToUid());
         if (redisUtil.hHasKey(RedisKeyConstant.POST_THUMB_KEY, redisKey)) {
             return Result.error("已经点赞过了");
         }
@@ -86,7 +86,7 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbDao, Thumb>
           如果数据库中存在该记录，则证明是取消后再点赞
          */
         Thumb thumbEntity = thumbDao.selectOne(new LambdaQueryWrapper<Thumb>()
-                .eq(Thumb::getMemberUid, loginIdAsString)
+                .eq(Thumb::getMemberUid, loginUid)
                 .eq(Thumb::getToUid, thumb.getToUid()));
 
         if (thumbEntity != null) {
@@ -96,7 +96,7 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbDao, Thumb>
         }
 
         //设置点赞缓存
-        thumb.setMemberUid(loginIdAsString);
+        thumb.setMemberUid(loginUid);
         redisUtil.hset(RedisKeyConstant.POST_THUMB_KEY, redisKey, thumb, 60L * 60 * 24 * 2);
 
         //发送点赞事件提醒
@@ -129,11 +129,11 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbDao, Thumb>
     @Override
     public Result thumbCancel(Thumb thumb) {
 
-        String loginIdAsString = StpUtil.getLoginIdAsString();
-        String redisKey = RedisKeyConstant.getThumbKey(loginIdAsString, thumb.getToUid());
+        long loginUid = StpUtil.getLoginIdAsLong();
+        String redisKey = RedisKeyConstant.getThumbKey(loginUid, thumb.getToUid());
 
         Thumb thumbEntity = thumbDao.selectOne(new LambdaQueryWrapper<Thumb>()
-                .eq(Thumb::getMemberUid, loginIdAsString).eq(Thumb::getToUid, thumb.getToUid()));
+                .eq(Thumb::getMemberUid, loginUid).eq(Thumb::getToUid, thumb.getToUid()));
 
         //如果点赞记录不为空，则删除点赞
         if (thumbEntity != null) {
@@ -197,15 +197,15 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbDao, Thumb>
     /**
      * 根据用户uid查询所有点赞记录
      *
-     * @param postQueryListVO 分页参数
+     * @param queryParam 分页参数
      * @return 文章集合
      */
     @Override
-    public Result listByMemberUid(PostQueryListVO postQueryListVO) {
+    public Result listByMemberUid(QueryParam queryParam) {
 
-        IPage<Thumb> thumbPage = thumbDao.selectPage(new Query<Thumb>().getPage(postQueryListVO),
+        IPage<Thumb> thumbPage = thumbDao.selectPage(new Query<Thumb>().getPage(queryParam),
                 new LambdaQueryWrapper<Thumb>()
-                        .eq(Thumb::getMemberUid, postQueryListVO.getMemberUid()));
+                        .eq(Thumb::getMemberUid, queryParam.getUid()));
         PageUtils page = new PageUtils(thumbPage);
         return Result.ok().put("data", page);
     }
@@ -230,7 +230,7 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbDao, Thumb>
             int thumbCount = (int) redisUtil.hget(hashKey, RedisKeyConstant.POST_THUMB_COUNT_KEY);
             int commentCount = (int) redisUtil.hget(hashKey, RedisKeyConstant.POST_COMMENT_COUNT_KEY);
             Post post = new Post();
-            post.setUid(postUid);
+            post.setUid(Long.valueOf(postUid));
             post.setCommentCount(commentCount);
             post.setThumbCount(thumbCount);
             postDao.updateById(post);

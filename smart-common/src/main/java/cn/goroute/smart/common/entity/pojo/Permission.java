@@ -1,10 +1,11 @@
 package cn.goroute.smart.common.entity.pojo;
 
-import com.baomidou.mybatisplus.annotation.*;
+import cn.goroute.smart.common.entity.base.BaseEntity;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * 权限表
@@ -13,35 +14,24 @@ import java.util.Date;
  * @email llwstu@gmail.com
  * @date 2022-02-28 18:52:38
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @TableName("t_permission")
-public class Permission implements Serializable {
+public class Permission extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    /**
-     * 主键id
-     */
-    @TableId(type = IdType.AUTO)
-    private Integer uid;
     /**
      * 权限名称
      */
     private String permissionName;
 
+    /**
+     * 权限路径
+     */
     private String url;
     /**
      *
      */
     private String description;
-    /**
-     *
-     */
-    @TableField(fill = FieldFill.INSERT)
-    private Date createdTime;
-    /**
-     *
-     */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    private Date updatedTime;
 
 }

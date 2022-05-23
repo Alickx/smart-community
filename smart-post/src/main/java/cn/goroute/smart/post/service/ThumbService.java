@@ -1,7 +1,7 @@
 package cn.goroute.smart.post.service;
 
 import cn.goroute.smart.common.entity.pojo.Thumb;
-import cn.goroute.smart.common.entity.vo.PostQueryListVO;
+import cn.goroute.smart.common.utils.QueryParam;
 import cn.goroute.smart.common.utils.Result;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -18,7 +18,7 @@ public interface ThumbService extends IService<Thumb> {
 
     int trans();
 
-    Result listByMemberUid(PostQueryListVO postQueryListVO);
+    Result listByMemberUid(QueryParam queryParam);
 
     int transCount();
 

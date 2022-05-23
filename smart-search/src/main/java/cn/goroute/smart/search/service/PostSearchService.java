@@ -4,8 +4,8 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.common.entity.dto.PostListDTO;
 import cn.goroute.smart.common.entity.pojo.Post;
 import cn.goroute.smart.common.exception.ServiceException;
-import cn.goroute.smart.common.utils.PostConstant;
-import cn.goroute.smart.common.utils.RedisKeyConstant;
+import cn.goroute.smart.common.constant.PostConstant;
+import cn.goroute.smart.common.constant.RedisKeyConstant;
 import cn.goroute.smart.common.utils.RedisUtil;
 import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.search.config.EsConstant;
@@ -48,6 +48,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author Alickx
+ */
 @Service
 @Slf4j
 public class PostSearchService {
@@ -69,7 +72,7 @@ public class PostSearchService {
     public String save(PostEsModel postEsModel) throws IOException {
         log.info("=>存储文章数据到es中");
         IndexRequest indexRequest = new IndexRequest(POST_ES_INDEX);
-        indexRequest.id(postEsModel.getUid());
+        indexRequest.id(String.valueOf(postEsModel.getUid()));
         String s = JSON.toJSONString(postEsModel);
         indexRequest.source(s, XContentType.JSON);
         IndexResponse response = restHighLevelClient
@@ -111,35 +114,7 @@ public class PostSearchService {
             SearchHit[] searchHits = hits.getHits();
 
             List<PostEsModel> postEsModelList = new ArrayList<>();
-            if (hits.getHits() != null && hits.getHits().length > 0) {
-                PostEsModel postEsModel;
-                for (SearchHit hit : searchHits) {
-                    Map<String, HighlightField> highlightFields = hit.getHighlightFields();
-                    HighlightField title = highlightFields.get("title");
-                    HighlightField summary = highlightFields.get("summary");
-                    Map<String, Object> sourceAsMap = hit.getSourceAsMap();
-                    if (title != null) {
-                        Text[] fragments = title.fragments();
-                        StringBuilder sb = new StringBuilder();
-                        for (Text text : fragments) {
-                            sb.append(text);
-                        }
-                        sourceAsMap.put("title", sb.toString());
-                    }
-                    if (summary != null) {
-                        Text[] fragments = summary.fragments();
-                        StringBuilder sb = new StringBuilder();
-                        for (Text text : fragments) {
-                            sb.append(text);
-                        }
-                        sourceAsMap.put("summary", sb.toString());
-                    }
-                    //TODO Map转bean
-                    String jsonStr = JSONUtil.toJsonStr(sourceAsMap);
-                    postEsModel = JSONUtil.toBean(jsonStr, PostEsModel.class);
-                    postEsModelList.add(postEsModel);
-                }
-            }
+            extracted(hits, searchHits, postEsModelList);
             PostSearchResponse postSearchResponse = new PostSearchResponse();
             List<PostListDTO> PostListDTOs = new ArrayList<>();
             for (PostEsModel postEsModel : postEsModelList) {
@@ -147,7 +122,7 @@ public class PostSearchService {
                 BeanUtils.copyProperties(postEsModel, postListDTO);
                 postListDTO.setAuthorInfo(memberFeignService.getMemberByUid(postEsModel.getMemberUid()));
                 if (StpUtil.isLogin()) {
-                    postListDTO.setIsLike(postFeignService.isLike(StpUtil.getLoginIdAsString(), postEsModel.getUid()));
+                    postListDTO.setIsLike(postFeignService.isLike(StpUtil.getLoginIdAsLong(), postEsModel.getUid()));
                 } else {
                     postListDTO.setIsLike(false);
                 }
@@ -177,6 +152,44 @@ public class PostSearchService {
     }
 
     /**
+     * 查询服务-文章
+     * @param hits 查询结果
+     * @param searchHits 查询结果
+     * @param postEsModelList 查询结果集合
+     * @Description: 高亮
+     */
+    private void extracted(SearchHits hits, SearchHit[] searchHits, List<PostEsModel> postEsModelList) {
+        if (hits.getHits() != null && hits.getHits().length > 0) {
+            PostEsModel postEsModel;
+            for (SearchHit hit : searchHits) {
+                Map<String, HighlightField> highlightFields = hit.getHighlightFields();
+                HighlightField title = highlightFields.get("title");
+                HighlightField summary = highlightFields.get("summary");
+                Map<String, Object> sourceAsMap = hit.getSourceAsMap();
+                if (title != null) {
+                    Text[] fragments = title.fragments();
+                    StringBuilder sb = new StringBuilder();
+                    for (Text text : fragments) {
+                        sb.append(text);
+                    }
+                    sourceAsMap.put("title", sb.toString());
+                }
+                if (summary != null) {
+                    Text[] fragments = summary.fragments();
+                    StringBuilder sb = new StringBuilder();
+                    for (Text text : fragments) {
+                        sb.append(text);
+                    }
+                    sourceAsMap.put("summary", sb.toString());
+                }
+                String jsonStr = JSONUtil.toJsonStr(sourceAsMap);
+                postEsModel = JSONUtil.toBean(jsonStr, PostEsModel.class);
+                postEsModelList.add(postEsModel);
+            }
+        }
+    }
+
+    /**
      * 逻辑删除es中的文章
      *
      * @param uid 文章uid
@@ -202,7 +215,7 @@ public class PostSearchService {
      */
     public void transPostCount2ES(Post post) throws IOException {
 
-        String uid = post.getUid();
+        long uid = post.getUid();
         Integer thumbCount = post.getThumbCount();
         Integer commentCount = post.getCommentCount();
 
@@ -211,7 +224,7 @@ public class PostSearchService {
         postEsModel.setThumbCount(thumbCount);
 
         String jsonStr = JSONUtil.toJsonStr(postEsModel);
-        UpdateRequest request = new UpdateRequest("smart-post", uid);
+        UpdateRequest request = new UpdateRequest("smart-post", String.valueOf(uid));
         request.doc(jsonStr, XContentType.JSON);
         UpdateResponse updateResponse = restHighLevelClient.update(request, RequestOptions.DEFAULT);
         log.info("ElasticSearch文章信息更新完成，updateResponse=>{}",updateResponse);

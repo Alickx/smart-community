@@ -15,7 +15,7 @@ import java.io.IOException;
 */
 public interface CommentService extends IService<Comment> {
 
-    Result getCommentByPost(QueryParam queryParam, String postUid) throws IOException;
+    Result getCommentByPost(QueryParam queryParam, Long postUid) throws IOException;
 
     Result del(CommentVO commentVo);
 

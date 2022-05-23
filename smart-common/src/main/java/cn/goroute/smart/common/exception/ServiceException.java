@@ -1,5 +1,8 @@
 package cn.goroute.smart.common.exception;
 
+/**
+ * @author Alickx
+ */
 public class ServiceException extends RuntimeException {
 
     public ServiceException() {

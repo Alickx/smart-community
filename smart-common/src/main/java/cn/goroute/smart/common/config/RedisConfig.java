@@ -46,7 +46,6 @@ public class RedisConfig {
                 new LocalDateSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         timeModule.addSerializer(LocalDateTime.class,
                 new LocalDateTimeSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-
         om.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         om.registerModule(timeModule);
 

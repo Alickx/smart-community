@@ -1,11 +1,12 @@
 package cn.goroute.smart.common.entity.pojo;
 
-import com.baomidou.mybatisplus.annotation.*;
+import cn.goroute.smart.common.entity.base.BaseEntity;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.springframework.data.annotation.Transient;
 
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * 标签表
@@ -14,42 +15,26 @@ import java.time.LocalDateTime;
  * @email llwstu@gmail.com
  * @date 2022-02-25 09:44:39
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
-@TableName("t_tag")
-public class Tag implements Serializable {
+@TableName(value ="t_tag")
+public class Tag extends BaseEntity implements Serializable {
+
+	@Transient
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * 
+	 * 内容
 	 */
-	@TableId
-	private int uid;
-	/**
-	 * 
-	 */
-	@NotNull
 	private String content;
 	/**
-	 * 0 = 正常
-	 */
-	private Integer status;
-	/**
-	 * 
+	 * 介绍
 	 */
 	private String intro;
 	/**
-	 * 
+	 * 排序字段
 	 */
 	private Integer sort;
-	/**
-	 * 
-	 */
-	@TableField(fill = FieldFill.INSERT)
-	private LocalDateTime createdTime;
-	/**
-	 * 
-	 */
-	@TableField(fill = FieldFill.INSERT_UPDATE)
-	private LocalDateTime updatedTime;
+
 
 }

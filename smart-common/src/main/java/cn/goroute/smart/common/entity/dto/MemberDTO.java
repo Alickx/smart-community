@@ -1,17 +1,17 @@
 package cn.goroute.smart.common.entity.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberDTO {
-    private String uid;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private Long uid;
     /**
      * 呢称
      */
@@ -40,10 +40,6 @@ public class MemberDTO {
      * 积分
      */
     private Integer score;
-    /**
-     * 生日
-     */
-    private Date birthday;
     /**
      * gitee地址
      */

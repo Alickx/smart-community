@@ -9,7 +9,7 @@ public class PostEsModel {
     /**
      * 文章uid
      */
-    private String uid;
+    private Long uid;
     /**
      * 文章题目
      */
@@ -17,7 +17,7 @@ public class PostEsModel {
     /**
      * 文章作者Uid
      */
-    private String memberUid;
+    private Long memberUid;
     /**
      * 文章摘要
      */

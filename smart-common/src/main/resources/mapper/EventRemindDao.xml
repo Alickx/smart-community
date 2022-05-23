@@ -5,12 +5,12 @@
 <mapper namespace="cn.goroute.smart.common.dao.EventRemindDao">
 
     <resultMap id="BaseResultMap" type="cn.goroute.smart.common.entity.pojo.EventRemind">
-            <id property="uid" column="uid" jdbcType="INTEGER"/>
+            <id property="id" column="uid" jdbcType="INTEGER"/>
             <result property="actionType" column="action_type" jdbcType="TINYINT"/>
             <result property="sourceUid" column="source_uid" jdbcType="VARCHAR"/>
             <result property="sourceType" column="source_type" jdbcType="TINYINT"/>
             <result property="sourceContent" column="source_content" jdbcType="VARCHAR"/>
-            <result property="postUid" column="post_uid" jdbcType="VARCHAR"/>
+            <result property="url" column="url" jdbcType="VARCHAR"/>
             <result property="state" column="state" jdbcType="TINYINT"/>
             <result property="senderUid" column="sender_uid" jdbcType="VARCHAR"/>
             <result property="recipientUid" column="recipient_uid" jdbcType="VARCHAR"/>
@@ -19,7 +19,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        uid,action_type,source_uid,
+        id,action_type,source_uid,
         source_type,source_content,post_uid,
         state,sender_uid,recipient_uid,
         created_time,updated_time
