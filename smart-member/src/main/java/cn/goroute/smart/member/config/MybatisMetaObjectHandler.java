@@ -23,6 +23,7 @@ public class MybatisMetaObjectHandler implements MetaObjectHandler {
         this.strictInsertFill(metaObject, "nickName", () -> defaultNickName + RandomUtil.randomString(5), String.class);
         this.strictInsertFill(metaObject, "avatar", () -> defaultAvatar, String.class);
         this.strictInsertFill(metaObject, "gender", () -> defaultGender, String.class);
+
     }
 
     @Override

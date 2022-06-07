@@ -27,7 +27,7 @@
                   <option name="fileName" value="${domain.fileName}Mapper" />
                   <option name="fileNameWithSuffix" value="${domain.fileName}Mapper.java" />
                   <option name="modulePath" value="$PROJECT_DIR$/smart-common" />
-                  <option name="packageName" value="cn.goroute.smart.common.dao" />
+                  <option name="packageName" value="${domain.basePackage}.mapper" />
                 </ModuleInfoGo>
                 <ModuleInfoGo>
                   <option name="basePath" value="src/main/resources" />
@@ -63,8 +63,8 @@
             <option name="tableUIInfoList">
               <list>
                 <TableUIInfo>
-                  <option name="className" value="Follow" />
-                  <option name="tableName" value="t_follow" />
+                  <option name="className" value="UserBan" />
+                  <option name="tableName" value="t_user_ban" />
                 </TableUIInfo>
               </list>
             </option>

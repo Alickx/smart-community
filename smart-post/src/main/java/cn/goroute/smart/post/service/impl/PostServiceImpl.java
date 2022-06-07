@@ -15,6 +15,7 @@ import cn.goroute.smart.common.utils.*;
 import cn.goroute.smart.post.feign.SearchFeignService;
 import cn.goroute.smart.post.service.PostService;
 import cn.goroute.smart.post.util.Html2TextUtil;
+import cn.goroute.smart.post.util.NamingThreadFactory;
 import cn.goroute.smart.post.util.RabbitmqUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.text.CharSequenceUtil;
@@ -31,9 +32,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 
@@ -77,6 +80,8 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
     @Resource
     ThumbDao thumbDao;
 
+    private static final int CORE_SIZE = Runtime.getRuntime().availableProcessors();
+
     /**
      * 文章分页方法
      *
@@ -88,13 +93,14 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
 
         IPage<Post> page;
 
+        // 查询条件 如果没有选择分类，则查询全部
         if (postQueryVO.getCategoryUid() == null) {
             page = postDao.selectPage(
                     new Query<Post>().getPage(postQueryVO),
                     new LambdaQueryWrapper<Post>()
                             .eq(Post::getIsPublish, PostConstant.PUBLISH)
-                            .eq(Post::getStatus, PostConstant.NORMAL_STATUS)
-            );
+                            .eq(Post::getStatus, PostConstant.NORMAL_STATUS));
+            // 如果选择了分类，没有选择标签，则查询分类下的文章
         } else if (postQueryVO.getTagUid() == null) {
 
             page = postDao.selectPage(
@@ -104,7 +110,7 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
                             .eq(Post::getStatus, PostConstant.NORMAL_STATUS)
             );
         } else {
-
+            // 如果选择了分类和标签，则查询分类和标签下的文章
             IPage<PostTag> postTagIPage = postTagDao.selectPage(new Query<PostTag>().getPage(postQueryVO),
                     new LambdaQueryWrapper<PostTag>()
                             .eq(PostTag::getTagUid, postQueryVO.getTagUid()));
@@ -113,7 +119,7 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
             if (CollUtil.isEmpty(records)) {
                 return Result.ok().put("data", new Page<>());
             }
-            List<Long> postIds = records.parallelStream()
+            List<Long> postIds = records.stream()
                     .map(PostTag::getPostUid).collect(Collectors.toList());
 
             List<Post> posts = postDao.selectBatchIds(postIds);
@@ -136,7 +142,7 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
 
 
     /**
-     * 获取文章DTO集合的核心方法
+     * 获取文章列表信息
      *
      * @param isLogin 用户是否登录
      * @param records 文章集合
@@ -144,33 +150,61 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
      */
     private List<PostListDTO> getPostListDTOS(boolean isLogin, List<Post> records) {
 
-        List<PostListDTO> postDTOList = new ArrayList<>(12);
+        List<PostListDTO> postDTOList = new ArrayList<>(records.size());
 
-        //通过stream处理获取到所有文章作者的id
-        List<Long> memberIds = records.parallelStream().map(Post::getMemberUid).collect(Collectors.toList());
+        ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(
+                CORE_SIZE + 1,
+                2 * CORE_SIZE + 1,
+                1L,
+                TimeUnit.SECONDS,
+                new ArrayBlockingQueue<>(100),
+                new NamingThreadFactory("post-get-post-list-dto-thread"));
 
-        //调用用户微服务，查询用户信息
-        List<MemberDTO> memberInfoWithPost = memberFeignService.batchQueryUsers(memberIds);
-
-        //遍历文章数据并
-        for (int i = 0; i < records.size(); i++) {
-            PostListDTO postListDTO = new PostListDTO();
-            BeanUtils.copyProperties(records.get(i), postListDTO);
-            postListDTO.setAuthorInfo(memberInfoWithPost.get(i));
-            postListDTO.setCommentCount(getCommentCount(records.get(i)));
-            if (isLogin) {
-                postListDTO.setIsLike(checkIsThumbOrCollect(records.get(i).getUid(), StpUtil.getLoginIdAsLong(), 0));
-                postListDTO.setIsCollect(checkIsThumbOrCollect(records.get(i).getUid(), StpUtil.getLoginIdAsLong(), 1));
-            } else {
-                postListDTO.setIsLike(false);
-                postListDTO.setIsCollect(false);
-            }
-            postListDTO.setThumbCount(getThumbCount(records.get(i)));
-            postDTOList.add(postListDTO);
+        //遍历文章数据并转换为文章DTO
+        CountDownLatch countDownLatch = new CountDownLatch(records.size());
+        for (Post record : records) {
+            Long loginId = StpUtil.isLogin() ? StpUtil.getLoginIdAsLong() : null;
+            poolExecutor.submit(() -> {
+                try {
+                    getPostInfo(isLogin, postDTOList, record, loginId);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    // 当线程执行完毕后，计数器减1
+                    countDownLatch.countDown();
+                }
+            });
+        }
+        try {
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
 
-
         return postDTOList;
+    }
+
+    /**
+     * 获取文章的核心方法
+     *
+     * @param isLogin     用户是否登录
+     * @param postDTOList 文章DTO集合
+     * @param record      文章对象
+     */
+    private void getPostInfo(boolean isLogin, List<PostListDTO> postDTOList, Post record, Long loginId) {
+        PostListDTO postListDTO = new PostListDTO();
+        BeanUtils.copyProperties(record, postListDTO);
+        postListDTO.setAuthorInfo(memberFeignService.getMemberByUid(record.getMemberUid()));
+        postListDTO.setCommentCount(getCommentCount(record));
+        if (isLogin) {
+            postListDTO.setIsLike(checkIsThumbOrCollect(record.getUid(), loginId, 0));
+            postListDTO.setIsCollect(checkIsThumbOrCollect(record.getUid(), loginId, 1));
+        } else {
+            postListDTO.setIsLike(false);
+            postListDTO.setIsCollect(false);
+        }
+        postListDTO.setThumbCount(getThumbCount(record));
+        postDTOList.add(postListDTO);
     }
 
     /**
@@ -187,12 +221,12 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
             return Result.error("分类不存在");
         }
 
-        List<Long> tagUid = postVo.getTagUid();
+        Set<Long> tagUid = new HashSet<>(postVo.getTagUid());
         if (CollUtil.isEmpty(tagUid)) {
             return Result.error("请选择标签");
         } else {
             List<Tag> tags = tagDao.selectBatchIds(tagUid);
-            tags.parallelStream().forEach(tag -> {
+            tags.forEach(tag -> {
                 if (tag == null) {
                     throw new RuntimeException("标签不存在");
                 }
@@ -204,7 +238,6 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
         //使用正则，过滤掉Html标签
         String htmlContent = postVo.getContentHtml();
         String text = Html2TextUtil.Html2Text(htmlContent);
-
 
         if (CharSequenceUtil.isEmpty(postVo.getSummary())) {
             String summary = CharSequenceUtil.sub(text, 0, 150);
@@ -219,13 +252,22 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
         post.setCategoryUid(postVo.getCategoryUid());
         post.setMemberUid(StpUtil.getLoginIdAsLong());
         post.setStatus(PostConstant.CHECK_STATUS);
-        
 
+        int result = -1;
+        // 如果是编辑，则先删除原有的标签
+        if (Objects.equals(postVo.getType(), PostConstant.POST_SAVE_TYPE_EDIT)) {
+            postTagDao.delete(new LambdaQueryWrapper<PostTag>().eq(PostTag::getPostUid, postVo.getUid()));
+            // 更新文章
+            post.setUid(postVo.getUid());
+            result = postDao.updateById(post);
+        } else if (Objects.equals(postVo.getType(), PostConstant.POST_SAVE_TYPE_NEW)) {
+            // 新增文章
+            result = postDao.insert(post);
+        }
 
-        int result = postDao.insert(post);
         if (result == 1) {
             //插入后通过消息队列对文章进行异步审核
-            rabbitmqUtil.reviewPost(post, tagUid);
+            rabbitmqUtil.reviewPost(post, new ArrayList<>(tagUid));
             log.info("返回文章的ID为：{}", post.getUid());
             return Result.ok().put("url", post.getUid());
         } else {
@@ -270,9 +312,15 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
         List<MemberDTO> memberInfoWithPost = memberFeignService
                 .batchQueryUsers(CollUtil.toList(post.getMemberUid()));
 
-
         PostDTO postDTO = new PostDTO();
         BeanUtils.copyProperties(post, postDTO);
+
+        // 获取文章的标签
+        List<PostTag> tags = postTagDao.selectList(new LambdaQueryWrapper<PostTag>().eq(PostTag::getPostUid, uid));
+
+        List<Long> tagUid = tags.stream().map(PostTag::getTagUid).collect(Collectors.toList());
+
+        postDTO.setTagUid(tagUid);
         if (CollUtil.isNotEmpty(memberInfoWithPost)) {
             postDTO.setAuthorInfo(memberInfoWithPost.get(0));
             if (isLogin) {
@@ -341,6 +389,7 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
         }
         List<PostListDTO> postListDTOs = new ArrayList<>(10);
         MemberDTO memberDTO = memberFeignService.getMemberByUid(queryParam.getUid());
+
         postList.forEach(postEntity -> {
             PostListDTO postListDTO = new PostListDTO();
             BeanUtils.copyProperties(postEntity, postListDTO);
@@ -368,9 +417,9 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
     /**
      * 获取是否点赞或收藏
      *
-     * @param uid             目标uid
+     * @param uid      目标uid
      * @param loginUid 用户uid
-     * @param type            类型
+     * @param type     类型
      * @return 是否点赞或是否收藏
      */
     private boolean checkIsThumbOrCollect(Long uid, Long loginUid, int type) {

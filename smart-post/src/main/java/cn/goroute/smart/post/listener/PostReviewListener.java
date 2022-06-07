@@ -38,7 +38,7 @@ public class PostReviewListener {
     public void review(Map map) {
         log.info("开始审核文章内容");
         Post postEntity = JSONUtil.toBean((String) map.get("post"), Post.class);
-        List<Integer> tagUidList = JSONUtil.toList((String) map.get("tagUidList"), Integer.class);
+        List<Long> tagUidList = JSONUtil.toList((String) map.get("tagUidList"), Long.class);
         Boolean titleCheckResult = textCheckUtil.checkText(postEntity.getTitle());
         Boolean contentCheckResult = textCheckUtil.checkText(postEntity.getContent());
 

@@ -52,6 +52,7 @@ public class ThumbController {
     @RequestMapping("/is_like")
     public Boolean isLike(@RequestParam Long loginUid, @RequestParam Long uid) {
         String thumbRedisKey = RedisKeyConstant.getThumbKey(loginUid, uid);
+
         if (redisUtil.hHasKey(RedisKeyConstant.POST_THUMB_KEY, thumbRedisKey)) {
             return true;
         } else {

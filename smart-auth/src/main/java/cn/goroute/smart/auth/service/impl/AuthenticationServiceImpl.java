@@ -45,6 +45,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      */
     private static final int BAN_TIME = 10 * 60;
 
+    private static final int ERROR_COUNT = 5;
+
     /**
      * 登录
      * @param memberLoginVO 登录信息
@@ -66,13 +68,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
 
         // 获取request中的ip，设备信息
-        String clientIP = ServletUtil.getClientIP(request);
+        String clientIp = ServletUtil.getClientIP(request);
         String os = GetLoginUserAgentUtil.getOs(request);
         String browser = GetLoginUserAgentUtil.getBrowser(request);
         LocalDateTime now = LocalDateTimeUtil.now();
         member.setOs(os);
         member.setBrowser(browser);
-        member.setLastLoginIp(clientIP);
+        member.setLastLoginIp(clientIp);
         member.setLastLoginTime(now);
 
         memberDao.updateById(member);
@@ -83,7 +85,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         MemberDTO memberDTO = new MemberDTO();
         BeanUtils.copyProperties(member, memberDTO);
 
-        Map<String, Object> map = new HashMap<>(6);
+        Map<String, Object> map = new HashMap<>(4);
         map.put("access_token",StpUtil.getTokenValue());
         map.put("user_info",memberDTO);
         map.put("permission_list",StpUtil.getPermissionList());
@@ -125,14 +127,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         int errorCount = (int) redisUtil.hget(regKey, "errorCount");
 
-        if (errorCount >= 5) {
+        if (errorCount >= ERROR_COUNT) {
             //当错误次数超过5次后，对该邮箱禁止注册10分钟
             String banKey = RedisKeyConstant.REG_SEND_BAN_KEY + memberRegEmail;
 
             redisUtil.set(banKey, "", BAN_TIME);
             redisUtil.del(regKey);
 
-            return Result.error(ResultCode.FAILED.getCode(),ResultCode.FAILED.getMessage());
+            return Result.error("验证码输入次数过多，该邮箱已被禁止注册10分钟");
         }
         String memberRegCaptcha = (String) redisUtil.hget(regKey, "captcha");
 
@@ -143,7 +145,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 redisUtil.hincr(regKey, "errorCount", 1);
             }
 
-            return Result.error(ResultCode.FAILED.getCode(),ResultCode.FAILED.getMessage());
+            return Result.error("验证码错误，请重新输入！");
         }
 
         //正确则执行注册流程

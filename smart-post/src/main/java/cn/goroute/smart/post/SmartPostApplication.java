@@ -1,10 +1,27 @@
 package cn.goroute.smart.post;
 
+import cn.goroute.smart.common.dao.CategoryDao;
+import cn.goroute.smart.common.dao.CategoryTagDao;
+import cn.goroute.smart.common.dao.TagDao;
+import cn.goroute.smart.common.entity.dto.CategoryTagDTO;
+import cn.goroute.smart.common.entity.pojo.Category;
+import cn.goroute.smart.common.entity.pojo.CategoryTag;
+import cn.goroute.smart.common.entity.pojo.Tag;
+import cn.goroute.smart.common.utils.RedisUtil;
+import cn.hutool.core.collection.CollectionUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @SpringBootApplication(scanBasePackages = {"cn.goroute.smart"})
 @RefreshScope
@@ -12,8 +29,55 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @EnableFeignClients(basePackages = {"cn.goroute.smart.post.feign","cn.goroute.smart.common.feign"})
 public class SmartPostApplication {
 
+    @Autowired
+    private CategoryDao categoryDao;
+
+    @Autowired
+    private CategoryTagDao categoryTagDao;
+
+    @Autowired
+    private TagDao tagDao;
+
+    @Autowired
+    RedisUtil redisUtil;
+
     public static void main(String[] args) {
         SpringApplication.run(SmartPostApplication.class, args);
+    }
+
+
+    @PostConstruct
+    public void init() {
+        // 初始化分类标签数据
+        initCategoryTag();
+    }
+
+    private void initCategoryTag() {
+
+        List<Category> categories = categoryDao.selectList(null);
+
+        List<CategoryTagDTO> result = new ArrayList<>();
+
+        for (Category category : categories) {
+
+            List<CategoryTag> categoryTags = categoryTagDao.selectList(new LambdaQueryWrapper<CategoryTag>()
+                    .eq(CategoryTag::getCategoryUid, category.getUid()));
+
+            if (CollectionUtil.isEmpty(categoryTags)) {
+                continue;
+            }
+
+            List<Long> tagUids = categoryTags.stream().map(CategoryTag::getTagUid).collect(Collectors.toList());
+
+            List<Tag> tags = tagDao.selectBatchIds(tagUids);
+
+            CategoryTagDTO categoryTagDTO = new CategoryTagDTO();
+            BeanUtils.copyProperties(category, categoryTagDTO);
+            categoryTagDTO.setTags(tags);
+            result.add(categoryTagDTO);
+        }
+
+        redisUtil.set("category", result);
     }
 
 }

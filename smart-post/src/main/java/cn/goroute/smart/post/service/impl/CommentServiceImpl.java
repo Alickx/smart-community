@@ -49,7 +49,7 @@ import java.util.Objects;
 public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
         implements CommentService {
 
-    @Resource
+    @Autowired
     CommentDao commentDao;
 
     @Autowired
@@ -291,6 +291,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
      * @throws IOException IO异常
      */
     private PageUtils getReply(Long firstCommentUid) throws IOException {
+
         QueryParam queryParam = new QueryParam();
         queryParam.setLimit("3");
         queryParam.setSidx("created_time");
@@ -305,7 +306,6 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
 
         for (Comment comment : commentList) {
             commentDTO = new CommentDTO();
-
             MemberDTO fromMember = memberFeignService.getMemberByUid(comment.getMemberUid());
             MemberDTO toMember = memberFeignService.getMemberByUid(comment.getToMemberUid());
             int thumbCount = getThumbCount(comment);

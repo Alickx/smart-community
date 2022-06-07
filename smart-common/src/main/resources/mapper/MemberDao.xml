@@ -31,5 +31,9 @@
         <result property="createdTime" column="created_time"/>
     </resultMap>
 
+    <update id="updateMemberStatus">
+        UPDATE smart_ums.t_member SET status = #{status} WHERE uid = #{memberId}
+    </update>
+
 
 </mapper>

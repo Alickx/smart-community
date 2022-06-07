@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author Alickx
@@ -29,10 +30,22 @@ public class PostDTO {
      * 文章内容
      */
     private String content;
+
     /**
      * 0 = 不公布  1 = 公布
      */
     private String isPublish;
+
+    /**
+     * 分类id
+     */
+    private Long categoryUid;
+
+    /**
+     * 标签id
+     */
+    private List<Long> tagUid;
+
     /**
      * 文章摘要
      */

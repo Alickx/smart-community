@@ -29,6 +29,6 @@ public class PostTag extends BaseEntity implements Serializable {
 	/**
 	 * 
 	 */
-	private int tagUid;
+	private Long tagUid;
 
 }

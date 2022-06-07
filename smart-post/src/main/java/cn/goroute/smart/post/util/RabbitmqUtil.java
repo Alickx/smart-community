@@ -67,7 +67,7 @@ public class RabbitmqUtil {
      */
     public void reviewPost(Post post, List<Long> tagUidList) {
         log.info("发送消息队列，审查文章内容");
-        Map<String, Object> map = new HashMap<>(4);
+        Map<String, Object> map = new HashMap<>(2);
         map.put("post", JSONUtil.toJsonStr(post));
         map.put("tagUidList", JSONUtil.toJsonStr(tagUidList));
         rabbitTemplate.convertAndSend(EXCHANGE,

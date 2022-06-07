@@ -1,11 +1,10 @@
 package cn.goroute.smart.post.util;
 
+import cn.goroute.smart.common.constant.NotificationConstant;
+import cn.goroute.smart.common.constant.PostConstant;
 import cn.goroute.smart.common.entity.pojo.Comment;
 import cn.goroute.smart.common.entity.pojo.EventRemind;
 import cn.goroute.smart.common.entity.pojo.Thumb;
-import cn.goroute.smart.common.constant.Constant;
-import cn.goroute.smart.common.constant.NotificationConstant;
-import cn.goroute.smart.common.constant.PostConstant;
 
 /**
  * @Author: Alickx
@@ -23,7 +22,7 @@ public class ConvertRemindUtil {
     public static EventRemind convertThumbNotification(Thumb thumb, String postTitle) {
         EventRemind eventRemind = new EventRemind();
         eventRemind.setActionType(NotificationConstant.REMIND_THUMB_ACTION_TYPE);
-        eventRemind.setSourceUid(thumb.getToUid());
+        eventRemind.setSourceUid(thumb.getPostUid());
         if (thumb.getType() == PostConstant.THUMB_COMMENT_TYPE) {
             eventRemind.setSourceType(NotificationConstant.REMIND_SOURCE_COMMENT_TYPE);
         } else if (thumb.getType() == PostConstant.THUMB_POST_TYPE) {
@@ -32,7 +31,6 @@ public class ConvertRemindUtil {
             eventRemind.setSourceType(NotificationConstant.REMIND_SOURCE_REPLY_TYPE);
         }
         eventRemind.setSourceTitle(postTitle);
-        eventRemind.setUrl(getRemindUrl(thumb.getPostUid()));
         eventRemind.setSenderUid(thumb.getMemberUid());
         eventRemind.setRecipientUid(thumb.getToMemberUid());
         return eventRemind;
@@ -57,16 +55,7 @@ public class ConvertRemindUtil {
         eventRemind.setSourceTitle(postTitle);
         eventRemind.setSenderUid(comment.getMemberUid());
         eventRemind.setRecipientUid(comment.getToMemberUid());
-        eventRemind.setUrl(getRemindUrl(comment.getPostUid()));
         return eventRemind;
-    }
-
-    private static String getRemindUrl(Long uid) {
-
-        return String.valueOf(Constant.URL_PREFIX) +
-                // TODO url修改
-                "/post/" +
-                uid;
     }
 
 

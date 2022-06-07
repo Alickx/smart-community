@@ -16,7 +16,6 @@ public interface MemberService extends IService<Member> {
 
     Result updateMemberInfo(MemberInfoUpdateVO memberVO);
 
-
 }
 
 

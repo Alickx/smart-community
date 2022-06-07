@@ -17,6 +17,11 @@ import java.util.List;
 public class PostVO {
 
     /**
+     * 文章主键
+     */
+    private Long uid;
+
+    /**
      * 分类id
      */
     @NotNull(message = "分类id不能为空")
@@ -51,4 +56,9 @@ public class PostVO {
      */
     @NotBlank(message = "文章内容错误")
     private String contentHtml;
+
+    /**
+     * 类型
+     */
+    private String type;
 }

@@ -16,6 +16,14 @@ public class Query<T> {
         return this.getPage(queryParam, null, false);
     }
 
+    public IPage<T> getPage(String curPage,String pageSize) {
+        QueryParam queryParam = new QueryParam();
+        queryParam.setCurPage(curPage);
+        queryParam.setLimit(pageSize);
+        return this.getPage(queryParam);
+    }
+
+
     public IPage<T> getPage(QueryParam queryParam, String defaultOrderField, boolean isAsc) {
         //分页参数
         long curPage = 1;

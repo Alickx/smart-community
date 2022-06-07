@@ -1,11 +1,11 @@
 package cn.goroute.smart.post.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
-import cn.goroute.smart.common.api.ResultCode;
 import cn.goroute.smart.common.constant.PostConstant;
 import cn.goroute.smart.common.constant.RedisKeyConstant;
 import cn.goroute.smart.common.dao.PostDao;
 import cn.goroute.smart.common.dao.ThumbDao;
+import cn.goroute.smart.common.entity.dto.PostListDTO;
 import cn.goroute.smart.common.entity.pojo.EventRemind;
 import cn.goroute.smart.common.entity.pojo.Post;
 import cn.goroute.smart.common.entity.pojo.Thumb;
@@ -24,12 +24,11 @@ import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Alickx
@@ -68,22 +67,24 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbDao, Thumb>
         //判断点赞文章是否存在
         Post post = postDao.selectOne(new LambdaQueryWrapper<Post>()
                 .eq(Post::getUid, thumb.getPostUid())
-                .eq(Post::getStatus, PostConstant.NORMAL_STATUS)
-                .eq(Post::getIsPublish, PostConstant.PUBLISH));
+                .eq(Post::getStatus, PostConstant.NORMAL_STATUS));
 
         if (post == null) {
-            return Result.error(ResultCode.FAILED.getCode(), ResultCode.FAILED.getMessage());
+            return Result.error("文章不存在，点赞失败!");
         }
 
         // 判断是否已经点赞
         long loginUid = StpUtil.getLoginIdAsLong();
         String redisKey = RedisKeyConstant.getThumbKey(loginUid, thumb.getToUid());
         if (redisUtil.hHasKey(RedisKeyConstant.POST_THUMB_KEY, redisKey)) {
-            return Result.error("已经点赞过了");
+            Thumb thumbCache = (Thumb) redisUtil.hget(RedisKeyConstant.POST_THUMB_KEY, redisKey);
+            if (Objects.equals(thumbCache.getStatus(), PostConstant.NORMAL_STATUS)) {
+                return Result.error("已经点赞过了!");
+            }
         }
 
         /*
-          如果数据库中存在该记录，则证明是取消后再点赞
+          如果数据库中存在该记录，则是取消后再点赞
          */
         Thumb thumbEntity = thumbDao.selectOne(new LambdaQueryWrapper<Thumb>()
                 .eq(Thumb::getMemberUid, loginUid)
@@ -92,6 +93,7 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbDao, Thumb>
         if (thumbEntity != null) {
             thumbEntity.setStatus(PostConstant.NORMAL_STATUS);
             thumbDao.updateById(thumbEntity);
+            incrPostThumbCount(thumb, post);
             return Result.ok();
         }
 
@@ -103,21 +105,20 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbDao, Thumb>
         EventRemind eventRemind = ConvertRemindUtil.convertThumbNotification(thumb, post.getTitle());
         rabbitmqUtil.sendEventRemind(eventRemind);
 
+        incrPostThumbCount(thumb, post);
+        return Result.ok();
+    }
+
+
+    private void incrPostThumbCount(Thumb thumb, Post post) {
         //设置帖子点赞数，帖子点赞数缓存
         String countKey = RedisKeyConstant.POST_COUNT_KEY + thumb.getPostUid();
         if (redisUtil.hHasKey(countKey, RedisKeyConstant.POST_THUMB_COUNT_KEY)) {
             redisUtil.hincr(countKey, RedisKeyConstant.POST_THUMB_COUNT_KEY, 1);
         } else {
-            synchronized (this) {
-                if (redisUtil.hHasKey(countKey, RedisKeyConstant.POST_THUMB_COUNT_KEY)) {
-                    redisUtil.hincr(countKey, RedisKeyConstant.POST_THUMB_COUNT_KEY, 1);
-                } else {
-                    redisUtil.hset(countKey, RedisKeyConstant.POST_THUMB_COUNT_KEY, post.getCommentCount());
-                    redisUtil.hincr(countKey, RedisKeyConstant.POST_THUMB_COUNT_KEY, 1);
-                }
-            }
+            redisUtil.hset(countKey, RedisKeyConstant.POST_THUMB_COUNT_KEY, post.getCommentCount());
+            redisUtil.hincr(countKey, RedisKeyConstant.POST_THUMB_COUNT_KEY, 1);
         }
-        return Result.ok();
     }
 
     /**
@@ -129,19 +130,31 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbDao, Thumb>
     @Override
     public Result thumbCancel(Thumb thumb) {
 
+        //判断点赞文章是否存在
+        Post post = postDao.selectOne(new LambdaQueryWrapper<Post>()
+                .eq(Post::getUid, thumb.getPostUid())
+                .eq(Post::getStatus, PostConstant.NORMAL_STATUS));
+
+        if (post == null) {
+            return Result.error("文章不存在，点赞失败!");
+        }
+
         long loginUid = StpUtil.getLoginIdAsLong();
         String redisKey = RedisKeyConstant.getThumbKey(loginUid, thumb.getToUid());
 
-        Thumb thumbEntity = thumbDao.selectOne(new LambdaQueryWrapper<Thumb>()
-                .eq(Thumb::getMemberUid, loginUid).eq(Thumb::getToUid, thumb.getToUid()));
-
-        //如果点赞记录不为空，则删除点赞
-        if (thumbEntity != null) {
-            thumbEntity.setStatus(PostConstant.DELETE_STATUS);
-            thumbDao.updateById(thumbEntity);
+        // 查询缓存中是否存在点赞记录
+        if (redisUtil.hHasKey(RedisKeyConstant.POST_THUMB_KEY, redisKey)) {
+            Thumb thumbCache = (Thumb) redisUtil.hget(RedisKeyConstant.POST_THUMB_KEY, redisKey);
+            thumbCache.setStatus(PostConstant.THUMB_STATUS_CANCEL);
+            redisUtil.hset(RedisKeyConstant.POST_THUMB_KEY, redisKey, thumbCache, 60L * 60 * 24 * 2);
         } else {
-            if (redisUtil.hHasKey(RedisKeyConstant.POST_THUMB_KEY, redisKey)) {
-                redisUtil.hdel(RedisKeyConstant.POST_THUMB_KEY, redisKey);
+            // 如果缓存中没有点赞记录则查询数据库
+            Thumb thumbEntity = thumbDao.selectOne(new LambdaQueryWrapper<Thumb>()
+                    .eq(Thumb::getMemberUid, loginUid).eq(Thumb::getToUid, thumb.getToUid()));
+            if (thumbEntity != null) {
+                // 设置点赞状态为取消，并设置缓存（由定时任务来处理点赞数据的落地）
+                thumbEntity.setStatus(PostConstant.THUMB_STATUS_CANCEL);
+                redisUtil.hset(RedisKeyConstant.POST_THUMB_KEY, redisKey, thumbEntity, 60L * 60 * 24 * 2);
             }
         }
 
@@ -161,6 +174,7 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbDao, Thumb>
      *
      * @return 持久化成功条数
      */
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public int trans() {
         log.info("=>正在持久化redis点赞缓存");
@@ -181,17 +195,20 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbDao, Thumb>
             throw new ServiceException(ExceptionUtil.getMessage(e));
         }
         //批量插入数据库
-        boolean saveResult = this.saveBatch(insertList);
-        if (saveResult) {
-            log.info("=>持久化成功！一共持久化了{}条缓存", insertList.size());
-            //循环删除redis缓存
-            for (String key : deleteList) {
-                redisUtil.hdel(RedisKeyConstant.POST_THUMB_KEY, key);
+        for (Thumb thumb : insertList) {
+            // 如果存在uid，则更新，否则插入
+            if (thumb.getUid() == null) {
+                thumbDao.insert(thumb);
+            } else {
+                thumbDao.updateById(thumb);
             }
-            return insertList.size();
-        } else {
-            throw new ServiceException("点赞信息持久化失败！");
         }
+
+        for (String key : deleteList) {
+            redisUtil.hdel(RedisKeyConstant.POST_THUMB_KEY, key);
+        }
+
+        return insertList.size();
     }
 
     /**
@@ -206,6 +223,12 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbDao, Thumb>
         IPage<Thumb> thumbPage = thumbDao.selectPage(new Query<Thumb>().getPage(queryParam),
                 new LambdaQueryWrapper<Thumb>()
                         .eq(Thumb::getMemberUid, queryParam.getUid()));
+
+        List<PostListDTO> postListDTOList = new ArrayList<>(thumbPage.getRecords().size());
+
+
+
+
         PageUtils page = new PageUtils(thumbPage);
         return Result.ok().put("data", page);
     }

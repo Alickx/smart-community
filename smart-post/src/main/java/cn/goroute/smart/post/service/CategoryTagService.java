@@ -12,4 +12,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface CategoryTagService extends IService<CategoryTag> {
 
     Result getTagByCategory(Long sectionUid);
+
+    Result getCategoryTagAll();
 }

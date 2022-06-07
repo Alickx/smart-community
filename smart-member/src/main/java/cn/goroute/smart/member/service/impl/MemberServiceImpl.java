@@ -1,8 +1,8 @@
 package cn.goroute.smart.member.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
-import cn.goroute.smart.common.api.ResultCode;
 import cn.goroute.smart.common.dao.MemberDao;
+import cn.goroute.smart.common.dao.UserBanDao;
 import cn.goroute.smart.common.entity.dto.MemberDTO;
 import cn.goroute.smart.common.entity.pojo.Member;
 import cn.goroute.smart.common.entity.vo.MemberInfoUpdateVO;
@@ -27,8 +27,12 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, Member> implements
     @Autowired
     MemberDao memberDao;
 
+    @Autowired
+    UserBanDao userBanDao;
+
     /**
-     *  更新用户展示信息
+     * 更新用户展示信息
+     *
      * @param memberVO 用户展示信息VO
      * @return 更新结果
      */
@@ -39,7 +43,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, Member> implements
         Boolean nickNameCheckResult = illegalTextCheckUtil.checkText(memberVO.getNickName());
         Boolean introCheckResult = illegalTextCheckUtil.checkText(memberVO.getIntro());
         if (nickNameCheckResult || introCheckResult) {
-            return Result.error(ResultCode.FAILED.getCode(), ResultCode.FAILED.getMessage());
+            return Result.error("用户名或简介包含违禁词");
         }
         Member member = new Member();
         long loginId = StpUtil.getLoginIdAsLong();
@@ -47,11 +51,11 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, Member> implements
         member.setUid(loginId);
         int result = memberDao.updateById(member);
         MemberDTO dto = new MemberDTO();
-        BeanUtils.copyProperties(member,dto);
-        if (result >0) {
-            return Result.ok("用户信息更新成功！").put("data",dto);
+        BeanUtils.copyProperties(member, dto);
+        if (result > 0) {
+            return Result.ok("用户信息更新成功！").put("data", dto);
         } else {
-            log.error("用户信息更新失败！用户信息=>{}",memberVO);
+            log.error("用户信息更新失败！用户信息=>{}", memberVO);
             throw new ServiceException("用户信息更新失败");
         }
     }

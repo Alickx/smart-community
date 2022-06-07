@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-
 
 /**
  * 文章表
@@ -28,8 +26,8 @@ public class PostController {
     @Autowired
     PostService postService;
 
-    @PostMapping("/query/list")
-    public Result withSectionList(@RequestBody PostQueryVO postQueryVO) throws IOException {
+    @GetMapping("/query/list")
+    public Result withSectionList(PostQueryVO postQueryVO) {
         return postService.queryPage(postQueryVO);
     }
 
@@ -62,11 +60,11 @@ public class PostController {
 
     /**
      * 用户id查询文章列表
-     * @param uid 用户id
+     * @param queryParam 用户id
      * @return 文章集合
      */
-    @PostMapping("/query/list/{uid}")
-    public Result listByMemberUid(@RequestBody QueryParam queryParam){
+    @GetMapping("/query/list/member")
+    public Result listByMemberUid(QueryParam queryParam){
         return postService.listByMemberUid(queryParam);
     }
 

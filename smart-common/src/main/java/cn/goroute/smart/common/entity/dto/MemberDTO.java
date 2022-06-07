@@ -64,4 +64,5 @@ public class MemberDTO {
      * 用户状态 0 = 正常
      */
     private Integer status;
+
 }

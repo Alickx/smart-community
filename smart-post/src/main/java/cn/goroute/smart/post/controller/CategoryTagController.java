@@ -21,9 +21,12 @@ public class CategoryTagController {
 
     @GetMapping("/list")
     public Result getTagByCategory(@RequestParam Long categoryUid){
-
         return categoryTagService.getTagByCategory(categoryUid);
+    }
 
+    @GetMapping("/listAll")
+    public Result getTagByCategoryAll(){
+        return categoryTagService.getCategoryTagAll();
     }
 
 }

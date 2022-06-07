@@ -36,7 +36,7 @@ public class EventRemindDTO {
      * 事件源id
      */
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private Long sourceId;
+    private Long sourceUid;
 
     /**
      * 事件源类型
@@ -52,11 +52,6 @@ public class EventRemindDTO {
      * 事件源标题
      */
     private String sourceTitle;
-
-    /**
-     * 事件发生的地址
-     */
-    private String url;
 
     /**
      * 是否已读

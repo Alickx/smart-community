@@ -16,10 +16,18 @@ public interface ThumbService extends IService<Thumb> {
 
     Result thumbCancel(Thumb thumb);
 
+    /**
+     * 持久化点赞数据
+     * @return 点赞数据条数
+     */
     int trans();
 
     Result listByMemberUid(QueryParam queryParam);
 
+    /**
+     * 持久化点赞评论数量
+     * @return 持久化数量
+     */
     int transCount();
 
 }

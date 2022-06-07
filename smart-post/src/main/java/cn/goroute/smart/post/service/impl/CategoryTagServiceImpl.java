@@ -1,8 +1,11 @@
 package cn.goroute.smart.post.service.impl;
 
+import cn.goroute.smart.common.dao.CategoryDao;
 import cn.goroute.smart.common.dao.CategoryTagDao;
+import cn.goroute.smart.common.entity.dto.CategoryTagDTO;
 import cn.goroute.smart.common.entity.pojo.CategoryTag;
 import cn.goroute.smart.common.entity.pojo.Tag;
+import cn.goroute.smart.common.utils.RedisUtil;
 import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.post.service.CategoryTagService;
 import cn.goroute.smart.post.service.TagService;
@@ -30,10 +33,16 @@ public class CategoryTagServiceImpl extends ServiceImpl<CategoryTagDao, Category
     implements CategoryTagService {
 
     @Autowired
+    CategoryDao categoryDao;
+
+    @Autowired
     CategoryTagDao categoryTagDao;
 
     @Autowired
     TagService tagService;
+
+    @Autowired
+    RedisUtil redisUtil;
 
     /**
      * @description 根据分类id查询标签
@@ -73,6 +82,24 @@ public class CategoryTagServiceImpl extends ServiceImpl<CategoryTagDao, Category
         return Result.ok().put("data",tagContentList);
 
     }
+
+    /**
+     * @description 查询获取所有分类标签
+     * @return
+     */
+    @Override
+    public Result getCategoryTagAll() {
+
+        List<CategoryTagDTO> categoryTagDTOList = (List<CategoryTagDTO>) redisUtil.get("category");
+
+        if (CollectionUtil.isEmpty(categoryTagDTOList)) {
+            return Result.error("没有分类标签数据");
+        }
+
+        return Result.ok().put("data",categoryTagDTOList);
+    }
+
+
 }
 
 

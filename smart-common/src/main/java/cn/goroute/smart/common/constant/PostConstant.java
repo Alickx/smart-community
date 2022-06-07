@@ -70,4 +70,31 @@ public class PostConstant {
      * 评论中回复
      */
     public static final int REPLY_TYPE = 1;
+
+    /**
+     * 发布新文章
+     */
+    public static final String POST_SAVE_TYPE_NEW = "0";
+
+    /**
+     * 编辑文章
+     */
+    public static final String POST_SAVE_TYPE_EDIT = "1";
+
+
+    /**
+     *
+     * 点赞状态
+     *
+     */
+
+    /**
+     * 点赞
+     */
+    public static final int THUMB_STATUS_NORMAL = 0;
+
+    /**
+     * 取消点赞
+     */
+    public static final int THUMB_STATUS_CANCEL = 1;
 }

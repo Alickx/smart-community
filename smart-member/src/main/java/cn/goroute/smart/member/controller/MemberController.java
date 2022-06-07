@@ -2,14 +2,14 @@ package cn.goroute.smart.member.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.goroute.smart.common.api.ResultCode;
 import cn.goroute.smart.common.entity.dto.MemberDTO;
 import cn.goroute.smart.common.entity.pojo.Member;
 import cn.goroute.smart.common.entity.vo.MemberInfoUpdateVO;
-import cn.goroute.smart.common.api.ResultCode;
 import cn.goroute.smart.common.utils.RedisUtil;
 import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.member.service.MemberService;
-import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,19 +44,19 @@ public class MemberController {
      * @return 用户信息集合
      */
     @PostMapping("/list")
-    public List<MemberDTO> batchQueryUsers(@RequestBody List<String> memberUidList) {
+    public List<MemberDTO> batchQueryUsersByIdList(@RequestBody List<String> memberUidList) {
 
-        List<MemberDTO> res = new ArrayList<>();
+        List<MemberDTO> res = new ArrayList<>(memberUidList.size());
 
-        MemberDTO memberDTO;
-        for (String uid : memberUidList) {
-            memberDTO = new MemberDTO();
+
+        memberUidList.forEach(uid -> {
             Member member = memberService.getById(uid);
-            if (member != null) {
+            if (Objects.nonNull(member)) {
+                MemberDTO memberDTO = new MemberDTO();
                 BeanUtils.copyProperties(member, memberDTO);
+                res.add(memberDTO);
             }
-            res.add(memberDTO);
-        }
+        });
 
         return res;
     }
@@ -70,17 +70,13 @@ public class MemberController {
      */
     @GetMapping("/info/email")
     public Result queryUserEmail(@RequestParam String email) {
-        QueryChainWrapper<Member> emailQueryChainWrapper = memberService.query()
-                .eq("email", email);
+        Member member = memberService.getOne(new LambdaQueryWrapper<Member>().eq(Member::getEmail, email));
 
-        Member member = memberService.getOne(emailQueryChainWrapper.getWrapper());
-        /*
-          如果该邮箱已经注册则返回true，没注册则返回false
-         */
+        // 如果为空，则说明该邮箱没有被注册
         if (member == null) {
-            return Result.ok().put("data", false);
+            return Result.ok();
         } else {
-            return Result.ok().put("data", true);
+            return Result.error();
         }
     }
 

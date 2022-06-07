@@ -47,11 +47,6 @@ public class EventRemind extends BaseEntity implements Serializable {
     private String sourceTitle;
 
     /**
-     * 事件发生的地址
-     */
-    private String url;
-
-    /**
      * 是否已读
      */
     private Integer state;

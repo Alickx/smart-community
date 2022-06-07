@@ -72,13 +72,13 @@ public class EventRemindServiceImpl extends ServiceImpl<EventRemindDao, EventRem
 
         //获取用户信息
         List<EventRemind> records = page.getRecords();
-        List<Long> senderIds = records.parallelStream()
+        List<Long> senderIds = records.stream()
                 .map(EventRemind::getSenderUid)
                 .collect(Collectors.toList());
 
         List<MemberDTO> infoByMemberUids = memberFeignService.batchQueryUsers(senderIds);
 
-        List<EventRemindDTO> eventRemindDTOs = new ArrayList<>(12);
+        List<EventRemindDTO> eventRemindDTOs = new ArrayList<>(records.size());
 
         // 将用户信息添加到事件集合中
         for (int i = 0; i < records.size(); i++) {
@@ -127,14 +127,14 @@ public class EventRemindServiceImpl extends ServiceImpl<EventRemindDao, EventRem
         //未读通知总数
         int count = eventReminds.size();
         //存储统计map
-        Map<Integer,Integer> statistical = new HashMap<>(7);
+        Map<Integer, Integer> statistical = new HashMap<>(7);
 
         //多线程流遍历map，统计每种提醒的未读数量
         for (int i : NotificationConstant.REMIND_ARRAY) {
-            statistical.put(i,eventRemindGroup.get(i) == null ? 0 : eventRemindGroup.get(i).size());
+            statistical.put(i, eventRemindGroup.get(i) == null ? 0 : eventRemindGroup.get(i).size());
         }
 
-        return Result.ok().put("count",count).put("data",statistical);
+        return Result.ok().put("count", count).put("data", statistical);
     }
 
 }

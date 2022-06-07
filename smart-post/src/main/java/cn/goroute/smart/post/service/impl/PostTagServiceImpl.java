@@ -8,6 +8,9 @@ import cn.goroute.smart.common.entity.pojo.PostTag;
 import cn.goroute.smart.post.service.PostTagService;
 
 
+/**
+ * @author Alickx
+ */
 @Service("postTagService")
 public class PostTagServiceImpl extends ServiceImpl<PostTagDao, PostTag> implements PostTagService {
 
