@@ -2,11 +2,11 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.goroute.smart.common.dao.UserBanDao">
+<mapper namespace="cn.goroute.smart.common.dao.MemberBanDao">
 
-    <resultMap id="BaseResultMap" type="cn.goroute.smart.common.entity.pojo.UserBan">
-        <id property="id" column="id" jdbcType="INTEGER"/>
-        <result property="banId" column="ban_id" jdbcType="VARCHAR"/>
+    <resultMap id="BaseResultMap" type="cn.goroute.smart.common.entity.pojo.MemberBan">
+        <id property="uid" column="id" jdbcType="INTEGER"/>
+        <result property="banUserId" column="ban_id" jdbcType="VARCHAR"/>
         <result property="banUserId" column="ban_user_id" jdbcType="VARCHAR"/>
         <result property="banType" column="ban_type" jdbcType="TINYINT"/>
         <result property="banHandlerId" column="ban_handler_id" jdbcType="VARCHAR"/>
@@ -16,14 +16,14 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,ban_id,ban_user_id,
+        uid,ban_id,ban_user_id,
         ban_type,ban_handler_id,ban_reason,
         ban_time,ban_end_time
     </sql>
 
-    <select id="checkUserBan" resultType="cn.goroute.smart.common.entity.pojo.UserBan">
+    <select id="checkUserBan" resultType="cn.goroute.smart.common.entity.pojo.MemberBan">
         select
         <include refid="Base_Column_List"/>
-        from smart_ums.t_user_ban tub where ban_user_id = #{banUserId} and ban_type = #{banType} and ban_end_time > now()
+        from smart_ums.t_user_ban tub where ban_user_id = #{memberId} and ban_type = #{banType} and ban_end_time > now()
     </select>
 </mapper>

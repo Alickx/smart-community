@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
  */
 @TableName(value ="t_user_ban")
 @Data
-public class UserBan extends BaseEntity implements Serializable {
+public class MemberBan extends BaseEntity implements Serializable {
 
     /**
      * 封禁用户id
@@ -30,7 +30,7 @@ public class UserBan extends BaseEntity implements Serializable {
     /**
      * 封禁操作者Id
      */
-    private String banHandlerId;
+    private Long banHandlerId;
 
     /**
      * 封禁理由

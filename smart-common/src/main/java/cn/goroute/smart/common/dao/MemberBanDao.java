@@ -1,6 +1,6 @@
 package cn.goroute.smart.common.dao;
 
-import cn.goroute.smart.common.entity.pojo.UserBan;
+import cn.goroute.smart.common.entity.pojo.MemberBan;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -12,7 +12,7 @@ import org.apache.ibatis.annotations.Param;
  * @Entity cn.goroute.smart.common.entity.pojo.UserBan
  */
 @Mapper
-public interface UserBanDao extends BaseMapper<UserBan> {
+public interface MemberBanDao extends BaseMapper<MemberBan> {
 
     /**
      * @param memberId 用户ID
@@ -20,7 +20,7 @@ public interface UserBanDao extends BaseMapper<UserBan> {
      * @return UserBan
      * @description 根据用户ID查询用户封禁信息
      */
-    UserBan checkUserBan(@Param("banUserId") String memberId,@Param("banType") Integer banType);
+    MemberBan checkUserBan(@Param("memberId") String memberId, @Param("banType") Integer banType);
 }
 
 

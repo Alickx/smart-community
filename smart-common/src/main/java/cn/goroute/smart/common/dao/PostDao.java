@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * 文章表
  * 
@@ -22,4 +24,6 @@ public interface PostDao extends BaseMapper<Post> {
                                     @Param("tagUid") Integer tagUid,
                                     @Param("publish") String isPublish,
                                     @Param("status") Integer status);
+
+    List<Post> getPost();
 }

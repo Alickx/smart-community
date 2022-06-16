@@ -1,9 +1,9 @@
 package cn.goroute.smart.auth.controller;
 
-import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.auth.service.AuthenticationService;
 import cn.goroute.smart.common.entity.vo.MemberLoginVO;
 import cn.goroute.smart.common.entity.vo.MemberRegisterVO;
+import cn.goroute.smart.common.service.AuthService;
 import cn.goroute.smart.common.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +25,9 @@ public class AuthenticationApi {
     @Autowired
     AuthenticationService authenticationService;
 
+    @Autowired
+    AuthService authService;
+
     @PostMapping("/login")
     public Result login(@RequestBody MemberLoginVO memberLoginVO, HttpServletRequest request) {
         return authenticationService.login(memberLoginVO, request);
@@ -32,8 +35,9 @@ public class AuthenticationApi {
 
     @PostMapping("/logout")
     public Result logout() {
-        if (StpUtil.isLogin()) {
-            StpUtil.logout();
+        Boolean isLogin = authService.getIsLogin();
+        if (isLogin) {
+            authService.logOut(authService.getLoginUid());
             return Result.ok();
         }
         return Result.error("用户未登录");

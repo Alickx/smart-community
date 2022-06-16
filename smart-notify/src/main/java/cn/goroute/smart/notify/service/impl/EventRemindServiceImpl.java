@@ -1,13 +1,16 @@
 package cn.goroute.smart.notify.service.impl;
 
-import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.common.constant.NotificationConstant;
 import cn.goroute.smart.common.dao.EventRemindDao;
 import cn.goroute.smart.common.entity.dto.EventRemindDTO;
 import cn.goroute.smart.common.entity.dto.MemberDTO;
 import cn.goroute.smart.common.entity.pojo.EventRemind;
 import cn.goroute.smart.common.feign.MemberFeignService;
-import cn.goroute.smart.common.utils.*;
+import cn.goroute.smart.common.service.AuthService;
+import cn.goroute.smart.common.utils.PageUtils;
+import cn.goroute.smart.common.utils.Query;
+import cn.goroute.smart.common.utils.QueryParam;
+import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.notify.service.EventRemindService;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -20,10 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -40,6 +40,9 @@ public class EventRemindServiceImpl extends ServiceImpl<EventRemindDao, EventRem
 
     @Autowired
     MemberFeignService memberFeignService;
+
+    @Autowired
+    AuthService authService;
 
     /**
      * 查询事件提醒
@@ -59,8 +62,8 @@ public class EventRemindServiceImpl extends ServiceImpl<EventRemindDao, EventRem
          */
         IPage<EventRemind> page = eventRemindDao.selectPage(new Query<EventRemind>()
                 .getPage(queryParam), new LambdaQueryWrapper<EventRemind>()
-                .ne(EventRemind::getSenderUid, StpUtil.getLoginIdAsString())
-                .eq(EventRemind::getRecipientUid, StpUtil.getLoginIdAsString())
+                .ne(EventRemind::getSenderUid, authService.getLoginUid())
+                .eq(EventRemind::getRecipientUid, authService.getLoginUid())
                 .orderByAsc(EventRemind::getState)
                 .eq(EventRemind::getActionType, queryParam.getType()));
 
@@ -78,20 +81,20 @@ public class EventRemindServiceImpl extends ServiceImpl<EventRemindDao, EventRem
 
         List<MemberDTO> infoByMemberUids = memberFeignService.batchQueryUsers(senderIds);
 
-        List<EventRemindDTO> eventRemindDTOs = new ArrayList<>(records.size());
+        List<EventRemindDTO> eventReminds = new ArrayList<>(records.size());
 
         // 将用户信息添加到事件集合中
         for (int i = 0; i < records.size(); i++) {
             EventRemindDTO eventRemindDTO = new EventRemindDTO();
             eventRemindDTO.setSender(infoByMemberUids.get(i));
             BeanUtils.copyProperties(records.get(i), eventRemindDTO);
-            eventRemindDTOs.add(eventRemindDTO);
+            eventReminds.add(eventRemindDTO);
             records.get(i).setState(NotificationConstant.STATE_HAVE_READ);
         }
 
         Page<EventRemindDTO> pageDTO = new Page<>();
         BeanUtils.copyProperties(page, pageDTO);
-        pageDTO.setRecords(eventRemindDTOs);
+        pageDTO.setRecords(eventReminds);
 
         // 更新通知状态
         boolean b = this.updateBatchById(records);
@@ -112,7 +115,7 @@ public class EventRemindServiceImpl extends ServiceImpl<EventRemindDao, EventRem
     @Override
     public Result queryUnreadCountRemind() {
 
-        String memberUid = StpUtil.getLoginIdAsString();
+        Long memberUid = authService.getLoginUid();
         List<EventRemind> eventReminds = eventRemindDao.selectList(new LambdaQueryWrapper<EventRemind>()
                 .eq(EventRemind::getState, NotificationConstant.STATE_UNREAD)
                 .ne(EventRemind::getSenderUid, memberUid)
@@ -129,12 +132,12 @@ public class EventRemindServiceImpl extends ServiceImpl<EventRemindDao, EventRem
         //存储统计map
         Map<Integer, Integer> statistical = new HashMap<>(7);
 
-        //多线程流遍历map，统计每种提醒的未读数量
+        //遍历map，统计每种提醒的未读数量
         for (int i : NotificationConstant.REMIND_ARRAY) {
             statistical.put(i, eventRemindGroup.get(i) == null ? 0 : eventRemindGroup.get(i).size());
         }
 
-        return Result.ok().put("count", count).put("data", statistical);
+        return Objects.requireNonNull(Result.ok().put("count", count)).put("data", statistical);
     }
 
 }

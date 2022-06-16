@@ -1,6 +1,5 @@
 package cn.goroute.smart.post.service.impl;
 
-import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.common.constant.PostConstant;
 import cn.goroute.smart.common.constant.RedisKeyConstant;
 import cn.goroute.smart.common.dao.PostDao;
@@ -10,7 +9,9 @@ import cn.goroute.smart.common.entity.pojo.EventRemind;
 import cn.goroute.smart.common.entity.pojo.Post;
 import cn.goroute.smart.common.entity.pojo.Thumb;
 import cn.goroute.smart.common.exception.ServiceException;
+import cn.goroute.smart.common.service.AuthService;
 import cn.goroute.smart.common.utils.*;
+import cn.goroute.smart.post.manage.IThumbManage;
 import cn.goroute.smart.post.service.ThumbService;
 import cn.goroute.smart.post.util.ConvertRemindUtil;
 import cn.goroute.smart.post.util.RabbitmqUtil;
@@ -29,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Alickx
@@ -55,6 +57,12 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbDao, Thumb>
     @Resource
     ThumbDao thumbDao;
 
+    @Autowired
+    IThumbManage iThumbManage;
+
+    @Autowired
+    AuthService authService;
+
     /**
      * 点赞
      *
@@ -74,7 +82,7 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbDao, Thumb>
         }
 
         // 判断是否已经点赞
-        long loginUid = StpUtil.getLoginIdAsLong();
+        long loginUid = authService.getLoginUid();
         String redisKey = RedisKeyConstant.getThumbKey(loginUid, thumb.getToUid());
         if (redisUtil.hHasKey(RedisKeyConstant.POST_THUMB_KEY, redisKey)) {
             Thumb thumbCache = (Thumb) redisUtil.hget(RedisKeyConstant.POST_THUMB_KEY, redisKey);
@@ -139,7 +147,7 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbDao, Thumb>
             return Result.error("文章不存在，点赞失败!");
         }
 
-        long loginUid = StpUtil.getLoginIdAsLong();
+        long loginUid = authService.getLoginUid();
         String redisKey = RedisKeyConstant.getThumbKey(loginUid, thumb.getToUid());
 
         // 查询缓存中是否存在点赞记录
@@ -222,14 +230,17 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbDao, Thumb>
 
         IPage<Thumb> thumbPage = thumbDao.selectPage(new Query<Thumb>().getPage(queryParam),
                 new LambdaQueryWrapper<Thumb>()
-                        .eq(Thumb::getMemberUid, queryParam.getUid()));
+                        .eq(Thumb::getMemberUid, queryParam.getUid())
+                        .orderByDesc(Thumb::getCreatedTime));
 
-        List<PostListDTO> postListDTOList = new ArrayList<>(thumbPage.getRecords().size());
+        List<Long> postIdList = thumbPage.getRecords().stream().map(Thumb::getPostUid).collect(Collectors.toList());
 
-
-
+        List<PostListDTO> postDTOList = iThumbManage.getPostDTOListByPostIdList(postIdList);
 
         PageUtils page = new PageUtils(thumbPage);
+
+        page.setList(postDTOList);
+
         return Result.ok().put("data", page);
     }
 
@@ -250,15 +261,17 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbDao, Thumb>
             //分隔key获取文章id
             String[] split = hashKey.split(":");
             String postUid = split[split.length - 1];
-            int thumbCount = (int) redisUtil.hget(hashKey, RedisKeyConstant.POST_THUMB_COUNT_KEY);
-            int commentCount = (int) redisUtil.hget(hashKey, RedisKeyConstant.POST_COMMENT_COUNT_KEY);
             Post post = new Post();
+            if (redisUtil.hHasKey(hashKey,RedisKeyConstant.POST_THUMB_COUNT_KEY)) {
+                post.setThumbCount((int) redisUtil.hget(hashKey, RedisKeyConstant.POST_THUMB_COUNT_KEY));
+            }
+            if (redisUtil.hHasKey(hashKey,RedisKeyConstant.POST_COMMENT_COUNT_KEY)) {
+                post.setCommentCount((int) redisUtil.hget(hashKey, RedisKeyConstant.POST_COMMENT_COUNT_KEY));
+            }
             post.setUid(Long.valueOf(postUid));
-            post.setCommentCount(commentCount);
-            post.setThumbCount(thumbCount);
             postDao.updateById(post);
             //消息队列异步更新es
-            rabbitmqUtil.transPostCount2ES(post);
+            rabbitmqUtil.transPost2ESUtil(post);
             redisUtil.del(hashKey);
         }
         try {

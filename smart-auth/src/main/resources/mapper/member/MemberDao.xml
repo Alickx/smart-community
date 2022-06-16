@@ -16,7 +16,6 @@
         <result property="fans" column="fans"/>
         <result property="follow" column="follow"/>
         <result property="score" column="score"/>
-        <result property="birthday" column="birthday"/>
         <result property="gitee" column="gitee"/>
         <result property="github" column="github"/>
         <result property="os" column="os"/>
@@ -34,6 +33,10 @@
     <update id="updateMemberStatus">
         UPDATE smart_ums.t_member SET status = #{status} WHERE uid = #{memberId}
     </update>
+
+    <select id="selectByUid" resultType="cn.goroute.smart.common.entity.pojo.Member">
+        SELECT * FROM smart_ums.t_member WHERE uid = #{uid}
+    </select>
 
 
 </mapper>

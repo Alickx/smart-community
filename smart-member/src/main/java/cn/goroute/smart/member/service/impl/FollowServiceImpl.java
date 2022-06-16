@@ -5,11 +5,12 @@ import cn.goroute.smart.common.dao.FollowDao;
 import cn.goroute.smart.common.dao.MemberDao;
 import cn.goroute.smart.common.entity.pojo.Follow;
 import cn.goroute.smart.common.entity.pojo.Member;
-import cn.goroute.smart.common.api.ResultCode;
+import cn.goroute.smart.common.service.AuthService;
 import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.member.service.FollowService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -29,18 +30,21 @@ public class FollowServiceImpl extends ServiceImpl<FollowDao, Follow>
     @Resource
     MemberDao memberDao;
 
+    @Autowired
+    AuthService authService;
+
     @Override
     public Result saveFollow(Long followMemberId) {
 
         Member member = memberDao.selectById(followMemberId);
 
         if (member == null) {
-            return Result.error(ResultCode.FAILED.getCode(), ResultCode.FAILED.getMessage());
+            return Result.error("该用户不存在!");
         }
 
         Follow follow = new Follow();
         follow.setToMemberUid(followMemberId);
-        follow.setMemberUid(StpUtil.getLoginIdAsLong());
+        follow.setMemberUid(authService.getLoginUid());
 
         int insert = followDao.insert(follow);
 
@@ -68,7 +72,10 @@ public class FollowServiceImpl extends ServiceImpl<FollowDao, Follow>
                 .eq(Follow::getMemberUid, StpUtil.getLoginIdAsString())
                 .eq(Follow::getToMemberUid, followMemberId));
 
-        return Result.ok().put("data", follow != null);
+        if (follow == null) {
+            return Result.ok().put("data",false);
+        }
+        return Result.ok().put("data", true);
     }
 }
 

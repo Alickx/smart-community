@@ -30,10 +30,10 @@ public class PostListener {
     }
 
     @RabbitListener(queues = "smart.search.post.durability")
-    public void transPostCount2ES(String message) throws IOException {
+    public void transPost2ESListener(String message) throws IOException {
         log.info("接收到消息，开始同步文章信息=>{}",message);
         Post post = JSONUtil.toBean(message, Post.class);
-        service.transPostCount2ES(post);
+        service.transPost2ES(post);
     }
 
 

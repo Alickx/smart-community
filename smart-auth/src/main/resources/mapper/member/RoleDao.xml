@@ -3,7 +3,7 @@
 
 <mapper namespace="cn.goroute.smart.common.dao.RoleDao">
 
-	<!-- 可根据自己的需求，是否要使用 -->
+    <!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="cn.goroute.smart.common.entity.pojo.Role" id="roleMap">
         <result property="uid" column="uid"/>
         <result property="roleName" column="role_name"/>
@@ -12,10 +12,11 @@
         <result property="updatedTime" column="updated_time"/>
     </resultMap>
     <select id="getRoleNameByMemberUid" resultType="java.lang.String">
-        SELECT r.role_name
-        FROM t_user_role ur,
-             t_role r
-        WHERE r.uid = ur.role_uid AND ur.user_uid = #{memberUid}
+        SELECT tr.role_name
+        FROM smart_ums.t_user_role tur,
+             smart_ums.t_role tr
+        WHERE tr.uid = tur.role_uid
+          AND tur.user_uid = #{memberUid}
     </select>
 
 

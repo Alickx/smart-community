@@ -1,6 +1,6 @@
 package cn.goroute.smart.member.service;
 
-import cn.goroute.smart.common.entity.pojo.UserBan;
+import cn.goroute.smart.common.entity.pojo.MemberBan;
 import cn.goroute.smart.common.entity.vo.MemberBanSearchVO;
 import cn.goroute.smart.common.entity.vo.MemberBanVO;
 import cn.goroute.smart.common.utils.Result;
@@ -13,7 +13,7 @@ import java.util.List;
 * @description 针对表【t_user_ban(封禁表)】的数据库操作Service
 * @createDate 2022-05-23 20:44:28
 */
-public interface MemberBanService extends IService<UserBan> {
+public interface MemberBanService extends IService<MemberBan> {
 
     /**
      * @param memberBanVO 封禁用户VO类
@@ -25,4 +25,6 @@ public interface MemberBanService extends IService<UserBan> {
     Result batchQueryUsers(MemberBanSearchVO memberBanSearchVO);
 
     Result removeBannedUsers(List<String> banIds);
+
+    Result queryBannedMember(Long memberUid);
 }

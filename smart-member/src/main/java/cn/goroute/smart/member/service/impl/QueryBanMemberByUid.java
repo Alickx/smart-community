@@ -2,11 +2,11 @@ package cn.goroute.smart.member.service.impl;
 
 import cn.goroute.smart.common.constant.Constant;
 import cn.goroute.smart.common.dao.MemberDao;
-import cn.goroute.smart.common.dao.UserBanDao;
+import cn.goroute.smart.common.dao.MemberBanDao;
 import cn.goroute.smart.common.entity.dto.MemberBanDTO;
 import cn.goroute.smart.common.entity.dto.MemberDTO;
 import cn.goroute.smart.common.entity.pojo.Member;
-import cn.goroute.smart.common.entity.pojo.UserBan;
+import cn.goroute.smart.common.entity.pojo.MemberBan;
 import cn.goroute.smart.common.entity.vo.MemberBanSearchVO;
 import cn.goroute.smart.common.utils.ModelConverterUtils;
 import cn.goroute.smart.common.utils.PageUtils;
@@ -33,7 +33,7 @@ public class QueryBanMemberByUid implements IQueryBanMember {
     MemberDao memberDao;
 
     @Autowired
-    UserBanDao userBanDao;
+    MemberBanDao memberBanDao;
 
 
     @Override
@@ -43,9 +43,9 @@ public class QueryBanMemberByUid implements IQueryBanMember {
         String curPage = memberBanSearchVO.getCurPage();
         String pageSize = memberBanSearchVO.getPageSize();
 
-        IPage<UserBan> page = new Query<UserBan>().getPage(curPage, pageSize);
+        IPage<MemberBan> page = new Query<MemberBan>().getPage(curPage, pageSize);
 
-        IPage<UserBan> userBanIPage = userBanDao.selectPage(page, new LambdaQueryWrapper<UserBan>().eq(UserBan::getBanUserId, memberId));
+        IPage<MemberBan> userBanIPage = memberBanDao.selectPage(page, new LambdaQueryWrapper<MemberBan>().eq(MemberBan::getBanUserId, memberId));
 
         if (CollectionUtil.isEmpty(userBanIPage.getRecords())) {
             return new PageUtils(userBanIPage);
@@ -53,16 +53,16 @@ public class QueryBanMemberByUid implements IQueryBanMember {
 
         List<MemberBanDTO> result = new ArrayList<>();
 
-        for (UserBan userBan : userBanIPage.getRecords()) {
-            Member banMember = memberDao.selectById(userBan.getBanUserId());
-            Member HandlerMember = memberDao.selectById(userBan.getBanHandlerId());
+        for (MemberBan memberBan : userBanIPage.getRecords()) {
+            Member banMember = memberDao.selectById(memberBan.getBanUserId());
+            Member HandlerMember = memberDao.selectById(memberBan.getBanHandlerId());
             MemberBanDTO memberBanDTO = new MemberBanDTO();
             memberBanDTO.setBanUser(ModelConverterUtils.convert(banMember, MemberDTO.class));
             memberBanDTO.setBanHandlerUser(ModelConverterUtils.convert(HandlerMember, MemberDTO.class));
-            memberBanDTO.setBanReason(userBan.getBanReason());
-            memberBanDTO.setBanType(Constant.getBanType(String.valueOf(userBan.getBanType())));
-            memberBanDTO.setBanTime(userBan.getBanTime());
-            memberBanDTO.setBanEndTime(userBan.getBanEndTime());
+            memberBanDTO.setBanReason(memberBan.getBanReason());
+            memberBanDTO.setBanType(Constant.getBanType(String.valueOf(memberBan.getBanType())));
+            memberBanDTO.setBanTime(memberBan.getBanTime());
+            memberBanDTO.setBanEndTime(memberBan.getBanEndTime());
             result.add(memberBanDTO);
         }
 

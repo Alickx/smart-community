@@ -1,5 +1,6 @@
 package cn.goroute.smart.common.entity.dto;
 
+import cn.goroute.smart.common.entity.pojo.Member;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -64,5 +65,22 @@ public class MemberDTO {
      * 用户状态 0 = 正常
      */
     private Integer status;
+
+    public MemberDTO(Member member) {
+        this.uid = member.getUid();
+        this.nickName = member.getNickName();
+        this.gender = member.getGender();
+        this.commentStatus = member.getCommentStatus();
+        this.avatar = member.getAvatar();
+        this.fans = member.getFans();
+        this.follow = member.getFollow();
+        this.status = member.getStatus();
+        this.gitee = member.getGitee();
+        this.github = member.getGithub();
+        this.intro = member.getIntro();
+        this.qqNumber = member.getQqNumber();
+        this.score = member.getScore();
+        this.userTag = member.getUserTag();
+    }
 
 }

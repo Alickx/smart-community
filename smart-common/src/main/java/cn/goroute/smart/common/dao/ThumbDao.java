@@ -2,6 +2,7 @@ package cn.goroute.smart.common.dao;
 
 import cn.goroute.smart.common.entity.pojo.Thumb;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
 * @author Alickx
@@ -9,6 +10,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @createDate 2022-03-23 16:44:34
 * @Entity cn.goroute.smart.common.entity.pojo.Thumb
 */
+@Mapper
 public interface ThumbDao extends BaseMapper<Thumb> {
 
 }

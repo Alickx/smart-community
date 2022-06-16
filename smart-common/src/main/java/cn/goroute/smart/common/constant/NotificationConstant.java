@@ -30,7 +30,7 @@ public class NotificationConstant {
     public static final int REMIND_AT_ACTION_TYPE = 3;
 
     /**
-     *
+     * 系统提醒
      */
     public static final int REMIND_SYSTEM_ACTION_TYPE = 4;
 

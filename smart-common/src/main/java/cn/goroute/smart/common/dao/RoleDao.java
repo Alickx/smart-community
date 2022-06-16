@@ -16,6 +16,6 @@ import java.util.List;
 @Mapper
 public interface RoleDao extends BaseMapper<Role> {
 
-    List<String> getRoleNameByMemberUid(String memberUid);
+    List<String> getRoleNameByMemberUid(Long memberUid);
 
 }

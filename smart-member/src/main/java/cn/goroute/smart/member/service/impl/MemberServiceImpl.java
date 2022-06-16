@@ -1,12 +1,12 @@
 package cn.goroute.smart.member.service.impl;
 
-import cn.dev33.satoken.stp.StpUtil;
+import cn.goroute.smart.common.dao.MemberBanDao;
 import cn.goroute.smart.common.dao.MemberDao;
-import cn.goroute.smart.common.dao.UserBanDao;
 import cn.goroute.smart.common.entity.dto.MemberDTO;
 import cn.goroute.smart.common.entity.pojo.Member;
 import cn.goroute.smart.common.entity.vo.MemberInfoUpdateVO;
 import cn.goroute.smart.common.exception.ServiceException;
+import cn.goroute.smart.common.service.AuthService;
 import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.member.service.MemberService;
 import cn.goroute.smart.member.util.IllegalTextCheckUtil;
@@ -28,7 +28,10 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, Member> implements
     MemberDao memberDao;
 
     @Autowired
-    UserBanDao userBanDao;
+    MemberBanDao memberBanDao;
+
+    @Autowired
+    AuthService authService;
 
     /**
      * 更新用户展示信息
@@ -46,11 +49,11 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, Member> implements
             return Result.error("用户名或简介包含违禁词");
         }
         Member member = new Member();
-        long loginId = StpUtil.getLoginIdAsLong();
+        long loginId = authService.getLoginUid();
         BeanUtils.copyProperties(memberVO, member);
         member.setUid(loginId);
         int result = memberDao.updateById(member);
-        MemberDTO dto = new MemberDTO();
+        MemberDTO dto = new MemberDTO(member);
         BeanUtils.copyProperties(member, dto);
         if (result > 0) {
             return Result.ok("用户信息更新成功！").put("data", dto);

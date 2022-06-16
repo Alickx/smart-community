@@ -16,4 +16,6 @@ import org.apache.ibatis.annotations.Param;
 public interface MemberDao extends BaseMapper<Member> {
 
     void updateMemberStatus(@Param("memberId") String memberId,@Param("status") Integer banType);
+
+    Member selectByUid(@Param("uid") Long uid);
 }

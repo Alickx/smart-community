@@ -39,6 +39,7 @@ public class PostReviewListener {
         log.info("开始审核文章内容");
         Post postEntity = JSONUtil.toBean((String) map.get("post"), Post.class);
         List<Long> tagUidList = JSONUtil.toList((String) map.get("tagUidList"), Long.class);
+        boolean isUpdate = (boolean) map.get("isUpdate");
         Boolean titleCheckResult = textCheckUtil.checkText(postEntity.getTitle());
         Boolean contentCheckResult = textCheckUtil.checkText(postEntity.getContent());
 
@@ -60,9 +61,13 @@ public class PostReviewListener {
             }
         }
         //审核通过则更新文章
-        if (Objects.equals(postEntity.getIsPublish(), "1")) {
+        if (Objects.equals(postEntity.getIsPublish(), PostConstant.PUBLISH)) {
             log.info("文章正常，开始存入es");
-            rabbitmqUtil.saveEs(postEntity);
+            if (isUpdate) {
+                rabbitmqUtil.transPost2ESUtil(postEntity);
+            } else {
+                rabbitmqUtil.saveEs(postEntity);
+            }
         }
         tagUidList.forEach(t -> {
             PostTag postTag = new PostTag();

@@ -15,7 +15,6 @@ public class SaTokenConfigure {
     @Bean
     public SaReactorFilter getSaReactorFilter() {
         return new SaReactorFilter()
-                // 异常处理方法：每次setAuth函数出现异常时进入
                 .setError(e -> Result.error())
                 ;
     }

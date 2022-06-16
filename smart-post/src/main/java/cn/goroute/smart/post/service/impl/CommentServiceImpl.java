@@ -1,6 +1,5 @@
 package cn.goroute.smart.post.service.impl;
 
-import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.common.api.ResultCode;
 import cn.goroute.smart.common.constant.PostConstant;
 import cn.goroute.smart.common.constant.RedisKeyConstant;
@@ -16,6 +15,7 @@ import cn.goroute.smart.common.entity.pojo.Thumb;
 import cn.goroute.smart.common.entity.vo.CommentVO;
 import cn.goroute.smart.common.exception.ServiceException;
 import cn.goroute.smart.common.feign.MemberFeignService;
+import cn.goroute.smart.common.service.AuthService;
 import cn.goroute.smart.common.utils.*;
 import cn.goroute.smart.post.service.CommentService;
 import cn.goroute.smart.post.util.ConvertRemindUtil;
@@ -73,6 +73,9 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
     @Autowired
     RabbitmqUtil rabbitmqUtil;
 
+    @Autowired
+    AuthService authService;
+
     /**
      * 根据文章id获取文章评论列表
      *
@@ -90,7 +93,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
                         .eq(Comment::getStatus, PostConstant.NORMAL_STATUS));
 
         if (pageResult.getRecords().isEmpty()) {
-            return Result.ok().put("data",new PageUtils(pageResult));
+            return Result.ok().put("data", new PageUtils(pageResult));
         }
 
         List<Comment> commentList = pageResult.getRecords();
@@ -142,7 +145,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
         if (comment != null) {
             long memberUid = comment.getMemberUid();
             // 判断是否是评论者
-            if (!Objects.equals(memberUid, StpUtil.getLoginIdAsLong())) {
+            if (!Objects.equals(memberUid, authService.getLoginUid())) {
                 return Result.error();
             }
             // 逻辑删除
@@ -200,7 +203,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
         Comment comment = new Comment();
         BeanUtils.copyProperties(commentVo, comment);
 
-        comment.setMemberUid(StpUtil.getLoginIdAsLong());
+        comment.setMemberUid(authService.getLoginUid());
         int result = commentDao.insert(comment);
         if (result != 1) {
             throw new ServiceException("评论发布失败");
@@ -264,8 +267,8 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
     private boolean isLike(Comment comment) {
         boolean isLike = false;
 
-        if (StpUtil.isLogin()) {
-            long loginUid = StpUtil.getLoginIdAsLong();
+        if (authService.getIsLogin()) {
+            long loginUid = authService.getLoginUid();
 
             String redisKey = RedisKeyConstant.getThumbKey(loginUid, comment.getUid());
 

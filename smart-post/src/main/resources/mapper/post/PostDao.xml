@@ -38,5 +38,9 @@
           AND pt.tag_uid = #{tagUid}
     </select>
 
+    <select id="getPost" resultType="cn.goroute.smart.common.entity.pojo.Post">
+        select * from smart_pms.t_post tp;
+    </select>
+
 
 </mapper>

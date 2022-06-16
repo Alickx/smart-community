@@ -50,7 +50,7 @@ public class RabbitmqUtil {
      *
      * @param post 文章实体类
      */
-    public void transPostCount2ES(Post post) {
+    public void transPost2ESUtil(Post post) {
         log.info("发送消息队列，更新文章点赞评论数量,post=>{}", post);
         rabbitTemplate
                 .convertAndSend(EXCHANGE,
@@ -65,11 +65,12 @@ public class RabbitmqUtil {
      * @param post       文章实体类
      * @param tagUidList 文章标签集合
      */
-    public void reviewPost(Post post, List<Long> tagUidList) {
+    public void reviewPost(Post post, List<Long> tagUidList,Boolean isUpdate) {
         log.info("发送消息队列，审查文章内容");
-        Map<String, Object> map = new HashMap<>(2);
+        Map<String, Object> map = new HashMap<>(3);
         map.put("post", JSONUtil.toJsonStr(post));
         map.put("tagUidList", JSONUtil.toJsonStr(tagUidList));
+        map.put("isUpdate",isUpdate);
         rabbitTemplate.convertAndSend(EXCHANGE,
                 "smart.post.review", map);
         log.info("文章审核消息发送完毕");

@@ -60,7 +60,7 @@ public class CategoryTagServiceImpl extends ServiceImpl<CategoryTagDao, Category
             return Result.error("没有此分类标签数据");
         }
 
-        List<Long> tagIds = categoryTagList.parallelStream()
+        List<Long> tagIds = categoryTagList.stream()
                 .map(CategoryTag::getTagUid).distinct().collect(Collectors.toList());
 
         if (CollectionUtil.isEmpty(tagIds)) {

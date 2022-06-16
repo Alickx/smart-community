@@ -66,7 +66,7 @@ public class CaptchaServiceImpl implements CaptchaService {
     public Result generateRegistrationVerificationCode(String emailAddress) {
 
         /**
-         * 注册验证码的键值（jhr）
+         * 注册验证码的键值（jhr）对应
          */
         String regCaptchaKey = RedisKeyConstant.REG_CAPTCHA_KEY + emailAddress;
 

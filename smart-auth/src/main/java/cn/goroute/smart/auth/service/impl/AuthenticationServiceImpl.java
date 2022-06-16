@@ -9,7 +9,10 @@ import cn.goroute.smart.common.entity.dto.MemberDTO;
 import cn.goroute.smart.common.entity.pojo.Member;
 import cn.goroute.smart.common.entity.vo.MemberLoginVO;
 import cn.goroute.smart.common.entity.vo.MemberRegisterVO;
-import cn.goroute.smart.common.utils.*;
+import cn.goroute.smart.common.service.AuthService;
+import cn.goroute.smart.common.utils.GetLoginUserAgentUtil;
+import cn.goroute.smart.common.utils.RedisUtil;
+import cn.goroute.smart.common.utils.Result;
 import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.crypto.digest.DigestUtil;
 import cn.hutool.extra.servlet.ServletUtil;
@@ -40,6 +43,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Autowired
     RedisUtil redisUtil;
 
+    @Autowired
+    AuthService authService;
+
     /**
      * 禁止注册时间
      */
@@ -49,8 +55,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     /**
      * 登录
+     *
      * @param memberLoginVO 登录信息
-     * @param request 请求
+     * @param request       请求
      * @return 登录结果
      */
     @Override
@@ -82,20 +89,20 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         // 登录成功，生成token
         StpUtil.login(member.getUid());
 
-        MemberDTO memberDTO = new MemberDTO();
+        MemberDTO memberDTO = new MemberDTO(member);
         BeanUtils.copyProperties(member, memberDTO);
 
         Map<String, Object> map = new HashMap<>(4);
-        map.put("access_token",StpUtil.getTokenValue());
-        map.put("user_info",memberDTO);
-        map.put("permission_list",StpUtil.getPermissionList());
-        map.put("role_list",StpUtil.getRoleList());
-
-        return Result.ok().put("data",map);
+        map.put("access_token", StpUtil.getTokenValue());
+        map.put("user_info", memberDTO);
+        map.put("permission_list", StpUtil.getPermissionList());
+        map.put("role_list", authService.getRoleList(member.getUid()));
+        return Result.ok().put("data", map);
     }
 
     /**
      * 注册
+     *
      * @param memberRegisterVO 注册信息
      * @return 注册结果
      */
@@ -122,7 +129,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         //校验验证码是否过期或存在
         if (!redisUtil.hasKey(regKey)) {
-            return Result.error(ResultCode.FAILED.getCode(),ResultCode.FAILED.getMessage());
+            return Result.error(ResultCode.FAILED.getCode(), ResultCode.FAILED.getMessage());
         }
 
         int errorCount = (int) redisUtil.hget(regKey, "errorCount");

@@ -1,11 +1,11 @@
 package cn.goroute.smart.search.service;
 
-import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.common.entity.dto.PostListDTO;
 import cn.goroute.smart.common.entity.pojo.Post;
 import cn.goroute.smart.common.exception.ServiceException;
 import cn.goroute.smart.common.constant.PostConstant;
 import cn.goroute.smart.common.constant.RedisKeyConstant;
+import cn.goroute.smart.common.service.AuthService;
 import cn.goroute.smart.common.utils.RedisUtil;
 import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.search.config.EsConstant;
@@ -37,6 +37,7 @@ import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
+import org.elasticsearch.search.sort.SortOrder;
 import org.elasticsearch.xcontent.XContentType;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +67,9 @@ public class PostSearchService {
 
     @Autowired
     RedisUtil redisUtil;
+
+    @Autowired
+    AuthService authService;
 
     private static final String POST_ES_INDEX = "smart-post";
 
@@ -100,8 +104,9 @@ public class PostSearchService {
         }
         boolQuery.filter(QueryBuilders.termQuery("status", 0));
         searchSourceBuilder.query(boolQuery);
-        searchSourceBuilder.from((postSearchParam.getCurPage() - 1) * EsConstant.pageSize);
-        searchSourceBuilder.size(EsConstant.pageSize);
+        searchSourceBuilder.from((postSearchParam.getCurPage() - 1) * EsConstant.PAGE_SIZE);
+        searchSourceBuilder.size(EsConstant.PAGE_SIZE);
+        searchSourceBuilder.sort("createdTime", Integer.parseInt(postSearchParam.getSortType()) == 0 ? SortOrder.ASC : SortOrder.DESC);
         searchSourceBuilder.highlighter(new HighlightBuilder()
                 .requireFieldMatch(false).field("title")
                 .field("summary")
@@ -121,8 +126,8 @@ public class PostSearchService {
                 PostListDTO postListDTO = new PostListDTO();
                 BeanUtils.copyProperties(postEsModel, postListDTO);
                 postListDTO.setAuthorInfo(memberFeignService.getMemberByUid(postEsModel.getMemberUid()));
-                if (StpUtil.isLogin()) {
-                    postListDTO.setIsLike(postFeignService.isLike(StpUtil.getLoginIdAsLong(), postEsModel.getUid()));
+                if (authService.getIsLogin()) {
+                    postListDTO.setIsLike(postFeignService.isLike(authService.getLoginUid(), postEsModel.getUid()));
                 } else {
                     postListDTO.setIsLike(false);
                 }
@@ -143,7 +148,7 @@ public class PostSearchService {
             long total = hits.getTotalHits().value;
             postSearchResponse.setTotal(total);
             postSearchResponse.setPageNum(postSearchParam.getCurPage());
-            int totalPages = (int) (total % EsConstant.pageSize) == 0 ? (int) (total / EsConstant.pageSize) : (int) (total / EsConstant.pageSize + 1);
+            int totalPages = (int) (total % EsConstant.PAGE_SIZE) == 0 ? (int) (total / EsConstant.PAGE_SIZE) : (int) (total / EsConstant.PAGE_SIZE + 1);
             postSearchResponse.setTotalPages(totalPages);
             return Result.ok().put("data", postSearchResponse);
         } catch (IOException e) {
@@ -153,8 +158,9 @@ public class PostSearchService {
 
     /**
      * 查询服务-文章
-     * @param hits 查询结果
-     * @param searchHits 查询结果
+     *
+     * @param hits            查询结果
+     * @param searchHits      查询结果
      * @param postEsModelList 查询结果集合
      * @Description: 高亮
      */
@@ -213,20 +219,17 @@ public class PostSearchService {
      *
      * @param post 文章实体类
      */
-    public void transPostCount2ES(Post post) throws IOException {
+    public void transPost2ES(Post post) throws IOException {
 
         long uid = post.getUid();
-        Integer thumbCount = post.getThumbCount();
-        Integer commentCount = post.getCommentCount();
 
         PostEsModel postEsModel = new PostEsModel();
-        postEsModel.setCommentCount(commentCount);
-        postEsModel.setThumbCount(thumbCount);
+        BeanUtils.copyProperties(post, postEsModel);
 
         String jsonStr = JSONUtil.toJsonStr(postEsModel);
         UpdateRequest request = new UpdateRequest("smart-post", String.valueOf(uid));
         request.doc(jsonStr, XContentType.JSON);
         UpdateResponse updateResponse = restHighLevelClient.update(request, RequestOptions.DEFAULT);
-        log.info("ElasticSearch文章信息更新完成，updateResponse=>{}",updateResponse);
+        log.info("ElasticSearch文章信息更新完成，updateResponse=>{}", updateResponse);
     }
 }

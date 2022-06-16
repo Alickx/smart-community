@@ -4,7 +4,6 @@ import cn.goroute.smart.common.entity.pojo.EventRemind;
 import cn.goroute.smart.common.utils.QueryParam;
 import cn.goroute.smart.common.utils.Result;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.springframework.validation.annotation.Validated;
 
 /**
  * @author Alickx
@@ -13,7 +12,7 @@ import org.springframework.validation.annotation.Validated;
  */
 public interface EventRemindService extends IService<EventRemind> {
 
-    Result queryEventRemind(@Validated QueryParam queryParam);
+    Result queryEventRemind(QueryParam queryParam);
 
     Result queryUnreadCountRemind();
 }

@@ -1,6 +1,5 @@
 package cn.goroute.smart.post.controller;
 
-import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.goroute.smart.common.entity.vo.PostQueryVO;
 import cn.goroute.smart.common.entity.vo.PostVO;
 import cn.goroute.smart.common.utils.QueryParam;
@@ -44,7 +43,7 @@ public class PostController {
      * @param postVo 文章接受类
      * @return 发布/编辑结果
      */
-    @SaCheckLogin
+
     @PostMapping("/save")
     public Result save(@Validated @RequestBody PostVO postVo) {
         return postService.savePost(postVo);
@@ -52,7 +51,7 @@ public class PostController {
     /**
      * 删除文章
      */
-    @SaCheckLogin
+
     @PostMapping("/delete")
     public Result delete(@RequestParam Long postUid) {
         return postService.deletePost(postUid);

@@ -2,11 +2,11 @@ package cn.goroute.smart.member.service.impl;
 
 import cn.goroute.smart.common.constant.Constant;
 import cn.goroute.smart.common.dao.MemberDao;
-import cn.goroute.smart.common.dao.UserBanDao;
+import cn.goroute.smart.common.dao.MemberBanDao;
 import cn.goroute.smart.common.entity.dto.MemberBanDTO;
 import cn.goroute.smart.common.entity.dto.MemberDTO;
 import cn.goroute.smart.common.entity.pojo.Member;
-import cn.goroute.smart.common.entity.pojo.UserBan;
+import cn.goroute.smart.common.entity.pojo.MemberBan;
 import cn.goroute.smart.common.entity.vo.MemberBanSearchVO;
 import cn.goroute.smart.common.utils.ModelConverterUtils;
 import cn.goroute.smart.common.utils.PageUtils;
@@ -35,7 +35,7 @@ public class QueryBanMember implements IQueryBanMember {
     private MemberDao memberDao;
 
     @Autowired
-    private UserBanDao userBanDao;
+    private MemberBanDao memberBanDao;
 
     @Override
     public PageUtils queryBanMember(MemberBanSearchVO memberBanSearchVO) {
@@ -43,14 +43,14 @@ public class QueryBanMember implements IQueryBanMember {
         String pageSize = memberBanSearchVO.getPageSize();
         String curPage = memberBanSearchVO.getCurPage();
 
-        IPage<UserBan> userBanPage;
+        IPage<MemberBan> userBanPage;
 
         if (memberBanSearchVO.getStartTime() != null) {
-            userBanPage = userBanDao.selectPage(new Query<UserBan>().getPage(curPage, pageSize), new LambdaQueryWrapper<UserBan>()
-                    .ge(UserBan::getBanTime, LocalDateTime.ofEpochSecond(Long.parseLong(memberBanSearchVO.getStartTime())/ 1000, 0, ZoneOffset.ofHours(8)))
-                    .le(UserBan::getBanTime, LocalDateTime.ofEpochSecond(Long.parseLong(memberBanSearchVO.getEndTime()) / 1000, 0, ZoneOffset.ofHours(8))));
+            userBanPage = memberBanDao.selectPage(new Query<MemberBan>().getPage(curPage, pageSize), new LambdaQueryWrapper<MemberBan>()
+                    .ge(MemberBan::getBanTime, LocalDateTime.ofEpochSecond(Long.parseLong(memberBanSearchVO.getStartTime())/ 1000, 0, ZoneOffset.ofHours(8)))
+                    .le(MemberBan::getBanTime, LocalDateTime.ofEpochSecond(Long.parseLong(memberBanSearchVO.getEndTime()) / 1000, 0, ZoneOffset.ofHours(8))));
         } else {
-            userBanPage = userBanDao.selectPage(new Query<UserBan>().getPage(curPage, pageSize), new LambdaQueryWrapper<>());
+            userBanPage = memberBanDao.selectPage(new Query<MemberBan>().getPage(curPage, pageSize), new LambdaQueryWrapper<>());
         }
         if (CollectionUtil.isEmpty(userBanPage.getRecords())) {
             return new PageUtils(userBanPage);

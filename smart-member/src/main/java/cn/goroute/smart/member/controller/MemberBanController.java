@@ -13,11 +13,11 @@ import java.util.List;
 /**
  * @Author: Alickx
  * @Date: 2022/05/23/20:24
- * @Description: 用户管理控制器
+ * @Description: 用户Ban
  */
 @RestController
 @RequestMapping("/member/manage")
-public class MemberManagementController {
+public class MemberBanController {
 
     @Autowired
     private MemberBanService memberBanService;
@@ -41,12 +41,22 @@ public class MemberManagementController {
     }
 
     /**
+     * 查询用户所有的封禁项
+     * @param memberUid 用户Uid
+     * @return 封禁项列表
+     */
+    @GetMapping("/ban/query")
+    public Result queryBannedMember(@RequestParam("memberUid") Long memberUid) {
+        return memberBanService.queryBannedMember(memberUid);
+    }
+
+    /**
      * 分页查询所有用户
-     * @param
-     * @return
+     * @param memberBanSearchVO 查询条件
+     * @return 用户列表
      */
     @GetMapping("/list/query")
-    public Result batchQueryMembers(@Valid MemberBanSearchVO memberBanSearchVO) {
+    public Result batchQueryBanMembers(@Valid MemberBanSearchVO memberBanSearchVO) {
         return memberBanService.batchQueryUsers(memberBanSearchVO);
     }
 

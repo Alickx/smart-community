@@ -2,7 +2,6 @@ package cn.goroute.smart.member.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.stp.StpUtil;
-import cn.goroute.smart.common.api.ResultCode;
 import cn.goroute.smart.common.entity.dto.MemberDTO;
 import cn.goroute.smart.common.entity.pojo.Member;
 import cn.goroute.smart.common.entity.vo.MemberInfoUpdateVO;
@@ -52,7 +51,7 @@ public class MemberController {
         memberUidList.forEach(uid -> {
             Member member = memberService.getById(uid);
             if (Objects.nonNull(member)) {
-                MemberDTO memberDTO = new MemberDTO();
+                MemberDTO memberDTO = new MemberDTO(member);
                 BeanUtils.copyProperties(member, memberDTO);
                 res.add(memberDTO);
             }
@@ -101,11 +100,11 @@ public class MemberController {
     public Result info(@PathVariable("uid") String uid) {
         Member member = memberService.getById(uid);
         if (member != null) {
-            MemberDTO memberDTO = new MemberDTO();
+            MemberDTO memberDTO = new MemberDTO(member);
             BeanUtils.copyProperties(Objects.requireNonNull(member), memberDTO);
             return Result.ok().put("data", memberDTO);
         } else {
-            return Result.error(ResultCode.FAILED.getCode(), ResultCode.FAILED.getMessage());
+            return Result.error("该用户不存在!");
         }
     }
 
@@ -118,7 +117,7 @@ public class MemberController {
     @GetMapping("/getMemberByUid")
     public MemberDTO getMemberByUid(@RequestParam String uid) {
         Member member = memberService.getById(uid);
-        MemberDTO memberDTO = new MemberDTO();
+        MemberDTO memberDTO = new MemberDTO(member);
         BeanUtils.copyProperties(Objects.requireNonNull(member), memberDTO);
         return memberDTO;
     }
