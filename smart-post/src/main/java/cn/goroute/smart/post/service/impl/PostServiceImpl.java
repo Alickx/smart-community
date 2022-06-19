@@ -73,7 +73,7 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
     CommentDao commentDao;
 
     @Autowired
-    RedisTemplate<String, Object> redisTemplate;
+    RedisTemplate<Object, Object> redisTemplate;
 
     @Autowired
     RedisUtil redisUtil;
@@ -99,7 +99,6 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
     public Result queryPage(PostQueryVO postQueryVO) {
 
         List<Post> post = postDao.getPost();
-        log.info(post.toString());
 
         IPage<Post> page;
 

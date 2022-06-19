@@ -62,7 +62,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
     RedisUtil redisUtil;
 
     @Autowired
-    RedisTemplate<String, Object> redisTemplate;
+    RedisTemplate<Object, Object> redisTemplate;
 
     @Autowired
     PostDao postDao;

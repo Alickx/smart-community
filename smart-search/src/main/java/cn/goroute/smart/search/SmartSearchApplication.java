@@ -6,9 +6,10 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
-@SpringBootApplication(scanBasePackages = {"cn.goroute.smart.common.utils",
-        "cn.goroute.smart.common.config",
-        "cn.goroute.smart.search"})
+/**
+ * @author Alickx
+ */
+@SpringBootApplication(scanBasePackages = {"cn.goroute.smart"})
 @EnableDiscoveryClient
 @RefreshScope
 @EnableFeignClients("cn.goroute.smart.search.feign")

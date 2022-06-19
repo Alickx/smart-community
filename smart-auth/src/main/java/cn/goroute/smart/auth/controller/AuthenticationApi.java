@@ -6,10 +6,7 @@ import cn.goroute.smart.common.entity.vo.MemberRegisterVO;
 import cn.goroute.smart.common.service.AuthService;
 import cn.goroute.smart.common.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -47,6 +44,17 @@ public class AuthenticationApi {
     public Result register(@RequestBody MemberRegisterVO memberRegisterVO) {
         return authenticationService.register(memberRegisterVO);
     }
+
+    @GetMapping("/isLogin")
+    public Result isLogin() {
+        Boolean isLogin = authService.getIsLogin();
+        if (isLogin) {
+            return Result.ok();
+        }
+        return Result.error(401, "用户未登录");
+    }
+
+
 
 
 }

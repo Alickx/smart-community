@@ -4,11 +4,11 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
-import net.logstash.logback.marker.Markers;
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
-import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -34,19 +34,11 @@ import java.util.*;
 @Slf4j
 public class WebLogAspect {
 
-    @Pointcut("execution(public * cn.goroute.smart.*.controller.*.*(..))")
-    public void webLog() {
+    @Pointcut("@annotation(cn.goroute.smart.common.annotations.ParamLog)")
+    public void methodPointcut() {
     }
 
-    @Before("webLog()")
-    public void doBefore(JoinPoint joinPoint) throws Throwable {
-    }
-
-    @AfterReturning(value = "webLog()", returning = "ret")
-    public void doAfterReturning(Object ret) throws Throwable {
-    }
-
-    @Around("webLog()")
+    @Around(value = "methodPointcut()")
     public Object doAround(ProceedingJoinPoint joinPoint) throws Throwable {
         long startTime = System.currentTimeMillis();
         //获取当前请求对象
@@ -70,14 +62,14 @@ public class WebLogAspect {
         webLog.setStartTime(startTime);
         webLog.setUri(request.getRequestURI());
         webLog.setUrl(request.getRequestURL().toString());
-        Map<String, Object> logMap = new HashMap<>();
-        logMap.put("url", webLog.getUrl());
-        logMap.put("method", webLog.getMethod());
-        logMap.put("parameter", webLog.getParameter());
-        logMap.put("spendTime", webLog.getSpendTime());
-        logMap.put("description", webLog.getDescription());
-//        LOGGER.info("{}", JSONUtil.parse(webLog));
-        log.info(Markers.appendEntries(logMap), JSONUtil.parse(webLog).toString());
+//        Map<String, Object> logMap = new HashMap<>();
+//        logMap.put("url", webLog.getUrl());
+//        logMap.put("method", webLog.getMethod());
+//        logMap.put("parameter", webLog.getParameter());
+//        logMap.put("spendTime", webLog.getSpendTime());
+//        logMap.put("description", webLog.getDescription());
+        log.info("{}", JSONUtil.parse(webLog).toString());
+//        log.info(Markers.appendEntries(logMap), JSONUtil.parse(webLog).toString());
         return result;
     }
 

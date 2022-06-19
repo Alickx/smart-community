@@ -2,6 +2,7 @@ package cn.goroute.smart.common.log;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * @Author: Alickx
@@ -9,6 +10,7 @@ import lombok.EqualsAndHashCode;
  * @Description: Controller层日志输出工具类
  */
 @Data
+@ToString
 @EqualsAndHashCode(callSuper = false)
 public class WebLog {
 

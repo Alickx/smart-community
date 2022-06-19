@@ -9,17 +9,22 @@ import cn.goroute.smart.common.exception.ServiceException;
 import cn.goroute.smart.post.util.IllegalTextCheckUtil;
 import cn.goroute.smart.post.util.RabbitmqUtil;
 import cn.hutool.json.JSONUtil;
+import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 @Component
 @Slf4j
+@RabbitListener(queues = "smart.post.review")
 public class PostReviewListener {
 
     @Autowired
@@ -34,35 +39,53 @@ public class PostReviewListener {
     @Autowired
     PostDao postDao;
 
-    @RabbitListener(queues = "smart.post.review")
-    public void review(Map map) {
-        log.info("开始审核文章内容");
-        Post postEntity = JSONUtil.toBean((String) map.get("post"), Post.class);
-        List<Long> tagUidList = JSONUtil.toList((String) map.get("tagUidList"), Long.class);
-        boolean isUpdate = (boolean) map.get("isUpdate");
-        Boolean titleCheckResult = textCheckUtil.checkText(postEntity.getTitle());
-        Boolean contentCheckResult = textCheckUtil.checkText(postEntity.getContent());
+    @RabbitHandler
+    public void review(Map<Object, Object> map, Channel channel, Message message) throws IOException {
+        try {
+            Post postEntity = JSONUtil.toBean((String) map.get("post"), Post.class);
+            List<Long> tagUidList = JSONUtil.toList((String) map.get("tagUidList"), Long.class);
+            boolean isUpdate = (boolean) map.get("isUpdate");
 
-        //审核文章
-        if (titleCheckResult || contentCheckResult) {
-            postEntity.setStatus(PostConstant.INVISIBLE_STATUS);
-            log.info("文章内容含有违禁词");
-            int result = postDao.updateById(postEntity);
-            if (result != 1) {
-                throw new ServiceException("文章存入数据库失败");
+            Boolean titleCheckResult = textCheckUtil.checkText(postEntity.getTitle());
+            Boolean contentCheckResult = textCheckUtil.checkText(postEntity.getContent());
+
+            // 根据审核结果进行不同的处理
+            if (titleCheckResult || contentCheckResult) {
+                containedBannedWordHandler(postEntity);
+            } else {
+                reviewSuccessHandler(postEntity, tagUidList, isUpdate);
             }
-            return;
-        } else {
-            log.info("文章初步审核无违禁词");
-            postEntity.setStatus(PostConstant.NORMAL_STATUS);
-            int result = postDao.updateById(postEntity);
-            if (result != 1) {
-                throw new ServiceException("文章存入数据库失败");
+
+            // 手动应答消息队列
+            channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+        } catch (Exception e) {
+
+            if (message.getMessageProperties().getRedelivered()) {
+
+                log.error("文章审核失败,消息已重复处理,拒绝消息,内容:{}", map, e);
+                channel.basicReject(message.getMessageProperties().getDeliveryTag(), false);
+            } else {
+
+                log.error("消息即将再次返回队列,内容:{}", map, e);
+                channel.basicNack(message.getMessageProperties().getDeliveryTag(), false, true);
             }
+        }
+    }
+
+    /**
+     * 审核成功处理
+     * @param postEntity 文章实体
+     * @param tagUidList 标签id列表
+     * @param isUpdate 是否更新
+     */
+    private void reviewSuccessHandler(Post postEntity, List<Long> tagUidList, boolean isUpdate) {
+        postEntity.setStatus(PostConstant.NORMAL_STATUS);
+        int result = postDao.updateById(postEntity);
+        if (result != 1) {
+            throw new ServiceException("文章存入数据库失败");
         }
         //审核通过则更新文章
         if (Objects.equals(postEntity.getIsPublish(), PostConstant.PUBLISH)) {
-            log.info("文章正常，开始存入es");
             if (isUpdate) {
                 rabbitmqUtil.transPost2ESUtil(postEntity);
             } else {
@@ -75,7 +98,19 @@ public class PostReviewListener {
             postTag.setTagUid(t);
             postTagDao.insert(postTag);
         });
+    }
 
+    /**
+     * 审核失败处理
+     * @param postEntity 文章实体
+     */
+    private void containedBannedWordHandler(Post postEntity) {
+        postEntity.setStatus(PostConstant.INVISIBLE_STATUS);
+        log.info("文章内容含有违禁词");
+        int result = postDao.updateById(postEntity);
+        if (result != 1) {
+            throw new ServiceException("文章存入数据库失败");
+        }
     }
 
 }

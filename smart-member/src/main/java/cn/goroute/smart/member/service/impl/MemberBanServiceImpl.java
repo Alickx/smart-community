@@ -82,10 +82,6 @@ public class MemberBanServiceImpl extends ServiceImpl<MemberBanDao, MemberBan>
             memberBanManage.sendNotify(memberBan, "您的账号已被封禁，原因是" + memberBan.getBanReason() + "，详情请查看个人中心");
         }
 
-        // 让用户重新登录，刷新权限
-        authService.logOut(Long.valueOf(memberBanVO.getMemberUid()));
-
-
         // 返回结果
         return Result.ok("封禁成功");
     }

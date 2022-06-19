@@ -1,13 +1,9 @@
 package cn.goroute.smart.common.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
-import cn.goroute.smart.common.dao.RoleDao;
 import cn.goroute.smart.common.service.AuthService;
-import cn.hutool.core.collection.CollUtil;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,9 +13,6 @@ import java.util.List;
  */
 @Service
 public class AuthSatokenServiceImpl implements AuthService {
-
-    @Resource
-    RoleDao roleDao;
 
     /**
      * 获取是否登录
@@ -48,12 +41,13 @@ public class AuthSatokenServiceImpl implements AuthService {
      */
     @Override
     public List<String> getRoleList(Long memberUid) {
-        List<String> roleList;
-        roleList = roleDao.getRoleNameByMemberUid(memberUid);
-        if (CollUtil.isEmpty(roleList)) {
-            return new ArrayList<>(0);
-        }
-        return roleList;
+//        List<String> roleList;
+//        roleList = roleDao.getRoleNameByMemberUid(memberUid);
+//        if (CollUtil.isEmpty(roleList)) {
+//            return new ArrayList<>(0);
+//        }
+//        return roleList;
+        return StpUtil.getRoleList();
     }
 
     /**

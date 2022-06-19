@@ -1,5 +1,7 @@
 package cn.goroute.smart.post.controller;
 
+import cn.goroute.smart.common.annotations.ParamLog;
+import cn.goroute.smart.common.annotations.RateLimiter;
 import cn.goroute.smart.common.entity.pojo.Tag;
 import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.post.service.TagService;
@@ -28,7 +30,9 @@ public class TagController {
      * 列表
      */
     @GetMapping("/list")
-    public Result list(){
+    @ParamLog
+    @RateLimiter(time = 5, count = 3)
+    public Result list() {
         List<Tag> list = tagService.list();
         return Result.ok().put("data", list);
     }
@@ -38,8 +42,8 @@ public class TagController {
      * 信息
      */
     @GetMapping("/info/{uid}")
-    public Result info(@PathVariable("uid") String uid){
-		Tag tag = tagService.getById(uid);
+    public Result info(@PathVariable("uid") String uid) {
+        Tag tag = tagService.getById(uid);
 
         return Result.ok().put("tag", tag);
     }
@@ -48,8 +52,8 @@ public class TagController {
      * 保存
      */
     @RequestMapping("/save")
-    public Result save(@Valid @RequestBody Tag tag){
-		tagService.save(tag);
+    public Result save(@Valid @RequestBody Tag tag) {
+        tagService.save(tag);
 
         return Result.ok();
     }
@@ -58,8 +62,8 @@ public class TagController {
      * 修改
      */
     @RequestMapping("/update")
-    public Result update(@RequestBody Tag tag){
-		tagService.updateById(tag);
+    public Result update(@RequestBody Tag tag) {
+        tagService.updateById(tag);
 
         return Result.ok();
     }
@@ -68,8 +72,8 @@ public class TagController {
      * 删除
      */
     @RequestMapping("/delete")
-    public Result delete(@RequestBody String[] uids){
-		tagService.removeByIds(Arrays.asList(uids));
+    public Result delete(@RequestBody String[] uids) {
+        tagService.removeByIds(Arrays.asList(uids));
 
         return Result.ok();
     }
