@@ -5,13 +5,13 @@
 <mapper namespace="cn.goroute.smart.common.dao.ThumbDao">
 
     <resultMap id="BaseResultMap" type="cn.goroute.smart.common.entity.pojo.Thumb">
-            <id property="uid" column="uid" jdbcType="INTEGER"/>
-            <result property="memberUid" column="member_uid" jdbcType="VARCHAR"/>
-            <result property="toMemberUid" column="to_member_uid" jdbcType="VARCHAR"/>
-            <result property="postUid" column="post_uid" jdbcType="VARCHAR"/>
-            <result property="type" column="type" jdbcType="INTEGER"/>
-            <result property="content" column="content" jdbcType="VARCHAR"/>
-            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+        <id property="uid" column="uid" jdbcType="INTEGER"/>
+        <result property="memberUid" column="member_uid" jdbcType="VARCHAR"/>
+        <result property="toMemberUid" column="to_member_uid" jdbcType="VARCHAR"/>
+        <result property="postUid" column="post_uid" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="INTEGER"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -19,4 +19,10 @@
         post_uid,type,content,
         created_time
     </sql>
+
+    <select id="selectThumbCount" resultType="java.lang.Integer">
+        select `thumb_count`
+        from smart_pms.t_post tp
+        where tp.uid = #{postUid};
+    </select>
 </mapper>

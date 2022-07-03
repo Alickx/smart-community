@@ -3,6 +3,7 @@ package cn.goroute.smart.common.dao;
 import cn.goroute.smart.common.entity.pojo.Thumb;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
 * @author Alickx
@@ -13,6 +14,7 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface ThumbDao extends BaseMapper<Thumb> {
 
+    int selectThumbCount(@Param("postUid") Long postUid);
 }
 
 

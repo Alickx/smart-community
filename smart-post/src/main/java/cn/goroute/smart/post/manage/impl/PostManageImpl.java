@@ -12,7 +12,6 @@ import cn.goroute.smart.common.feign.MemberFeignService;
 import cn.goroute.smart.common.utils.RedisUtil;
 import cn.goroute.smart.post.manage.IPostManage;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,7 +44,7 @@ public class PostManageImpl implements IPostManage {
      *
      * @param uid      目标uid
      * @param loginUid 用户uid
-     * @param type     类型
+     * @param type     类型 0 = 点赞  1 = 收藏
      * @return 是否点赞或是否收藏
      */
     @Override
@@ -107,8 +106,8 @@ public class PostManageImpl implements IPostManage {
             if (redisUtil.hHasKey(key, RedisKeyConstant.POST_THUMB_COUNT_KEY)) {
                 return (int) redisUtil.hget(key, RedisKeyConstant.POST_THUMB_COUNT_KEY);
             }
-            Post postEntity = postDao.selectOne(new QueryWrapper<Post>().eq("uid", post.getUid()));
-            thumbCount = postEntity.getThumbCount();
+
+            thumbCount = postDao.selectThumbCount(post.getUid());
             redisUtil.hset(key, RedisKeyConstant.POST_THUMB_COUNT_KEY, thumbCount);
         }
         return thumbCount;
@@ -129,15 +128,14 @@ public class PostManageImpl implements IPostManage {
         if (redisUtil.hHasKey(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY)) {
             return (int) redisUtil.hget(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY);
         }
-        int commentCount;
+        int commentCountResult;
         synchronized (this) {
             if (redisUtil.hHasKey(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY)) {
                 return (int) redisUtil.hget(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY);
             }
-            Post postEntity = postDao.selectOne(new QueryWrapper<Post>().eq("uid", post.getUid()));
-            commentCount = postEntity.getCommentCount();
-            redisUtil.hset(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY, commentCount);
+            commentCountResult = postDao.getCommentCount(postUid);
+            redisUtil.hset(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY, commentCountResult);
         }
-        return commentCount;
+        return commentCountResult;
     }
 }

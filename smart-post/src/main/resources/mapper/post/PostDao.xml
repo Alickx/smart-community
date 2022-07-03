@@ -38,8 +38,12 @@
           AND pt.tag_uid = #{tagUid}
     </select>
 
-    <select id="getPost" resultType="cn.goroute.smart.common.entity.pojo.Post">
-        select * from smart_pms.t_post tp;
+    <select id="getCommentCount" resultType="java.lang.Integer">
+        select p.comment_count from smart_pms.t_post p where p.uid = #{postUid};
+    </select>
+
+    <select id="selectThumbCount" resultType="java.lang.Integer">
+        select p.thumb_count from smart_pms.t_post p where p.uid = #{postUid};
     </select>
 
 

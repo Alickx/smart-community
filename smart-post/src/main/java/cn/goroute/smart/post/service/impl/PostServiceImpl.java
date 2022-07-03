@@ -98,8 +98,6 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
     @Override
     public Result queryPage(PostQueryVO postQueryVO) {
 
-        List<Post> post = postDao.getPost();
-
         IPage<Post> page;
 
         // 查询条件 如果没有选择分类，则查询全部
@@ -159,7 +157,6 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
      */
     private List<PostListDTO> getPostListDTOS(boolean isLogin, List<Post> records) {
 
-        List<PostListDTO> postDTOList = new ArrayList<>(records.size());
 
         ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(
                 CORE_SIZE + 1,
@@ -167,30 +164,31 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
                 1L,
                 TimeUnit.SECONDS,
                 new ArrayBlockingQueue<>(100),
-                new NamingThreadFactory("post-get-post-list-dto-thread"));
-
-        //遍历文章数据并转换为文章DTO
-        CountDownLatch countDownLatch = new CountDownLatch(records.size());
-        for (Post record : records) {
-            Long loginId = authService.getIsLogin() ? authService.getLoginUid() : null;
-            poolExecutor.submit(() -> {
-                try {
-                    getPostInfo(isLogin, postDTOList, record, loginId);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    // 当线程执行完毕后，计数器减1
-                    countDownLatch.countDown();
-                }
-            });
-        }
+                new NamingThreadFactory(this.getClass().getName() + "-thread"));
         try {
+            List<PostListDTO> postDTOList = new ArrayList<>(records.size());
+            //遍历文章数据并转换为文章DTO
+            CountDownLatch countDownLatch = new CountDownLatch(records.size());
+            for (Post record : records) {
+                Long loginId = authService.getIsLogin() ? authService.getLoginUid() : null;
+                poolExecutor.submit(() -> {
+                    try {
+                        getPostInfo(isLogin, postDTOList, record, loginId);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                        // 当线程执行完毕后，计数器减1
+                        countDownLatch.countDown();
+                    }
+                });
+            }
             countDownLatch.await();
-        } catch (InterruptedException e) {
+            return postDTOList;
+        } catch (RuntimeException | InterruptedException e) {
             throw new RuntimeException(e);
+        } finally {
+            poolExecutor.shutdown();
         }
-
-        return postDTOList;
     }
 
     /**
