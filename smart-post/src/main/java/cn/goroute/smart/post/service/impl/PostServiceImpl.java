@@ -37,10 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.*;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 
@@ -156,8 +153,7 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
      * @return List<PostListDTO> 文章DTO集合
      */
     private List<PostListDTO> getPostListDTOS(boolean isLogin, List<Post> records) {
-
-
+        // 创建线程池
         ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(
                 CORE_SIZE + 1,
                 2 * CORE_SIZE + 1,
@@ -170,12 +166,12 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
             //遍历文章数据并转换为文章DTO
             CountDownLatch countDownLatch = new CountDownLatch(records.size());
             for (Post record : records) {
-                Long loginId = authService.getIsLogin() ? authService.getLoginUid() : null;
+                Long loginId = authService.getLoginUid();
                 poolExecutor.submit(() -> {
                     try {
                         getPostInfo(isLogin, postDTOList, record, loginId);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        log.error("获取文章列表信息异常：{}", e.getMessage());
                     } finally {
                         // 当线程执行完毕后，计数器减1
                         countDownLatch.countDown();
@@ -198,20 +194,46 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
      * @param postDTOList 文章DTO集合
      * @param record      文章对象
      */
-    private void getPostInfo(boolean isLogin, List<PostListDTO> postDTOList, Post record, Long loginId) {
+    private void getPostInfo(boolean isLogin, List<PostListDTO> postDTOList, Post record, Long loginId) throws InterruptedException {
+        // 创建线程池
+        ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(
+                CORE_SIZE + 1,
+                2 * CORE_SIZE + 1,
+                1L,
+                TimeUnit.SECONDS,
+                new ArrayBlockingQueue<>(100),
+                new NamingThreadFactory(this.getClass().getName() + "-thread"));
+
+
         PostListDTO postListDTO = new PostListDTO();
         BeanUtils.copyProperties(record, postListDTO);
-        postListDTO.setAuthorInfo(memberFeignService.getMemberByUid(record.getMemberUid()));
-        postListDTO.setCommentCount(iPostManage.getCommentCount(record));
-        if (isLogin) {
-            postListDTO.setIsLike(iPostManage.checkIsThumbOrCollect(record.getUid(), loginId, 0));
-            postListDTO.setIsCollect(iPostManage.checkIsThumbOrCollect(record.getUid(), loginId, 1));
-        } else {
-            postListDTO.setIsLike(false);
-            postListDTO.setIsCollect(false);
-        }
-        postListDTO.setThumbCount(iPostManage.getThumbCount(record));
-        postDTOList.add(postListDTO);
+
+        CompletableFuture<PostListDTO> postListDTOCompletableFuture = CompletableFuture.supplyAsync(() -> {
+            postListDTO.setAuthorInfo(memberFeignService.getMemberByUid(record.getMemberUid()));
+            return postListDTO;
+        },poolExecutor);
+
+        CompletableFuture<PostListDTO> postListDTOCompletableFuture2 = CompletableFuture.supplyAsync(() -> {
+            postListDTO.setThumbCount(iPostManage.getThumbCount(record.getUid()));
+            postListDTO.setCommentCount(iPostManage.getCommentCount(record.getUid()));
+            if (isLogin) {
+                postListDTO.setIsLike(iPostManage.checkIsThumbOrCollect(record.getUid(), loginId, 0));
+                postListDTO.setIsCollect(iPostManage.checkIsThumbOrCollect(record.getUid(), loginId, 1));
+            } else {
+                postListDTO.setIsLike(false);
+                postListDTO.setIsCollect(false);
+            }
+            return postListDTO;
+        },poolExecutor);
+
+        postListDTOCompletableFuture.thenCombine(postListDTOCompletableFuture2, (postListDTO1, postListDTO2) -> postListDTO1)
+                .thenAccept(postDTOList::add).exceptionally(ex->{
+                    log.error("获取文章列表信息异常：{}", ex.getMessage());
+                    poolExecutor.shutdown();
+                    return null;
+                }).join();
+
+        poolExecutor.shutdown();
     }
 
     /**
@@ -400,7 +422,7 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
             PostListDTO postListDTO = new PostListDTO();
             BeanUtils.copyProperties(postEntity, postListDTO);
             postListDTO.setAuthorInfo(memberDTO);
-            postListDTO.setThumbCount(iPostManage.getThumbCount(postEntity));
+            postListDTO.setThumbCount(iPostManage.getThumbCount(postEntity.getUid()));
             if (authService.getIsLogin()) {
                 postListDTO.setIsLike(iPostManage.checkIsThumbOrCollect(postEntity.getUid(), authService.getLoginUid(), 0));
                 postListDTO.setIsCollect(iPostManage.checkIsThumbOrCollect(postEntity.getUid(), authService.getLoginUid(), 1));

@@ -31,7 +31,11 @@ public class AuthSatokenServiceImpl implements AuthService {
      */
     @Override
     public Long getLoginUid() {
-        return StpUtil.getLoginIdAsLong();
+        if (this.getIsLogin()) {
+            return StpUtil.getLoginIdAsLong();
+        } else {
+            return null;
+        }
     }
 
     /**

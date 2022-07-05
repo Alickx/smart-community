@@ -6,7 +6,6 @@ import cn.goroute.smart.common.dao.CollectDao;
 import cn.goroute.smart.common.dao.PostDao;
 import cn.goroute.smart.common.dao.ThumbDao;
 import cn.goroute.smart.common.entity.pojo.Collect;
-import cn.goroute.smart.common.entity.pojo.Post;
 import cn.goroute.smart.common.entity.pojo.Thumb;
 import cn.goroute.smart.common.feign.MemberFeignService;
 import cn.goroute.smart.common.utils.RedisUtil;
@@ -88,14 +87,14 @@ public class PostManageImpl implements IPostManage {
     /**
      * 获取文章的总点赞
      *
-     * @param post 文章实体
+     * @param postUid 文章主键
      * @return 点赞数
      */
     @Override
-    public int getThumbCount(Post post) {
+    public int getThumbCount(Long postUid) {
 
         //先从缓存中获取再去数据库中获取
-        String key = RedisKeyConstant.POST_COUNT_KEY + post.getUid();
+        String key = RedisKeyConstant.POST_COUNT_KEY + postUid;
         if (redisUtil.hHasKey(key, RedisKeyConstant.POST_THUMB_COUNT_KEY)) {
             return (int) redisUtil.hget(key, RedisKeyConstant.POST_THUMB_COUNT_KEY);
         }
@@ -107,7 +106,7 @@ public class PostManageImpl implements IPostManage {
                 return (int) redisUtil.hget(key, RedisKeyConstant.POST_THUMB_COUNT_KEY);
             }
 
-            thumbCount = postDao.selectThumbCount(post.getUid());
+            thumbCount = postDao.selectThumbCount(postUid);
             redisUtil.hset(key, RedisKeyConstant.POST_THUMB_COUNT_KEY, thumbCount);
         }
         return thumbCount;
@@ -120,9 +119,8 @@ public class PostManageImpl implements IPostManage {
      * @return 文章评论总数
      */
     @Override
-    public int getCommentCount(Post post) {
+    public int getCommentCount(Long postUid) {
 
-        Long postUid = post.getUid();
 
         String key = RedisKeyConstant.POST_COUNT_KEY + postUid;
         if (redisUtil.hHasKey(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY)) {

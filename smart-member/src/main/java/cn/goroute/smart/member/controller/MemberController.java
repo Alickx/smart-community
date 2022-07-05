@@ -117,8 +117,10 @@ public class MemberController {
     @GetMapping("/getMemberByUid")
     public MemberDTO getMemberByUid(@RequestParam String uid) {
         Member member = memberService.getById(uid);
-        MemberDTO memberDTO = new MemberDTO(member);
-        BeanUtils.copyProperties(Objects.requireNonNull(member), memberDTO);
+        MemberDTO memberDTO = new MemberDTO();
+        if (member != null) {
+            BeanUtils.copyProperties(member, memberDTO);
+        }
         return memberDTO;
     }
 
