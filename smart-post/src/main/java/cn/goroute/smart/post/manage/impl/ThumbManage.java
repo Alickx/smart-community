@@ -1,8 +1,8 @@
 package cn.goroute.smart.post.manage.impl;
 
 import cn.goroute.smart.common.dao.PostDao;
-import cn.goroute.smart.common.entity.dto.MemberDTO;
-import cn.goroute.smart.common.entity.dto.PostListDTO;
+import cn.goroute.smart.common.entity.dto.MemberDto;
+import cn.goroute.smart.common.entity.dto.PostListDto;
 import cn.goroute.smart.common.entity.pojo.Post;
 import cn.goroute.smart.common.feign.MemberFeignService;
 import cn.goroute.smart.post.manage.IPostManage;
@@ -38,7 +38,7 @@ public class ThumbManage implements IThumbManage {
      * @return 文章列表DTO
      */
     @Override
-    public List<PostListDTO> getPostDTOListByPostIdList(List<Long> postIdList) {
+    public List<PostListDto> getPostDTOListByPostIdList(List<Long> postIdList) {
 
         if (postIdList == null || postIdList.size() == 0) {
             return new ArrayList<>(0);
@@ -46,11 +46,11 @@ public class ThumbManage implements IThumbManage {
 
         List<Post> posts = postDao.selectBatchIds(postIdList);
 
-        List<PostListDTO> result = new ArrayList<>(posts.size());
+        List<PostListDto> result = new ArrayList<>(posts.size());
         for (Post post : posts) {
-            PostListDTO postListDTO = new PostListDTO();
+            PostListDto postListDTO = new PostListDto();
             Long memberUid = post.getMemberUid();
-            MemberDTO member = memberFeignService.getMemberByUid(memberUid);
+            MemberDto member = memberFeignService.getMemberByUid(memberUid);
             postListDTO.setAuthorInfo(member);
             BeanUtils.copyProperties(post, postListDTO);
             postListDTO.setIsLike(iPostManage.checkIsThumbOrCollect(post.getUid(), memberUid, 0));

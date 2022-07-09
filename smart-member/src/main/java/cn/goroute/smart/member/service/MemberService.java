@@ -1,7 +1,7 @@
 package cn.goroute.smart.member.service;
 
 import cn.goroute.smart.common.entity.pojo.Member;
-import cn.goroute.smart.common.entity.vo.MemberInfoUpdateVO;
+import cn.goroute.smart.common.entity.vo.MemberInfoUpdateVo;
 import cn.goroute.smart.common.utils.Result;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -14,7 +14,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface MemberService extends IService<Member> {
 
-    Result updateMemberInfo(MemberInfoUpdateVO memberVO);
+    Result updateMemberInfo(MemberInfoUpdateVo memberVO);
 
 }
 

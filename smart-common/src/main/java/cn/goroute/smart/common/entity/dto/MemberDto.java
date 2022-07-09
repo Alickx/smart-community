@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberDTO {
+public class MemberDto {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long uid;
@@ -66,7 +66,7 @@ public class MemberDTO {
      */
     private Integer status;
 
-    public MemberDTO(Member member) {
+    public MemberDto(Member member) {
         this.uid = member.getUid();
         this.nickName = member.getNickName();
         this.gender = member.getGender();

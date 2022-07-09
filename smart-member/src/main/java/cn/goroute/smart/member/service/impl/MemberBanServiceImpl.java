@@ -3,8 +3,8 @@ package cn.goroute.smart.member.service.impl;
 import cn.goroute.smart.common.constant.Constant;
 import cn.goroute.smart.common.dao.MemberBanDao;
 import cn.goroute.smart.common.entity.pojo.MemberBan;
-import cn.goroute.smart.common.entity.vo.MemberBanSearchVO;
-import cn.goroute.smart.common.entity.vo.MemberBanVO;
+import cn.goroute.smart.common.entity.vo.MemberBanSearchVo;
+import cn.goroute.smart.common.entity.vo.MemberBanVo;
 import cn.goroute.smart.common.service.AuthService;
 import cn.goroute.smart.common.utils.PageUtils;
 import cn.goroute.smart.common.utils.Result;
@@ -56,7 +56,7 @@ public class MemberBanServiceImpl extends ServiceImpl<MemberBanDao, MemberBan>
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public Result banUser(MemberBanVO memberBanVO) {
+    public Result banUser(MemberBanVo memberBanVO) {
 
         // 检查是否已经被封禁
         List<Integer> banType = memberBanVO.getBanType();
@@ -94,7 +94,7 @@ public class MemberBanServiceImpl extends ServiceImpl<MemberBanDao, MemberBan>
      * @return
      */
     @Override
-    public Result batchQueryUsers(MemberBanSearchVO memberBanSearchVO) {
+    public Result batchQueryUsers(MemberBanSearchVo memberBanSearchVO) {
 
         // 查询类型为空则查询全部
 

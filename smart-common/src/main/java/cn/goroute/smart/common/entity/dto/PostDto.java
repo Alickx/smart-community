@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author Alickx
@@ -13,28 +14,54 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostListDTO {
+public class PostDto {
 
+    /**
+     * 文章主键
+     */
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long uid;
+
     /**
-     * 标题
+     * 文章题目
      */
     private String title;
     /**
-     * 摘要
+     * 文章内容
+     */
+    private String content;
+
+    /**
+     * 0 = 不公布  1 = 公布
+     */
+    private String isPublish;
+
+    /**
+     * 分类id
+     */
+    private Long categoryUid;
+
+    /**
+     * 标签id
+     */
+    private List<Long> tagUid;
+
+    /**
+     * 文章摘要
      */
     private String summary;
+
     /**
-     * 创建时间
+     * 文章创建时间
      */
     private LocalDateTime createdTime;
+
     /**
-     * 收藏次数
+     * 文章收藏次数
      */
     private Integer collectCount;
     /**
-     * 点赞次数
+     * 文章点赞次数
      */
     private Integer thumbCount;
     /**
@@ -44,14 +71,21 @@ public class PostListDTO {
     /**
      * 作者信息
      */
-    private MemberDTO authorInfo;
+    private MemberDto authorInfo;
+
     /**
-     * 是否点赞
+     * 文章点赞信息
      */
     private Boolean isLike;
+
     /**
-     * 是否收藏
+     * 文章收藏信息
      */
     private Boolean isCollect;
+
+    /**
+     * 文章状态
+     */
+    private Integer status;
 
 }

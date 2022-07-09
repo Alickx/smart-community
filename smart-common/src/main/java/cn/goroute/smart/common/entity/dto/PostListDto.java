@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * @author Alickx
@@ -14,54 +13,45 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommentDTO {
+public class PostListDto {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long uid;
-
     /**
-     * 发送者
+     * 标题
      */
-    private MemberDTO fromMember;
-
+    private String title;
     /**
-     * 接受者
+     * 摘要
      */
-    private MemberDTO toMember;
-
+    private String summary;
     /**
-     * 评论内容
+     * 创建时间
      */
-    private String content;
-
+    private LocalDateTime createdTime;
     /**
-     * 0 = 一级评论 1 = 评论中回复
+     * 收藏次数
      */
-    private Integer type;
-
+    private Integer collectCount;
     /**
-     * 点赞数量
+     * 点赞次数
      */
     private Integer thumbCount;
-
     /**
-     * 子级评论
+     * 评论次数
      */
-    private List<CommentDTO> replyInfo;
-
+    private Integer commentCount;
+    /**
+     * 作者信息
+     */
+    private MemberDto authorInfo;
     /**
      * 是否点赞
      */
     private Boolean isLike;
-
     /**
-     *
+     * 是否收藏
      */
-    private LocalDateTime createdTime;
-    /**
-     * 是否有更多
-     */
-    private Boolean hasMore;
-
+    private Boolean isCollect;
 
 }

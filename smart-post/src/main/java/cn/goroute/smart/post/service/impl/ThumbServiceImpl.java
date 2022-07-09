@@ -4,7 +4,7 @@ import cn.goroute.smart.common.constant.PostConstant;
 import cn.goroute.smart.common.constant.RedisKeyConstant;
 import cn.goroute.smart.common.dao.PostDao;
 import cn.goroute.smart.common.dao.ThumbDao;
-import cn.goroute.smart.common.entity.dto.PostListDTO;
+import cn.goroute.smart.common.entity.dto.PostListDto;
 import cn.goroute.smart.common.entity.pojo.EventRemind;
 import cn.goroute.smart.common.entity.pojo.Post;
 import cn.goroute.smart.common.entity.pojo.Thumb;
@@ -235,7 +235,7 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbDao, Thumb>
 
         List<Long> postIdList = thumbPage.getRecords().stream().map(Thumb::getPostUid).collect(Collectors.toList());
 
-        List<PostListDTO> postDTOList = iThumbManage.getPostDTOListByPostIdList(postIdList);
+        List<PostListDto> postDTOList = iThumbManage.getPostDTOListByPostIdList(postIdList);
 
         PageUtils page = new PageUtils(thumbPage);
 

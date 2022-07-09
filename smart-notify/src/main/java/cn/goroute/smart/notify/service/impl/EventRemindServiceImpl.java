@@ -2,8 +2,8 @@ package cn.goroute.smart.notify.service.impl;
 
 import cn.goroute.smart.common.constant.NotificationConstant;
 import cn.goroute.smart.common.dao.EventRemindDao;
-import cn.goroute.smart.common.entity.dto.EventRemindDTO;
-import cn.goroute.smart.common.entity.dto.MemberDTO;
+import cn.goroute.smart.common.entity.dto.EventRemindDto;
+import cn.goroute.smart.common.entity.dto.MemberDto;
 import cn.goroute.smart.common.entity.pojo.EventRemind;
 import cn.goroute.smart.common.feign.MemberFeignService;
 import cn.goroute.smart.common.service.AuthService;
@@ -79,20 +79,20 @@ public class EventRemindServiceImpl extends ServiceImpl<EventRemindDao, EventRem
                 .map(EventRemind::getSenderUid)
                 .collect(Collectors.toList());
 
-        List<MemberDTO> infoByMemberUids = memberFeignService.batchQueryUsers(senderIds);
+        List<MemberDto> infoByMemberUids = memberFeignService.batchQueryUsers(senderIds);
 
-        List<EventRemindDTO> eventReminds = new ArrayList<>(records.size());
+        List<EventRemindDto> eventReminds = new ArrayList<>(records.size());
 
         // 将用户信息添加到事件集合中
         for (int i = 0; i < records.size(); i++) {
-            EventRemindDTO eventRemindDTO = new EventRemindDTO();
+            EventRemindDto eventRemindDTO = new EventRemindDto();
             eventRemindDTO.setSender(infoByMemberUids.get(i));
             BeanUtils.copyProperties(records.get(i), eventRemindDTO);
             eventReminds.add(eventRemindDTO);
             records.get(i).setState(NotificationConstant.STATE_HAVE_READ);
         }
 
-        Page<EventRemindDTO> pageDTO = new Page<>();
+        Page<EventRemindDto> pageDTO = new Page<>();
         BeanUtils.copyProperties(page, pageDTO);
         pageDTO.setRecords(eventReminds);
 

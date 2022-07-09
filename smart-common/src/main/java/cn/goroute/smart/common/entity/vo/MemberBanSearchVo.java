@@ -12,7 +12,7 @@ import javax.validation.constraints.NotEmpty;
  */
 @Data
 @ToString
-public class MemberBanSearchVO {
+public class MemberBanSearchVo {
 
     /**
      * 当前页数

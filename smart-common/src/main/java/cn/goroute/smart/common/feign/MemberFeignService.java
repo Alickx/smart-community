@@ -1,6 +1,6 @@
 package cn.goroute.smart.common.feign;
 
-import cn.goroute.smart.common.entity.dto.MemberDTO;
+import cn.goroute.smart.common.entity.dto.MemberDto;
 import cn.goroute.smart.common.utils.Result;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,7 +30,7 @@ public interface MemberFeignService {
      * @return 用户信息
      */
     @GetMapping("member/member/getMemberByUid")
-    MemberDTO getMemberByUid(@RequestParam(value = "uid") Long uid);
+    MemberDto getMemberByUid(@RequestParam(value = "uid") Long uid);
 
     /**
      * 根据用户uid获取用户信息
@@ -38,6 +38,6 @@ public interface MemberFeignService {
      * @return 用户信息列表
      */
     @PostMapping("/member/member/list")
-    List<MemberDTO> batchQueryUsers(@RequestBody List<Long> memberUidList);
+    List<MemberDto> batchQueryUsers(@RequestBody List<Long> memberUidList);
 
 }

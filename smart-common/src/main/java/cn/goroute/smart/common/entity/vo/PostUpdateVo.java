@@ -12,7 +12,7 @@ import java.util.List;
  * @Description: 帖子更新VO
  */
 @Data
-public class PostUpdateVO {
+public class PostUpdateVo {
 
     /**
      * 文章uid

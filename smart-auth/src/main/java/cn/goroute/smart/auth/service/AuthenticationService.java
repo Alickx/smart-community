@@ -1,7 +1,7 @@
 package cn.goroute.smart.auth.service;
 
-import cn.goroute.smart.common.entity.vo.MemberLoginVO;
-import cn.goroute.smart.common.entity.vo.MemberRegisterVO;
+import cn.goroute.smart.common.entity.vo.MemberLoginVo;
+import cn.goroute.smart.common.entity.vo.MemberRegisterVo;
 import cn.goroute.smart.common.utils.Result;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
  * @Description:
  */
 public interface AuthenticationService {
-    Result login(MemberLoginVO memberLoginVO, HttpServletRequest request);
+    Result login(MemberLoginVo memberLoginVO, HttpServletRequest request);
 
-    Result register(MemberRegisterVO memberRegisterVO);
+    Result register(MemberRegisterVo memberRegisterVO);
 }

@@ -1,6 +1,6 @@
 package cn.goroute.smart.search.service;
 
-import cn.goroute.smart.common.entity.dto.PostListDTO;
+import cn.goroute.smart.common.entity.dto.PostListDto;
 import cn.goroute.smart.common.entity.pojo.Post;
 import cn.goroute.smart.common.exception.ServiceException;
 import cn.goroute.smart.common.constant.PostConstant;
@@ -121,9 +121,9 @@ public class PostSearchService {
             List<PostEsModel> postEsModelList = new ArrayList<>();
             extracted(hits, searchHits, postEsModelList);
             PostSearchResponse postSearchResponse = new PostSearchResponse();
-            List<PostListDTO> PostListDTOs = new ArrayList<>();
+            List<PostListDto> postListDtos = new ArrayList<>();
             for (PostEsModel postEsModel : postEsModelList) {
-                PostListDTO postListDTO = new PostListDTO();
+                PostListDto postListDTO = new PostListDto();
                 BeanUtils.copyProperties(postEsModel, postListDTO);
                 postListDTO.setAuthorInfo(memberFeignService.getMemberByUid(postEsModel.getMemberUid()));
                 if (authService.getIsLogin()) {
@@ -139,9 +139,9 @@ public class PostSearchService {
                 if (redisUtil.hHasKey(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY)) {
                     postListDTO.setCommentCount((int) redisUtil.hget(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY));
                 }
-                PostListDTOs.add(postListDTO);
+                postListDtos.add(postListDTO);
             }
-            postSearchResponse.setPostList(PostListDTOs);
+            postSearchResponse.setPostList(postListDtos);
 
             //分页参数
             Assert.notNull(hits.getTotalHits());

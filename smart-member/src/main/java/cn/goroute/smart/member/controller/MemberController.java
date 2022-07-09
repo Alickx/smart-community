@@ -2,9 +2,9 @@ package cn.goroute.smart.member.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.stp.StpUtil;
-import cn.goroute.smart.common.entity.dto.MemberDTO;
+import cn.goroute.smart.common.entity.dto.MemberDto;
 import cn.goroute.smart.common.entity.pojo.Member;
-import cn.goroute.smart.common.entity.vo.MemberInfoUpdateVO;
+import cn.goroute.smart.common.entity.vo.MemberInfoUpdateVo;
 import cn.goroute.smart.common.utils.RedisUtil;
 import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.member.service.MemberService;
@@ -43,15 +43,15 @@ public class MemberController {
      * @return 用户信息集合
      */
     @PostMapping("/list")
-    public List<MemberDTO> batchQueryUsersByIdList(@RequestBody List<String> memberUidList) {
+    public List<MemberDto> batchQueryUsersByIdList(@RequestBody List<String> memberUidList) {
 
-        List<MemberDTO> res = new ArrayList<>(memberUidList.size());
+        List<MemberDto> res = new ArrayList<>(memberUidList.size());
 
 
         memberUidList.forEach(uid -> {
             Member member = memberService.getById(uid);
             if (Objects.nonNull(member)) {
-                MemberDTO memberDTO = new MemberDTO(member);
+                MemberDto memberDTO = new MemberDto(member);
                 BeanUtils.copyProperties(member, memberDTO);
                 res.add(memberDTO);
             }
@@ -100,7 +100,7 @@ public class MemberController {
     public Result info(@PathVariable("uid") String uid) {
         Member member = memberService.getById(uid);
         if (member != null) {
-            MemberDTO memberDTO = new MemberDTO(member);
+            MemberDto memberDTO = new MemberDto(member);
             BeanUtils.copyProperties(Objects.requireNonNull(member), memberDTO);
             return Result.ok().put("data", memberDTO);
         } else {
@@ -115,9 +115,9 @@ public class MemberController {
      * @return 用户DTO实体类
      */
     @GetMapping("/getMemberByUid")
-    public MemberDTO getMemberByUid(@RequestParam String uid) {
+    public MemberDto getMemberByUid(@RequestParam String uid) {
         Member member = memberService.getById(uid);
-        MemberDTO memberDTO = new MemberDTO();
+        MemberDto memberDTO = new MemberDto();
         if (member != null) {
             BeanUtils.copyProperties(member, memberDTO);
         }
@@ -132,7 +132,7 @@ public class MemberController {
      */
     @SaCheckLogin
     @PostMapping("/profile/update")
-    public Result update(@RequestBody MemberInfoUpdateVO memberInfoUpdateVO) {
+    public Result update(@RequestBody MemberInfoUpdateVo memberInfoUpdateVO) {
 
         return memberService.updateMemberInfo(memberInfoUpdateVO);
     }

@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class PostQueryVO extends QueryParam {
+public class PostQueryVo extends QueryParam {
 
     /**
      * 分类

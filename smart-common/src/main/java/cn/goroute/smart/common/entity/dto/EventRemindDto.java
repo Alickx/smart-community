@@ -14,12 +14,12 @@ import java.time.LocalDateTime;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class EventRemindDTO {
+public class EventRemindDto {
 
     /**
      * 点赞人信息
      */
-    private MemberDTO sender;
+    private MemberDto sender;
 
     /**
      * 主键id

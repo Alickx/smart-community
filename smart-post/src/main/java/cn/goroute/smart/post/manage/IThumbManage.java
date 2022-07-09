@@ -1,6 +1,6 @@
 package cn.goroute.smart.post.manage;
 
-import cn.goroute.smart.common.entity.dto.PostListDTO;
+import cn.goroute.smart.common.entity.dto.PostListDto;
 
 import java.util.List;
 
@@ -16,5 +16,5 @@ public interface IThumbManage {
      * @param postIdList 文章ID列表
      * @return 文章列表DTO
      */
-    List<PostListDTO> getPostDTOListByPostIdList(List<Long> postIdList);
+    List<PostListDto> getPostDTOListByPostIdList(List<Long> postIdList);
 }

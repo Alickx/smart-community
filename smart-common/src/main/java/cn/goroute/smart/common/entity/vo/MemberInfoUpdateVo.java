@@ -6,7 +6,7 @@ import lombok.Data;
  * @author Alickx
  */
 @Data
-public class MemberInfoUpdateVO {
+public class MemberInfoUpdateVo {
 
     /**
      * 呢称

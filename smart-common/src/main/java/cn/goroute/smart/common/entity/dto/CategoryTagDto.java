@@ -14,7 +14,7 @@ import java.util.List;
  */
 @ToString
 @Data
-public class CategoryTagDTO {
+public class CategoryTagDto {
 
     /**
      * 主键

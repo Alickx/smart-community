@@ -13,7 +13,7 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-public class MemberBanVO {
+public class MemberBanVo {
 
     /**
      * 封禁用户id

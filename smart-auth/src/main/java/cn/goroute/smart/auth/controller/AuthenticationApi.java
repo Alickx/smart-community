@@ -1,8 +1,8 @@
 package cn.goroute.smart.auth.controller;
 
 import cn.goroute.smart.auth.service.AuthenticationService;
-import cn.goroute.smart.common.entity.vo.MemberLoginVO;
-import cn.goroute.smart.common.entity.vo.MemberRegisterVO;
+import cn.goroute.smart.common.entity.vo.MemberLoginVo;
+import cn.goroute.smart.common.entity.vo.MemberRegisterVo;
 import cn.goroute.smart.common.service.AuthService;
 import cn.goroute.smart.common.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class AuthenticationApi {
     AuthService authService;
 
     @PostMapping("/login")
-    public Result login(@RequestBody MemberLoginVO memberLoginVO, HttpServletRequest request) {
+    public Result login(@RequestBody MemberLoginVo memberLoginVO, HttpServletRequest request) {
         return authenticationService.login(memberLoginVO, request);
     }
 
@@ -41,7 +41,7 @@ public class AuthenticationApi {
     }
 
     @PostMapping("/register")
-    public Result register(@RequestBody MemberRegisterVO memberRegisterVO) {
+    public Result register(@RequestBody MemberRegisterVo memberRegisterVO) {
         return authenticationService.register(memberRegisterVO);
     }
 

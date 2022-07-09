@@ -3,11 +3,11 @@ package cn.goroute.smart.member.service.impl;
 import cn.goroute.smart.common.constant.Constant;
 import cn.goroute.smart.common.dao.MemberDao;
 import cn.goroute.smart.common.dao.MemberBanDao;
-import cn.goroute.smart.common.entity.dto.MemberBanDTO;
-import cn.goroute.smart.common.entity.dto.MemberDTO;
+import cn.goroute.smart.common.entity.dto.MemberBanDto;
+import cn.goroute.smart.common.entity.dto.MemberDto;
 import cn.goroute.smart.common.entity.pojo.Member;
 import cn.goroute.smart.common.entity.pojo.MemberBan;
-import cn.goroute.smart.common.entity.vo.MemberBanSearchVO;
+import cn.goroute.smart.common.entity.vo.MemberBanSearchVo;
 import cn.goroute.smart.common.utils.ModelConverterUtils;
 import cn.goroute.smart.common.utils.PageUtils;
 import cn.goroute.smart.common.utils.Query;
@@ -37,7 +37,7 @@ public class QueryBanMemberByUid implements IQueryBanMember {
 
 
     @Override
-    public PageUtils queryBanMember(MemberBanSearchVO memberBanSearchVO) {
+    public PageUtils queryBanMember(MemberBanSearchVo memberBanSearchVO) {
 
         String memberId = memberBanSearchVO.getSearchValue();
         String curPage = memberBanSearchVO.getCurPage();
@@ -51,14 +51,14 @@ public class QueryBanMemberByUid implements IQueryBanMember {
             return new PageUtils(userBanIPage);
         }
 
-        List<MemberBanDTO> result = new ArrayList<>();
+        List<MemberBanDto> result = new ArrayList<>();
 
         for (MemberBan memberBan : userBanIPage.getRecords()) {
             Member banMember = memberDao.selectById(memberBan.getBanUserId());
             Member HandlerMember = memberDao.selectById(memberBan.getBanHandlerId());
-            MemberBanDTO memberBanDTO = new MemberBanDTO();
-            memberBanDTO.setBanUser(ModelConverterUtils.convert(banMember, MemberDTO.class));
-            memberBanDTO.setBanHandlerUser(ModelConverterUtils.convert(HandlerMember, MemberDTO.class));
+            MemberBanDto memberBanDTO = new MemberBanDto();
+            memberBanDTO.setBanUser(ModelConverterUtils.convert(banMember, MemberDto.class));
+            memberBanDTO.setBanHandlerUser(ModelConverterUtils.convert(HandlerMember, MemberDto.class));
             memberBanDTO.setBanReason(memberBan.getBanReason());
             memberBanDTO.setBanType(Constant.getBanType(String.valueOf(memberBan.getBanType())));
             memberBanDTO.setBanTime(memberBan.getBanTime());

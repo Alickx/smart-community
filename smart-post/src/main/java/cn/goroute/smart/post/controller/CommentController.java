@@ -1,7 +1,7 @@
 package cn.goroute.smart.post.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
-import cn.goroute.smart.common.entity.vo.CommentVO;
+import cn.goroute.smart.common.entity.vo.CommentVo;
 import cn.goroute.smart.common.utils.QueryParam;
 import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.post.service.CommentService;
@@ -40,7 +40,7 @@ public class CommentController {
      */
     @SaCheckLogin
     @PostMapping("/save")
-    public Result save(@RequestBody CommentVO commentVo){
+    public Result save(@RequestBody CommentVo commentVo){
 
         return commentService.saveComment(commentVo);
     }
@@ -52,7 +52,7 @@ public class CommentController {
      */
     @SaCheckLogin
     @PostMapping("/delete")
-    public Result del(@RequestBody CommentVO commentVo){
+    public Result del(@RequestBody CommentVo commentVo){
         return commentService.del(commentVo);
     }
 }

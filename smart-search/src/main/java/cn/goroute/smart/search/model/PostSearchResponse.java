@@ -1,6 +1,6 @@
 package cn.goroute.smart.search.model;
 
-import cn.goroute.smart.common.entity.dto.PostListDTO;
+import cn.goroute.smart.common.entity.dto.PostListDto;
 import lombok.Data;
 
 import java.util.List;
@@ -8,7 +8,7 @@ import java.util.List;
 @Data
 public class PostSearchResponse {
 
-    private List<PostListDTO> postList;
+    private List<PostListDto> postList;
 
     private Integer pageNum;
 

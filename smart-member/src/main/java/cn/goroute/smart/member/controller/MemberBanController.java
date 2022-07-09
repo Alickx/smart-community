@@ -1,7 +1,7 @@
 package cn.goroute.smart.member.controller;
 
-import cn.goroute.smart.common.entity.vo.MemberBanSearchVO;
-import cn.goroute.smart.common.entity.vo.MemberBanVO;
+import cn.goroute.smart.common.entity.vo.MemberBanSearchVo;
+import cn.goroute.smart.common.entity.vo.MemberBanVo;
 import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.member.service.MemberBanService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class MemberBanController {
      * 封禁用户
      */
     @PostMapping("/ban")
-    public Result bannedMembers(@RequestBody @Valid MemberBanVO memberBanVO){
+    public Result bannedMembers(@RequestBody @Valid MemberBanVo memberBanVO){
         return memberBanService.banUser(memberBanVO);
     }
 
@@ -56,7 +56,7 @@ public class MemberBanController {
      * @return 用户列表
      */
     @GetMapping("/list/query")
-    public Result batchQueryBanMembers(@Valid MemberBanSearchVO memberBanSearchVO) {
+    public Result batchQueryBanMembers(@Valid MemberBanSearchVo memberBanSearchVO) {
         return memberBanService.batchQueryUsers(memberBanSearchVO);
     }
 

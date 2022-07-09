@@ -14,7 +14,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostVO {
+public class PostVo {
 
     /**
      * 文章主键

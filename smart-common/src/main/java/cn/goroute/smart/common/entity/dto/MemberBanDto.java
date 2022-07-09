@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @ToString
-public class MemberBanDTO {
+public class MemberBanDto {
 
     /**
      * 封禁表主键
@@ -22,12 +22,12 @@ public class MemberBanDTO {
     /**
      * 封禁用户
      */
-    private MemberDTO banUser;
+    private MemberDto banUser;
 
     /**
      * 操作封禁者
      */
-    private MemberDTO banHandlerUser;
+    private MemberDto banHandlerUser;
 
     /**
      * 封禁原因

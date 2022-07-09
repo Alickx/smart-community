@@ -4,15 +4,15 @@ package cn.goroute.smart.post.service.impl;
 import cn.goroute.smart.common.constant.PostConstant;
 import cn.goroute.smart.common.constant.RedisKeyConstant;
 import cn.goroute.smart.common.dao.*;
-import cn.goroute.smart.common.entity.dto.MemberDTO;
-import cn.goroute.smart.common.entity.dto.PostDTO;
-import cn.goroute.smart.common.entity.dto.PostListDTO;
+import cn.goroute.smart.common.entity.dto.MemberDto;
+import cn.goroute.smart.common.entity.dto.PostDto;
+import cn.goroute.smart.common.entity.dto.PostListDto;
 import cn.goroute.smart.common.entity.pojo.Category;
 import cn.goroute.smart.common.entity.pojo.Post;
 import cn.goroute.smart.common.entity.pojo.PostTag;
 import cn.goroute.smart.common.entity.pojo.Tag;
-import cn.goroute.smart.common.entity.vo.PostQueryVO;
-import cn.goroute.smart.common.entity.vo.PostVO;
+import cn.goroute.smart.common.entity.vo.PostQueryVo;
+import cn.goroute.smart.common.entity.vo.PostVo;
 import cn.goroute.smart.common.feign.MemberFeignService;
 import cn.goroute.smart.common.service.AuthService;
 import cn.goroute.smart.common.utils.*;
@@ -93,7 +93,7 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
      * @return 文章分页对象
      */
     @Override
-    public Result queryPage(PostQueryVO postQueryVO) {
+    public Result queryPage(PostQueryVo postQueryVO) {
 
         IPage<Post> page;
 
@@ -135,7 +135,7 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
 
         List<Post> records = page.getRecords();
 
-        List<PostListDTO> postList = getPostListDTOS(isLogin, records);
+        List<PostListDto> postList = getPostListDTOS(isLogin, records);
 
         PageUtils pageUtils = new PageUtils(page);
 
@@ -152,7 +152,7 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
      * @param records 文章集合
      * @return List<PostListDTO> 文章DTO集合
      */
-    private List<PostListDTO> getPostListDTOS(boolean isLogin, List<Post> records) {
+    private List<PostListDto> getPostListDTOS(boolean isLogin, List<Post> records) {
         // 创建线程池
         ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(
                 CORE_SIZE + 1,
@@ -162,7 +162,7 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
                 new ArrayBlockingQueue<>(100),
                 new NamingThreadFactory(this.getClass().getName() + "-thread"));
         try {
-            List<PostListDTO> postDTOList = new ArrayList<>(records.size());
+            List<PostListDto> postDTOList = new ArrayList<>(records.size());
             //遍历文章数据并转换为文章DTO
             CountDownLatch countDownLatch = new CountDownLatch(records.size());
             for (Post record : records) {
@@ -194,7 +194,7 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
      * @param postDTOList 文章DTO集合
      * @param record      文章对象
      */
-    private void getPostInfo(boolean isLogin, List<PostListDTO> postDTOList, Post record, Long loginId) throws InterruptedException {
+    private void getPostInfo(boolean isLogin, List<PostListDto> postDTOList, Post record, Long loginId) throws InterruptedException {
         // 创建线程池
         ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(
                 CORE_SIZE + 1,
@@ -205,15 +205,15 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
                 new NamingThreadFactory(this.getClass().getName() + "-thread"));
 
 
-        PostListDTO postListDTO = new PostListDTO();
+        PostListDto postListDTO = new PostListDto();
         BeanUtils.copyProperties(record, postListDTO);
 
-        CompletableFuture<PostListDTO> postListDTOCompletableFuture = CompletableFuture.supplyAsync(() -> {
+        CompletableFuture<PostListDto> postListDTOCompletableFuture = CompletableFuture.supplyAsync(() -> {
             postListDTO.setAuthorInfo(memberFeignService.getMemberByUid(record.getMemberUid()));
             return postListDTO;
         },poolExecutor);
 
-        CompletableFuture<PostListDTO> postListDTOCompletableFuture2 = CompletableFuture.supplyAsync(() -> {
+        CompletableFuture<PostListDto> postListDTOCompletableFuture2 = CompletableFuture.supplyAsync(() -> {
             postListDTO.setThumbCount(iPostManage.getThumbCount(record.getUid()));
             postListDTO.setCommentCount(iPostManage.getCommentCount(record.getUid()));
             if (isLogin) {
@@ -244,7 +244,7 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Result savePost(PostVO postVo) {
+    public Result savePost(PostVo postVo) {
         Category category = categoryDao.selectById(postVo.getCategoryUid());
         if (category == null) {
             return Result.error("分类不存在");
@@ -337,10 +337,10 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
             }
         }
 
-        List<MemberDTO> memberInfoWithPost = memberFeignService
+        List<MemberDto> memberInfoWithPost = memberFeignService
                 .batchQueryUsers(CollUtil.toList(post.getMemberUid()));
 
-        PostDTO postDTO = new PostDTO();
+        PostDto postDTO = new PostDto();
         BeanUtils.copyProperties(post, postDTO);
 
         // 获取文章的标签
@@ -415,11 +415,11 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
         if (CollUtil.isEmpty(postList)) {
             return Result.ok().put("data", new PageUtils(page));
         }
-        List<PostListDTO> postListDTOs = new ArrayList<>(10);
-        MemberDTO memberDTO = memberFeignService.getMemberByUid(queryParam.getUid());
+        List<PostListDto> postListDtos = new ArrayList<>(10);
+        MemberDto memberDTO = memberFeignService.getMemberByUid(queryParam.getUid());
 
         postList.forEach(postEntity -> {
-            PostListDTO postListDTO = new PostListDTO();
+            PostListDto postListDTO = new PostListDto();
             BeanUtils.copyProperties(postEntity, postListDTO);
             postListDTO.setAuthorInfo(memberDTO);
             postListDTO.setThumbCount(iPostManage.getThumbCount(postEntity.getUid()));
@@ -430,12 +430,12 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
                 postListDTO.setIsLike(false);
                 postListDTO.setIsCollect(false);
             }
-            postListDTOs.add(postListDTO);
+            postListDtos.add(postListDTO);
         });
-        IPage<PostListDTO> pagePostListDTO = new Page<>();
+        IPage<PostListDto> pagePostListDTO = new Page<>();
         BeanUtils.copyProperties(page, pagePostListDTO);
 
-        pagePostListDTO.setRecords(postListDTOs);
+        pagePostListDTO.setRecords(postListDtos);
 
         PageUtils pageResult = new PageUtils(pagePostListDTO);
         return Result.ok().put("data", pageResult);

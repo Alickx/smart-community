@@ -6,13 +6,13 @@ import cn.goroute.smart.common.constant.RedisKeyConstant;
 import cn.goroute.smart.common.dao.CommentDao;
 import cn.goroute.smart.common.dao.PostDao;
 import cn.goroute.smart.common.dao.ThumbDao;
-import cn.goroute.smart.common.entity.dto.CommentDTO;
-import cn.goroute.smart.common.entity.dto.MemberDTO;
+import cn.goroute.smart.common.entity.dto.CommentDto;
+import cn.goroute.smart.common.entity.dto.MemberDto;
 import cn.goroute.smart.common.entity.pojo.Comment;
 import cn.goroute.smart.common.entity.pojo.EventRemind;
 import cn.goroute.smart.common.entity.pojo.Post;
 import cn.goroute.smart.common.entity.pojo.Thumb;
-import cn.goroute.smart.common.entity.vo.CommentVO;
+import cn.goroute.smart.common.entity.vo.CommentVo;
 import cn.goroute.smart.common.exception.ServiceException;
 import cn.goroute.smart.common.feign.MemberFeignService;
 import cn.goroute.smart.common.service.AuthService;
@@ -98,15 +98,15 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
 
         List<Comment> commentList = pageResult.getRecords();
 
-        List<CommentDTO> commentDTOList = new ArrayList<>();
+        List<CommentDto> commentDTOList = new ArrayList<>();
 
-        CommentDTO commentDTO;
+        CommentDto commentDTO;
 
         for (Comment comment : commentList) {
-            commentDTO = new CommentDTO();
+            commentDTO = new CommentDto();
 
-            MemberDTO fromMember = memberFeignService.getMemberByUid(comment.getMemberUid());
-            MemberDTO toMember = memberFeignService.getMemberByUid(comment.getToMemberUid());
+            MemberDto fromMember = memberFeignService.getMemberByUid(comment.getMemberUid());
+            MemberDto toMember = memberFeignService.getMemberByUid(comment.getToMemberUid());
 
             int thumbCount = getThumbCount(comment);
             boolean isLike = isLike(comment);
@@ -117,13 +117,13 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
             commentDTO.setToMember(toMember);
             commentDTO.setContent(comment.getContent());
             commentDTO.setCreatedTime(comment.getCreatedTime());
-            commentDTO.setReplyInfo((List<CommentDTO>) reply.getList());
+            commentDTO.setReplyInfo((List<CommentDto>) reply.getList());
             commentDTO.setThumbCount(thumbCount);
             commentDTO.setIsLike(isLike);
             commentDTO.setHasMore(reply.getTotalPage() > 1);
             commentDTOList.add(commentDTO);
         }
-        IPage<CommentDTO> commentDTOPage = new Page<>();
+        IPage<CommentDto> commentDTOPage = new Page<>();
         BeanUtils.copyProperties(pageResult, commentDTOPage);
         commentDTOPage.setRecords(commentDTOList);
 
@@ -139,7 +139,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
      * @return 删除结果
      */
     @Override
-    public Result del(CommentVO commentVo) {
+    public Result del(CommentVo commentVo) {
 
         Comment comment = commentDao.selectById(commentVo.getUid());
         if (comment != null) {
@@ -183,7 +183,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
      * @return 保存结果
      */
     @Override
-    public Result saveComment(CommentVO commentVo) {
+    public Result saveComment(CommentVo commentVo) {
         //审核评论
         boolean checkResult = illegalTextCheckUtil.checkText(commentVo.getContent());
         if (checkResult) {
@@ -303,14 +303,14 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
                 .eq("status", PostConstant.NORMAL_STATUS));
 
         List<Comment> commentList = pageResult.getRecords();
-        List<CommentDTO> commentDTOList = new ArrayList<>();
+        List<CommentDto> commentDTOList = new ArrayList<>();
 
-        CommentDTO commentDTO;
+        CommentDto commentDTO;
 
         for (Comment comment : commentList) {
-            commentDTO = new CommentDTO();
-            MemberDTO fromMember = memberFeignService.getMemberByUid(comment.getMemberUid());
-            MemberDTO toMember = memberFeignService.getMemberByUid(comment.getToMemberUid());
+            commentDTO = new CommentDto();
+            MemberDto fromMember = memberFeignService.getMemberByUid(comment.getMemberUid());
+            MemberDto toMember = memberFeignService.getMemberByUid(comment.getToMemberUid());
             int thumbCount = getThumbCount(comment);
             boolean isLike = isLike(comment);
             commentDTO.setUid(comment.getUid());
@@ -323,7 +323,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
             commentDTO.setHasMore(false);
             commentDTOList.add(commentDTO);
         }
-        IPage<CommentDTO> commentDTOIPage = new Page<>();
+        IPage<CommentDto> commentDTOIPage = new Page<>();
         BeanUtils.copyProperties(pageResult, commentDTOIPage);
         commentDTOIPage.setRecords(commentDTOList);
 

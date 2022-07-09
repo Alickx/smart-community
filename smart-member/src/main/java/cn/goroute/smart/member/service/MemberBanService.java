@@ -1,8 +1,8 @@
 package cn.goroute.smart.member.service;
 
 import cn.goroute.smart.common.entity.pojo.MemberBan;
-import cn.goroute.smart.common.entity.vo.MemberBanSearchVO;
-import cn.goroute.smart.common.entity.vo.MemberBanVO;
+import cn.goroute.smart.common.entity.vo.MemberBanSearchVo;
+import cn.goroute.smart.common.entity.vo.MemberBanVo;
 import cn.goroute.smart.common.utils.Result;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -20,9 +20,9 @@ public interface MemberBanService extends IService<MemberBan> {
      * @return 结果类
      * @Description: 封禁用户
      */
-    Result banUser(MemberBanVO memberBanVO);
+    Result banUser(MemberBanVo memberBanVO);
 
-    Result batchQueryUsers(MemberBanSearchVO memberBanSearchVO);
+    Result batchQueryUsers(MemberBanSearchVo memberBanSearchVO);
 
     Result removeBannedUsers(List<String> banIds);
 

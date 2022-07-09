@@ -1,6 +1,6 @@
 package cn.goroute.smart.member.service;
 
-import cn.goroute.smart.common.entity.vo.MemberBanSearchVO;
+import cn.goroute.smart.common.entity.vo.MemberBanSearchVo;
 import cn.goroute.smart.common.utils.PageUtils;
 
 /**
@@ -14,6 +14,6 @@ public interface IQueryBanMember {
      * 查询封禁的用户
      * @return List<MemberDTO>
      */
-    PageUtils queryBanMember(MemberBanSearchVO memberBanSearchVO);
+    PageUtils queryBanMember(MemberBanSearchVo memberBanSearchVO);
 
 }

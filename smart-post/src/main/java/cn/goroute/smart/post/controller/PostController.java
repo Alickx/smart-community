@@ -1,7 +1,7 @@
 package cn.goroute.smart.post.controller;
 
-import cn.goroute.smart.common.entity.vo.PostQueryVO;
-import cn.goroute.smart.common.entity.vo.PostVO;
+import cn.goroute.smart.common.entity.vo.PostQueryVo;
+import cn.goroute.smart.common.entity.vo.PostVo;
 import cn.goroute.smart.common.utils.QueryParam;
 import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.post.service.PostService;
@@ -26,7 +26,7 @@ public class PostController {
     PostService postService;
 
     @GetMapping("/query/list")
-    public Result withSectionList(PostQueryVO postQueryVO) {
+    public Result withSectionList(PostQueryVo postQueryVO) {
         return postService.queryPage(postQueryVO);
     }
 
@@ -45,7 +45,7 @@ public class PostController {
      */
 
     @PostMapping("/save")
-    public Result save(@Validated @RequestBody PostVO postVo) {
+    public Result save(@Validated @RequestBody PostVo postVo) {
         return postService.savePost(postVo);
     }
     /**

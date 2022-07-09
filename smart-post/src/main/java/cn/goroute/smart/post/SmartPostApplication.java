@@ -3,7 +3,7 @@ package cn.goroute.smart.post;
 import cn.goroute.smart.common.dao.CategoryDao;
 import cn.goroute.smart.common.dao.CategoryTagDao;
 import cn.goroute.smart.common.dao.TagDao;
-import cn.goroute.smart.common.entity.dto.CategoryTagDTO;
+import cn.goroute.smart.common.entity.dto.CategoryTagDto;
 import cn.goroute.smart.common.entity.pojo.Category;
 import cn.goroute.smart.common.entity.pojo.CategoryTag;
 import cn.goroute.smart.common.entity.pojo.Tag;
@@ -23,6 +23,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * @author Alickx
+ * @Date: 2022/07/09 11:13
+ */
 @SpringBootApplication(scanBasePackages = {"cn.goroute.smart"})
 @RefreshScope
 @MapperScan("cn.goroute.smart.common.dao")
@@ -56,7 +60,7 @@ public class SmartPostApplication {
 
         List<Category> categories = categoryDao.selectList(null);
 
-        List<CategoryTagDTO> result = new ArrayList<>();
+        List<CategoryTagDto> result = new ArrayList<>();
 
         for (Category category : categories) {
 
@@ -71,7 +75,7 @@ public class SmartPostApplication {
 
             List<Tag> tags = tagDao.selectBatchIds(tagUids);
 
-            CategoryTagDTO categoryTagDTO = new CategoryTagDTO();
+            CategoryTagDto categoryTagDTO = new CategoryTagDto();
             BeanUtils.copyProperties(category, categoryTagDTO);
             categoryTagDTO.setTags(tags);
             result.add(categoryTagDTO);

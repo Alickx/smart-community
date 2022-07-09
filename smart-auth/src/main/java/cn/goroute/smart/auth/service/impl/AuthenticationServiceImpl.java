@@ -5,10 +5,10 @@ import cn.goroute.smart.auth.service.AuthenticationService;
 import cn.goroute.smart.common.api.ResultCode;
 import cn.goroute.smart.common.constant.RedisKeyConstant;
 import cn.goroute.smart.common.dao.MemberDao;
-import cn.goroute.smart.common.entity.dto.MemberDTO;
+import cn.goroute.smart.common.entity.dto.MemberDto;
 import cn.goroute.smart.common.entity.pojo.Member;
-import cn.goroute.smart.common.entity.vo.MemberLoginVO;
-import cn.goroute.smart.common.entity.vo.MemberRegisterVO;
+import cn.goroute.smart.common.entity.vo.MemberLoginVo;
+import cn.goroute.smart.common.entity.vo.MemberRegisterVo;
 import cn.goroute.smart.common.service.AuthService;
 import cn.goroute.smart.common.utils.GetLoginUserAgentUtil;
 import cn.goroute.smart.common.utils.RedisUtil;
@@ -61,7 +61,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      * @return 登录结果
      */
     @Override
-    public Result login(MemberLoginVO memberLoginVO, HttpServletRequest request) {
+    public Result login(MemberLoginVo memberLoginVO, HttpServletRequest request) {
 
         Member member = memberDao.selectOne(new LambdaQueryWrapper<Member>()
                 .eq(Member::getEmail, memberLoginVO.getUsername()));
@@ -89,7 +89,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         // 登录成功，生成token
         StpUtil.login(member.getUid());
 
-        MemberDTO memberDTO = new MemberDTO(member);
+        MemberDto memberDTO = new MemberDto(member);
         BeanUtils.copyProperties(member, memberDTO);
 
         Map<String, Object> map = new HashMap<>(4);
@@ -107,7 +107,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      * @return 注册结果
      */
     @Override
-    public Result register(MemberRegisterVO memberRegisterVO) {
+    public Result register(MemberRegisterVo memberRegisterVO) {
 
         String memberRegEmail = memberRegisterVO.getUsername();
 
