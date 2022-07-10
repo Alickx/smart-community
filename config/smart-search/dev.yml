@@ -1,0 +1,32 @@
+server:
+  port: 15000
+spring:
+  application:
+    name: smart-search
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+  rabbitmq:
+    host: 127.0.0.1
+    username: guest
+    password: guest
+    virtual-host: /
+    port: 5672
+    listener:
+      simple:
+        retry:
+          enabled: true
+sa-token:
+  token-name: access_token
+  timeout: 2592000
+  activity-timeout: -1
+  is-concurrent: false
+  is-share: true
+  token-style: simple-uuid
+  is-log: true
+  isReadBody: true
+  isReadHead: true
+  isReadCookie: true
+  autoRenew: true
+  isPrint: false
