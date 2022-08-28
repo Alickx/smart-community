@@ -5,6 +5,9 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.common.entity.dto.MemberDto;
 import cn.goroute.smart.common.entity.pojo.Member;
 import cn.goroute.smart.common.entity.vo.MemberInfoUpdateVo;
+import cn.goroute.smart.common.entity.vo.MemberLoginVo;
+import cn.goroute.smart.common.entity.vo.MemberRegisterVo;
+import cn.goroute.smart.common.service.AuthService;
 import cn.goroute.smart.common.utils.RedisUtil;
 import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.member.service.MemberService;
@@ -14,6 +17,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -35,6 +40,9 @@ public class MemberController {
 
     @Autowired
     RedisUtil redisUtil;
+
+    @Resource
+    private AuthService authService;
 
     /**
      * 用户id集合查询用户信
@@ -136,5 +144,36 @@ public class MemberController {
 
         return memberService.updateMemberInfo(memberInfoUpdateVO);
     }
+
+    @PostMapping("/login")
+    public Result login(@RequestBody MemberLoginVo memberLoginVO, HttpServletRequest request) {
+        return memberService.login(memberLoginVO, request);
+    }
+
+    @PostMapping("/logout")
+    public Result logout() {
+        Boolean isLogin = authService.getIsLogin();
+        if (Boolean.TRUE.equals(isLogin)) {
+            authService.logOut(authService.getLoginUid());
+            return Result.ok();
+        }
+        return Result.error("用户未登录");
+    }
+
+    @PostMapping("/register")
+    public Result register(@RequestBody MemberRegisterVo memberRegisterVO) {
+        return memberService.register(memberRegisterVO);
+    }
+
+    @GetMapping("/isLogin")
+    public Result isLogin() {
+        Boolean isLogin = authService.getIsLogin();
+        if (isLogin) {
+            return Result.ok();
+        }
+        return Result.error(401, "用户未登录");
+    }
+
+
 
 }

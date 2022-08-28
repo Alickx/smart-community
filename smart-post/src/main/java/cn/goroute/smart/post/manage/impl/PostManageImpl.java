@@ -2,9 +2,9 @@ package cn.goroute.smart.post.manage.impl;
 
 import cn.goroute.smart.common.constant.PostConstant;
 import cn.goroute.smart.common.constant.RedisKeyConstant;
-import cn.goroute.smart.common.dao.CollectDao;
-import cn.goroute.smart.common.dao.PostDao;
-import cn.goroute.smart.common.dao.ThumbDao;
+import cn.goroute.smart.post.mapper.CollectMapper;
+import cn.goroute.smart.post.mapper.PostMapper;
+import cn.goroute.smart.post.mapper.ThumbMapper;
 import cn.goroute.smart.common.entity.pojo.Collect;
 import cn.goroute.smart.common.entity.pojo.Thumb;
 import cn.goroute.smart.common.feign.MemberFeignService;
@@ -23,16 +23,16 @@ import org.springframework.stereotype.Service;
 public class PostManageImpl implements IPostManage {
 
     @Autowired
-    PostDao postDao;
+    PostMapper postMapper;
 
     @Autowired
     RedisUtil redisUtil;
 
     @Autowired
-    CollectDao collectDao;
+    CollectMapper collectMapper;
 
     @Autowired
-    ThumbDao thumbDao;
+    ThumbMapper thumbMapper;
 
     @Autowired
     MemberFeignService memberFeignService;
@@ -58,7 +58,7 @@ public class PostManageImpl implements IPostManage {
                 result = true;
             } else {
                 //如果缓存不存在则去数据库中获取
-                Thumb thumbResult = thumbDao.selectOne(new LambdaQueryWrapper<Thumb>()
+                Thumb thumbResult = thumbMapper.selectOne(new LambdaQueryWrapper<Thumb>()
                         .eq(Thumb::getMemberUid, loginUid)
                         .eq(Thumb::getType, PostConstant.THUMB_POST_TYPE)
                         .eq(Thumb::getPostUid, uid));
@@ -71,7 +71,7 @@ public class PostManageImpl implements IPostManage {
             if (redisUtil.hHasKey(RedisKeyConstant.POST_COLLECT_KEY, collectRedisKey)) {
                 result = true;
             } else {
-                Collect collectResult = collectDao.selectOne(new LambdaQueryWrapper<Collect>()
+                Collect collectResult = collectMapper.selectOne(new LambdaQueryWrapper<Collect>()
                         .eq(Collect::getMemberUid, loginUid)
                         .eq(Collect::getPostUid, uid));
                 if (collectResult != null) {
@@ -106,7 +106,7 @@ public class PostManageImpl implements IPostManage {
                 return (int) redisUtil.hget(key, RedisKeyConstant.POST_THUMB_COUNT_KEY);
             }
 
-            thumbCount = postDao.selectThumbCount(postUid);
+            thumbCount = postMapper.selectThumbCount(postUid);
             redisUtil.hset(key, RedisKeyConstant.POST_THUMB_COUNT_KEY, thumbCount);
         }
         return thumbCount;
@@ -131,7 +131,7 @@ public class PostManageImpl implements IPostManage {
             if (redisUtil.hHasKey(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY)) {
                 return (int) redisUtil.hget(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY);
             }
-            commentCountResult = postDao.getCommentCount(postUid);
+            commentCountResult = postMapper.getCommentCount(postUid);
             redisUtil.hset(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY, commentCountResult);
         }
         return commentCountResult;

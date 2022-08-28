@@ -6,7 +6,6 @@ import org.springframework.amqp.core.AcknowledgeMode;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,7 @@ import javax.annotation.PostConstruct;
  */
 @Slf4j
 @Configuration
-public class MQProducerAckConfig implements RabbitTemplate.ConfirmCallback, RabbitTemplate.ReturnCallback {
+public class MQProducerAckConfig implements  RabbitTemplate.ReturnCallback {
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
@@ -39,17 +38,7 @@ public class MQProducerAckConfig implements RabbitTemplate.ConfirmCallback, Rabb
 
     @PostConstruct
     public void init() {
-        rabbitTemplate.setConfirmCallback(this);
         rabbitTemplate.setReturnCallback(this);
-    }
-
-    @Override
-    public void confirm(CorrelationData correlationData, boolean ack, String s) {
-        if (ack) {
-            log.info("消息发送成功，id：{},消息数据:{}", correlationData.getId(),correlationData);
-        } else {
-            log.error("消息发送失败，id：{},消息数据:{}", correlationData.getId(),correlationData);
-        }
     }
 
     @Override

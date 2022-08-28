@@ -1,8 +1,8 @@
 package cn.goroute.smart.member.service.impl;
 
 import cn.goroute.smart.common.constant.Constant;
-import cn.goroute.smart.common.dao.MemberDao;
-import cn.goroute.smart.common.dao.MemberBanDao;
+import cn.goroute.smart.member.mapper.MemberBanMapper;
+import cn.goroute.smart.member.mapper.MemberMapper;
 import cn.goroute.smart.common.entity.dto.MemberBanDto;
 import cn.goroute.smart.common.entity.dto.MemberDto;
 import cn.goroute.smart.common.entity.pojo.Member;
@@ -32,10 +32,10 @@ import java.util.List;
 public class QueryBanMember implements IQueryBanMember {
 
     @Autowired
-    private MemberDao memberDao;
+    private MemberMapper memberMapper;
 
     @Autowired
-    private MemberBanDao memberBanDao;
+    private MemberBanMapper memberBanMapper;
 
     @Override
     public PageUtils queryBanMember(MemberBanSearchVo memberBanSearchVO) {
@@ -46,11 +46,11 @@ public class QueryBanMember implements IQueryBanMember {
         IPage<MemberBan> userBanPage;
 
         if (memberBanSearchVO.getStartTime() != null) {
-            userBanPage = memberBanDao.selectPage(new Query<MemberBan>().getPage(curPage, pageSize), new LambdaQueryWrapper<MemberBan>()
+            userBanPage = memberBanMapper.selectPage(new Query<MemberBan>().getPage(curPage, pageSize), new LambdaQueryWrapper<MemberBan>()
                     .ge(MemberBan::getBanTime, LocalDateTime.ofEpochSecond(Long.parseLong(memberBanSearchVO.getStartTime())/ 1000, 0, ZoneOffset.ofHours(8)))
                     .le(MemberBan::getBanTime, LocalDateTime.ofEpochSecond(Long.parseLong(memberBanSearchVO.getEndTime()) / 1000, 0, ZoneOffset.ofHours(8))));
         } else {
-            userBanPage = memberBanDao.selectPage(new Query<MemberBan>().getPage(curPage, pageSize), new LambdaQueryWrapper<>());
+            userBanPage = memberBanMapper.selectPage(new Query<MemberBan>().getPage(curPage, pageSize), new LambdaQueryWrapper<>());
         }
         if (CollectionUtil.isEmpty(userBanPage.getRecords())) {
             return new PageUtils(userBanPage);
@@ -59,8 +59,8 @@ public class QueryBanMember implements IQueryBanMember {
         List<MemberBanDto> result = new ArrayList<>();
         userBanPage.getRecords().forEach(userBan -> {
             MemberBanDto memberBanDTO = new MemberBanDto();
-            Member banMember = memberDao.selectById(userBan.getBanUserId());
-            Member handlerMember = memberDao.selectById(userBan.getBanHandlerId());
+            Member banMember = memberMapper.selectById(userBan.getBanUserId());
+            Member handlerMember = memberMapper.selectById(userBan.getBanHandlerId());
             memberBanDTO.setBanId(userBan.getUid());
             memberBanDTO.setBanUser(ModelConverterUtils.convert(banMember, MemberDto.class));
             memberBanDTO.setBanHandlerUser(ModelConverterUtils.convert(handlerMember, MemberDto.class));

@@ -1,8 +1,8 @@
 package cn.goroute.smart.post.listener;
 
 import cn.goroute.smart.common.constant.PostConstant;
-import cn.goroute.smart.common.dao.PostDao;
-import cn.goroute.smart.common.dao.PostTagDao;
+import cn.goroute.smart.post.mapper.PostMapper;
+import cn.goroute.smart.post.mapper.PostTagMapper;
 import cn.goroute.smart.common.entity.pojo.Post;
 import cn.goroute.smart.common.entity.pojo.PostTag;
 import cn.goroute.smart.common.exception.ServiceException;
@@ -34,10 +34,10 @@ public class PostReviewListener {
     RabbitmqUtil rabbitmqUtil;
 
     @Autowired
-    PostTagDao postTagDao;
+    PostTagMapper postTagMapper;
 
     @Autowired
-    PostDao postDao;
+    PostMapper postMapper;
 
     @RabbitHandler
     public void review(Map<Object, Object> map, Channel channel, Message message) throws IOException {
@@ -60,7 +60,7 @@ public class PostReviewListener {
             channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
         } catch (Exception e) {
 
-            if (message.getMessageProperties().getRedelivered()) {
+            if (Boolean.TRUE.equals(message.getMessageProperties().getRedelivered())) {
 
                 log.error("文章审核失败,消息已重复处理,拒绝消息,内容:{}", map, e);
                 channel.basicReject(message.getMessageProperties().getDeliveryTag(), false);
@@ -80,7 +80,7 @@ public class PostReviewListener {
      */
     private void reviewSuccessHandler(Post postEntity, List<Long> tagUidList, boolean isUpdate) {
         postEntity.setStatus(PostConstant.NORMAL_STATUS);
-        int result = postDao.updateById(postEntity);
+        int result = postMapper.updateById(postEntity);
         if (result != 1) {
             throw new ServiceException("文章存入数据库失败");
         }
@@ -96,7 +96,7 @@ public class PostReviewListener {
             PostTag postTag = new PostTag();
             postTag.setPostUid(postEntity.getUid());
             postTag.setTagUid(t);
-            postTagDao.insert(postTag);
+            postTagMapper.insert(postTag);
         });
     }
 
@@ -107,7 +107,7 @@ public class PostReviewListener {
     private void containedBannedWordHandler(Post postEntity) {
         postEntity.setStatus(PostConstant.INVISIBLE_STATUS);
         log.info("文章内容含有违禁词");
-        int result = postDao.updateById(postEntity);
+        int result = postMapper.updateById(postEntity);
         if (result != 1) {
             throw new ServiceException("文章存入数据库失败");
         }

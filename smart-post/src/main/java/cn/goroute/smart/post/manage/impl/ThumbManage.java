@@ -1,6 +1,6 @@
 package cn.goroute.smart.post.manage.impl;
 
-import cn.goroute.smart.common.dao.PostDao;
+import cn.goroute.smart.post.mapper.PostMapper;
 import cn.goroute.smart.common.entity.dto.MemberDto;
 import cn.goroute.smart.common.entity.dto.PostListDto;
 import cn.goroute.smart.common.entity.pojo.Post;
@@ -23,7 +23,7 @@ import java.util.List;
 public class ThumbManage implements IThumbManage {
 
     @Autowired
-    PostDao postDao;
+    PostMapper postMapper;
 
     @Autowired
     MemberFeignService memberFeignService;
@@ -44,7 +44,7 @@ public class ThumbManage implements IThumbManage {
             return new ArrayList<>(0);
         }
 
-        List<Post> posts = postDao.selectBatchIds(postIdList);
+        List<Post> posts = postMapper.selectBatchIds(postIdList);
 
         List<PostListDto> result = new ArrayList<>(posts.size());
         for (Post post : posts) {

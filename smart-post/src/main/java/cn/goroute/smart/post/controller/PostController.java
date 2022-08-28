@@ -26,7 +26,7 @@ public class PostController {
     PostService postService;
 
     @GetMapping("/query/list")
-    public Result withSectionList(PostQueryVo postQueryVO) {
+    public Result queryBySection(PostQueryVo postQueryVO) {
         return postService.queryPage(postQueryVO);
     }
 

@@ -1,8 +1,8 @@
 package cn.goroute.smart.post;
 
-import cn.goroute.smart.common.dao.CategoryDao;
-import cn.goroute.smart.common.dao.CategoryTagDao;
-import cn.goroute.smart.common.dao.TagDao;
+import cn.goroute.smart.post.mapper.CategoryMapper;
+import cn.goroute.smart.post.mapper.CategoryTagMapper;
+import cn.goroute.smart.post.mapper.TagMapper;
 import cn.goroute.smart.common.entity.dto.CategoryTagDto;
 import cn.goroute.smart.common.entity.pojo.Category;
 import cn.goroute.smart.common.entity.pojo.CategoryTag;
@@ -34,13 +34,13 @@ import java.util.stream.Collectors;
 public class SmartPostApplication {
 
     @Autowired
-    private CategoryDao categoryDao;
+    private CategoryMapper categoryMapper;
 
     @Autowired
-    private CategoryTagDao categoryTagDao;
+    private CategoryTagMapper categoryTagMapper;
 
     @Autowired
-    private TagDao tagDao;
+    private TagMapper tagMapper;
 
     @Autowired
     RedisUtil redisUtil;
@@ -58,13 +58,13 @@ public class SmartPostApplication {
 
     private void initCategoryTag() {
 
-        List<Category> categories = categoryDao.selectList(null);
+        List<Category> categories = categoryMapper.selectList(null);
 
         List<CategoryTagDto> result = new ArrayList<>();
 
         for (Category category : categories) {
 
-            List<CategoryTag> categoryTags = categoryTagDao.selectList(new LambdaQueryWrapper<CategoryTag>()
+            List<CategoryTag> categoryTags = categoryTagMapper.selectList(new LambdaQueryWrapper<CategoryTag>()
                     .eq(CategoryTag::getCategoryUid, category.getUid()));
 
             if (CollectionUtil.isEmpty(categoryTags)) {
@@ -73,7 +73,7 @@ public class SmartPostApplication {
 
             List<Long> tagUids = categoryTags.stream().map(CategoryTag::getTagUid).collect(Collectors.toList());
 
-            List<Tag> tags = tagDao.selectBatchIds(tagUids);
+            List<Tag> tags = tagMapper.selectBatchIds(tagUids);
 
             CategoryTagDto categoryTagDTO = new CategoryTagDto();
             BeanUtils.copyProperties(category, categoryTagDTO);

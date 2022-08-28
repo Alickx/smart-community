@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 public class ElasticSearchConfig {
 
 
-    private static final String HOST = "localhost";
+    private static final String HOST = "124.223.80.135";
 
     private static final int PORT = 9200;
 
@@ -28,7 +28,7 @@ public class ElasticSearchConfig {
                 new UsernamePasswordCredentials("elastic", "123456"));
 
         RestClientBuilder builder = RestClient.builder(
-                        new HttpHost("HOST", PORT))
+                        new HttpHost(HOST, PORT))
                 .setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder
                         .setDefaultCredentialsProvider(credentialsProvider));
 

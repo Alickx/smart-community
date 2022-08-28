@@ -1,7 +1,7 @@
 package cn.goroute.smart.notify.service.impl;
 
 import cn.goroute.smart.common.constant.NotificationConstant;
-import cn.goroute.smart.common.dao.EventRemindDao;
+import cn.goroute.smart.notify.mapper.EventRemindMapper;
 import cn.goroute.smart.common.entity.dto.EventRemindDto;
 import cn.goroute.smart.common.entity.dto.MemberDto;
 import cn.goroute.smart.common.entity.pojo.EventRemind;
@@ -32,11 +32,11 @@ import java.util.stream.Collectors;
  * @createDate 2022-03-26 08:45:27
  */
 @Service
-public class EventRemindServiceImpl extends ServiceImpl<EventRemindDao, EventRemind>
+public class EventRemindServiceImpl extends ServiceImpl<EventRemindMapper, EventRemind>
         implements EventRemindService {
 
     @Resource
-    EventRemindDao eventRemindDao;
+    EventRemindMapper eventRemindMapper;
 
     @Autowired
     MemberFeignService memberFeignService;
@@ -60,7 +60,7 @@ public class EventRemindServiceImpl extends ServiceImpl<EventRemindDao, EventRem
            第一排序条件为未读 -> 已读
            第二排序条件为提醒时间
          */
-        IPage<EventRemind> page = eventRemindDao.selectPage(new Query<EventRemind>()
+        IPage<EventRemind> page = eventRemindMapper.selectPage(new Query<EventRemind>()
                 .getPage(queryParam), new LambdaQueryWrapper<EventRemind>()
                 .ne(EventRemind::getSenderUid, authService.getLoginUid())
                 .eq(EventRemind::getRecipientUid, authService.getLoginUid())
@@ -116,7 +116,7 @@ public class EventRemindServiceImpl extends ServiceImpl<EventRemindDao, EventRem
     public Result queryUnreadCountRemind() {
 
         Long memberUid = authService.getLoginUid();
-        List<EventRemind> eventReminds = eventRemindDao.selectList(new LambdaQueryWrapper<EventRemind>()
+        List<EventRemind> eventReminds = eventRemindMapper.selectList(new LambdaQueryWrapper<EventRemind>()
                 .eq(EventRemind::getState, NotificationConstant.STATE_UNREAD)
                 .ne(EventRemind::getSenderUid, memberUid)
                 .eq(EventRemind::getRecipientUid, memberUid)

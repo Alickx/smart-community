@@ -1,14 +1,13 @@
 package cn.goroute.smart.member.service.impl;
 
 import cn.goroute.smart.common.constant.Constant;
-import cn.goroute.smart.common.dao.MemberBanDao;
+import cn.goroute.smart.member.mapper.MemberBanMapper;
 import cn.goroute.smart.common.entity.pojo.MemberBan;
 import cn.goroute.smart.common.entity.vo.MemberBanSearchVo;
 import cn.goroute.smart.common.entity.vo.MemberBanVo;
 import cn.goroute.smart.common.service.AuthService;
 import cn.goroute.smart.common.utils.PageUtils;
 import cn.goroute.smart.common.utils.Result;
-import cn.goroute.smart.member.manage.IMemberBanManage;
 import cn.goroute.smart.member.service.MemberBanService;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.LocalDateTimeUtil;
@@ -33,11 +32,11 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
-public class MemberBanServiceImpl extends ServiceImpl<MemberBanDao, MemberBan>
+public class MemberBanServiceImpl extends ServiceImpl<MemberBanMapper, MemberBan>
         implements MemberBanService {
 
     @Resource
-    private MemberBanDao memberBanDao;
+    private MemberBanMapper memberBanMapper;
 
     @Autowired
     QueryBanMember queryBanMember;
@@ -62,7 +61,7 @@ public class MemberBanServiceImpl extends ServiceImpl<MemberBanDao, MemberBan>
         List<Integer> banType = memberBanVO.getBanType();
 
         for (Integer type : banType) {
-            MemberBan memberBan = memberBanDao
+            MemberBan memberBan = memberBanMapper
                     .selectOne(new LambdaQueryWrapper<MemberBan>()
                             .eq(MemberBan::getBanUserId, memberBanVO.getMemberUid())
                             .eq(MemberBan::getBanType, type)
@@ -77,7 +76,7 @@ public class MemberBanServiceImpl extends ServiceImpl<MemberBanDao, MemberBan>
             memberBan.setBanTime(LocalDateTimeUtil.now());
             memberBan.setBanHandlerId(authService.getLoginUid());
             memberBan.setBanEndTime(LocalDateTime.now().plusDays(Long.parseLong(memberBanVO.getBanTime())));
-            memberBanDao.insert(memberBan);
+            memberBanMapper.insert(memberBan);
             // 消息队列发送通知
             memberBanManage.sendNotify(memberBan, "您的账号已被封禁，原因是" + memberBan.getBanReason() + "，详情请查看个人中心");
         }
@@ -124,12 +123,12 @@ public class MemberBanServiceImpl extends ServiceImpl<MemberBanDao, MemberBan>
 
         for (String banId : banIds) {
             // 根据banId查询用户
-            MemberBan memberBan = memberBanDao.selectById(banId);
+            MemberBan memberBan = memberBanMapper.selectById(banId);
             if (memberBan == null) {
                 return Result.error("该用户未被封禁");
             }
             // 逻辑删除用户封禁记录
-            memberBanDao.deleteById(banId);
+            memberBanMapper.deleteById(banId);
             // 发送事件通知
             memberBanManage.sendNotify(memberBan,"您的封禁已被解除，详情请查看个人中心!");
 
@@ -148,7 +147,7 @@ public class MemberBanServiceImpl extends ServiceImpl<MemberBanDao, MemberBan>
     public Result queryBannedMember(Long memberUid) {
 
         // 查询用户封禁项
-        List<MemberBan> memberBans = memberBanDao.selectList(new LambdaQueryWrapper<MemberBan>()
+        List<MemberBan> memberBans = memberBanMapper.selectList(new LambdaQueryWrapper<MemberBan>()
                 .eq(MemberBan::getBanUserId, memberUid)
                 .ge(MemberBan::getBanEndTime, LocalDateTime.now()));
 

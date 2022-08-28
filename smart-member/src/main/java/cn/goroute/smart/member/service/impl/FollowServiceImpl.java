@@ -1,8 +1,8 @@
 package cn.goroute.smart.member.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
-import cn.goroute.smart.common.dao.FollowDao;
-import cn.goroute.smart.common.dao.MemberDao;
+import cn.goroute.smart.member.mapper.FollowMapper;
+import cn.goroute.smart.member.mapper.MemberMapper;
 import cn.goroute.smart.common.entity.pojo.Follow;
 import cn.goroute.smart.common.entity.pojo.Member;
 import cn.goroute.smart.common.service.AuthService;
@@ -21,14 +21,14 @@ import javax.annotation.Resource;
  * @createDate 2022-03-27 16:58:13
  */
 @Service
-public class FollowServiceImpl extends ServiceImpl<FollowDao, Follow>
+public class FollowServiceImpl extends ServiceImpl<FollowMapper, Follow>
         implements FollowService {
 
     @Resource
-    FollowDao followDao;
+    FollowMapper followMapper;
 
     @Resource
-    MemberDao memberDao;
+    MemberMapper memberMapper;
 
     @Autowired
     AuthService authService;
@@ -36,7 +36,7 @@ public class FollowServiceImpl extends ServiceImpl<FollowDao, Follow>
     @Override
     public Result saveFollow(Long followMemberId) {
 
-        Member member = memberDao.selectById(followMemberId);
+        Member member = memberMapper.selectById(followMemberId);
 
         if (member == null) {
             return Result.error("该用户不存在!");
@@ -46,7 +46,7 @@ public class FollowServiceImpl extends ServiceImpl<FollowDao, Follow>
         follow.setToMemberUid(followMemberId);
         follow.setMemberUid(authService.getLoginUid());
 
-        int insert = followDao.insert(follow);
+        int insert = followMapper.insert(follow);
 
         if (insert == 0) {
             return Result.error();
@@ -68,7 +68,7 @@ public class FollowServiceImpl extends ServiceImpl<FollowDao, Follow>
             return Result.ok().put("data",false);
         }
 
-        Follow follow = followDao.selectOne(new LambdaQueryWrapper<Follow>()
+        Follow follow = followMapper.selectOne(new LambdaQueryWrapper<Follow>()
                 .eq(Follow::getMemberUid, StpUtil.getLoginIdAsString())
                 .eq(Follow::getToMemberUid, followMemberId));
 

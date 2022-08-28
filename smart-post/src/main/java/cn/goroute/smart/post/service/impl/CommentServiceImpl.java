@@ -3,9 +3,9 @@ package cn.goroute.smart.post.service.impl;
 import cn.goroute.smart.common.api.ResultCode;
 import cn.goroute.smart.common.constant.PostConstant;
 import cn.goroute.smart.common.constant.RedisKeyConstant;
-import cn.goroute.smart.common.dao.CommentDao;
-import cn.goroute.smart.common.dao.PostDao;
-import cn.goroute.smart.common.dao.ThumbDao;
+import cn.goroute.smart.post.mapper.CommentMapper;
+import cn.goroute.smart.post.mapper.PostMapper;
+import cn.goroute.smart.post.mapper.ThumbMapper;
 import cn.goroute.smart.common.entity.dto.CommentDto;
 import cn.goroute.smart.common.entity.dto.MemberDto;
 import cn.goroute.smart.common.entity.pojo.Comment;
@@ -46,11 +46,11 @@ import java.util.Objects;
  * @createDate 2022-03-05 08:39:52
  */
 @Service
-public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
+public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
         implements CommentService {
 
     @Autowired
-    CommentDao commentDao;
+    CommentMapper commentMapper;
 
     @Autowired
     MemberFeignService memberFeignService;
@@ -65,10 +65,10 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
     RedisTemplate<Object, Object> redisTemplate;
 
     @Autowired
-    PostDao postDao;
+    PostMapper postMapper;
 
     @Resource
-    ThumbDao thumbDao;
+    ThumbMapper thumbMapper;
 
     @Autowired
     RabbitmqUtil rabbitmqUtil;
@@ -87,7 +87,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
     @Override
     public Result getCommentByPost(QueryParam queryParam, Long postUid) throws IOException {
 
-        IPage<Comment> pageResult = commentDao.selectPage(new Query<Comment>().getPage(queryParam),
+        IPage<Comment> pageResult = commentMapper.selectPage(new Query<Comment>().getPage(queryParam),
                 new LambdaQueryWrapper<Comment>().eq(Comment::getPostUid, postUid)
                         .isNull(Comment::getFirstCommentUid)
                         .eq(Comment::getStatus, PostConstant.NORMAL_STATUS));
@@ -141,7 +141,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
     @Override
     public Result del(CommentVo commentVo) {
 
-        Comment comment = commentDao.selectById(commentVo.getUid());
+        Comment comment = commentMapper.selectById(commentVo.getUid());
         if (comment != null) {
             long memberUid = comment.getMemberUid();
             // 判断是否是评论者
@@ -150,7 +150,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
             }
             // 逻辑删除
             comment.setStatus(PostConstant.DELETE_STATUS);
-            int result = commentDao.updateById(comment);
+            int result = commentMapper.updateById(comment);
             if (result != 1) {
                 return Result.error();
             }
@@ -163,7 +163,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
                     if (redisUtil.hHasKey(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY)) {
                         redisUtil.hdecr(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY, 1);
                     } else {
-                        Post post = postDao.selectById(comment.getPostUid());
+                        Post post = postMapper.selectById(comment.getPostUid());
                         if (post != null) {
                             redisUtil.hset(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY, post.getCommentCount());
                             redisUtil.hdecr(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY, 1);
@@ -191,7 +191,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
         }
 
         //判断点赞文章是否存在
-        Post post = postDao.selectOne(new LambdaQueryWrapper<Post>()
+        Post post = postMapper.selectOne(new LambdaQueryWrapper<Post>()
                 .eq(Post::getUid, commentVo.getPostUid())
                 .eq(Post::getStatus, PostConstant.NORMAL_STATUS)
                 .eq(Post::getIsPublish, PostConstant.PUBLISH));
@@ -204,7 +204,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
         BeanUtils.copyProperties(commentVo, comment);
 
         comment.setMemberUid(authService.getLoginUid());
-        int result = commentDao.insert(comment);
+        int result = commentMapper.insert(comment);
         if (result != 1) {
             throw new ServiceException("评论发布失败");
         }
@@ -239,7 +239,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
      */
     private int getThumbCount(Comment comment) throws IOException {
         int thumbCount;
-        thumbCount = thumbDao.selectCount(new LambdaQueryWrapper<Thumb>()
+        thumbCount = thumbMapper.selectCount(new LambdaQueryWrapper<Thumb>()
                 .eq(Thumb::getToUid, comment.getUid())
                 .eq(Thumb::getType, PostConstant.THUMB_COMMENT_TYPE));
 
@@ -274,7 +274,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
 
             if (!redisUtil.hHasKey(RedisKeyConstant.POST_THUMB_KEY, redisKey)) {
                 //数据库点赞记录
-                Thumb thumb = thumbDao.selectOne(new LambdaQueryWrapper<Thumb>().eq(Thumb::getMemberUid, loginUid)
+                Thumb thumb = thumbMapper.selectOne(new LambdaQueryWrapper<Thumb>().eq(Thumb::getMemberUid, loginUid)
                         .eq(Thumb::getToUid, comment.getUid()));
                 if (thumb != null) {
                     isLike = true;
@@ -298,7 +298,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment>
         QueryParam queryParam = new QueryParam();
         queryParam.setLimit("3");
         queryParam.setSidx("created_time");
-        IPage<Comment> pageResult = commentDao.selectPage(new Query<Comment>().getPage(queryParam), new QueryWrapper<Comment>()
+        IPage<Comment> pageResult = commentMapper.selectPage(new Query<Comment>().getPage(queryParam), new QueryWrapper<Comment>()
                 .eq("first_comment_uid", firstCommentUid)
                 .eq("status", PostConstant.NORMAL_STATUS));
 

@@ -3,7 +3,6 @@ package cn.goroute.smart.post.service.impl;
 
 import cn.goroute.smart.common.constant.PostConstant;
 import cn.goroute.smart.common.constant.RedisKeyConstant;
-import cn.goroute.smart.common.dao.*;
 import cn.goroute.smart.common.entity.dto.MemberDto;
 import cn.goroute.smart.common.entity.dto.PostDto;
 import cn.goroute.smart.common.entity.dto.PostListDto;
@@ -18,6 +17,7 @@ import cn.goroute.smart.common.service.AuthService;
 import cn.goroute.smart.common.utils.*;
 import cn.goroute.smart.post.feign.SearchFeignService;
 import cn.goroute.smart.post.manage.IPostManage;
+import cn.goroute.smart.post.mapper.*;
 import cn.goroute.smart.post.service.PostService;
 import cn.goroute.smart.post.util.Html2TextUtil;
 import cn.goroute.smart.post.util.NamingThreadFactory;
@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
 
 @Service("postService")
 @Slf4j
-public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostService {
+public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements PostService {
 
     @Resource
     MemberFeignService memberFeignService;
@@ -55,19 +55,19 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
     RabbitmqUtil rabbitmqUtil;
 
     @Autowired
-    TagDao tagDao;
+    TagMapper tagMapper;
 
     @Autowired
-    CategoryDao categoryDao;
+    CategoryMapper categoryMapper;
 
     @Autowired
-    PostDao postDao;
+    PostMapper postMapper;
 
     @Autowired
-    PostTagDao postTagDao;
+    PostTagMapper postTagMapper;
 
     @Autowired
-    CommentDao commentDao;
+    CommentMapper commentMapper;
 
     @Autowired
     RedisTemplate<Object, Object> redisTemplate;
@@ -76,7 +76,7 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
     RedisUtil redisUtil;
 
     @Autowired
-    CollectDao collectDao;
+    CollectMapper collectMapper;
 
     @Autowired
     IPostManage iPostManage;
@@ -99,7 +99,7 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
 
         // 查询条件 如果没有选择分类，则查询全部
         if (postQueryVO.getCategoryUid() == null) {
-            page = postDao.selectPage(
+            page = postMapper.selectPage(
                     new Query<Post>().getPage(postQueryVO),
                     new LambdaQueryWrapper<Post>()
                             .eq(Post::getIsPublish, PostConstant.PUBLISH)
@@ -107,7 +107,7 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
             // 如果选择了分类，没有选择标签，则查询分类下的文章
         } else if (postQueryVO.getTagUid() == null) {
 
-            page = postDao.selectPage(
+            page = postMapper.selectPage(
                     new Query<Post>().getPage(postQueryVO),
                     new LambdaQueryWrapper<Post>()
                             .eq(Post::getCategoryUid, postQueryVO.getCategoryUid())
@@ -115,7 +115,7 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
             );
         } else {
             // 如果选择了分类和标签，则查询分类和标签下的文章
-            IPage<PostTag> postTagIPage = postTagDao.selectPage(new Query<PostTag>().getPage(postQueryVO),
+            IPage<PostTag> postTagIPage = postTagMapper.selectPage(new Query<PostTag>().getPage(postQueryVO),
                     new LambdaQueryWrapper<PostTag>()
                             .eq(PostTag::getTagUid, postQueryVO.getTagUid()));
 
@@ -126,7 +126,7 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
             List<Long> postIds = records.stream()
                     .map(PostTag::getPostUid).collect(Collectors.toList());
 
-            List<Post> posts = postDao.selectBatchIds(postIds);
+            List<Post> posts = postMapper.selectBatchIds(postIds);
             BeanUtils.copyProperties(postTagIPage, page = new Page<>());
             page.setRecords(posts);
         }
@@ -245,7 +245,7 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Result savePost(PostVo postVo) {
-        Category category = categoryDao.selectById(postVo.getCategoryUid());
+        Category category = categoryMapper.selectById(postVo.getCategoryUid());
         if (category == null) {
             return Result.error("分类不存在");
         }
@@ -254,7 +254,7 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
         if (CollUtil.isEmpty(tagUid)) {
             return Result.error("请选择标签");
         } else {
-            List<Tag> tags = tagDao.selectBatchIds(tagUid);
+            List<Tag> tags = tagMapper.selectBatchIds(tagUid);
             tags.forEach(tag -> {
                 if (tag == null) {
                     throw new RuntimeException("标签不存在");
@@ -285,12 +285,12 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
         int result = -1;
         // 如果是编辑，则先删除原有的标签
         if (Objects.equals(postVo.getType(), PostConstant.POST_SAVE_TYPE_EDIT)) {
-            postTagDao.delete(new LambdaQueryWrapper<PostTag>().eq(PostTag::getPostUid, postVo.getUid()));
+            postTagMapper.delete(new LambdaQueryWrapper<PostTag>().eq(PostTag::getPostUid, postVo.getUid()));
             post.setUid(postVo.getUid());
-            result = postDao.updateById(post);
+            result = postMapper.updateById(post);
         } else if (Objects.equals(postVo.getType(), PostConstant.POST_SAVE_TYPE_NEW)) {
             // 新增文章
-            result = postDao.insert(post);
+            result = postMapper.insert(post);
         }
 
         if (result == 1) {
@@ -321,7 +321,7 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
         if (redisUtil.hasKey(key)) {
             return Result.error("没有该文章");
         }
-        post = postDao.selectById(uid);
+        post = postMapper.selectById(uid);
         // 防止缓存穿透
         if (post == null) {
             redisUtil.set(key, null, 60L * 60 * 3);
@@ -344,7 +344,7 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
         BeanUtils.copyProperties(post, postDTO);
 
         // 获取文章的标签
-        List<PostTag> tags = postTagDao.selectList(new LambdaQueryWrapper<PostTag>().eq(PostTag::getPostUid, uid));
+        List<PostTag> tags = postTagMapper.selectList(new LambdaQueryWrapper<PostTag>().eq(PostTag::getPostUid, uid));
 
         List<Long> tagUid = tags.stream().map(PostTag::getTagUid).collect(Collectors.toList());
 
@@ -375,13 +375,13 @@ public class PostServiceImpl extends ServiceImpl<PostDao, Post> implements PostS
             return Result.error("文章uid不能为空");
         }
 
-        Post post = postDao.selectById(postUid);
+        Post post = postMapper.selectById(postUid);
 
         if (!Objects.equals(post.getMemberUid(), authService.getLoginUid())) {
             return Result.error();
         }
 
-        postDao.deleteById(postUid);
+        postMapper.deleteById(postUid);
         //调用es接口逻辑删除文章
         searchFeignService.deleteSearchPost(post.getUid());
         return Result.ok();

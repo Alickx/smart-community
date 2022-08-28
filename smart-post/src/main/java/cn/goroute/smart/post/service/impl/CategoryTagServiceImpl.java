@@ -1,7 +1,7 @@
 package cn.goroute.smart.post.service.impl;
 
-import cn.goroute.smart.common.dao.CategoryDao;
-import cn.goroute.smart.common.dao.CategoryTagDao;
+import cn.goroute.smart.post.mapper.CategoryMapper;
+import cn.goroute.smart.post.mapper.CategoryTagMapper;
 import cn.goroute.smart.common.entity.dto.CategoryTagDto;
 import cn.goroute.smart.common.entity.pojo.CategoryTag;
 import cn.goroute.smart.common.entity.pojo.Tag;
@@ -29,14 +29,14 @@ import java.util.stream.Collectors;
 */
 @Service
 @Slf4j
-public class CategoryTagServiceImpl extends ServiceImpl<CategoryTagDao, CategoryTag>
+public class CategoryTagServiceImpl extends ServiceImpl<CategoryTagMapper, CategoryTag>
     implements CategoryTagService {
 
     @Autowired
-    CategoryDao categoryDao;
+    CategoryMapper categoryMapper;
 
     @Autowired
-    CategoryTagDao categoryTagDao;
+    CategoryTagMapper categoryTagMapper;
 
     @Autowired
     TagService tagService;
@@ -52,7 +52,7 @@ public class CategoryTagServiceImpl extends ServiceImpl<CategoryTagDao, Category
     @Override
     public Result getTagByCategory(Long categoryUid) {
 
-        List<CategoryTag> categoryTagList = categoryTagDao
+        List<CategoryTag> categoryTagList = categoryTagMapper
                 .selectList(new LambdaQueryWrapper<CategoryTag>()
                         .eq(CategoryTag::getCategoryUid, categoryUid));
 

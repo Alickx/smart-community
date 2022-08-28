@@ -1,6 +1,6 @@
 package cn.goroute.smart.post.util;
 
-import cn.goroute.smart.common.dao.PostDao;
+import cn.goroute.smart.post.mapper.PostMapper;
 import cn.goroute.smart.common.entity.pojo.EventRemind;
 import cn.goroute.smart.common.entity.pojo.Post;
 import cn.goroute.smart.common.exception.ServiceException;
@@ -27,7 +27,7 @@ public class RabbitmqUtil {
     RabbitTemplate rabbitTemplate;
 
     @Autowired
-    PostDao postDao;
+    PostMapper postMapper;
 
     /**
      * 保存文章到es

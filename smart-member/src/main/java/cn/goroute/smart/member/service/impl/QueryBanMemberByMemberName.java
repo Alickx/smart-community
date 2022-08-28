@@ -1,8 +1,8 @@
 package cn.goroute.smart.member.service.impl;
 
 import cn.goroute.smart.common.constant.Constant;
-import cn.goroute.smart.common.dao.MemberDao;
-import cn.goroute.smart.common.dao.MemberBanDao;
+import cn.goroute.smart.member.mapper.MemberMapper;
+import cn.goroute.smart.member.mapper.MemberBanMapper;
 import cn.goroute.smart.common.entity.dto.MemberBanDto;
 import cn.goroute.smart.common.entity.dto.MemberDto;
 import cn.goroute.smart.common.entity.pojo.Member;
@@ -32,10 +32,10 @@ import java.util.stream.Collectors;
 public class QueryBanMemberByMemberName implements IQueryBanMember {
 
     @Autowired
-    private MemberDao memberDao;
+    private MemberMapper memberMapper;
 
     @Autowired
-    private MemberBanDao memberBanDao;
+    private MemberBanMapper memberBanMapper;
 
     @Override
     public PageUtils queryBanMember(MemberBanSearchVo memberBanSearchVO) {
@@ -49,7 +49,7 @@ public class QueryBanMemberByMemberName implements IQueryBanMember {
         // 搜索状态为空或者为未封禁，则查询所有
         IPage<Member> memberPage = new Query<Member>().getPage(curPage, pageSize);
 
-        IPage<Member> memberIPage = memberDao.selectPage(memberPage, new LambdaQueryWrapper<Member>()
+        IPage<Member> memberIPage = memberMapper.selectPage(memberPage, new LambdaQueryWrapper<Member>()
                 .like(Member::getNickName, nickName)
                 .eq(Member::getStatus, Constant.BAD_USER_STATUS));
 
@@ -60,7 +60,7 @@ public class QueryBanMemberByMemberName implements IQueryBanMember {
         List<MemberBanDto> result = new ArrayList<>();
 
         userIds.parallelStream().forEach(userId -> {
-            List<MemberBan> memberBans = memberBanDao.selectList(new LambdaQueryWrapper<MemberBan>()
+            List<MemberBan> memberBans = memberBanMapper.selectList(new LambdaQueryWrapper<MemberBan>()
                     .eq(MemberBan::getBanUserId, userId));
 
             if (CollectionUtils.isEmpty(memberBans)) {
@@ -71,7 +71,7 @@ public class QueryBanMemberByMemberName implements IQueryBanMember {
                 // 如果不为空，则查询封禁者的DTO和操作者的DTO
                 // 在records中查询封禁者的DTO
                 Member banMember = records.stream().filter(member1 -> Objects.equals(member1.getUid(), userId)).findFirst().orElse(null);
-                Member handlerMember = memberDao.selectById(memberBans.get(0).getBanHandlerId());
+                Member handlerMember = memberMapper.selectById(memberBans.get(0).getBanHandlerId());
 
                 MemberBanDto memberBanDTO = new MemberBanDto();
                 memberBanDTO.setBanUser(ModelConverterUtils.convert(banMember, MemberDto.class));

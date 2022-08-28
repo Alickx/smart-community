@@ -1,6 +1,6 @@
 package cn.goroute.smart.member.service.impl;
 
-import cn.goroute.smart.common.dao.CheckInDao;
+import cn.goroute.smart.member.mapper.CheckInMapper;
 import cn.goroute.smart.common.entity.pojo.CheckIn;
 import cn.goroute.smart.common.service.AuthService;
 import cn.goroute.smart.common.utils.Result;
@@ -20,11 +20,11 @@ import java.util.List;
 * @createDate 2022-07-09 11:29:00
 */
 @Service
-public class CheckInServiceImpl extends ServiceImpl<CheckInDao, CheckIn>
+public class CheckInServiceImpl extends ServiceImpl<CheckInMapper, CheckIn>
     implements CheckInService{
 
     @Autowired
-    private CheckInDao checkInDao;
+    private CheckInMapper checkInMapper;
 
     @Autowired
     private AuthService authService;
@@ -39,7 +39,7 @@ public class CheckInServiceImpl extends ServiceImpl<CheckInDao, CheckIn>
         Long loginUid = authService.getLoginUid();
 
         // 获取用户今天已经是否签到了
-        CheckIn checkIn = checkInDao.getMemberIsCheckInToday(loginUid);
+        CheckIn checkIn = checkInMapper.getMemberIsCheckInToday(loginUid);
         if (checkIn != null) {
             return Result.error("今天已经签到了");
         }
@@ -48,7 +48,7 @@ public class CheckInServiceImpl extends ServiceImpl<CheckInDao, CheckIn>
         checkIn = new CheckIn();
         checkIn.setMemberUid(loginUid);
         checkIn.setCheckInDate(LocalDateTimeUtil.now());
-        checkInDao.insert(checkIn);
+        checkInMapper.insert(checkIn);
 
         //TODO 签到后的逻辑，积分增加，站内信发送等等
 
@@ -64,7 +64,7 @@ public class CheckInServiceImpl extends ServiceImpl<CheckInDao, CheckIn>
 
         // 获取签到数据
         Long loginUid = authService.getLoginUid();
-        List<CheckIn> memberCheckInMonth = checkInDao.getMemberCheckInMonth(loginUid);
+        List<CheckIn> memberCheckInMonth = checkInMapper.getMemberCheckInMonth(loginUid);
 
         // 获取签到天数
         int checkInDays = memberCheckInMonth.size();
