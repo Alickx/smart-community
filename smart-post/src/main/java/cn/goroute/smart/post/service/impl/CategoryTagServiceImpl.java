@@ -54,14 +54,14 @@ public class CategoryTagServiceImpl extends ServiceImpl<CategoryTagMapper, Categ
 
         List<CategoryTag> categoryTagList = categoryTagMapper
                 .selectList(new LambdaQueryWrapper<CategoryTag>()
-                        .eq(CategoryTag::getCategoryUid, categoryUid));
+                        .eq(CategoryTag::getCategoryId, categoryUid));
 
         if (CollectionUtil.isEmpty(categoryTagList)) {
             return Result.error("没有此分类标签数据");
         }
 
         List<Long> tagIds = categoryTagList.stream()
-                .map(CategoryTag::getTagUid).distinct().collect(Collectors.toList());
+                .map(CategoryTag::getTagId).distinct().collect(Collectors.toList());
 
         if (CollectionUtil.isEmpty(tagIds)) {
             return Result.error("该分类下没有标签");
@@ -73,7 +73,7 @@ public class CategoryTagServiceImpl extends ServiceImpl<CategoryTagMapper, Categ
         tagList.parallelStream().forEach(t -> {
             Map<String,Object> map = new HashMap<>(2);
             map.put("label", t.getContent());
-            map.put("value", t.getUid());
+            map.put("value", t.getId());
             tagContentList.add(map);
         });
 

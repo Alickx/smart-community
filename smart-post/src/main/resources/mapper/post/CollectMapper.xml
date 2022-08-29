@@ -3,15 +3,6 @@
 
 <mapper namespace="cn.goroute.smart.post.mapper.CollectMapper">
 
-	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="cn.goroute.smart.member.entity.pojo.Collect" id="collectMap">
-        <result property="uid" column="uid"/>
-        <result property="memberUid" column="member_uid"/>
-        <result property="postUid" column="post_uid"/>
-        <result property="status" column="status"/>
-        <result property="createdTime" column="created_time"/>
-        <result property="updatedTime" column="updated_time"/>
-    </resultMap>
 
 
 </mapper>

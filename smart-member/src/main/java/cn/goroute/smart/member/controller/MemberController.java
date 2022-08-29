@@ -2,14 +2,12 @@ package cn.goroute.smart.member.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.stp.StpUtil;
-import cn.goroute.smart.member.entity.dto.MemberDto;
-import cn.goroute.smart.member.entity.pojo.Member;
-import cn.goroute.smart.member.entity.vo.MemberInfoUpdateVo;
-import cn.goroute.smart.member.entity.vo.MemberLoginVo;
-import cn.goroute.smart.member.entity.vo.MemberRegisterVo;
 import cn.goroute.smart.common.service.AuthService;
 import cn.goroute.smart.common.utils.RedisUtil;
 import cn.goroute.smart.common.utils.Result;
+import cn.goroute.smart.common.entity.dto.MemberDto;
+import cn.goroute.smart.member.entity.pojo.Member;
+import cn.goroute.smart.member.entity.vo.MemberInfoUpdateVo;
 import cn.goroute.smart.member.service.MemberService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -145,11 +142,6 @@ public class MemberController {
         return memberService.updateMemberInfo(memberInfoUpdateVO);
     }
 
-    @PostMapping("/login")
-    public Result login(@RequestBody MemberLoginVo memberLoginVO, HttpServletRequest request) {
-        return memberService.login(memberLoginVO, request);
-    }
-
     @PostMapping("/logout")
     public Result logout() {
         Boolean isLogin = authService.getIsLogin();
@@ -160,15 +152,10 @@ public class MemberController {
         return Result.error("用户未登录");
     }
 
-    @PostMapping("/register")
-    public Result register(@RequestBody MemberRegisterVo memberRegisterVO) {
-        return memberService.register(memberRegisterVO);
-    }
-
     @GetMapping("/isLogin")
     public Result isLogin() {
         Boolean isLogin = authService.getIsLogin();
-        if (isLogin) {
+        if (Boolean.TRUE.equals(isLogin)) {
             return Result.ok();
         }
         return Result.error(401, "用户未登录");

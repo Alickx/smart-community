@@ -14,7 +14,6 @@
     <description>smart-post</description>
     <properties>
         <java.version>1.8</java.version>
-        <spring-cloud.version>Hoxton.SR3</spring-cloud.version>
     </properties>
     <dependencies>
         <dependency>
@@ -29,7 +28,6 @@
         <dependency>
             <groupId>com.xuxueli</groupId>
             <artifactId>xxl-job-core</artifactId>
-            <version>2.3.0</version>
         </dependency>
         <!--        Rabbitmq消息队列-->
         <dependency>
@@ -51,7 +49,6 @@
         <dependency>
             <groupId>org.redisson</groupId>
             <artifactId>redisson</artifactId>
-            <version>3.17.0</version>
         </dependency>
 <!--        mysql-->
         <dependency>
@@ -60,15 +57,14 @@
         </dependency>
 <!--        mybatis-plus-->
         <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>3.4.3.1</version>
+            <groupId>cn.goroute.smart</groupId>
+            <artifactId>smart-mybatis-plus-starter</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
 <!--        druid-->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
-            <version>1.2.8</version>
         </dependency>
     </dependencies>
 
@@ -94,7 +90,6 @@
             <plugin>
                 <groupId>com.spotify</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
-                <version>1.2.2</version>
             </plugin>
         </plugins>
     </build>

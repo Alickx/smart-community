@@ -25,21 +25,21 @@ public class Comment extends BaseEntity implements Serializable {
      */
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @NotNull(message = "用户uid不能为空")
-    private Long memberUid;
+    private Long memberId;
 
     /**
      * 文章uid
      */
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @NotNull(message = "文章uid不能为空")
-    private Long postUid;
+    private Long postId;
 
     /**
      * 回复某个人的uid
      */
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @NotNull(message = "uid不能为空")
-    private Long toMemberUid;
+    private Long toMemberId;
 
     /**
      * 评论内容
@@ -62,5 +62,5 @@ public class Comment extends BaseEntity implements Serializable {
      * 一级评论uid
      */
     @NotNull(message = "一级评论uid不能为空")
-    private Long firstCommentUid;
+    private Long firstCommentId;
 }

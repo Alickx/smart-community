@@ -1,8 +1,6 @@
 package cn.goroute.smart.post.entity.pojo;
 
 import cn.goroute.smart.common.entity.base.BaseEntity;
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -27,11 +25,11 @@ public class Post extends BaseEntity implements Serializable {
 	/**
 	 * 分类uid
 	 */
-	private int categoryUid;
+	private Long categoryId;
 	/**
 	 * 用户uid
 	 */
-	private Long memberUid;
+	private Long memberId;
 	/**
 	 * 文章标题
 	 */
@@ -47,11 +45,11 @@ public class Post extends BaseEntity implements Serializable {
 	/**
 	 * 收藏数量
 	 */
-	private Integer collectCount;
+	private Long collectCount;
 	/**
 	 * 点赞数量
 	 */
-	private Integer thumbCount;
+	private Long thumbCount;
 	/**
 	 * 0 = 不公布  1 = 公布
 	 */
@@ -64,6 +62,6 @@ public class Post extends BaseEntity implements Serializable {
 	/**
 	 * 评论总量
 	 */
-	private Integer commentCount;
+	private Long commentCount;
 
 }

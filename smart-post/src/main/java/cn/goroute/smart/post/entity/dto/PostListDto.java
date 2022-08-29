@@ -1,5 +1,6 @@
 package cn.goroute.smart.post.entity.dto;
 
+import cn.goroute.smart.common.entity.dto.MemberDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,7 +17,7 @@ import java.time.LocalDateTime;
 public class PostListDto {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private Long uid;
+    private Long id;
     /**
      * 标题
      */

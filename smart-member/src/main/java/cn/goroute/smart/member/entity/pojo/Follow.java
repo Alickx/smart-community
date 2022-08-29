@@ -24,14 +24,14 @@ public class Follow extends BaseEntity implements Serializable {
      * 用户uid
      */
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private Long memberUid;
+    private Long memberId;
 
     /**
      * 关注目标的用户uid
      */
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @NotNull(message = "关注目标的用户uid不能为空")
-    private Long toMemberUid;
+    private Long toMemberId;
 
     /**
      * 关注状态

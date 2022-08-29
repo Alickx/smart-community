@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
-        <version>2.2.6.RELEASE</version>
+        <version>2.3.7.RELEASE</version>
         <relativePath/>
     </parent>
 
@@ -23,6 +23,25 @@
         <docker.repostory>registry.cn-hangzhou.aliyuncs.com</docker.repostory>
         <docker.registry.name>smart-community</docker.registry.name>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <skipTests>true</skipTests>
+        <spring.cloud.alibaba.version>2.2.6.RELEASE</spring.cloud.alibaba.version>
+        <spring.cloud.version>Hoxton.SR9</spring.cloud.version>
+        <mybatis.plus.version>3.5.2</mybatis.plus.version>
+        <druid.version>1.2.11</druid.version>
+        <lombok.version>1.18.24</lombok.version>
+        <hutool.version>5.8.5</hutool.version>
+        <satoken.version>1.30.0</satoken.version>
+        <logstash.version>6.6</logstash.version>
+        <logback.version>1.2.10</logback.version>
+        <xxl.job.version>2.3.0</xxl.job.version>
+        <elasticsearch.version>7.16.3</elasticsearch.version>
+        <aliyun.oss.version>3.15.1</aliyun.oss.version>
+        <docker.maven.version>1.2.2</docker.maven.version>
+        <spring.boot.version>2.3.7.RELEASE</spring.boot.version>
+        <redisson.version>3.17.5</redisson.version>
+        <spring-cloud-openfeign.version>2.2.6.RELEASE</spring-cloud-openfeign.version>
+        <commons-pool2.version>2.11.1</commons-pool2.version>
     </properties>
 
     <modules>
@@ -33,7 +52,12 @@
         <module>smart-thirdpart</module>
         <module>smart-task</module>
         <module>smart-search</module>
-        <module>smart-notify</module>
+        <module>smart-notification</module>
+        <module>smart-auth</module>
+        <module>smart-starter</module>
+        <module>smart-starter/smart-mybatis-plus-starter</module>
+        <module>smart-starter/smart-rabbitmq-starter</module>
+        <module>smart-starter/smart-redis-starter</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -43,7 +67,7 @@
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-                <version>2.2.0.RELEASE</version>
+                <version>${spring.cloud.alibaba.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -51,9 +75,156 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
-                <version>Hoxton.SR3</version>
+                <version>${spring.cloud.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <!--        mybatis-plus依赖 -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis.plus.version}</version>
+            </dependency>
+            <!--        druid 数据库连接池-->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid-spring-boot-starter</artifactId>
+                <version>${druid.version}</version>
+            </dependency>
+            <!--        lombok依赖-->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
+            <!--        实体类校验-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-validation</artifactId>
+                <version>${spring.boot.version}</version>
+            </dependency>
+            <!--        nacos服务发现和注册-->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+                <version>${spring.cloud.alibaba.version}</version>
+            </dependency>
+            <!--        nacos配置管理-->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+                <version>${spring.cloud.alibaba.version}</version>
+            </dependency>
+            <!--        hutool工具包-->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+            <!--        properties配置提示-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-configuration-processor</artifactId>
+                <version>${spring.boot.version}</version>
+                <scope>provided</scope>
+                <optional>true</optional>
+            </dependency>
+            <!-- Sa-Token 整合 Redis (使用jackson序列化方式) -->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-pool2</artifactId>
+                <version>${commons-pool2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-spring-boot-starter</artifactId>
+                <version>${satoken.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-dao-redis-jackson</artifactId>
+                <version>${satoken.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-reactor-spring-boot-starter</artifactId>
+                <version>${satoken.version}</version>
+            </dependency>
+            <!--        openfeign远程调用依赖-->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-openfeign</artifactId>
+                <version>${spring-cloud-openfeign.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <!--        logstash日志收集-->
+            <dependency>
+                <groupId>net.logstash.logback</groupId>
+                <artifactId>logstash-logback-encoder</artifactId>
+                <version>${logstash.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
+            <!--        redis中间件-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-data-redis</artifactId>
+                <version>${spring.boot.version}</version>
+            </dependency>
+            <!--        logback日志记录框架-->
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
+            <!--        aop-->
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjweaver</artifactId>
+                <version>${aspectj.version}</version>
+            </dependency>
+            <!--        Rabbitmq消息队列-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-amqp</artifactId>
+                <version>${spring.boot.version}</version>
+            </dependency>
+            <!--        Redisson分布式锁-->
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson</artifactId>
+                <version>${redisson.version}</version>
+            </dependency>
+            <!--        ElasticSearch依赖-->
+            <dependency>
+                <groupId>org.elasticsearch.client</groupId>
+                <artifactId>elasticsearch-rest-high-level-client</artifactId>
+                <version>${elasticsearch.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.elasticsearch</groupId>
+                <artifactId>elasticsearch</artifactId>
+                <version>${elasticsearch.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.elasticsearch.client</groupId>
+                <artifactId>elasticsearch-rest-client</artifactId>
+                <version>${elasticsearch.version}</version>
+            </dependency>
+            <!-- xxl-job-core -->
+            <dependency>
+                <groupId>com.xuxueli</groupId>
+                <artifactId>xxl-job-core</artifactId>
+                <version>${xxl.job.version}</version>
+            </dependency>
+            <!--    阿里云SDK-->
+            <dependency>
+                <groupId>com.aliyun.oss</groupId>
+                <artifactId>aliyun-sdk-oss</artifactId>
+                <version>${aliyun.oss.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -68,7 +239,7 @@
                 <plugin>
                     <groupId>com.spotify</groupId>
                     <artifactId>docker-maven-plugin</artifactId>
-                    <version>1.2.2</version>
+                    <version>${docker.maven.version}</version>
                     <configuration>
                         <imageName>
                             ${docker.repostory}/${docker.registry.name}/${project.artifactId}

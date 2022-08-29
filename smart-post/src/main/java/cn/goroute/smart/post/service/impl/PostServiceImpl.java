@@ -98,26 +98,26 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         IPage<Post> page;
 
         // 查询条件 如果没有选择分类，则查询全部
-        if (postQueryVO.getCategoryUid() == null) {
+        if (postQueryVO.getCategoryId() == null) {
             page = postMapper.selectPage(
                     new Query<Post>().getPage(postQueryVO),
                     new LambdaQueryWrapper<Post>()
                             .eq(Post::getIsPublish, PostConstant.PUBLISH)
                             .eq(Post::getStatus, PostConstant.NORMAL_STATUS));
             // 如果选择了分类，没有选择标签，则查询分类下的文章
-        } else if (postQueryVO.getTagUid() == null) {
+        } else if (postQueryVO.getTagId() == null) {
 
             page = postMapper.selectPage(
                     new Query<Post>().getPage(postQueryVO),
                     new LambdaQueryWrapper<Post>()
-                            .eq(Post::getCategoryUid, postQueryVO.getCategoryUid())
+                            .eq(Post::getCategoryId, postQueryVO.getCategoryId())
                             .eq(Post::getStatus, PostConstant.NORMAL_STATUS)
             );
         } else {
             // 如果选择了分类和标签，则查询分类和标签下的文章
             IPage<PostTag> postTagIPage = postTagMapper.selectPage(new Query<PostTag>().getPage(postQueryVO),
                     new LambdaQueryWrapper<PostTag>()
-                            .eq(PostTag::getTagUid, postQueryVO.getTagUid()));
+                            .eq(PostTag::getTagId, postQueryVO.getTagId()));
 
             List<PostTag> records = postTagIPage.getRecords();
             if (CollUtil.isEmpty(records)) {
@@ -127,7 +127,8 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
                     .map(PostTag::getPostId).collect(Collectors.toList());
 
             List<Post> posts = postMapper.selectBatchIds(postIds);
-            BeanUtils.copyProperties(postTagIPage, page = new Page<>());
+            page = new Page<>();
+            BeanUtils.copyProperties(postTagIPage, page);
             page.setRecords(posts);
         }
 
@@ -209,16 +210,16 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         BeanUtils.copyProperties(record, postListDTO);
 
         CompletableFuture<PostListDto> postListDTOCompletableFuture = CompletableFuture.supplyAsync(() -> {
-            postListDTO.setAuthorInfo(memberFeignService.getMemberByUid(record.getMemberUid()));
+            postListDTO.setAuthorInfo(memberFeignService.getMemberByUid(record.getMemberId()));
             return postListDTO;
         },poolExecutor);
 
         CompletableFuture<PostListDto> postListDTOCompletableFuture2 = CompletableFuture.supplyAsync(() -> {
-            postListDTO.setThumbCount(iPostManage.getThumbCount(record.getUid()));
-            postListDTO.setCommentCount(iPostManage.getCommentCount(record.getUid()));
+            postListDTO.setThumbCount(iPostManage.getThumbCount(record.getId()));
+            postListDTO.setCommentCount(iPostManage.getCommentCount(record.getId()));
             if (isLogin) {
-                postListDTO.setIsLike(iPostManage.checkIsThumbOrCollect(record.getUid(), loginId, 0));
-                postListDTO.setIsCollect(iPostManage.checkIsThumbOrCollect(record.getUid(), loginId, 1));
+                postListDTO.setIsLike(iPostManage.checkIsThumbOrCollect(record.getId(), loginId, 0));
+                postListDTO.setIsCollect(iPostManage.checkIsThumbOrCollect(record.getId(), loginId, 1));
             } else {
                 postListDTO.setIsLike(false);
                 postListDTO.setIsCollect(false);
@@ -245,12 +246,12 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Result savePost(PostVo postVo) {
-        Category category = categoryMapper.selectById(postVo.getCategoryUid());
+        Category category = categoryMapper.selectById(postVo.getCategoryId());
         if (category == null) {
             return Result.error("分类不存在");
         }
 
-        Set<Long> tagUid = new HashSet<>(postVo.getTagUid());
+        Set<Long> tagUid = new HashSet<>(postVo.getTagId());
         if (CollUtil.isEmpty(tagUid)) {
             return Result.error("请选择标签");
         } else {
@@ -278,15 +279,15 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         post.setIsPublish(Boolean.TRUE.equals(postVo.getIsPublish()) ? PostConstant.PUBLISH : PostConstant.NOT_PUBLISH);
         post.setTitle(postVo.getTitle());
         post.setContent(postVo.getContent());
-        post.setCategoryUid(postVo.getCategoryUid());
-        post.setMemberUid(authService.getLoginUid());
+        post.setCategoryId(postVo.getCategoryId());
+        post.setMemberId(authService.getLoginUid());
         post.setStatus(PostConstant.CHECK_STATUS);
 
         int result = -1;
         // 如果是编辑，则先删除原有的标签
         if (Objects.equals(postVo.getType(), PostConstant.POST_SAVE_TYPE_EDIT)) {
-            postTagMapper.delete(new LambdaQueryWrapper<PostTag>().eq(PostTag::getPostId, postVo.getUid()));
-            post.setUid(postVo.getUid());
+            postTagMapper.delete(new LambdaQueryWrapper<PostTag>().eq(PostTag::getPostId, postVo.getId()));
+            post.setId(postVo.getId());
             result = postMapper.updateById(post);
         } else if (Objects.equals(postVo.getType(), PostConstant.POST_SAVE_TYPE_NEW)) {
             // 新增文章
@@ -296,8 +297,8 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         if (result == 1) {
             //插入后通过消息队列对文章进行异步审核
             rabbitmqUtil.reviewPost(post, new ArrayList<>(tagUid), Objects.equals(postVo.getType(), PostConstant.POST_SAVE_TYPE_EDIT));
-            log.info("返回文章的ID为：{}", post.getUid());
-            return Result.ok().put("url", post.getUid());
+            log.info("返回文章的ID为：{}", post.getId());
+            return Result.ok().put("url", post.getId());
         } else {
             log.error("用户={}发布文章失败,文章对象为={}", authService.getLoginUid(), postVo);
             return Result.error("发布文章失败");
@@ -328,7 +329,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
             return Result.error("没有该文章");
         }
 
-        if (!isLogin || !Objects.equals(post.getMemberUid(), authService.getLoginUid())) {
+        if (!isLogin || !Objects.equals(post.getMemberId(), authService.getLoginUid())) {
             if (Objects.equals(post.getIsPublish(), PostConstant.NOT_PUBLISH)) {
                 return Result.error("该文章已设置私有");
             }
@@ -338,7 +339,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         }
 
         List<MemberDto> memberInfoWithPost = memberFeignService
-                .batchQueryUsers(CollUtil.toList(post.getMemberUid()));
+                .batchQueryUsers(CollUtil.toList(post.getMemberId()));
 
         PostDto postDTO = new PostDto();
         BeanUtils.copyProperties(post, postDTO);
@@ -346,9 +347,9 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         // 获取文章的标签
         List<PostTag> tags = postTagMapper.selectList(new LambdaQueryWrapper<PostTag>().eq(PostTag::getPostId, uid));
 
-        List<Long> tagUid = tags.stream().map(PostTag::getTagUid).collect(Collectors.toList());
+        List<Long> tagUid = tags.stream().map(PostTag::getTagId).collect(Collectors.toList());
 
-        postDTO.setTagUid(tagUid);
+        postDTO.setTagId(tagUid);
         if (CollUtil.isNotEmpty(memberInfoWithPost)) {
             postDTO.setAuthorInfo(memberInfoWithPost.get(0));
             if (isLogin) {
@@ -377,13 +378,13 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
 
         Post post = postMapper.selectById(postUid);
 
-        if (!Objects.equals(post.getMemberUid(), authService.getLoginUid())) {
+        if (!Objects.equals(post.getMemberId(), authService.getLoginUid())) {
             return Result.error();
         }
 
         postMapper.deleteById(postUid);
         //调用es接口逻辑删除文章
-        searchFeignService.deleteSearchPost(post.getUid());
+        searchFeignService.deleteSearchPost(post.getId());
         return Result.ok();
     }
 
@@ -400,13 +401,13 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         if (!authService.getIsLogin() || !Objects.equals(queryParam.getUid(), authService.getLoginUid())) {
             page = this.page(new Query<Post>()
                     .getPage(queryParam), new LambdaQueryWrapper<Post>()
-                    .eq(Post::getMemberUid, queryParam.getUid())
+                    .eq(Post::getMemberId, queryParam.getUid())
                     .eq(Post::getStatus, PostConstant.NORMAL_STATUS)
                     .eq(Post::getIsPublish, PostConstant.PUBLISH));
         } else if (Objects.equals(queryParam.getUid(), authService.getLoginUid())) {
             page = this.page(new Query<Post>()
                     .getPage(queryParam), new LambdaQueryWrapper<Post>()
-                    .eq(Post::getMemberUid, queryParam.getUid())
+                    .eq(Post::getMemberId, queryParam.getUid())
                     .eq(Post::getStatus, PostConstant.NORMAL_STATUS));
         }
 
@@ -422,10 +423,10 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
             PostListDto postListDTO = new PostListDto();
             BeanUtils.copyProperties(postEntity, postListDTO);
             postListDTO.setAuthorInfo(memberDTO);
-            postListDTO.setThumbCount(iPostManage.getThumbCount(postEntity.getUid()));
-            if (authService.getIsLogin()) {
-                postListDTO.setIsLike(iPostManage.checkIsThumbOrCollect(postEntity.getUid(), authService.getLoginUid(), 0));
-                postListDTO.setIsCollect(iPostManage.checkIsThumbOrCollect(postEntity.getUid(), authService.getLoginUid(), 1));
+            postListDTO.setThumbCount(iPostManage.getThumbCount(postEntity.getId()));
+            if (Boolean.TRUE.equals(authService.getIsLogin())) {
+                postListDTO.setIsLike(iPostManage.checkIsThumbOrCollect(postEntity.getId(), authService.getLoginUid(), 0));
+                postListDTO.setIsCollect(iPostManage.checkIsThumbOrCollect(postEntity.getId(), authService.getLoginUid(), 1));
             } else {
                 postListDTO.setIsLike(false);
                 postListDTO.setIsCollect(false);

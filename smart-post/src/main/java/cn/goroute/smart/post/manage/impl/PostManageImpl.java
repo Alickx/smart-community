@@ -2,14 +2,14 @@ package cn.goroute.smart.post.manage.impl;
 
 import cn.goroute.smart.common.constant.PostConstant;
 import cn.goroute.smart.common.constant.RedisKeyConstant;
+import cn.goroute.smart.common.feign.MemberFeignService;
+import cn.goroute.smart.common.utils.RedisUtil;
+import cn.goroute.smart.post.entity.pojo.Collect;
+import cn.goroute.smart.post.entity.pojo.Thumb;
+import cn.goroute.smart.post.manage.IPostManage;
 import cn.goroute.smart.post.mapper.CollectMapper;
 import cn.goroute.smart.post.mapper.PostMapper;
 import cn.goroute.smart.post.mapper.ThumbMapper;
-import cn.goroute.smart.common.entity.pojo.Collect;
-import cn.goroute.smart.post.entity.pojo.Thumb;
-import cn.goroute.smart.common.feign.MemberFeignService;
-import cn.goroute.smart.common.utils.RedisUtil;
-import cn.goroute.smart.post.manage.IPostManage;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,39 +41,39 @@ public class PostManageImpl implements IPostManage {
     /**
      * 获取是否点赞或收藏
      *
-     * @param uid      目标uid
-     * @param loginUid 用户uid
+     * @param id      目标id
+     * @param loginId 用户id
      * @param type     类型 0 = 点赞  1 = 收藏
      * @return 是否点赞或是否收藏
      */
     @Override
-    public boolean checkIsThumbOrCollect(Long uid, Long loginUid, int type) {
+    public boolean checkIsThumbOrCollect(Long id, Long loginId, int type) {
         boolean result = false;
         /*
           判断是否点赞或是否收藏
          */
         if (type == 0) {
-            String thumbRedisKey = RedisKeyConstant.getThumbKey(loginUid, uid);
+            String thumbRedisKey = RedisKeyConstant.getThumbKey(loginId, id);
             if (redisUtil.hHasKey(RedisKeyConstant.POST_THUMB_KEY, thumbRedisKey)) {
                 result = true;
             } else {
                 //如果缓存不存在则去数据库中获取
                 Thumb thumbResult = thumbMapper.selectOne(new LambdaQueryWrapper<Thumb>()
-                        .eq(Thumb::getMemberUid, loginUid)
+                        .eq(Thumb::getMemberId, loginId)
                         .eq(Thumb::getType, PostConstant.THUMB_POST_TYPE)
-                        .eq(Thumb::getPostUid, uid));
+                        .eq(Thumb::getPostId, id));
                 if (thumbResult != null) {
                     result = true;
                 }
             }
         } else if (type == 1) {
-            String collectRedisKey = RedisKeyConstant.getThumbKey(loginUid, uid);
+            String collectRedisKey = RedisKeyConstant.getThumbKey(loginId, id);
             if (redisUtil.hHasKey(RedisKeyConstant.POST_COLLECT_KEY, collectRedisKey)) {
                 result = true;
             } else {
                 Collect collectResult = collectMapper.selectOne(new LambdaQueryWrapper<Collect>()
-                        .eq(Collect::getMemberUid, loginUid)
-                        .eq(Collect::getPostUid, uid));
+                        .eq(Collect::getMemberId, loginId)
+                        .eq(Collect::getPostId, id));
                 if (collectResult != null) {
                     result = true;
                 }
@@ -115,14 +115,14 @@ public class PostManageImpl implements IPostManage {
     /**
      * 获取文章的评论总数
      *
-     * @param post 文章实体类
+     * @param postId 文章实体类
      * @return 文章评论总数
      */
     @Override
-    public int getCommentCount(Long postUid) {
+    public int getCommentCount(Long postId) {
 
 
-        String key = RedisKeyConstant.POST_COUNT_KEY + postUid;
+        String key = RedisKeyConstant.POST_COUNT_KEY + postId;
         if (redisUtil.hHasKey(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY)) {
             return (int) redisUtil.hget(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY);
         }
@@ -131,7 +131,7 @@ public class PostManageImpl implements IPostManage {
             if (redisUtil.hHasKey(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY)) {
                 return (int) redisUtil.hget(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY);
             }
-            commentCountResult = postMapper.getCommentCount(postUid);
+            commentCountResult = postMapper.getCommentCount(postId);
             redisUtil.hset(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY, commentCountResult);
         }
         return commentCountResult;

@@ -2,10 +2,10 @@ package cn.goroute.smart.post.service.impl;
 
 import cn.goroute.smart.common.constant.PostConstant;
 import cn.goroute.smart.common.constant.RedisKeyConstant;
+import cn.goroute.smart.common.entity.bo.EventRemindBo;
 import cn.goroute.smart.post.mapper.PostMapper;
 import cn.goroute.smart.post.mapper.ThumbMapper;
 import cn.goroute.smart.post.entity.dto.PostListDto;
-import cn.goroute.smart.common.entity.pojo.EventRemind;
 import cn.goroute.smart.post.entity.pojo.Post;
 import cn.goroute.smart.post.entity.pojo.Thumb;
 import cn.goroute.smart.common.exception.ServiceException;
@@ -74,7 +74,7 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbMapper, Thumb>
 
         //判断点赞文章是否存在
         Post post = postMapper.selectOne(new LambdaQueryWrapper<Post>()
-                .eq(Post::getUid, thumb.getPostUid())
+                .eq(Post::getId, thumb.getPostId())
                 .eq(Post::getStatus, PostConstant.NORMAL_STATUS));
 
         if (post == null) {
@@ -83,7 +83,7 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbMapper, Thumb>
 
         // 判断是否已经点赞
         long loginUid = authService.getLoginUid();
-        String redisKey = RedisKeyConstant.getThumbKey(loginUid, thumb.getToUid());
+        String redisKey = RedisKeyConstant.getThumbKey(loginUid, thumb.getToId());
         if (redisUtil.hHasKey(RedisKeyConstant.POST_THUMB_KEY, redisKey)) {
             Thumb thumbCache = (Thumb) redisUtil.hget(RedisKeyConstant.POST_THUMB_KEY, redisKey);
             if (Objects.equals(thumbCache.getStatus(), PostConstant.NORMAL_STATUS)) {
@@ -95,8 +95,8 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbMapper, Thumb>
           如果数据库中存在该记录，则是取消后再点赞
          */
         Thumb thumbEntity = thumbMapper.selectOne(new LambdaQueryWrapper<Thumb>()
-                .eq(Thumb::getMemberUid, loginUid)
-                .eq(Thumb::getToUid, thumb.getToUid()));
+                .eq(Thumb::getMemberId, loginUid)
+                .eq(Thumb::getToId, thumb.getToId()));
 
         if (thumbEntity != null) {
             thumbEntity.setStatus(PostConstant.NORMAL_STATUS);
@@ -106,12 +106,12 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbMapper, Thumb>
         }
 
         //设置点赞缓存
-        thumb.setMemberUid(loginUid);
+        thumb.setMemberId(loginUid);
         redisUtil.hset(RedisKeyConstant.POST_THUMB_KEY, redisKey, thumb, 60L * 60 * 24 * 2);
 
         //发送点赞事件提醒
-        EventRemind eventRemind = ConvertRemindUtil.convertThumbNotification(thumb, post.getTitle());
-        rabbitmqUtil.sendEventRemind(eventRemind);
+        EventRemindBo eventRemindBo = ConvertRemindUtil.convertThumbNotification(thumb, post.getTitle());
+        rabbitmqUtil.sendEventRemind(eventRemindBo);
 
         incrPostThumbCount(thumb, post);
         return Result.ok();
@@ -120,7 +120,7 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbMapper, Thumb>
 
     private void incrPostThumbCount(Thumb thumb, Post post) {
         //设置帖子点赞数，帖子点赞数缓存
-        String countKey = RedisKeyConstant.POST_COUNT_KEY + thumb.getPostUid();
+        String countKey = RedisKeyConstant.POST_COUNT_KEY + thumb.getPostId();
         if (redisUtil.hHasKey(countKey, RedisKeyConstant.POST_THUMB_COUNT_KEY)) {
             redisUtil.hincr(countKey, RedisKeyConstant.POST_THUMB_COUNT_KEY, 1);
         } else {
@@ -140,7 +140,7 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbMapper, Thumb>
 
         //判断点赞文章是否存在
         Post post = postMapper.selectOne(new LambdaQueryWrapper<Post>()
-                .eq(Post::getUid, thumb.getPostUid())
+                .eq(Post::getId, thumb.getPostId())
                 .eq(Post::getStatus, PostConstant.NORMAL_STATUS));
 
         if (post == null) {
@@ -148,7 +148,7 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbMapper, Thumb>
         }
 
         long loginUid = authService.getLoginUid();
-        String redisKey = RedisKeyConstant.getThumbKey(loginUid, thumb.getToUid());
+        String redisKey = RedisKeyConstant.getThumbKey(loginUid, thumb.getToId());
 
         // 查询缓存中是否存在点赞记录
         if (redisUtil.hHasKey(RedisKeyConstant.POST_THUMB_KEY, redisKey)) {
@@ -158,7 +158,7 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbMapper, Thumb>
         } else {
             // 如果缓存中没有点赞记录则查询数据库
             Thumb thumbEntity = thumbMapper.selectOne(new LambdaQueryWrapper<Thumb>()
-                    .eq(Thumb::getMemberUid, loginUid).eq(Thumb::getToUid, thumb.getToUid()));
+                    .eq(Thumb::getMemberId, loginUid).eq(Thumb::getToId, thumb.getToId()));
             if (thumbEntity != null) {
                 // 设置点赞状态为取消，并设置缓存（由定时任务来处理点赞数据的落地）
                 thumbEntity.setStatus(PostConstant.THUMB_STATUS_CANCEL);
@@ -166,10 +166,10 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbMapper, Thumb>
             }
         }
 
-        String countKey = RedisKeyConstant.POST_COUNT_KEY + thumb.getPostUid();
+        String countKey = RedisKeyConstant.POST_COUNT_KEY + thumb.getPostId();
         if (!redisUtil.hHasKey(countKey, RedisKeyConstant.POST_THUMB_COUNT_KEY)) {
-            Integer thumbCount = thumbMapper.selectCount(new LambdaQueryWrapper<Thumb>()
-                    .eq(Thumb::getPostUid, thumb.getPostUid()));
+            long thumbCount = thumbMapper.selectCount(new LambdaQueryWrapper<Thumb>()
+                    .eq(Thumb::getPostId, thumb.getPostId()));
             redisUtil.hset(countKey, RedisKeyConstant.POST_THUMB_COUNT_KEY, thumbCount);
         }
         redisUtil.hdecr(countKey, RedisKeyConstant.POST_THUMB_COUNT_KEY, 1);
@@ -205,7 +205,7 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbMapper, Thumb>
         //批量插入数据库
         for (Thumb thumb : insertList) {
             // 如果存在uid，则更新，否则插入
-            if (thumb.getUid() == null) {
+            if (thumb.getId() == null) {
                 thumbMapper.insert(thumb);
             } else {
                 thumbMapper.updateById(thumb);
@@ -230,10 +230,10 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbMapper, Thumb>
 
         IPage<Thumb> thumbPage = thumbMapper.selectPage(new Query<Thumb>().getPage(queryParam),
                 new LambdaQueryWrapper<Thumb>()
-                        .eq(Thumb::getMemberUid, queryParam.getUid())
+                        .eq(Thumb::getMemberId, queryParam.getUid())
                         .orderByDesc(Thumb::getCreatedTime));
 
-        List<Long> postIdList = thumbPage.getRecords().stream().map(Thumb::getPostUid).collect(Collectors.toList());
+        List<Long> postIdList = thumbPage.getRecords().stream().map(Thumb::getPostId).collect(Collectors.toList());
 
         List<PostListDto> postDTOList = iThumbManage.getPostDTOListByPostIdList(postIdList);
 
@@ -263,12 +263,12 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbMapper, Thumb>
             String postUid = split[split.length - 1];
             Post post = new Post();
             if (redisUtil.hHasKey(hashKey,RedisKeyConstant.POST_THUMB_COUNT_KEY)) {
-                post.setThumbCount((int) redisUtil.hget(hashKey, RedisKeyConstant.POST_THUMB_COUNT_KEY));
+                post.setThumbCount((long) redisUtil.hget(hashKey, RedisKeyConstant.POST_THUMB_COUNT_KEY));
             }
             if (redisUtil.hHasKey(hashKey,RedisKeyConstant.POST_COMMENT_COUNT_KEY)) {
-                post.setCommentCount((int) redisUtil.hget(hashKey, RedisKeyConstant.POST_COMMENT_COUNT_KEY));
+                post.setCommentCount((long) redisUtil.hget(hashKey, RedisKeyConstant.POST_COMMENT_COUNT_KEY));
             }
-            post.setUid(Long.valueOf(postUid));
+            post.setId(Long.valueOf(postUid));
             postMapper.updateById(post);
             //消息队列异步更新es
             rabbitmqUtil.transPost2ESUtil(post);

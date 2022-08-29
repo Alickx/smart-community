@@ -23,26 +23,26 @@ public class Thumb extends BaseEntity implements Serializable {
      * 点赞用户uid
      */
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private Long memberUid;
+    private Long memberId;
 
     /**
      * 点赞目标的uid
      */
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private Long toMemberUid;
+    private Long toMemberId;
 
     /**
      * 点赞内容的uid 评论uid或是文章uid
      */
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private Long toUid;
+    private Long toId;
 
 
     /**
      * 点赞所在的帖子uid
      */
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private Long postUid;
+    private Long postId;
 
     /**
      * 点赞类型 0 = 评论 1 = 文章

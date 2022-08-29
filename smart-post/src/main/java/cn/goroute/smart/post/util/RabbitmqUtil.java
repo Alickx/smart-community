@@ -1,9 +1,9 @@
 package cn.goroute.smart.post.util;
 
-import cn.goroute.smart.post.mapper.PostMapper;
-import cn.goroute.smart.common.entity.pojo.EventRemind;
-import cn.goroute.smart.post.entity.pojo.Post;
+import cn.goroute.smart.common.entity.bo.EventRemindBo;
 import cn.goroute.smart.common.exception.ServiceException;
+import cn.goroute.smart.post.entity.pojo.Post;
+import cn.goroute.smart.post.mapper.PostMapper;
 import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -36,7 +36,7 @@ public class RabbitmqUtil {
      */
     public void saveEs(Post post) {
 
-        log.info("发送消息队列，更新es数据,postId=>{}", post.getUid());
+        log.info("发送消息队列，更新es数据,postId=>{}", post.getId());
         rabbitTemplate
                 .convertAndSend(EXCHANGE
                         , "smart.search.post"
@@ -79,14 +79,14 @@ public class RabbitmqUtil {
     /**
      * 发送消息队列，发送普通通知
      *
-     * @param eventRemind 事件提醒实体类
+     * @param eventRemindBo 事件提醒实体类
      */
-    public void sendEventRemind(EventRemind eventRemind) {
-        if (eventRemind == null) {
+    public void sendEventRemind(EventRemindBo eventRemindBo) {
+        if (eventRemindBo == null) {
             throw new ServiceException("发送普通通知失败，参数为空");
         }
-        log.info("发送消息队列，发送事件提醒消息,eventRemind=>{}", eventRemind);
-        rabbitTemplate.convertAndSend(EXCHANGE, "smart.event.remind", eventRemind);
+        log.info("发送消息队列，发送事件提醒消息,eventRemindBo=>{}", eventRemindBo);
+        rabbitTemplate.convertAndSend(EXCHANGE, "smart.event.remind", eventRemindBo);
     }
 
 }

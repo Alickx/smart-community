@@ -23,13 +23,13 @@ public class CategoryTag extends BaseEntity implements Serializable {
      * 分类id
      */
     @NotNull(message = "分类id不能为空")
-    private Long categoryUid;
+    private Long categoryId;
 
     /**
      * 标签id
      */
     @NotNull(message = "标签id不能为空")
-    private Long tagUid;
+    private Long tagId;
 
     @Transient
     private static final long serialVersionUID = 1L;

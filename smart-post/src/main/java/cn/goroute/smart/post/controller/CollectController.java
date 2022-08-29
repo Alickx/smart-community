@@ -1,7 +1,7 @@
 package cn.goroute.smart.post.controller;
 
-import cn.goroute.smart.common.entity.pojo.Collect;
 import cn.goroute.smart.common.utils.Result;
+import cn.goroute.smart.post.entity.pojo.Collect;
 import cn.goroute.smart.post.service.CollectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
