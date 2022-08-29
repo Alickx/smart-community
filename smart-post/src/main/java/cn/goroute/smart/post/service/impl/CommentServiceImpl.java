@@ -3,23 +3,22 @@ package cn.goroute.smart.post.service.impl;
 import cn.goroute.smart.common.api.ResultCode;
 import cn.goroute.smart.common.constant.PostConstant;
 import cn.goroute.smart.common.constant.RedisKeyConstant;
-import cn.goroute.smart.post.mapper.CommentMapper;
-import cn.goroute.smart.post.mapper.PostMapper;
-import cn.goroute.smart.post.mapper.ThumbMapper;
-import cn.goroute.smart.post.entity.dto.CommentDto;
+import cn.goroute.smart.common.entity.bo.EventRemindBo;
 import cn.goroute.smart.common.entity.dto.MemberDto;
-import cn.goroute.smart.post.entity.pojo.Comment;
-import cn.goroute.smart.common.entity.pojo.EventRemind;
-import cn.goroute.smart.post.entity.pojo.Post;
-import cn.goroute.smart.post.entity.pojo.Thumb;
-import cn.goroute.smart.post.entity.vo.CommentVo;
 import cn.goroute.smart.common.exception.ServiceException;
 import cn.goroute.smart.common.feign.MemberFeignService;
 import cn.goroute.smart.common.service.AuthService;
 import cn.goroute.smart.common.utils.*;
+import cn.goroute.smart.post.entity.dto.CommentDto;
+import cn.goroute.smart.post.entity.pojo.Comment;
+import cn.goroute.smart.post.entity.pojo.Post;
+import cn.goroute.smart.post.entity.pojo.Thumb;
+import cn.goroute.smart.post.entity.vo.CommentVo;
+import cn.goroute.smart.post.mapper.CommentMapper;
+import cn.goroute.smart.post.mapper.PostMapper;
+import cn.goroute.smart.post.mapper.ThumbMapper;
 import cn.goroute.smart.post.service.CommentService;
 import cn.goroute.smart.post.util.ConvertRemindUtil;
-import cn.goroute.smart.post.util.IllegalTextCheckUtil;
 import cn.goroute.smart.post.util.RabbitmqUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -56,9 +55,6 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
     MemberFeignService memberFeignService;
 
     @Autowired
-    IllegalTextCheckUtil illegalTextCheckUtil;
-
-    @Autowired
     RedisUtil redisUtil;
 
     @Autowired
@@ -88,8 +84,8 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
     public Result getCommentByPost(QueryParam queryParam, Long postUid) throws IOException {
 
         IPage<Comment> pageResult = commentMapper.selectPage(new Query<Comment>().getPage(queryParam),
-                new LambdaQueryWrapper<Comment>().eq(Comment::getPostUid, postUid)
-                        .isNull(Comment::getFirstCommentUid)
+                new LambdaQueryWrapper<Comment>().eq(Comment::getPostId, postUid)
+                        .isNull(Comment::getFirstCommentId)
                         .eq(Comment::getStatus, PostConstant.NORMAL_STATUS));
 
         if (pageResult.getRecords().isEmpty()) {
@@ -105,14 +101,14 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
         for (Comment comment : commentList) {
             commentDTO = new CommentDto();
 
-            MemberDto fromMember = memberFeignService.getMemberByUid(comment.getMemberUid());
-            MemberDto toMember = memberFeignService.getMemberByUid(comment.getToMemberUid());
+            MemberDto fromMember = memberFeignService.getMemberByUid(comment.getMemberId());
+            MemberDto toMember = memberFeignService.getMemberByUid(comment.getToMemberId());
 
-            int thumbCount = getThumbCount(comment);
+            Long thumbCount = getThumbCount(comment);
             boolean isLike = isLike(comment);
 
-            PageUtils reply = getReply(comment.getUid());
-            commentDTO.setUid(comment.getUid());
+            PageUtils reply = getReply(comment.getId());
+            commentDTO.setId(comment.getId());
             commentDTO.setFromMember(fromMember);
             commentDTO.setToMember(toMember);
             commentDTO.setContent(comment.getContent());
@@ -141,9 +137,9 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
     @Override
     public Result del(CommentVo commentVo) {
 
-        Comment comment = commentMapper.selectById(commentVo.getUid());
+        Comment comment = commentMapper.selectById(commentVo.getId());
         if (comment != null) {
-            long memberUid = comment.getMemberUid();
+            long memberUid = comment.getMemberId();
             // 判断是否是评论者
             if (!Objects.equals(memberUid, authService.getLoginUid())) {
                 return Result.error();
@@ -155,7 +151,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
                 return Result.error();
             }
             //更新redis中的数据
-            String key = RedisKeyConstant.POST_COUNT_KEY + comment.getPostUid();
+            String key = RedisKeyConstant.POST_COUNT_KEY + comment.getPostId();
             if (redisUtil.hHasKey(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY)) {
                 redisUtil.hdecr(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY, 1);
             } else {
@@ -163,7 +159,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
                     if (redisUtil.hHasKey(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY)) {
                         redisUtil.hdecr(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY, 1);
                     } else {
-                        Post post = postMapper.selectById(comment.getPostUid());
+                        Post post = postMapper.selectById(comment.getPostId());
                         if (post != null) {
                             redisUtil.hset(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY, post.getCommentCount());
                             redisUtil.hdecr(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY, 1);
@@ -185,14 +181,14 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
     @Override
     public Result saveComment(CommentVo commentVo) {
         //审核评论
-        boolean checkResult = illegalTextCheckUtil.checkText(commentVo.getContent());
-        if (checkResult) {
-            return Result.error("请不要发送含有违禁词的评论");
-        }
+//        boolean checkResult = illegalTextCheckUtil.checkText(commentVo.getContent());
+//        if (checkResult) {
+//            return Result.error("请不要发送含有违禁词的评论");
+//        }
 
         //判断点赞文章是否存在
         Post post = postMapper.selectOne(new LambdaQueryWrapper<Post>()
-                .eq(Post::getUid, commentVo.getPostUid())
+                .eq(Post::getId, commentVo.getPostId())
                 .eq(Post::getStatus, PostConstant.NORMAL_STATUS)
                 .eq(Post::getIsPublish, PostConstant.PUBLISH));
 
@@ -203,16 +199,16 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
         Comment comment = new Comment();
         BeanUtils.copyProperties(commentVo, comment);
 
-        comment.setMemberUid(authService.getLoginUid());
+        comment.setMemberId(authService.getLoginUid());
         int result = commentMapper.insert(comment);
         if (result != 1) {
             throw new ServiceException("评论发布失败");
         }
         //发送消息通知
-        EventRemind eventRemind = ConvertRemindUtil.convertCommentNotification(comment, post.getTitle());
+        EventRemindBo eventRemind = ConvertRemindUtil.convertCommentNotification(comment, post.getTitle());
         rabbitmqUtil.sendEventRemind(eventRemind);
 
-        String key = RedisKeyConstant.POST_COUNT_KEY + commentVo.getPostUid();
+        String key = RedisKeyConstant.POST_COUNT_KEY + commentVo.getPostId();
         //如果redis存在key，则直接增加
         if (redisUtil.hHasKey(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY)) {
             redisUtil.hincr(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY, 1);
@@ -227,7 +223,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
             }
         }
 
-        return Result.ok().put("data", comment.getUid());
+        return Result.ok().put("data", comment.getId());
     }
 
     /**
@@ -237,14 +233,13 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
      * @return 点赞数量
      * @throws IOException IO异常
      */
-    private int getThumbCount(Comment comment) throws IOException {
-        int thumbCount;
-        thumbCount = thumbMapper.selectCount(new LambdaQueryWrapper<Thumb>()
-                .eq(Thumb::getToUid, comment.getUid())
+    private Long getThumbCount(Comment comment) throws IOException {
+        Long thumbCount = thumbMapper.selectCount(new LambdaQueryWrapper<Thumb>()
+                .eq(Thumb::getToId, comment.getId())
                 .eq(Thumb::getType, PostConstant.THUMB_COMMENT_TYPE));
 
 
-        String thumbScanKey = "*:" + comment.getUid();
+        String thumbScanKey = "*:" + comment.getId();
         Cursor<Map.Entry<Object, Object>> cursor = redisTemplate.opsForHash()
                 .scan(RedisKeyConstant.POST_THUMB_KEY, ScanOptions.scanOptions().match(thumbScanKey).build());
 
@@ -267,15 +262,15 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
     private boolean isLike(Comment comment) {
         boolean isLike = false;
 
-        if (authService.getIsLogin()) {
+        if (Boolean.TRUE.equals(authService.getIsLogin())) {
             long loginUid = authService.getLoginUid();
 
-            String redisKey = RedisKeyConstant.getThumbKey(loginUid, comment.getUid());
+            String redisKey = RedisKeyConstant.getThumbKey(loginUid, comment.getId());
 
             if (!redisUtil.hHasKey(RedisKeyConstant.POST_THUMB_KEY, redisKey)) {
                 //数据库点赞记录
-                Thumb thumb = thumbMapper.selectOne(new LambdaQueryWrapper<Thumb>().eq(Thumb::getMemberUid, loginUid)
-                        .eq(Thumb::getToUid, comment.getUid()));
+                Thumb thumb = thumbMapper.selectOne(new LambdaQueryWrapper<Thumb>().eq(Thumb::getMemberId, loginUid)
+                        .eq(Thumb::getToId, comment.getId()));
                 if (thumb != null) {
                     isLike = true;
                 }
@@ -309,11 +304,11 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
 
         for (Comment comment : commentList) {
             commentDTO = new CommentDto();
-            MemberDto fromMember = memberFeignService.getMemberByUid(comment.getMemberUid());
-            MemberDto toMember = memberFeignService.getMemberByUid(comment.getToMemberUid());
-            int thumbCount = getThumbCount(comment);
+            MemberDto fromMember = memberFeignService.getMemberByUid(comment.getMemberId());
+            MemberDto toMember = memberFeignService.getMemberByUid(comment.getToMemberId());
+            long thumbCount = getThumbCount(comment);
             boolean isLike = isLike(comment);
-            commentDTO.setUid(comment.getUid());
+            commentDTO.setId(comment.getId());
             commentDTO.setFromMember(fromMember);
             commentDTO.setToMember(toMember);
             commentDTO.setContent(comment.getContent());

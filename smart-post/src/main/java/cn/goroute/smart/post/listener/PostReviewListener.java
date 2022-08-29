@@ -1,12 +1,11 @@
 package cn.goroute.smart.post.listener;
 
 import cn.goroute.smart.common.constant.PostConstant;
-import cn.goroute.smart.post.mapper.PostMapper;
-import cn.goroute.smart.post.mapper.PostTagMapper;
+import cn.goroute.smart.common.exception.ServiceException;
 import cn.goroute.smart.post.entity.pojo.Post;
 import cn.goroute.smart.post.entity.pojo.PostTag;
-import cn.goroute.smart.common.exception.ServiceException;
-import cn.goroute.smart.post.util.IllegalTextCheckUtil;
+import cn.goroute.smart.post.mapper.PostMapper;
+import cn.goroute.smart.post.mapper.PostTagMapper;
 import cn.goroute.smart.post.util.RabbitmqUtil;
 import cn.hutool.json.JSONUtil;
 import com.rabbitmq.client.Channel;
@@ -28,9 +27,6 @@ import java.util.Objects;
 public class PostReviewListener {
 
     @Autowired
-    IllegalTextCheckUtil textCheckUtil;
-
-    @Autowired
     RabbitmqUtil rabbitmqUtil;
 
     @Autowired
@@ -45,16 +41,18 @@ public class PostReviewListener {
             Post postEntity = JSONUtil.toBean((String) map.get("post"), Post.class);
             List<Long> tagUidList = JSONUtil.toList((String) map.get("tagUidList"), Long.class);
             boolean isUpdate = (boolean) map.get("isUpdate");
+//
+//            Boolean titleCheckResult = textCheckUtil.checkText(postEntity.getTitle());
+//            Boolean contentCheckResult = textCheckUtil.checkText(postEntity.getContent());
+//
+//            // 根据审核结果进行不同的处理
+//            if (titleCheckResult || contentCheckResult) {
+//                containedBannedWordHandler(postEntity);
+//            } else {
+//                reviewSuccessHandler(postEntity, tagUidList, isUpdate);
+//            }
 
-            Boolean titleCheckResult = textCheckUtil.checkText(postEntity.getTitle());
-            Boolean contentCheckResult = textCheckUtil.checkText(postEntity.getContent());
-
-            // 根据审核结果进行不同的处理
-            if (titleCheckResult || contentCheckResult) {
-                containedBannedWordHandler(postEntity);
-            } else {
-                reviewSuccessHandler(postEntity, tagUidList, isUpdate);
-            }
+            reviewSuccessHandler(postEntity, tagUidList, isUpdate);
 
             // 手动应答消息队列
             channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
@@ -95,7 +93,7 @@ public class PostReviewListener {
         tagUidList.forEach(t -> {
             PostTag postTag = new PostTag();
             postTag.setPostId(postEntity.getId());
-            postTag.setTagUid(t);
+            postTag.setTagId(t);
             postTagMapper.insert(postTag);
         });
     }

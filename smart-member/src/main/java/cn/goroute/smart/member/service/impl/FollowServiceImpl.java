@@ -43,8 +43,8 @@ public class FollowServiceImpl extends ServiceImpl<FollowMapper, Follow>
         }
 
         Follow follow = new Follow();
-        follow.setToMemberUid(followMemberId);
-        follow.setMemberUid(authService.getLoginUid());
+        follow.setToMemberId(followMemberId);
+        follow.setMemberId(authService.getLoginUid());
 
         int insert = followMapper.insert(follow);
 
@@ -69,8 +69,8 @@ public class FollowServiceImpl extends ServiceImpl<FollowMapper, Follow>
         }
 
         Follow follow = followMapper.selectOne(new LambdaQueryWrapper<Follow>()
-                .eq(Follow::getMemberUid, StpUtil.getLoginIdAsString())
-                .eq(Follow::getToMemberUid, followMemberId));
+                .eq(Follow::getMemberId, StpUtil.getLoginIdAsString())
+                .eq(Follow::getToMemberId, followMemberId));
 
         if (follow == null) {
             return Result.ok().put("data",false);

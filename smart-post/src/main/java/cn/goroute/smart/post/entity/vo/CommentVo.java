@@ -12,15 +12,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CommentVo {
 
-    private Long uid;
+    private Long id;
     /**
      * 文章uid
      */
-    private Long postUid;
+    private Long postId;
     /**
      * 回复某个人的uid或点赞评论的uid
      */
-    private Long toMemberUid;
+    private Long toMemberId;
     /**
      * 评论内容
      */
@@ -28,7 +28,7 @@ public class CommentVo {
     /**
      * 一级评论uid
      */
-    private Long firstCommentUid;
+    private Long firstCommentId;
 
     /**
      * 0 = 一级评论 1 = 评论中回复

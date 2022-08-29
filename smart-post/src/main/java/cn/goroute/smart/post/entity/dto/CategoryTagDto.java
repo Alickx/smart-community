@@ -20,7 +20,7 @@ public class CategoryTagDto {
     /**
      * 主键
      */
-    private Long uid;
+    private Long id;
 
     /**
      * 板块名称

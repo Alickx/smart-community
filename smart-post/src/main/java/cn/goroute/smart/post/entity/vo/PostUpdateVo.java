@@ -18,19 +18,19 @@ public class PostUpdateVo {
      * 文章uid
      */
     @NotNull(message = "文章uid不能为空")
-    private Long uid;
+    private Long id;
 
     /**
      * 分类id
      */
     @NotNull(message = "分类id不能为空")
-    private Long categoryUid;
+    private Long categoryId;
 
     /**
      * 标签id
      */
     @NotBlank(message = "标签id不能为空")
-    private List<Long> tagUid;
+    private List<Long> tagId;
     /**
      *
      */

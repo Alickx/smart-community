@@ -30,6 +30,6 @@ public class PostTag extends BaseEntity implements Serializable {
 	 * 标签id
 	 */
 	@JsonFormat(shape = JsonFormat.Shape.STRING)
-	private Long tagUid;
+	private Long tagId;
 
 }

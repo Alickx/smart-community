@@ -14,11 +14,11 @@ public class PostQueryVo extends QueryParam {
     /**
      * 分类
      */
-    private Long categoryUid;
+    private Long categoryId;
 
     /**
      * 标签id
      */
-    private Long tagUid;
+    private Long tagId;
 
 }

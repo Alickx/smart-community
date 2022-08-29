@@ -1,5 +1,6 @@
 package cn.goroute.smart.post.entity.dto;
 
+import cn.goroute.smart.common.entity.dto.MemberDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,7 +18,7 @@ import java.util.List;
 public class CommentDto {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private Long uid;
+    private Long id;
 
     /**
      * 发送者
@@ -42,7 +43,7 @@ public class CommentDto {
     /**
      * 点赞数量
      */
-    private Integer thumbCount;
+    private Long thumbCount;
 
     /**
      * 子级评论

@@ -2,13 +2,13 @@ package cn.goroute.smart.gateway.config.satoken;
 
 import cn.dev33.satoken.stp.StpInterface;
 import cn.goroute.smart.common.constant.RedisKeyConstant;
-import cn.goroute.smart.common.dao.PermissionDao;
-import cn.goroute.smart.common.dao.RoleDao;
-import cn.goroute.smart.common.dao.RolePermissionDao;
-import cn.goroute.smart.common.dao.UserRoleDao;
-import cn.goroute.smart.common.entity.pojo.Permission;
-import cn.goroute.smart.common.entity.pojo.RolePermission;
-import cn.goroute.smart.common.entity.pojo.UserRole;
+import cn.goroute.smart.gateway.mapper.PermissionMapper;
+import cn.goroute.smart.gateway.mapper.RoleMapper;
+import cn.goroute.smart.gateway.mapper.RolePermissionMapper;
+import cn.goroute.smart.gateway.mapper.UserRoleMapper;
+import cn.goroute.smart.gateway.entity.pojo.Permission;
+import cn.goroute.smart.gateway.entity.pojo.RolePermission;
+import cn.goroute.smart.gateway.entity.pojo.UserRole;
 import cn.goroute.smart.common.utils.RedisUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
@@ -23,16 +23,16 @@ import java.util.List;
 public class StpInterfaceImpl implements StpInterface {
 
     @Autowired
-    UserRoleDao userRoleDao;
+    UserRoleMapper userRoleMapper;
 
     @Autowired
-    RoleDao roleDao;
+    RoleMapper roleMapper;
 
     @Autowired
-    RolePermissionDao rolePermissionDao;
+    RolePermissionMapper rolePermissionMapper;
 
     @Autowired
-    PermissionDao permissionDao;
+    PermissionMapper permissionMapper;
 
     @Autowired
     RedisUtil redisUtil;
@@ -42,21 +42,21 @@ public class StpInterfaceImpl implements StpInterface {
     public List<String> getPermissionList(Object loginId, String loginType) {
         List<String> permissionList = new ArrayList<>();
 
-        List<UserRole> userRoleList = userRoleDao.selectList(new LambdaQueryWrapper<UserRole>()
+        List<UserRole> userRoleList = userRoleMapper.selectList(new LambdaQueryWrapper<UserRole>()
                 .eq(UserRole::getUserUid, loginId));
         if (userRoleList == null) {
             return permissionList;
         }
         for (UserRole userRole : userRoleList) {
             Long roleUid = userRole.getRoleUid();
-            List<RolePermission> rolePermissionList = rolePermissionDao
+            List<RolePermission> rolePermissionList = rolePermissionMapper
                     .selectList(new LambdaQueryWrapper<RolePermission>()
                             .eq(RolePermission::getRoleUid, roleUid));
             if (rolePermissionList == null) {
                 return permissionList;
             }
             for (RolePermission rolePermission : rolePermissionList) {
-                Permission permission = permissionDao.selectById(rolePermission.getPermissionUid());
+                Permission permission = permissionMapper.selectById(rolePermission.getPermissionUid());
                 if (permission != null) {
                     permissionList.add(permission.getPermissionName());
                 }
@@ -72,7 +72,7 @@ public class StpInterfaceImpl implements StpInterface {
     public List<String> getRoleList(Object loginId, String loginType) {
 
 
-        List<String> roleNameByMemberUid = roleDao.getRoleNameByMemberUid((Long) loginId);
+        List<String> roleNameByMemberUid = roleMapper.getRoleNameByMemberUid((Long) loginId);
 
         redisUtil.set(RedisKeyConstant.ROLE_LIST_KEY + loginId, roleNameByMemberUid);
 

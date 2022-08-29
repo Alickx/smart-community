@@ -1,5 +1,6 @@
 package cn.goroute.smart.post.entity.dto;
 
+import cn.goroute.smart.common.entity.dto.MemberDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,7 +21,7 @@ public class PostDto {
      * 文章主键
      */
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private Long uid;
+    private Long id;
 
     /**
      * 文章题目
@@ -39,12 +40,12 @@ public class PostDto {
     /**
      * 分类id
      */
-    private Long categoryUid;
+    private Long categoryId;
 
     /**
      * 标签id
      */
-    private List<Long> tagUid;
+    private List<Long> tagId;
 
     /**
      * 文章摘要

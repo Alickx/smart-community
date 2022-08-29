@@ -19,19 +19,19 @@ public class PostVo {
     /**
      * 文章主键
      */
-    private Long uid;
+    private Long id;
 
     /**
      * 分类id
      */
     @NotNull(message = "分类id不能为空")
-    private Long categoryUid;
+    private Long categoryId;
 
     /**
      * 标签id
      */
     @NotNull(message = "标签id不能为空")
-    private List<Long> tagUid;
+    private List<Long> tagId;
     /**
      *
      */

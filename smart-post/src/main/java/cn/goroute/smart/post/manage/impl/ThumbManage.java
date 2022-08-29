@@ -40,7 +40,7 @@ public class ThumbManage implements IThumbManage {
     @Override
     public List<PostListDto> getPostDTOListByPostIdList(List<Long> postIdList) {
 
-        if (postIdList == null || postIdList.size() == 0) {
+        if (postIdList == null || postIdList.isEmpty()) {
             return new ArrayList<>(0);
         }
 
@@ -49,12 +49,12 @@ public class ThumbManage implements IThumbManage {
         List<PostListDto> result = new ArrayList<>(posts.size());
         for (Post post : posts) {
             PostListDto postListDTO = new PostListDto();
-            Long memberUid = post.getMemberUid();
+            Long memberUid = post.getMemberId();
             MemberDto member = memberFeignService.getMemberByUid(memberUid);
             postListDTO.setAuthorInfo(member);
             BeanUtils.copyProperties(post, postListDTO);
-            postListDTO.setIsLike(iPostManage.checkIsThumbOrCollect(post.getUid(), memberUid, 0));
-            postListDTO.setIsCollect(iPostManage.checkIsThumbOrCollect(post.getUid(), memberUid, 1));
+            postListDTO.setIsLike(iPostManage.checkIsThumbOrCollect(post.getId(), memberUid, 0));
+            postListDTO.setIsCollect(iPostManage.checkIsThumbOrCollect(post.getId(), memberUid, 1));
             result.add(postListDTO);
         }
         return result;
