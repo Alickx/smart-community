@@ -1,4 +1,4 @@
-package cn.goroute.smart.member.config;
+package cn.goroute.smart.common.config;
 
 import org.springframework.context.annotation.Configuration;
 

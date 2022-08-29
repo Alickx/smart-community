@@ -11,8 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MemberDto {
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private Long uid;
+    private int uid;
     /**
      * 呢称
      */
@@ -65,22 +64,5 @@ public class MemberDto {
      * 用户状态 0 = 正常
      */
     private Integer status;
-
-    public MemberDto(Member member) {
-        this.uid = member.getUid();
-        this.nickName = member.getNickName();
-        this.gender = member.getGender();
-        this.commentStatus = member.getCommentStatus();
-        this.avatar = member.getAvatar();
-        this.fans = member.getFans();
-        this.follow = member.getFollow();
-        this.status = member.getStatus();
-        this.gitee = member.getGitee();
-        this.github = member.getGithub();
-        this.intro = member.getIntro();
-        this.qqNumber = member.getQqNumber();
-        this.score = member.getScore();
-        this.userTag = member.getUserTag();
-    }
 
 }

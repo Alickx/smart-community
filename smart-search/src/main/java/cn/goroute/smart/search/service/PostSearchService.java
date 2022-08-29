@@ -8,7 +8,7 @@ import cn.goroute.smart.common.constant.RedisKeyConstant;
 import cn.goroute.smart.common.service.AuthService;
 import cn.goroute.smart.common.utils.RedisUtil;
 import cn.goroute.smart.common.utils.Result;
-import cn.goroute.smart.search.config.EsConstant;
+import cn.goroute.smart.search.constant.EsConstant;
 import cn.goroute.smart.search.feign.MemberFeignService;
 import cn.goroute.smart.search.feign.PostFeignService;
 import cn.goroute.smart.search.model.PostEsModel;
@@ -119,7 +119,7 @@ public class PostSearchService {
             SearchHit[] searchHits = hits.getHits();
 
             List<PostEsModel> postEsModelList = new ArrayList<>();
-            extracted(hits, searchHits, postEsModelList);
+            highlightHandle(hits, searchHits, postEsModelList);
             PostSearchResponse postSearchResponse = new PostSearchResponse();
             List<PostListDto> postListDtos = new ArrayList<>();
             for (PostEsModel postEsModel : postEsModelList) {
@@ -144,7 +144,7 @@ public class PostSearchService {
             postSearchResponse.setPostList(postListDtos);
 
             //分页参数
-            Assert.notNull(hits.getTotalHits());
+            Assert.notNull(hits.getTotalHits(), "查询结果为空");
             long total = hits.getTotalHits().value;
             postSearchResponse.setTotal(total);
             postSearchResponse.setPageNum(postSearchParam.getCurPage());
@@ -164,7 +164,7 @@ public class PostSearchService {
      * @param postEsModelList 查询结果集合
      * @Description: 高亮
      */
-    private void extracted(SearchHits hits, SearchHit[] searchHits, List<PostEsModel> postEsModelList) {
+    private void highlightHandle(SearchHits hits, SearchHit[] searchHits, List<PostEsModel> postEsModelList) {
         if (hits.getHits() != null && hits.getHits().length > 0) {
             PostEsModel postEsModel;
             for (SearchHit hit : searchHits) {
@@ -201,7 +201,7 @@ public class PostSearchService {
      * @param uid 文章uid
      */
     public void deleteSearchPost(String uid) throws IOException {
-        UpdateRequest request = new UpdateRequest("smart-post", uid);
+        UpdateRequest request = new UpdateRequest(POST_ES_INDEX, uid);
         PostEsModel postEsModel = new PostEsModel();
         postEsModel.setStatus(PostConstant.DELETE_STATUS);
         String postJson = JSONUtil.toJsonStr(postEsModel);
@@ -221,13 +221,13 @@ public class PostSearchService {
      */
     public void transPost2ES(Post post) throws IOException {
 
-        long uid = post.getUid();
+        int id = post.getId();
 
         PostEsModel postEsModel = new PostEsModel();
         BeanUtils.copyProperties(post, postEsModel);
 
         String jsonStr = JSONUtil.toJsonStr(postEsModel);
-        UpdateRequest request = new UpdateRequest("smart-post", String.valueOf(uid));
+        UpdateRequest request = new UpdateRequest(POST_ES_INDEX, String.valueOf(id));
         request.doc(jsonStr, XContentType.JSON);
         UpdateResponse updateResponse = restHighLevelClient.update(request, RequestOptions.DEFAULT);
         log.info("ElasticSearch文章信息更新完成，updateResponse=>{}", updateResponse);

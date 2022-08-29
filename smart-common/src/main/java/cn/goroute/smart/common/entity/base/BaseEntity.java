@@ -1,7 +1,5 @@
 package cn.goroute.smart.common.entity.base;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -21,19 +19,18 @@ public class BaseEntity {
      * 主键id
      */
     @TableId
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private Long uid;
+    private int id;
 
     /**
      * 创建时间
      */
-    @TableField(fill = FieldFill.INSERT)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdTime;
 
     /**
      * 更新时间
      */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updatedTime;
 
     /**

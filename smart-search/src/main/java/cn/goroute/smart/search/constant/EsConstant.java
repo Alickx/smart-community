@@ -1,6 +1,11 @@
-package cn.goroute.smart.search.config;
+package cn.goroute.smart.search.constant;
 
+/**
+ * @author 蔡国鹏
+ */
 public class EsConstant {
+
+    private EsConstant() {}
 
     public static final Integer PAGE_SIZE = 5;
 
