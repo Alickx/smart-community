@@ -1,6 +1,6 @@
 package cn.goroute.smart.member.service;
 
-import cn.goroute.smart.common.entity.pojo.Follow;
+import cn.goroute.smart.member.entity.pojo.Follow;
 import cn.goroute.smart.common.utils.Result;
 import com.baomidou.mybatisplus.extension.service.IService;
 

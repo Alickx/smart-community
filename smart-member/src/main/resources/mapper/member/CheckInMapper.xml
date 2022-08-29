@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.goroute.smart.member.mapper.CheckInMapper">
 
-    <resultMap id="BaseResultMap" type="cn.goroute.smart.common.entity.pojo.CheckIn">
+    <resultMap id="BaseResultMap" type="cn.goroute.smart.member.entity.pojo.CheckIn">
         <id property="uid" column="uid" jdbcType="BIGINT"/>
         <result property="memberUid" column="member_uid" jdbcType="BIGINT"/>
         <result property="checkInDate" column="check_in_date" jdbcType="TIMESTAMP"/>
@@ -18,14 +18,14 @@
         created_time,updated_time,deleted
     </sql>
 
-    <select id="getMemberIsCheckInToday" resultType="cn.goroute.smart.common.entity.pojo.CheckIn">
+    <select id="getMemberIsCheckInToday" resultType="cn.goroute.smart.member.entity.pojo.CheckIn">
         select uid, member_uid, check_in_date, created_time, updated_time, deleted
         from smart_ums.t_check_in tci
         where tci.member_uid = #{memberUid}
           and DATE_FORMAT(check_in_date, '%Y-%m-%d') = DATE_FORMAT(NOW(), '%Y-%m-%d')
     </select>
 
-    <select id="getMemberCheckInMonth" resultType="cn.goroute.smart.common.entity.pojo.CheckIn">
+    <select id="getMemberCheckInMonth" resultType="cn.goroute.smart.member.entity.pojo.CheckIn">
         select uid, member_uid, check_in_date, created_time, updated_time, deleted
         from smart_ums.t_check_in tci
         where tci.member_uid = #{memberUid}

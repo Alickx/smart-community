@@ -1,6 +1,6 @@
 package cn.goroute.smart.post.controller;
 
-import cn.goroute.smart.common.entity.pojo.PostTag;
+import cn.goroute.smart.post.entity.pojo.PostTag;
 import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.post.service.PostTagService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -4,7 +4,7 @@
 <mapper namespace="cn.goroute.smart.post.mapper.PostMapper">
 
     <!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="cn.goroute.smart.common.entity.pojo.Post" id="postMap">
+    <resultMap type="cn.goroute.smart.post.entity.pojo.Post" id="postMap">
         <result property="uid" column="uid"/>
         <result property="sectionUid" column="section_uid"/>
         <result property="memberUid" column="member_uid"/>
@@ -20,7 +20,7 @@
         <result property="updatedTime" column="updated_time"/>
         <result property="createdTime" column="created_time"/>
     </resultMap>
-    <select id="getPostBySectionTag" resultType="cn.goroute.smart.common.entity.pojo.Post">
+    <select id="getPostBySectionTag" resultType="cn.goroute.smart.post.entity.pojo.Post">
         select distinct p.uid,
                         p.title,
                         p.head_img,

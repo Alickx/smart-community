@@ -2,9 +2,9 @@ package cn.goroute.smart.notify.service.impl;
 
 import cn.goroute.smart.common.constant.NotificationConstant;
 import cn.goroute.smart.notify.mapper.EventRemindMapper;
-import cn.goroute.smart.common.entity.dto.EventRemindDto;
+import cn.goroute.smart.notify.entity.dto.EventRemindDto;
 import cn.goroute.smart.common.entity.dto.MemberDto;
-import cn.goroute.smart.common.entity.pojo.EventRemind;
+import cn.goroute.smart.notify.entity.pojo.EventRemind;
 import cn.goroute.smart.common.feign.MemberFeignService;
 import cn.goroute.smart.common.service.AuthService;
 import cn.goroute.smart.common.utils.PageUtils;

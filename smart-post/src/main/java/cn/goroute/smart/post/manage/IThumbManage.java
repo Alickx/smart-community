@@ -1,6 +1,6 @@
 package cn.goroute.smart.post.manage;
 
-import cn.goroute.smart.common.entity.dto.PostListDto;
+import cn.goroute.smart.post.entity.dto.PostListDto;
 
 import java.util.List;
 

@@ -2,11 +2,11 @@ package cn.goroute.smart.member.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.stp.StpUtil;
-import cn.goroute.smart.common.entity.dto.MemberDto;
-import cn.goroute.smart.common.entity.pojo.Member;
-import cn.goroute.smart.common.entity.vo.MemberInfoUpdateVo;
-import cn.goroute.smart.common.entity.vo.MemberLoginVo;
-import cn.goroute.smart.common.entity.vo.MemberRegisterVo;
+import cn.goroute.smart.member.entity.dto.MemberDto;
+import cn.goroute.smart.member.entity.pojo.Member;
+import cn.goroute.smart.member.entity.vo.MemberInfoUpdateVo;
+import cn.goroute.smart.member.entity.vo.MemberLoginVo;
+import cn.goroute.smart.member.entity.vo.MemberRegisterVo;
 import cn.goroute.smart.common.service.AuthService;
 import cn.goroute.smart.common.utils.RedisUtil;
 import cn.goroute.smart.common.utils.Result;
@@ -59,7 +59,7 @@ public class MemberController {
         memberUidList.forEach(uid -> {
             Member member = memberService.getById(uid);
             if (Objects.nonNull(member)) {
-                MemberDto memberDTO = new MemberDto(member);
+                MemberDto memberDTO = new MemberDto();
                 BeanUtils.copyProperties(member, memberDTO);
                 res.add(memberDTO);
             }
@@ -108,7 +108,7 @@ public class MemberController {
     public Result info(@PathVariable("uid") String uid) {
         Member member = memberService.getById(uid);
         if (member != null) {
-            MemberDto memberDTO = new MemberDto(member);
+            MemberDto memberDTO = new MemberDto();
             BeanUtils.copyProperties(Objects.requireNonNull(member), memberDTO);
             return Result.ok().put("data", memberDTO);
         } else {

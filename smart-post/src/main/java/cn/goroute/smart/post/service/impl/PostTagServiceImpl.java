@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import cn.goroute.smart.post.mapper.PostTagMapper;
-import cn.goroute.smart.common.entity.pojo.PostTag;
+import cn.goroute.smart.post.entity.pojo.PostTag;
 import cn.goroute.smart.post.service.PostTagService;
 
 

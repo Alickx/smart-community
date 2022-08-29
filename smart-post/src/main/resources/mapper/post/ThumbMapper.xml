@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.goroute.smart.post.mapper.ThumbMapper">
 
-    <resultMap id="BaseResultMap" type="cn.goroute.smart.common.entity.pojo.Thumb">
+    <resultMap id="BaseResultMap" type="cn.goroute.smart.post.entity.pojo.Thumb">
         <id property="uid" column="uid" jdbcType="INTEGER"/>
         <result property="memberUid" column="member_uid" jdbcType="VARCHAR"/>
         <result property="toMemberUid" column="to_member_uid" jdbcType="VARCHAR"/>

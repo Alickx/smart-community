@@ -1,6 +1,6 @@
 package cn.goroute.smart.notify.service;
 
-import cn.goroute.smart.common.entity.pojo.EventRemind;
+import cn.goroute.smart.notify.entity.pojo.EventRemind;
 import cn.goroute.smart.common.utils.QueryParam;
 import cn.goroute.smart.common.utils.Result;
 import com.baomidou.mybatisplus.extension.service.IService;

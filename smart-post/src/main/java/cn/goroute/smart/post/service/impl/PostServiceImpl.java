@@ -4,14 +4,14 @@ package cn.goroute.smart.post.service.impl;
 import cn.goroute.smart.common.constant.PostConstant;
 import cn.goroute.smart.common.constant.RedisKeyConstant;
 import cn.goroute.smart.common.entity.dto.MemberDto;
-import cn.goroute.smart.common.entity.dto.PostDto;
-import cn.goroute.smart.common.entity.dto.PostListDto;
-import cn.goroute.smart.common.entity.pojo.Category;
-import cn.goroute.smart.common.entity.pojo.Post;
-import cn.goroute.smart.common.entity.pojo.PostTag;
-import cn.goroute.smart.common.entity.pojo.Tag;
-import cn.goroute.smart.common.entity.vo.PostQueryVo;
-import cn.goroute.smart.common.entity.vo.PostVo;
+import cn.goroute.smart.post.entity.dto.PostDto;
+import cn.goroute.smart.post.entity.dto.PostListDto;
+import cn.goroute.smart.post.entity.pojo.Category;
+import cn.goroute.smart.post.entity.pojo.Post;
+import cn.goroute.smart.post.entity.pojo.PostTag;
+import cn.goroute.smart.post.entity.pojo.Tag;
+import cn.goroute.smart.post.entity.vo.PostQueryVo;
+import cn.goroute.smart.post.entity.vo.PostVo;
 import cn.goroute.smart.common.feign.MemberFeignService;
 import cn.goroute.smart.common.service.AuthService;
 import cn.goroute.smart.common.utils.*;
@@ -124,7 +124,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
                 return Result.ok().put("data", new Page<>());
             }
             List<Long> postIds = records.stream()
-                    .map(PostTag::getPostUid).collect(Collectors.toList());
+                    .map(PostTag::getPostId).collect(Collectors.toList());
 
             List<Post> posts = postMapper.selectBatchIds(postIds);
             BeanUtils.copyProperties(postTagIPage, page = new Page<>());
@@ -285,7 +285,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         int result = -1;
         // 如果是编辑，则先删除原有的标签
         if (Objects.equals(postVo.getType(), PostConstant.POST_SAVE_TYPE_EDIT)) {
-            postTagMapper.delete(new LambdaQueryWrapper<PostTag>().eq(PostTag::getPostUid, postVo.getUid()));
+            postTagMapper.delete(new LambdaQueryWrapper<PostTag>().eq(PostTag::getPostId, postVo.getUid()));
             post.setUid(postVo.getUid());
             result = postMapper.updateById(post);
         } else if (Objects.equals(postVo.getType(), PostConstant.POST_SAVE_TYPE_NEW)) {
@@ -344,7 +344,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         BeanUtils.copyProperties(post, postDTO);
 
         // 获取文章的标签
-        List<PostTag> tags = postTagMapper.selectList(new LambdaQueryWrapper<PostTag>().eq(PostTag::getPostUid, uid));
+        List<PostTag> tags = postTagMapper.selectList(new LambdaQueryWrapper<PostTag>().eq(PostTag::getPostId, uid));
 
         List<Long> tagUid = tags.stream().map(PostTag::getTagUid).collect(Collectors.toList());
 

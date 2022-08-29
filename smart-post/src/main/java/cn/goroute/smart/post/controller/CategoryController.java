@@ -1,6 +1,6 @@
 package cn.goroute.smart.post.controller;
 
-import cn.goroute.smart.common.entity.pojo.Category;
+import cn.goroute.smart.post.entity.pojo.Category;
 import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.post.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;

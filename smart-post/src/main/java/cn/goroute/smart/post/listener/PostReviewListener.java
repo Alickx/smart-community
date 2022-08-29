@@ -3,8 +3,8 @@ package cn.goroute.smart.post.listener;
 import cn.goroute.smart.common.constant.PostConstant;
 import cn.goroute.smart.post.mapper.PostMapper;
 import cn.goroute.smart.post.mapper.PostTagMapper;
-import cn.goroute.smart.common.entity.pojo.Post;
-import cn.goroute.smart.common.entity.pojo.PostTag;
+import cn.goroute.smart.post.entity.pojo.Post;
+import cn.goroute.smart.post.entity.pojo.PostTag;
 import cn.goroute.smart.common.exception.ServiceException;
 import cn.goroute.smart.post.util.IllegalTextCheckUtil;
 import cn.goroute.smart.post.util.RabbitmqUtil;
@@ -94,7 +94,7 @@ public class PostReviewListener {
         }
         tagUidList.forEach(t -> {
             PostTag postTag = new PostTag();
-            postTag.setPostUid(postEntity.getUid());
+            postTag.setPostId(postEntity.getId());
             postTag.setTagUid(t);
             postTagMapper.insert(postTag);
         });

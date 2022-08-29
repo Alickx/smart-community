@@ -6,7 +6,7 @@ import cn.goroute.smart.post.mapper.CollectMapper;
 import cn.goroute.smart.post.mapper.PostMapper;
 import cn.goroute.smart.post.mapper.ThumbMapper;
 import cn.goroute.smart.common.entity.pojo.Collect;
-import cn.goroute.smart.common.entity.pojo.Thumb;
+import cn.goroute.smart.post.entity.pojo.Thumb;
 import cn.goroute.smart.common.feign.MemberFeignService;
 import cn.goroute.smart.common.utils.RedisUtil;
 import cn.goroute.smart.post.manage.IPostManage;

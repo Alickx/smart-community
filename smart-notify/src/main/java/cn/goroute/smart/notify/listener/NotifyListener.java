@@ -1,6 +1,6 @@
 package cn.goroute.smart.notify.listener;
 
-import cn.goroute.smart.common.entity.pojo.EventRemind;
+import cn.goroute.smart.notify.entity.pojo.EventRemind;
 import cn.goroute.smart.notify.service.EventRemindService;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;

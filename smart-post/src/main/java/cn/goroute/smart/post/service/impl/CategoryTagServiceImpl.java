@@ -2,9 +2,9 @@ package cn.goroute.smart.post.service.impl;
 
 import cn.goroute.smart.post.mapper.CategoryMapper;
 import cn.goroute.smart.post.mapper.CategoryTagMapper;
-import cn.goroute.smart.common.entity.dto.CategoryTagDto;
-import cn.goroute.smart.common.entity.pojo.CategoryTag;
-import cn.goroute.smart.common.entity.pojo.Tag;
+import cn.goroute.smart.post.entity.dto.CategoryTagDto;
+import cn.goroute.smart.post.entity.pojo.CategoryTag;
+import cn.goroute.smart.post.entity.pojo.Tag;
 import cn.goroute.smart.common.utils.RedisUtil;
 import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.post.service.CategoryTagService;

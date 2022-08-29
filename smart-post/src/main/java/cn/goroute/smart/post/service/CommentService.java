@@ -1,7 +1,7 @@
 package cn.goroute.smart.post.service;
 
-import cn.goroute.smart.common.entity.pojo.Comment;
-import cn.goroute.smart.common.entity.vo.CommentVo;
+import cn.goroute.smart.post.entity.pojo.Comment;
+import cn.goroute.smart.post.entity.vo.CommentVo;
 import cn.goroute.smart.common.utils.QueryParam;
 import cn.goroute.smart.common.utils.Result;
 import com.baomidou.mybatisplus.extension.service.IService;

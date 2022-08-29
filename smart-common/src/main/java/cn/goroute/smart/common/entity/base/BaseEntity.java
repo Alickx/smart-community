@@ -19,7 +19,7 @@ public class BaseEntity {
      * 主键id
      */
     @TableId
-    private int id;
+    private Long id;
 
     /**
      * 创建时间

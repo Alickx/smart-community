@@ -2,8 +2,8 @@ package cn.goroute.smart.post.manage.impl;
 
 import cn.goroute.smart.post.mapper.PostMapper;
 import cn.goroute.smart.common.entity.dto.MemberDto;
-import cn.goroute.smart.common.entity.dto.PostListDto;
-import cn.goroute.smart.common.entity.pojo.Post;
+import cn.goroute.smart.post.entity.dto.PostListDto;
+import cn.goroute.smart.post.entity.pojo.Post;
 import cn.goroute.smart.common.feign.MemberFeignService;
 import cn.goroute.smart.post.manage.IPostManage;
 import cn.goroute.smart.post.manage.IThumbManage;

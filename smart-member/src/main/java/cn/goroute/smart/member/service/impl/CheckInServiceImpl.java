@@ -1,7 +1,7 @@
 package cn.goroute.smart.member.service.impl;
 
 import cn.goroute.smart.member.mapper.CheckInMapper;
-import cn.goroute.smart.common.entity.pojo.CheckIn;
+import cn.goroute.smart.member.entity.pojo.CheckIn;
 import cn.goroute.smart.common.service.AuthService;
 import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.member.service.CheckInService;
@@ -46,7 +46,7 @@ public class CheckInServiceImpl extends ServiceImpl<CheckInMapper, CheckIn>
 
         // 进行签到操作
         checkIn = new CheckIn();
-        checkIn.setMemberUid(loginUid);
+        checkIn.setMemberId(loginUid);
         checkIn.setCheckInDate(LocalDateTimeUtil.now());
         checkInMapper.insert(checkIn);
 

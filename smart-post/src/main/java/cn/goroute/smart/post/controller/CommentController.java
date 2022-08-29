@@ -1,7 +1,7 @@
 package cn.goroute.smart.post.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
-import cn.goroute.smart.common.entity.vo.CommentVo;
+import cn.goroute.smart.post.entity.vo.CommentVo;
 import cn.goroute.smart.common.utils.QueryParam;
 import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.post.service.CommentService;

@@ -4,7 +4,7 @@
 <mapper namespace="cn.goroute.smart.member.mapper.MemberMapper">
 
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="cn.goroute.smart.common.entity.pojo.Member" id="memberMap">
+    <resultMap type="cn.goroute.smart.member.entity.pojo.Member" id="memberMap">
         <result property="uid" column="uid"/>
         <result property="nickName" column="nick_name"/>
         <result property="email" column="email"/>
@@ -34,7 +34,7 @@
         UPDATE smart_ums.t_member SET status = #{status} WHERE uid = #{memberId}
     </update>
 
-    <select id="selectByUid" resultType="cn.goroute.smart.common.entity.pojo.Member">
+    <select id="selectByUid" resultType="cn.goroute.smart.member.entity.pojo.Member">
         SELECT * FROM smart_ums.t_member WHERE uid = #{uid}
     </select>
 

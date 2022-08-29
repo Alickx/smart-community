@@ -2,7 +2,7 @@ package cn.goroute.smart.post.controller;
 
 import cn.goroute.smart.common.annotations.ParamLog;
 import cn.goroute.smart.common.annotations.RateLimiter;
-import cn.goroute.smart.common.entity.pojo.Tag;
+import cn.goroute.smart.post.entity.pojo.Tag;
 import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.post.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;

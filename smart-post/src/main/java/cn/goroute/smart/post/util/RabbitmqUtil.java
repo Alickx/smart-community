@@ -2,7 +2,7 @@ package cn.goroute.smart.post.util;
 
 import cn.goroute.smart.post.mapper.PostMapper;
 import cn.goroute.smart.common.entity.pojo.EventRemind;
-import cn.goroute.smart.common.entity.pojo.Post;
+import cn.goroute.smart.post.entity.pojo.Post;
 import cn.goroute.smart.common.exception.ServiceException;
 import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;

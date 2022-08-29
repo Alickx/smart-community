@@ -2,7 +2,7 @@ package cn.goroute.smart.post.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.goroute.smart.common.constant.RedisKeyConstant;
-import cn.goroute.smart.common.entity.pojo.Thumb;
+import cn.goroute.smart.post.entity.pojo.Thumb;
 import cn.goroute.smart.common.utils.QueryParam;
 import cn.goroute.smart.common.utils.RedisUtil;
 import cn.goroute.smart.common.utils.Result;

@@ -1,9 +1,9 @@
 package cn.goroute.smart.member.service;
 
-import cn.goroute.smart.common.entity.pojo.Member;
-import cn.goroute.smart.common.entity.vo.MemberInfoUpdateVo;
-import cn.goroute.smart.common.entity.vo.MemberLoginVo;
-import cn.goroute.smart.common.entity.vo.MemberRegisterVo;
+import cn.goroute.smart.member.entity.pojo.Member;
+import cn.goroute.smart.member.entity.vo.MemberInfoUpdateVo;
+import cn.goroute.smart.member.entity.vo.MemberLoginVo;
+import cn.goroute.smart.member.entity.vo.MemberRegisterVo;
 import cn.goroute.smart.common.utils.Result;
 import com.baomidou.mybatisplus.extension.service.IService;
 
