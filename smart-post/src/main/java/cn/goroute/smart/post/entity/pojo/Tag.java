@@ -1,6 +1,6 @@
 package cn.goroute.smart.post.entity.pojo;
 
-import cn.goroute.smart.common.entity.base.BaseEntity;
+import cn.goroute.smart.base.entity.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

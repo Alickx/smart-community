@@ -42,6 +42,7 @@
         <redisson.version>3.17.5</redisson.version>
         <spring-cloud-openfeign.version>2.2.6.RELEASE</spring-cloud-openfeign.version>
         <commons-pool2.version>2.11.1</commons-pool2.version>
+        <swagger3.version>3.0.0</swagger3.version>
     </properties>
 
     <modules>
@@ -55,9 +56,7 @@
         <module>smart-notification</module>
         <module>smart-auth</module>
         <module>smart-starter</module>
-        <module>smart-starter/smart-mybatis-plus-starter</module>
-        <module>smart-starter/smart-rabbitmq-starter</module>
-        <module>smart-starter/smart-redis-starter</module>
+        <module>smart-base</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -226,8 +225,21 @@
                 <artifactId>aliyun-sdk-oss</artifactId>
                 <version>${aliyun.oss.version}</version>
             </dependency>
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-boot-starter</artifactId>
+                <version>${swagger3.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+            <version>${spring.boot.version}</version>
+        </dependency>
+    </dependencies>
 
     <build>
         <pluginManagement>

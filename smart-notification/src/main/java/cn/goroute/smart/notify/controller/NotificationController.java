@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @Description:
  */
 @RestController
-@RequestMapping("/notification")
+@RequestMapping("smart/notification")
 public class NotificationController {
 
     @Autowired

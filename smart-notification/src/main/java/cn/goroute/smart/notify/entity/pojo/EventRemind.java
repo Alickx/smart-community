@@ -1,6 +1,6 @@
 package cn.goroute.smart.notify.entity.pojo;
 
-import cn.goroute.smart.common.entity.base.BaseEntity;
+import cn.goroute.smart.base.entity.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;

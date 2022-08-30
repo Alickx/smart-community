@@ -15,7 +15,7 @@ import java.io.IOException;
  * @author Alickx
  */
 @RestController
-@RequestMapping("/post/comment")
+@RequestMapping("smart/post/comment")
 public class CommentController {
 
     @Autowired

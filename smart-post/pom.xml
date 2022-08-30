@@ -31,8 +31,9 @@
         </dependency>
         <!--        Rabbitmq消息队列-->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-amqp</artifactId>
+            <groupId>cn.goroute.smart</groupId>
+            <artifactId>smart-rabbitmq-starter</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -55,16 +56,28 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
-<!--        mybatis-plus-->
+<!--        druid-->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid-spring-boot-starter</artifactId>
+        </dependency>
+        <!--        mybatis-plus-->
         <dependency>
             <groupId>cn.goroute.smart</groupId>
             <artifactId>smart-mybatis-plus-starter</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-<!--        druid-->
+        <!--        基础类-->
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid-spring-boot-starter</artifactId>
+            <groupId>cn.goroute.smart</groupId>
+            <artifactId>smart-base</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+<!--        缓存-->
+        <dependency>
+            <groupId>cn.goroute.smart</groupId>
+            <artifactId>smart-redis-starter</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

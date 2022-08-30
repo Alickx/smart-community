@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @Description: 事件提醒控制器
  */
 @RestController
-@RequestMapping("/notification")
+@RequestMapping("smart/notification")
 public class EventRemindController {
 
     @Autowired

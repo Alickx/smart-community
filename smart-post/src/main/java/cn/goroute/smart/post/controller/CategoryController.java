@@ -19,7 +19,7 @@ import java.util.List;
  * @date 2022-02-25 09:44:39
  */
 @RestController
-@RequestMapping("post/category")
+@RequestMapping("smart/post/category")
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;

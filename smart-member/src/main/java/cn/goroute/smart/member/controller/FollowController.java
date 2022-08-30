@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
  * @Description: 用户关注控制器
  */
 @RestController
-@RequestMapping("/member/follow")
+@RequestMapping("smart/member/follow")
 public class FollowController {
 
     @Autowired

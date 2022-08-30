@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @Description: 验证码控制器
  */
 @RestController
-@RequestMapping("/thirdpart")
+@RequestMapping("smart/thirdpart")
 public class CaptchaController {
 
     @Autowired

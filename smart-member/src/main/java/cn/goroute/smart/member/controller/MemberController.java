@@ -3,12 +3,12 @@ package cn.goroute.smart.member.controller;
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.common.service.AuthService;
-import cn.goroute.smart.common.utils.RedisUtil;
 import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.common.entity.dto.MemberDto;
 import cn.goroute.smart.member.entity.pojo.Member;
 import cn.goroute.smart.member.entity.vo.MemberInfoUpdateVo;
 import cn.goroute.smart.member.service.MemberService;
+import cn.goroute.smart.redis.util.RedisUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -29,7 +29,7 @@ import java.util.Objects;
  * @date 2022-02-25 09:45:33
  */
 @RestController
-@RequestMapping("member/member")
+@RequestMapping("smart/member")
 @Slf4j
 public class MemberController {
     @Autowired
@@ -158,7 +158,7 @@ public class MemberController {
         if (Boolean.TRUE.equals(isLogin)) {
             return Result.ok();
         }
-        return Result.error(401, "用户未登录");
+        return Result.error("用户未登录");
     }
 
 

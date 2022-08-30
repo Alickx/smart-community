@@ -7,9 +7,18 @@
         <groupId>cn.goroute.smart</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
+    <packaging>pom</packaging>
+    <modules>
+        <module>smart-swagger3-starter</module>
+        <module>smart-mybatis-plus-starter</module>
+        <module>smart-rabbitmq-starter</module>
+        <module>smart-redis-starter</module>
+        <module>smart-satoken-starter</module>
+    </modules>
+    <modelVersion>4.0.0</modelVersion>
     <artifactId>smart-starter</artifactId>
+    <version>1.0-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>

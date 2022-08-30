@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @Slf4j
-@RequestMapping("post/post")
+@RequestMapping("smart/post/post")
 public class PostController {
     @Autowired
     PostService postService;

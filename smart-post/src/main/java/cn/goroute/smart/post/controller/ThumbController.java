@@ -4,10 +4,10 @@ import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.goroute.smart.common.constant.RedisKeyConstant;
 import cn.goroute.smart.post.entity.pojo.Thumb;
 import cn.goroute.smart.common.utils.QueryParam;
-import cn.goroute.smart.common.utils.RedisUtil;
 import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.post.service.CommentService;
 import cn.goroute.smart.post.service.ThumbService;
+import cn.goroute.smart.redis.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
  * @author Alickx
  */
 @RestController
-@RequestMapping("post/thumb")
+@RequestMapping("smart/post/thumb")
 public class ThumbController {
 
     @Autowired

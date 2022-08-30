@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
  * @Description: 用户登录，注册，注销
  */
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("smart/auth")
 public class AuthenticationApi {
 
     @Autowired

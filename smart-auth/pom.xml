@@ -31,26 +31,27 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <!--        Mybatis-plus依赖-->
-        <dependency>
-            <groupId>cn.goroute.smart</groupId>
-            <artifactId>smart-mybatis-plus-starter</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
         <!--        mysql驱动-->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <scope>runtime</scope>
         </dependency>
-        <!--        redis中间件-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-        </dependency>
         <dependency>
             <groupId>cn.goroute.smart</groupId>
             <artifactId>smart-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <!--        mybatis-plus-->
+        <dependency>
+            <groupId>cn.goroute.smart</groupId>
+            <artifactId>smart-mybatis-plus-starter</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <!--        基础类-->
+        <dependency>
+            <groupId>cn.goroute.smart</groupId>
+            <artifactId>smart-base</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <!--        druid 数据库连接池-->
@@ -94,6 +95,14 @@
                 <groupId>com.spotify</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
                 <version>1.2.2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
             </plugin>
         </plugins>
     </build>

@@ -51,19 +51,6 @@
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
-        <!-- Sa-Token 整合 Redis (使用jackson序列化方式) -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-pool2</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>cn.dev33</groupId>
-            <artifactId>sa-token-spring-boot-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>cn.dev33</groupId>
-            <artifactId>sa-token-dao-redis-jackson</artifactId>
-        </dependency>
         <!--        openfeign远程调用依赖-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -79,11 +66,6 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
         </dependency>
-        <!--        redis中间件-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-        </dependency>
         <!--        logback日志记录框架-->
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -94,18 +76,17 @@
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
         </dependency>
-        <!--        Rabbitmq消息队列-->
+        <!--        servlet-->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-amqp</artifactId>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
         </dependency>
-        <!--        mybatis-plus-->
+        <!--        satoken-->
         <dependency>
             <groupId>cn.goroute.smart</groupId>
-            <artifactId>smart-mybatis-plus-starter</artifactId>
+            <artifactId>smart-satoken-starter</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-
     </dependencies>
 
 </project>

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Alickx
  */
 @RestController
-@RequestMapping("post/categoryTag")
+@RequestMapping("smart/post/categoryTag")
 public class CategoryTagController {
 
     @Autowired

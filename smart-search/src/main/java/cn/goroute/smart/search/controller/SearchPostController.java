@@ -12,7 +12,7 @@ import java.io.IOException;
  * @author Alickx
  */
 @RestController
-@RequestMapping("/search")
+@RequestMapping("smart/search")
 public class SearchPostController {
 
     @Autowired

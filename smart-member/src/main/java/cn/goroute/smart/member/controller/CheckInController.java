@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @Description: 签到
  */
 @RestController
-@RequestMapping("/member/checkin")
+@RequestMapping("smart/member/checkin")
 public class CheckInController {
 
     @Autowired
