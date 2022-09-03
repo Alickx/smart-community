@@ -5,20 +5,20 @@
 
     <!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="cn.goroute.smart.post.entity.pojo.Post" id="postMap">
-        <result property="uid" column="uid"/>
-        <result property="sectionUid" column="section_uid"/>
-        <result property="memberUid" column="member_uid"/>
-        <result property="title" column="title"/>
-        <result property="content" column="content"/>
-        <result property="status" column="status"/>
-        <result property="headImg" column="head_img"/>
-        <result property="collectCount" column="collect_count"/>
-        <result property="thumbCount" column="thumb_count"/>
-        <result property="isPublish" column="is_publish"/>
-        <result property="summary" column="summary"/>
-        <result property="clickCount" column="click_count"/>
-        <result property="updatedTime" column="updated_time"/>
-        <result property="createdTime" column="created_time"/>
+        <response property="uid" column="uid"/>
+        <response property="sectionUid" column="section_uid"/>
+        <response property="memberUid" column="member_uid"/>
+        <response property="title" column="title"/>
+        <response property="content" column="content"/>
+        <response property="status" column="status"/>
+        <response property="headImg" column="head_img"/>
+        <response property="collectCount" column="collect_count"/>
+        <response property="thumbCount" column="thumb_count"/>
+        <response property="isPublish" column="is_publish"/>
+        <response property="summary" column="summary"/>
+        <response property="clickCount" column="click_count"/>
+        <response property="updatedTime" column="updated_time"/>
+        <response property="createdTime" column="created_time"/>
     </resultMap>
     <select id="getPostBySectionTag" resultType="cn.goroute.smart.post.entity.pojo.Post">
         select distinct p.uid,

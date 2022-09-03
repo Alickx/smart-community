@@ -4,11 +4,11 @@
 <mapper namespace="cn.goroute.smart.task.dao.XxlJobRegistryDao">
 	
 	<resultMap id="XxlJobRegistry" type="cn.goroute.smart.task.core.model.XxlJobRegistry" >
-		<result column="id" property="id" />
-	    <result column="registry_group" property="registryGroup" />
-	    <result column="registry_key" property="registryKey" />
-	    <result column="registry_value" property="registryValue" />
-		<result column="update_time" property="updateTime" />
+		<response column="id" property="id" />
+	    <response column="registry_group" property="registryGroup" />
+	    <response column="registry_key" property="registryKey" />
+	    <response column="registry_value" property="registryValue" />
+		<response column="update_time" property="updateTime" />
 	</resultMap>
 
 	<sql id="Base_Column_List">

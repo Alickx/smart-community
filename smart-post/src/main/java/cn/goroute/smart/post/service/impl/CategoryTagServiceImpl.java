@@ -1,15 +1,15 @@
 package cn.goroute.smart.post.service.impl;
 
-import cn.goroute.smart.post.mapper.CategoryMapper;
-import cn.goroute.smart.post.mapper.CategoryTagMapper;
+import cn.goroute.smart.common.entity.resp.Response;
 import cn.goroute.smart.post.entity.dto.CategoryTagDto;
 import cn.goroute.smart.post.entity.pojo.CategoryTag;
 import cn.goroute.smart.post.entity.pojo.Tag;
-import cn.goroute.smart.common.utils.RedisUtil;
-import cn.goroute.smart.common.utils.Result;
+import cn.goroute.smart.post.mapper.CategoryMapper;
+import cn.goroute.smart.post.mapper.CategoryTagMapper;
 import cn.goroute.smart.post.service.CategoryTagService;
 import cn.goroute.smart.post.service.TagService;
-import cn.hutool.core.collection.CollectionUtil;
+import cn.goroute.smart.redis.util.RedisUtil;
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
@@ -50,21 +50,21 @@ public class CategoryTagServiceImpl extends ServiceImpl<CategoryTagMapper, Categ
      * @return 标签列表
      */
     @Override
-    public Result getTagByCategory(Long categoryUid) {
+    public Response getTagByCategory(Long categoryUid) {
 
         List<CategoryTag> categoryTagList = categoryTagMapper
                 .selectList(new LambdaQueryWrapper<CategoryTag>()
                         .eq(CategoryTag::getCategoryId, categoryUid));
 
-        if (CollectionUtil.isEmpty(categoryTagList)) {
-            return Result.error("没有此分类标签数据");
+        if (CollUtil.isEmpty(categoryTagList)) {
+            return Response.error("没有此分类标签数据");
         }
 
         List<Long> tagIds = categoryTagList.stream()
                 .map(CategoryTag::getTagId).distinct().collect(Collectors.toList());
 
-        if (CollectionUtil.isEmpty(tagIds)) {
-            return Result.error("该分类下没有标签");
+        if (CollUtil.isEmpty(tagIds)) {
+            return Response.error("该分类下没有标签");
         }
 
         List<Map<String,Object>> tagContentList = new ArrayList<>(16);
@@ -79,7 +79,7 @@ public class CategoryTagServiceImpl extends ServiceImpl<CategoryTagMapper, Categ
 
 
 
-        return Result.ok().put("data",tagContentList);
+        return Response.success(tagContentList);
 
     }
 
@@ -88,15 +88,15 @@ public class CategoryTagServiceImpl extends ServiceImpl<CategoryTagMapper, Categ
      * @return
      */
     @Override
-    public Result getCategoryTagAll() {
+    public Response getCategoryTagAll() {
 
         List<CategoryTagDto> categoryTagDtoList = (List<CategoryTagDto>) redisUtil.get("category");
 
-        if (CollectionUtil.isEmpty(categoryTagDtoList)) {
-            return Result.error("没有分类标签数据");
+        if (CollUtil.isEmpty(categoryTagDtoList)) {
+            return Response.error("没有分类标签数据");
         }
 
-        return Result.ok().put("data", categoryTagDtoList);
+        return Response.success(categoryTagDtoList);
     }
 
 

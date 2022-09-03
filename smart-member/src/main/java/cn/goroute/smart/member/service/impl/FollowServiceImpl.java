@@ -1,12 +1,12 @@
 package cn.goroute.smart.member.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.goroute.smart.common.entity.resp.Response;
 import cn.goroute.smart.member.mapper.FollowMapper;
 import cn.goroute.smart.member.mapper.MemberMapper;
 import cn.goroute.smart.member.entity.pojo.Follow;
 import cn.goroute.smart.member.entity.pojo.Member;
 import cn.goroute.smart.common.service.AuthService;
-import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.member.service.FollowService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -34,12 +34,12 @@ public class FollowServiceImpl extends ServiceImpl<FollowMapper, Follow>
     AuthService authService;
 
     @Override
-    public Result saveFollow(Long followMemberId) {
+    public Response saveFollow(Long followMemberId) {
 
         Member member = memberMapper.selectById(followMemberId);
 
         if (member == null) {
-            return Result.error("该用户不存在!");
+            return Response.failure("该用户不存在!");
         }
 
         Follow follow = new Follow();
@@ -49,9 +49,9 @@ public class FollowServiceImpl extends ServiceImpl<FollowMapper, Follow>
         int insert = followMapper.insert(follow);
 
         if (insert == 0) {
-            return Result.error();
+            return Response.error();
         }
-        return Result.ok();
+        return Response.success();
 
     }
 
@@ -62,10 +62,10 @@ public class FollowServiceImpl extends ServiceImpl<FollowMapper, Follow>
      * @return 是否关注
      */
     @Override
-    public Result queryFollow(Long followMemberId) {
+    public Response queryFollow(Long followMemberId) {
 
         if (!StpUtil.isLogin()) {
-            return Result.ok().put("data",false);
+            return Response.success(false);
         }
 
         Follow follow = followMapper.selectOne(new LambdaQueryWrapper<Follow>()
@@ -73,9 +73,9 @@ public class FollowServiceImpl extends ServiceImpl<FollowMapper, Follow>
                 .eq(Follow::getToMemberId, followMemberId));
 
         if (follow == null) {
-            return Result.ok().put("data",false);
+            return Response.success(false);
         }
-        return Result.ok().put("data", true);
+        return Response.success(true);
     }
 }
 

@@ -87,6 +87,18 @@
             <artifactId>smart-satoken-starter</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+        <!--        swagger3-ui-->
+        <dependency>
+            <groupId>cn.goroute.smart</groupId>
+            <artifactId>smart-swagger3-starter</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+<!--        mybatis-plus-->
+        <dependency>
+            <groupId>cn.goroute.smart</groupId>
+            <artifactId>smart-mybatis-plus-starter</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
 </project>

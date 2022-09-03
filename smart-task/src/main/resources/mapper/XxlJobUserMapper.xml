@@ -4,11 +4,11 @@
 <mapper namespace="cn.goroute.smart.task.dao.XxlJobUserDao">
 
 	<resultMap id="XxlJobUser" type="cn.goroute.smart.task.core.model.XxlJobUser" >
-		<result column="id" property="id" />
-		<result column="username" property="username" />
-	    <result column="password" property="password" />
-	    <result column="role" property="role" />
-	    <result column="permission" property="permission" />
+		<response column="id" property="id" />
+		<response column="username" property="username" />
+	    <response column="password" property="password" />
+	    <response column="role" property="role" />
+	    <response column="permission" property="permission" />
 	</resultMap>
 
 	<sql id="Base_Column_List">

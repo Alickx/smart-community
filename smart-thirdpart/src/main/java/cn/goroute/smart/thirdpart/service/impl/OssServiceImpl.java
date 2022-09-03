@@ -1,6 +1,6 @@
 package cn.goroute.smart.thirdpart.service.impl;
 
-import cn.goroute.smart.common.utils.Result;
+import cn.goroute.smart.common.entity.resp.Response;
 import cn.goroute.smart.thirdpart.service.OssService;
 import cn.goroute.smart.thirdpart.util.OssUtil;
 import cn.hutool.core.date.DateUtil;
@@ -27,7 +27,7 @@ public class OssServiceImpl implements OssService {
     @Autowired
     OssUtil ossUtil;
 
-    public Result getPolicy() {
+    public Response getPolicy() {
         String host = "https://" + ossUtil.getBucket() + "." + ossUtil.getEndpoint();
         String fileName = UUID.fastUUID().toString(true);
         String dir = ossUtil.getDir() + "/" + DateUtil.today() + "/" + fileName;
@@ -62,6 +62,6 @@ public class OssServiceImpl implements OssService {
         } finally {
             ossClient.shutdown();
         }
-        return Result.ok().put("data",respMap);
+        return Response.ok().put("data",respMap);
     }
 }

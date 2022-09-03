@@ -4,11 +4,11 @@
 <mapper namespace="cn.goroute.smart.task.dao.XxlJobLogReportDao">
 	
 	<resultMap id="XxlJobLogReport" type="cn.goroute.smart.task.core.model.XxlJobLogReport" >
-		<result column="id" property="id" />
-	    <result column="trigger_day" property="triggerDay" />
-		<result column="running_count" property="runningCount" />
-	    <result column="suc_count" property="sucCount" />
-	    <result column="fail_count" property="failCount" />
+		<response column="id" property="id" />
+	    <response column="trigger_day" property="triggerDay" />
+		<response column="running_count" property="runningCount" />
+	    <response column="suc_count" property="sucCount" />
+	    <response column="fail_count" property="failCount" />
 	</resultMap>
 
 	<sql id="Base_Column_List">

@@ -3,8 +3,11 @@ package cn.goroute.smart.post.controller;
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.goroute.smart.post.entity.vo.CommentVo;
 import cn.goroute.smart.common.utils.QueryParam;
-import cn.goroute.smart.common.utils.Result;
+import cn.goroute.smart.common.entity.resp.Response;
 import cn.goroute.smart.post.service.CommentService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +19,7 @@ import java.io.IOException;
  */
 @RestController
 @RequestMapping("smart/post/comment")
+@Api(tags = "评论接口")
 public class CommentController {
 
     @Autowired
@@ -28,7 +32,9 @@ public class CommentController {
      * @return 评论结果
      */
     @PostMapping("/query/list")
-    public Result getCommentByPost(@Validated @RequestBody QueryParam queryParam, @RequestParam Long postUid) throws IOException {
+    @ApiOperation(value = "分页获取文章评论", notes = "分页获取文章评论", httpMethod = "POST")
+    @ApiParam(name = "queryParam", value = "分页参数", required = true)
+    public Response getCommentByPost(@Validated @RequestBody QueryParam queryParam, @RequestParam Long postUid) throws IOException {
         return commentService.getCommentByPost(queryParam,postUid);
     }
 
@@ -40,7 +46,8 @@ public class CommentController {
      */
     @SaCheckLogin
     @PostMapping("/save")
-    public Result save(@RequestBody CommentVo commentVo){
+    @ApiOperation(value = "发布评论/回复", notes = "发布评论/回复", httpMethod = "POST")
+    public Response save(@RequestBody CommentVo commentVo){
 
         return commentService.saveComment(commentVo);
     }
@@ -52,7 +59,8 @@ public class CommentController {
      */
     @SaCheckLogin
     @PostMapping("/delete")
-    public Result del(@RequestBody CommentVo commentVo){
+    @ApiOperation(value = "删除评论", notes = "删除评论",httpMethod = "POST")
+    public Response del(@RequestBody CommentVo commentVo){
         return commentService.del(commentVo);
     }
 }

@@ -2,7 +2,7 @@ package cn.goroute.smart.post.service;
 
 import cn.goroute.smart.post.entity.pojo.Thumb;
 import cn.goroute.smart.common.utils.QueryParam;
-import cn.goroute.smart.common.utils.Result;
+import cn.goroute.smart.common.entity.resp.Response;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -12,9 +12,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface ThumbService extends IService<Thumb> {
 
-    Result thumbSave(Thumb thumb);
+    Response thumbSave(Thumb thumb);
 
-    Result thumbCancel(Thumb thumb);
+    Response thumbCancel(Thumb thumb);
 
     /**
      * 持久化点赞数据
@@ -22,7 +22,7 @@ public interface ThumbService extends IService<Thumb> {
      */
     int trans();
 
-    Result listByMemberUid(QueryParam queryParam);
+    Response listByMemberUid(QueryParam queryParam);
 
     /**
      * 持久化点赞评论数量

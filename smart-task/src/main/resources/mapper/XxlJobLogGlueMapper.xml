@@ -4,13 +4,13 @@
 <mapper namespace="cn.goroute.smart.task.dao.XxlJobLogGlueDao">
 	
 	<resultMap id="XxlJobLogGlue" type="cn.goroute.smart.task.core.model.XxlJobLogGlue" >
-		<result column="id" property="id" />
-	    <result column="job_id" property="jobId" />
-		<result column="glue_type" property="glueType" />
-	    <result column="glue_source" property="glueSource" />
-	    <result column="glue_remark" property="glueRemark" />
-	    <result column="add_time" property="addTime" />
-	    <result column="update_time" property="updateTime" />
+		<response column="id" property="id" />
+	    <response column="job_id" property="jobId" />
+		<response column="glue_type" property="glueType" />
+	    <response column="glue_source" property="glueSource" />
+	    <response column="glue_remark" property="glueRemark" />
+	    <response column="add_time" property="addTime" />
+	    <response column="update_time" property="updateTime" />
 	</resultMap>
 
 	<sql id="Base_Column_List">

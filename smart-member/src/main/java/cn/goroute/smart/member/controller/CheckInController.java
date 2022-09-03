@@ -1,7 +1,9 @@
 package cn.goroute.smart.member.controller;
 
-import cn.goroute.smart.common.utils.Result;
+import cn.goroute.smart.common.entity.resp.Response;
 import cn.goroute.smart.member.service.CheckInService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,7 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
  * @Description: 签到
  */
 @RestController
-@RequestMapping("smart/member/checkin")
+@RequestMapping("smart/member")
+@Api(tags = "签到")
 public class CheckInController {
 
     @Autowired
@@ -24,8 +27,9 @@ public class CheckInController {
      * 签到处理
      * @return 签到结果
      */
-    @PostMapping
-    public Result checkIn() {
+    @PostMapping("/checkIn")
+    @ApiOperation(value = "签到处理", notes = "签到处理", httpMethod = "POST")
+    public Response checkIn() {
         return checkInService.checkIn();
     }
 
@@ -34,7 +38,8 @@ public class CheckInController {
      * @return
      */
     @GetMapping("/getCheckInInfo")
-    public Result getCheckInInfo() {
+    @ApiOperation(value = "获取签到数据", notes = "获取签到数据", httpMethod = "GET")
+    public Response getCheckInInfo() {
         return checkInService.getCheckInInfo();
     }
 

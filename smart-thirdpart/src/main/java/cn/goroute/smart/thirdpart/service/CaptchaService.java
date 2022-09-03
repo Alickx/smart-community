@@ -1,6 +1,6 @@
 package cn.goroute.smart.thirdpart.service;
 
-import cn.goroute.smart.common.utils.Result;
+import cn.goroute.smart.common.entity.resp.Response;
 
 /**
  * @Author: Alickx
@@ -8,5 +8,5 @@ import cn.goroute.smart.common.utils.Result;
  * @Description:
  */
 public interface CaptchaService {
-    Result generateRegistrationVerificationCode(String emailAddress);
+    Response generateRegistrationVerificationCode(String emailAddress);
 }

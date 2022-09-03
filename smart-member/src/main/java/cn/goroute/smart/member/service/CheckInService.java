@@ -1,7 +1,7 @@
 package cn.goroute.smart.member.service;
 
 import cn.goroute.smart.member.entity.pojo.CheckIn;
-import cn.goroute.smart.common.utils.Result;
+import cn.goroute.smart.common.entity.resp.Response;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -11,7 +11,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface CheckInService extends IService<CheckIn> {
 
-    Result checkIn();
+    Response checkIn();
 
-    Result getCheckInInfo();
+    Response getCheckInInfo();
 }

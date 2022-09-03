@@ -1,8 +1,11 @@
 package cn.goroute.smart.post.controller;
 
+import cn.goroute.smart.common.entity.resp.Response;
 import cn.goroute.smart.post.entity.pojo.Category;
-import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.post.service.CategoryService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +23,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("smart/post/category")
+@Api(tags = "板块")
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;
@@ -28,50 +32,59 @@ public class CategoryController {
      * 列表
      */
     @GetMapping("/list")
-    public Result list(){
+    @ApiOperation(value = "列表", notes = "列表",httpMethod = "GET")
+    public Response list(){
         List<Category> list = categoryService.list();
-        return Result.ok().put("data", list);
+        return Response.success(list);
     }
 
 
     /**
      * 信息
      */
-    @GetMapping("/info/{uid}")
-    public Result info(@PathVariable("uid") String uid){
-        Category category = categoryService.getById(uid);
+    @GetMapping("/info/{id}")
+    @ApiOperation(value = "信息", notes = "信息",httpMethod = "GET")
+    @ApiParam(name = "id", value = "主键", required = true)
+    public Response info(@PathVariable("id") String id){
+        Category category = categoryService.getById(id);
 
-        return Result.ok().put("data", category);
+        return Response.success(category);
     }
 
     /**
      * 保存
      */
-    @RequestMapping("/save")
-    public Result save(@RequestBody Category category){
+    @PostMapping("/save")
+    @ApiOperation(value = "保存", notes = "保存",httpMethod = "POST")
+    @ApiParam(name = "category", value = "板块实体", required = true)
+    public Response save(@RequestBody Category category){
 		categoryService.save(category);
 
-        return Result.ok();
+        return Response.success();
     }
 
     /**
      * 修改
      */
-    @RequestMapping("/update")
-    public Result update(@RequestBody Category category){
+    @PostMapping("/update")
+    @ApiOperation(value = "修改", notes = "修改",httpMethod = "POST")
+    @ApiParam(name = "Category", value = "板块实体", required = true)
+    public Response update(@RequestBody Category category){
 		categoryService.updateById(category);
 
-        return Result.ok();
+        return Response.success();
     }
 
     /**
      * 删除
      */
-    @RequestMapping("/delete")
-    public Result delete(@RequestBody String[] uids){
+    @PostMapping("/delete")
+    @ApiOperation(value = "删除", notes = "删除",httpMethod = "POST")
+    @ApiParam(name = "ids", value = "主键集合", required = true)
+    public Response delete(@RequestBody String[] uids){
 		categoryService.removeByIds(Arrays.asList(uids));
 
-        return Result.ok();
+        return Response.success();
     }
 
 }

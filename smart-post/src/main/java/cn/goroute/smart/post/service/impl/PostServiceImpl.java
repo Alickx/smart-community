@@ -1,9 +1,15 @@
 package cn.goroute.smart.post.service.impl;
 
 
-import cn.goroute.smart.common.constant.PostConstant;
+import cn.goroute.smart.common.entity.bo.MemberBo;
+import cn.goroute.smart.common.entity.resp.Response;
+import cn.goroute.smart.common.utils.ModelConverterUtils;
+import cn.goroute.smart.post.constant.PostConstant;
 import cn.goroute.smart.common.constant.RedisKeyConstant;
 import cn.goroute.smart.common.entity.dto.MemberDto;
+import cn.goroute.smart.common.feign.MemberFeignService;
+import cn.goroute.smart.common.service.AuthService;
+import cn.goroute.smart.common.utils.QueryParam;
 import cn.goroute.smart.post.entity.dto.PostDto;
 import cn.goroute.smart.post.entity.dto.PostListDto;
 import cn.goroute.smart.post.entity.pojo.Category;
@@ -12,9 +18,6 @@ import cn.goroute.smart.post.entity.pojo.PostTag;
 import cn.goroute.smart.post.entity.pojo.Tag;
 import cn.goroute.smart.post.entity.vo.PostQueryVo;
 import cn.goroute.smart.post.entity.vo.PostVo;
-import cn.goroute.smart.common.feign.MemberFeignService;
-import cn.goroute.smart.common.service.AuthService;
-import cn.goroute.smart.common.utils.*;
 import cn.goroute.smart.post.feign.SearchFeignService;
 import cn.goroute.smart.post.manage.IPostManage;
 import cn.goroute.smart.post.mapper.*;
@@ -22,6 +25,7 @@ import cn.goroute.smart.post.service.PostService;
 import cn.goroute.smart.post.util.Html2TextUtil;
 import cn.goroute.smart.post.util.NamingThreadFactory;
 import cn.goroute.smart.post.util.RabbitmqUtil;
+import cn.goroute.smart.redis.util.RedisUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.text.CharSequenceUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -41,6 +45,9 @@ import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 
+/**
+ * @author Alickx
+ */
 @Service("postService")
 @Slf4j
 public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements PostService {
@@ -76,9 +83,6 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
     RedisUtil redisUtil;
 
     @Autowired
-    CollectMapper collectMapper;
-
-    @Autowired
     IPostManage iPostManage;
 
     @Autowired
@@ -93,56 +97,59 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
      * @return 文章分页对象
      */
     @Override
-    public Result queryPage(PostQueryVo postQueryVO) {
+    public Response queryPage(PostQueryVo postQueryVO) {
+        // TODO 重构
+//
+//        IPage<Post> page;
+//
+//        // 查询条件 如果没有选择分类，则查询全部
+//        if (postQueryVO.getCategoryId() == null) {
+//            page = postMapper.selectPage(
+//                    new Query<Post>().getPage(postQueryVO),
+//                    new LambdaQueryWrapper<Post>()
+//                            .eq(Post::getIsPublish, PostConstant.PUBLISH)
+//                            .eq(Post::getStatus, PostConstant.NORMAL_STATUS));
+//            // 如果选择了分类，没有选择标签，则查询分类下的文章
+//        } else if (postQueryVO.getTagId() == null) {
+//
+//            page = postMapper.selectPage(
+//                    new Query<Post>().getPage(postQueryVO),
+//                    new LambdaQueryWrapper<Post>()
+//                            .eq(Post::getCategoryId, postQueryVO.getCategoryId())
+//                            .eq(Post::getStatus, PostConstant.NORMAL_STATUS)
+//            );
+//        } else {
+//            // 如果选择了分类和标签，则查询分类和标签下的文章
+//            IPage<PostTag> postTagIPage = postTagMapper.selectPage(new Query<PostTag>().getPage(postQueryVO),
+//                    new LambdaQueryWrapper<PostTag>()
+//                            .eq(PostTag::getTagId, postQueryVO.getTagId()));
+//
+//            List<PostTag> records = postTagIPage.getRecords();
+//            if (CollUtil.isEmpty(records)) {
+//                return Result.ok().put("data", new Page<>());
+//            }
+//            List<Long> postIds = records.stream()
+//                    .map(PostTag::getPostId).collect(Collectors.toList());
+//
+//            List<Post> posts = postMapper.selectBatchIds(postIds);
+//            page = new Page<>();
+//            BeanUtils.copyProperties(postTagIPage, page);
+//            page.setRecords(posts);
+//        }
+//
+//        boolean isLogin = authService.getIsLogin();
+//
+//        List<Post> records = page.getRecords();
+//
+//        List<PostListDto> postList = getPostListDTOS(isLogin, records);
+//
+//        PageUtils pageUtils = new PageUtils(page);
+//
+//        pageUtils.setList(postList);
+//
+//        return Result.ok().put("data", pageUtils);
 
-        IPage<Post> page;
-
-        // 查询条件 如果没有选择分类，则查询全部
-        if (postQueryVO.getCategoryId() == null) {
-            page = postMapper.selectPage(
-                    new Query<Post>().getPage(postQueryVO),
-                    new LambdaQueryWrapper<Post>()
-                            .eq(Post::getIsPublish, PostConstant.PUBLISH)
-                            .eq(Post::getStatus, PostConstant.NORMAL_STATUS));
-            // 如果选择了分类，没有选择标签，则查询分类下的文章
-        } else if (postQueryVO.getTagId() == null) {
-
-            page = postMapper.selectPage(
-                    new Query<Post>().getPage(postQueryVO),
-                    new LambdaQueryWrapper<Post>()
-                            .eq(Post::getCategoryId, postQueryVO.getCategoryId())
-                            .eq(Post::getStatus, PostConstant.NORMAL_STATUS)
-            );
-        } else {
-            // 如果选择了分类和标签，则查询分类和标签下的文章
-            IPage<PostTag> postTagIPage = postTagMapper.selectPage(new Query<PostTag>().getPage(postQueryVO),
-                    new LambdaQueryWrapper<PostTag>()
-                            .eq(PostTag::getTagId, postQueryVO.getTagId()));
-
-            List<PostTag> records = postTagIPage.getRecords();
-            if (CollUtil.isEmpty(records)) {
-                return Result.ok().put("data", new Page<>());
-            }
-            List<Long> postIds = records.stream()
-                    .map(PostTag::getPostId).collect(Collectors.toList());
-
-            List<Post> posts = postMapper.selectBatchIds(postIds);
-            page = new Page<>();
-            BeanUtils.copyProperties(postTagIPage, page);
-            page.setRecords(posts);
-        }
-
-        boolean isLogin = authService.getIsLogin();
-
-        List<Post> records = page.getRecords();
-
-        List<PostListDto> postList = getPostListDTOS(isLogin, records);
-
-        PageUtils pageUtils = new PageUtils(page);
-
-        pageUtils.setList(postList);
-
-        return Result.ok().put("data", pageUtils);
+        return null;
     }
 
 
@@ -209,12 +216,16 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         PostListDto postListDTO = new PostListDto();
         BeanUtils.copyProperties(record, postListDTO);
 
-        CompletableFuture<PostListDto> postListDTOCompletableFuture = CompletableFuture.supplyAsync(() -> {
-            postListDTO.setAuthorInfo(memberFeignService.getMemberByUid(record.getMemberId()));
+        CompletableFuture<PostListDto> completableFuture1
+                = CompletableFuture.supplyAsync(() -> {
+            MemberBo memberBo = memberFeignService.getMemberById(record.getMemberId());
+            MemberDto memberDto = ModelConverterUtils.convert(memberBo, MemberDto.class);
+            postListDTO.setAuthorInfo(memberDto);
             return postListDTO;
         },poolExecutor);
 
-        CompletableFuture<PostListDto> postListDTOCompletableFuture2 = CompletableFuture.supplyAsync(() -> {
+        CompletableFuture<PostListDto> completableFuture2
+                = CompletableFuture.supplyAsync(() -> {
             postListDTO.setThumbCount(iPostManage.getThumbCount(record.getId()));
             postListDTO.setCommentCount(iPostManage.getCommentCount(record.getId()));
             if (isLogin) {
@@ -227,7 +238,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
             return postListDTO;
         },poolExecutor);
 
-        postListDTOCompletableFuture.thenCombine(postListDTOCompletableFuture2, (postListDTO1, postListDTO2) -> postListDTO1)
+        completableFuture1.thenCombine(completableFuture2, (p1, p2) -> p1)
                 .thenAccept(postDTOList::add).exceptionally(ex->{
                     log.error("获取文章列表信息异常：{}", ex.getMessage());
                     poolExecutor.shutdown();
@@ -245,15 +256,15 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Result savePost(PostVo postVo) {
+    public Response savePost(PostVo postVo) {
         Category category = categoryMapper.selectById(postVo.getCategoryId());
         if (category == null) {
-            return Result.error("分类不存在");
+            return Response.error("分类不存在");
         }
 
         Set<Long> tagUid = new HashSet<>(postVo.getTagId());
         if (CollUtil.isEmpty(tagUid)) {
-            return Result.error("请选择标签");
+            return Response.error("请选择标签");
         } else {
             List<Tag> tags = tagMapper.selectBatchIds(tagUid);
             tags.forEach(tag -> {
@@ -298,10 +309,10 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
             //插入后通过消息队列对文章进行异步审核
             rabbitmqUtil.reviewPost(post, new ArrayList<>(tagUid), Objects.equals(postVo.getType(), PostConstant.POST_SAVE_TYPE_EDIT));
             log.info("返回文章的ID为：{}", post.getId());
-            return Result.ok().put("url", post.getId());
+            return Response.success(post.getId());
         } else {
             log.error("用户={}发布文章失败,文章对象为={}", authService.getLoginUid(), postVo);
-            return Result.error("发布文章失败");
+            return Response.error("发布文章失败");
         }
     }
 
@@ -312,7 +323,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
      * @return 文章信息
      */
     @Override
-    public Result getPostByUid(Long uid) {
+    public Response getPostByUid(Long uid) {
 
         boolean isLogin = authService.getIsLogin();
 
@@ -320,25 +331,25 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         Post post;
 
         if (redisUtil.hasKey(key)) {
-            return Result.error("没有该文章");
+            return Response.error("没有该文章");
         }
         post = postMapper.selectById(uid);
         // 防止缓存穿透
         if (post == null) {
             redisUtil.set(key, null, 60L * 60 * 3);
-            return Result.error("没有该文章");
+            return Response.error("没有该文章");
         }
 
         if (!isLogin || !Objects.equals(post.getMemberId(), authService.getLoginUid())) {
             if (Objects.equals(post.getIsPublish(), PostConstant.NOT_PUBLISH)) {
-                return Result.error("该文章已设置私有");
+                return Response.error("该文章已设置私有");
             }
             if (!Objects.equals(post.getStatus(), PostConstant.NORMAL_STATUS)) {
-                return Result.error("该文章由于其他原因不可展示");
+                return Response.error("该文章由于其他原因不可展示");
             }
         }
 
-        List<MemberDto> memberInfoWithPost = memberFeignService
+        List<MemberBo> memberInfoWithPost = memberFeignService
                 .batchQueryUsers(CollUtil.toList(post.getMemberId()));
 
         PostDto postDTO = new PostDto();
@@ -351,7 +362,10 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
 
         postDTO.setTagId(tagUid);
         if (CollUtil.isNotEmpty(memberInfoWithPost)) {
-            postDTO.setAuthorInfo(memberInfoWithPost.get(0));
+            MemberBo memberBo = memberInfoWithPost.get(0);
+            MemberDto memberDto = ModelConverterUtils.convert(memberBo, MemberDto.class);
+            ModelConverterUtils.copy(memberBo, memberDto);
+            postDTO.setAuthorInfo(memberDto);
             if (isLogin) {
                 postDTO.setIsCollect(iPostManage.checkIsThumbOrCollect(uid, authService.getLoginUid(), 1));
                 postDTO.setIsLike(iPostManage.checkIsThumbOrCollect(uid, authService.getLoginUid(), 0));
@@ -361,7 +375,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
             }
         }
 
-        return Objects.requireNonNull(Result.ok().put("data", postDTO));
+        return Response.success(postDTO);
     }
 
     /**
@@ -371,21 +385,21 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
      * @return 删除结果
      */
     @Override
-    public Result deletePost(Long postUid) {
+    public Response deletePost(Long postUid) {
         if (postUid == null) {
-            return Result.error("文章uid不能为空");
+            return Response.error("文章uid不能为空");
         }
 
         Post post = postMapper.selectById(postUid);
 
         if (!Objects.equals(post.getMemberId(), authService.getLoginUid())) {
-            return Result.error();
+            return Response.error();
         }
 
         postMapper.deleteById(postUid);
         //调用es接口逻辑删除文章
         searchFeignService.deleteSearchPost(post.getId());
-        return Result.ok();
+        return Response.success();
     }
 
     /**
@@ -395,34 +409,37 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
      * @return 分页结果
      */
     @Override
-    public Result listByMemberUid(QueryParam queryParam) {
+    public Response listByMemberUid(QueryParam queryParam) {
 
         IPage<Post> page = null;
-        if (!authService.getIsLogin() || !Objects.equals(queryParam.getUid(), authService.getLoginUid())) {
-            page = this.page(new Query<Post>()
-                    .getPage(queryParam), new LambdaQueryWrapper<Post>()
-                    .eq(Post::getMemberId, queryParam.getUid())
-                    .eq(Post::getStatus, PostConstant.NORMAL_STATUS)
-                    .eq(Post::getIsPublish, PostConstant.PUBLISH));
-        } else if (Objects.equals(queryParam.getUid(), authService.getLoginUid())) {
-            page = this.page(new Query<Post>()
-                    .getPage(queryParam), new LambdaQueryWrapper<Post>()
-                    .eq(Post::getMemberId, queryParam.getUid())
-                    .eq(Post::getStatus, PostConstant.NORMAL_STATUS));
-        }
+        // TODO 重构
+//        if (!authService.getIsLogin() || !Objects.equals(queryParam.getUid(), authService.getLoginUid())) {
+//            page = this.page(new Query<Post>()
+//                    .getPage(queryParam), new LambdaQueryWrapper<Post>()
+//                    .eq(Post::getMemberId, queryParam.getUid())
+//                    .eq(Post::getStatus, PostConstant.NORMAL_STATUS)
+//                    .eq(Post::getIsPublish, PostConstant.PUBLISH));
+//        } else if (Objects.equals(queryParam.getUid(), authService.getLoginUid())) {
+//            page = this.page(new Query<Post>()
+//                    .getPage(queryParam), new LambdaQueryWrapper<Post>()
+//                    .eq(Post::getMemberId, queryParam.getUid())
+//                    .eq(Post::getStatus, PostConstant.NORMAL_STATUS));
+//        }
 
         assert page != null;
         List<Post> postList = page.getRecords();
         if (CollUtil.isEmpty(postList)) {
-            return Result.ok().put("data", new PageUtils(page));
+            // TODO 重构
+//            return Result.ok().put("data", new PageUtils(page));
         }
         List<PostListDto> postListDtos = new ArrayList<>(10);
-        MemberDto memberDTO = memberFeignService.getMemberByUid(queryParam.getUid());
+        MemberBo memberBo = memberFeignService.getMemberById(queryParam.getUid());
 
         postList.forEach(postEntity -> {
             PostListDto postListDTO = new PostListDto();
             BeanUtils.copyProperties(postEntity, postListDTO);
-            postListDTO.setAuthorInfo(memberDTO);
+            MemberDto memberDto = ModelConverterUtils.convert(memberBo, MemberDto.class);
+            postListDTO.setAuthorInfo(memberDto);
             postListDTO.setThumbCount(iPostManage.getThumbCount(postEntity.getId()));
             if (Boolean.TRUE.equals(authService.getIsLogin())) {
                 postListDTO.setIsLike(iPostManage.checkIsThumbOrCollect(postEntity.getId(), authService.getLoginUid(), 0));
@@ -438,7 +455,9 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
 
         pagePostListDTO.setRecords(postListDtos);
 
-        PageUtils pageResult = new PageUtils(pagePostListDTO);
-        return Result.ok().put("data", pageResult);
+//        PageUtils pageResult = new PageUtils(pagePostListDTO);
+        // TODO 重构
+//        return Result.ok().put("data", pageResult);
+        return null;
     }
 }

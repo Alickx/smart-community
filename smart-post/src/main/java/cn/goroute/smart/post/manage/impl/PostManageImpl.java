@@ -1,15 +1,13 @@
 package cn.goroute.smart.post.manage.impl;
 
-import cn.goroute.smart.common.constant.PostConstant;
+import cn.goroute.smart.post.constant.PostConstant;
 import cn.goroute.smart.common.constant.RedisKeyConstant;
 import cn.goroute.smart.common.feign.MemberFeignService;
-import cn.goroute.smart.common.utils.RedisUtil;
-import cn.goroute.smart.post.entity.pojo.Collect;
 import cn.goroute.smart.post.entity.pojo.Thumb;
 import cn.goroute.smart.post.manage.IPostManage;
-import cn.goroute.smart.post.mapper.CollectMapper;
 import cn.goroute.smart.post.mapper.PostMapper;
 import cn.goroute.smart.post.mapper.ThumbMapper;
+import cn.goroute.smart.redis.util.RedisUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,9 +25,6 @@ public class PostManageImpl implements IPostManage {
 
     @Autowired
     RedisUtil redisUtil;
-
-    @Autowired
-    CollectMapper collectMapper;
 
     @Autowired
     ThumbMapper thumbMapper;
@@ -71,12 +66,13 @@ public class PostManageImpl implements IPostManage {
             if (redisUtil.hHasKey(RedisKeyConstant.POST_COLLECT_KEY, collectRedisKey)) {
                 result = true;
             } else {
-                Collect collectResult = collectMapper.selectOne(new LambdaQueryWrapper<Collect>()
-                        .eq(Collect::getMemberId, loginId)
-                        .eq(Collect::getPostId, id));
-                if (collectResult != null) {
-                    result = true;
-                }
+                // TODO 调用用户feign接口
+//                Collect collectResult = collectMapper.selectOne(new LambdaQueryWrapper<Collect>()
+//                        .eq(Collect::getMemberId, loginId)
+//                        .eq(Collect::getPostId, id));
+//                if (collectResult != null) {
+//                    result = true;
+//                }
             }
         } else {
             return false;

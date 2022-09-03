@@ -6,11 +6,11 @@
 
     <resultMap id="BaseResultMap" type="cn.goroute.smart.member.entity.pojo.Follow">
             <id property="uid" column="uid" jdbcType="INTEGER"/>
-            <result property="memberUid" column="member_uid" jdbcType="VARCHAR"/>
-            <result property="toMemberUid" column="to_member_uid" jdbcType="VARCHAR"/>
-            <result property="status" column="status" jdbcType="TINYINT"/>
-            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
-            <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+            <response property="memberUid" column="member_uid" jdbcType="VARCHAR"/>
+            <response property="toMemberUid" column="to_member_uid" jdbcType="VARCHAR"/>
+            <response property="status" column="status" jdbcType="TINYINT"/>
+            <response property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <response property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">

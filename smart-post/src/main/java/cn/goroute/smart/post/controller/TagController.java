@@ -2,9 +2,12 @@ package cn.goroute.smart.post.controller;
 
 import cn.goroute.smart.common.annotations.ParamLog;
 import cn.goroute.smart.common.annotations.RateLimiter;
+import cn.goroute.smart.common.entity.resp.Response;
 import cn.goroute.smart.post.entity.pojo.Tag;
-import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.post.service.TagService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +25,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("smart/post/tag")
+@Api(tags = "标签接口")
 public class TagController {
     @Autowired
     private TagService tagService;
@@ -32,50 +36,59 @@ public class TagController {
     @GetMapping("/list")
     @ParamLog
     @RateLimiter(time = 5, count = 3)
-    public Result list() {
+    @ApiOperation(value="列表", notes = "列表", httpMethod = "GET")
+    public Response list() {
         List<Tag> list = tagService.list();
-        return Result.ok().put("data", list);
+        return Response.success(list);
     }
 
 
     /**
      * 信息
      */
-    @GetMapping("/info/{uid}")
-    public Result info(@PathVariable("uid") String uid) {
-        Tag tag = tagService.getById(uid);
+    @GetMapping("/info/{id}")
+    @ApiOperation(value = "信息",notes = "信息", httpMethod = "GET")
+    @ApiParam(name = "id", value = "主键", required = true)
+    public Response info(@PathVariable("id") String id) {
+        Tag tag = tagService.getById(id);
 
-        return Result.ok().put("tag", tag);
+        return Response.success(tag);
     }
 
     /**
      * 保存
      */
-    @RequestMapping("/save")
-    public Result save(@Valid @RequestBody Tag tag) {
+    @PostMapping("/save")
+    @ApiOperation(value = "保存",notes = "保存", httpMethod = "POST")
+    @ApiParam(name = "tag", value = "标签", required = true)
+    public Response save(@Valid @RequestBody Tag tag) {
         tagService.save(tag);
 
-        return Result.ok();
+        return Response.success();
     }
 
     /**
      * 修改
      */
-    @RequestMapping("/update")
-    public Result update(@RequestBody Tag tag) {
+    @PostMapping("/update")
+    @ApiOperation(value = "修改",notes = "修改", httpMethod = "POST")
+    @ApiParam(name = "tag", value = "标签", required = true)
+    public Response update(@RequestBody Tag tag) {
         tagService.updateById(tag);
 
-        return Result.ok();
+        return Response.success();
     }
 
     /**
      * 删除
      */
-    @RequestMapping("/delete")
-    public Result delete(@RequestBody String[] uids) {
-        tagService.removeByIds(Arrays.asList(uids));
+    @PostMapping("/delete")
+    @ApiOperation(value = "删除",notes = "删除", httpMethod = "POST")
+    @ApiParam(name = "ids", value = "主键集合", required = true)
+    public Response delete(@RequestBody String[] ids) {
+        tagService.removeByIds(Arrays.asList(ids));
 
-        return Result.ok();
+        return Response.success();
     }
 
 }

@@ -1,7 +1,7 @@
 package cn.goroute.smart.post.util;
 
 import cn.goroute.smart.common.constant.NotificationConstant;
-import cn.goroute.smart.common.constant.PostConstant;
+import cn.goroute.smart.post.constant.PostConstant;
 import cn.goroute.smart.common.entity.bo.EventRemindBo;
 import cn.goroute.smart.post.entity.pojo.Comment;
 import cn.goroute.smart.post.entity.pojo.Thumb;

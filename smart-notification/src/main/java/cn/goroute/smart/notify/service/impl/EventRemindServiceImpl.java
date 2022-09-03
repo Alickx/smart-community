@@ -1,29 +1,23 @@
 package cn.goroute.smart.notify.service.impl;
 
-import cn.goroute.smart.common.constant.NotificationConstant;
-import cn.goroute.smart.notify.mapper.EventRemindMapper;
-import cn.goroute.smart.notify.entity.dto.EventRemindDto;
-import cn.goroute.smart.common.entity.dto.MemberDto;
-import cn.goroute.smart.notify.entity.pojo.EventRemind;
+import cn.goroute.smart.common.entity.resp.Response;
 import cn.goroute.smart.common.feign.MemberFeignService;
 import cn.goroute.smart.common.service.AuthService;
-import cn.goroute.smart.common.utils.PageUtils;
-import cn.goroute.smart.common.utils.Query;
 import cn.goroute.smart.common.utils.QueryParam;
-import cn.goroute.smart.common.utils.Result;
+import cn.goroute.smart.notify.constant.NotificationConstant;
+import cn.goroute.smart.notify.entity.pojo.EventRemind;
+import cn.goroute.smart.notify.mapper.EventRemindMapper;
 import cn.goroute.smart.notify.service.EventRemindService;
-import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -52,7 +46,11 @@ public class EventRemindServiceImpl extends ServiceImpl<EventRemindMapper, Event
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Result queryEventRemind(QueryParam queryParam) {
+    public Response queryEventRemind(QueryParam queryParam) {
+
+        // TODO 1.查询事件提醒
+
+        return Response.success();
 
         /*
           查询未读提醒
@@ -60,50 +58,48 @@ public class EventRemindServiceImpl extends ServiceImpl<EventRemindMapper, Event
            第一排序条件为未读 -> 已读
            第二排序条件为提醒时间
          */
-        IPage<EventRemind> page = eventRemindMapper.selectPage(new Query<EventRemind>()
-                .getPage(queryParam), new LambdaQueryWrapper<EventRemind>()
-                .ne(EventRemind::getSenderId, authService.getLoginUid())
-                .eq(EventRemind::getRecipientId, authService.getLoginUid())
-                .orderByAsc(EventRemind::getState)
-                .eq(EventRemind::getActionType, queryParam.getType()));
+//        IPage<EventRemind> page = eventRemindMapper.selectPage(new Query<EventRemind>()
+//                .getPage(queryParam), new LambdaQueryWrapper<EventRemind>()
+//                .ne(EventRemind::getSenderId, authService.getLoginUid())
+//                .eq(EventRemind::getRecipientId, authService.getLoginUid())
+//                .orderByAsc(EventRemind::getState)
+//                .eq(EventRemind::getActionType, queryParam.getType()));
 
 
         // 判断是否有数据，无数据则直接返回
-        if (CollUtil.isEmpty(page.getRecords())) {
-            return Result.ok().put("data", new PageUtils(page));
-        }
-
-        //获取用户信息
-        List<EventRemind> records = page.getRecords();
-        List<Long> senderIds = records.stream()
-                .map(EventRemind::getSenderId)
-                .collect(Collectors.toList());
-
-        List<MemberDto> infoByMemberUids = memberFeignService.batchQueryUsers(senderIds);
-
-        List<EventRemindDto> eventReminds = new ArrayList<>(records.size());
-
-        // 将用户信息添加到事件集合中
-        for (int i = 0; i < records.size(); i++) {
-            EventRemindDto eventRemindDTO = new EventRemindDto();
-            eventRemindDTO.setSender(infoByMemberUids.get(i));
-            BeanUtils.copyProperties(records.get(i), eventRemindDTO);
-            eventReminds.add(eventRemindDTO);
-            records.get(i).setState(NotificationConstant.STATE_HAVE_READ);
-        }
-
-        Page<EventRemindDto> pageDTO = new Page<>();
-        BeanUtils.copyProperties(page, pageDTO);
-        pageDTO.setRecords(eventReminds);
-
-        // 更新通知状态
-        boolean b = this.updateBatchById(records);
-        if (b) {
-            return Result.ok().put("data", new PageUtils(pageDTO));
-        } else {
-            log.error("更新通知状态失败");
-            return Result.error();
-        }
+//        if (CollUtil.isEmpty(page.getRecords())) {
+//            return Response.ok().put("data", new PageUtils(page));
+//        }
+//
+//        //获取用户信息
+//        List<EventRemind> records = page.getRecords();
+//        List<Long> senderIds = records.stream()
+//                .map(EventRemind::getSenderId)
+//                .collect(Collectors.toList());
+//
+//        List<MemberBo> memberBoList = memberFeignService.batchQueryUsers(senderIds);
+//
+//        List<EventRemindDto> eventReminds = new ArrayList<>(records.size());
+//
+//        // 将用户信息添加到事件集合中
+//        for (int i = 0; i < records.size(); i++) {
+//            EventRemindDto eventRemindDTO = new EventRemindDto();
+//            MemberBo memberBo = memberBoList.get(i);
+//            MemberDto memberDto = ModelConverterUtils.convert(memberBo, MemberDto.class);
+//            eventRemindDTO.setSender(memberDto);
+//            BeanUtils.copyProperties(records.get(i), eventRemindDTO);
+//            eventReminds.add(eventRemindDTO);
+//            records.get(i).setState(NotificationConstant.STATE_HAVE_READ);
+//        }
+//
+//        Page<EventRemindDto> pageDTO = new Page<>();
+//        BeanUtils.copyProperties(page, pageDTO);
+//        pageDTO.setRecords(eventReminds);
+//
+//        // 更新通知状态
+//        this.updateBatchById(records);
+//
+//        return Response.success();
 
     }
 
@@ -113,7 +109,7 @@ public class EventRemindServiceImpl extends ServiceImpl<EventRemindMapper, Event
      * @return 查询结果
      */
     @Override
-    public Result queryUnreadCountRemind() {
+    public Response queryUnreadCountRemind() {
 
         Long memberUid = authService.getLoginUid();
         List<EventRemind> eventReminds = eventRemindMapper.selectList(new LambdaQueryWrapper<EventRemind>()
@@ -137,7 +133,10 @@ public class EventRemindServiceImpl extends ServiceImpl<EventRemindMapper, Event
             statistical.put(i, eventRemindGroup.get(i) == null ? 0 : eventRemindGroup.get(i).size());
         }
 
-        return Objects.requireNonNull(Result.ok().put("count", count)).put("data", statistical);
+        //TODO 未读消息数量
+
+//        return Objects.requireNonNull(Response.ok().put("count", count)).put("data", statistical);
+        return Response.success();
     }
 
 }

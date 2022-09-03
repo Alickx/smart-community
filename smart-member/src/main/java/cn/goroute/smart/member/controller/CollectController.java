@@ -1,13 +1,12 @@
 package cn.goroute.smart.member.controller;
 
-import cn.goroute.smart.common.utils.Result;
+import cn.goroute.smart.common.entity.resp.Response;
 import cn.goroute.smart.member.entity.pojo.Collect;
 import cn.goroute.smart.member.service.CollectService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.Arrays;
@@ -22,7 +21,8 @@ import java.util.Arrays;
  * @date 2022-02-25 09:45:33
  */
 @RestController
-@RequestMapping("smart/member/collect")
+@RequestMapping("member/collect")
+@Api(tags = "收藏")
 public class CollectController {
     @Resource
     private CollectService collectService;
@@ -41,41 +41,49 @@ public class CollectController {
     /**
      * 信息
      */
-    @RequestMapping("/info/{uid}")
-    public Result info(@PathVariable("uid") String uid){
-		Collect collect = collectService.getById(uid);
+    @GetMapping("/info/{id}")
+    @ApiOperation(value = "查看收藏列表", notes = "查看收藏列表", httpMethod = "GET")
+    @ApiParam(name = "id", value = "用户id", required = true)
+    public Response info(@PathVariable("id") String id){
+		Collect collect = collectService.getById(id);
 
-        return Result.ok().put("collect", collect);
+        return Response.success(collect);
     }
 
     /**
      * 保存
      */
-    @RequestMapping("/save")
-    public Result save(@RequestBody Collect collect){
+    @PostMapping("/save")
+    @ApiOperation(value = "保存收藏", notes = "保存收藏", httpMethod = "POST")
+    @ApiParam(name = "collect", value = "收藏实体", required = true)
+    public Response save(@RequestBody Collect collect){
 		collectService.save(collect);
 
-        return Result.ok();
+        return Response.success();
     }
 
     /**
      * 修改
      */
-    @RequestMapping("/update")
-    public Result update(@RequestBody Collect collect){
+    @PostMapping("/update")
+    @ApiOperation(value = "修改收藏", notes = "修改收藏", httpMethod = "POST")
+    @ApiParam(name = "collect", value = "收藏实体", required = true)
+    public Response update(@RequestBody Collect collect){
 		collectService.updateById(collect);
 
-        return Result.ok();
+        return Response.success();
     }
 
     /**
      * 删除
      */
-    @RequestMapping("/delete")
-    public Result delete(@RequestBody String[] uids){
-		collectService.removeByIds(Arrays.asList(uids));
+    @PostMapping("/delete")
+    @ApiOperation(value = "删除收藏", notes = "删除收藏", httpMethod = "POST")
+    @ApiParam(name = "ids", value = "收藏id集合", required = true)
+    public Response delete(@RequestBody String[] ids){
+		collectService.removeByIds(Arrays.asList(ids));
 
-        return Result.ok();
+        return Response.success();
     }
 
 }

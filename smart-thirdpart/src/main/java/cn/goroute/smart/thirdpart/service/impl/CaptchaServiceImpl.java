@@ -1,9 +1,9 @@
 package cn.goroute.smart.thirdpart.service.impl;
 
 import cn.goroute.smart.common.constant.RedisKeyConstant;
+import cn.goroute.smart.common.entity.resp.Response;
 import cn.goroute.smart.common.exception.ServiceException;
 import cn.goroute.smart.common.feign.MemberFeignService;
-import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.redis.util.RedisUtil;
 import cn.goroute.smart.thirdpart.service.CaptchaService;
 import cn.goroute.smart.thirdpart.util.SendMailUtil;
@@ -63,7 +63,7 @@ public class CaptchaServiceImpl implements CaptchaService {
      * @return 发送结果
      */
     @Override
-    public Result generateRegistrationVerificationCode(String emailAddress) {
+    public Response generateRegistrationVerificationCode(String emailAddress) {
 
         /**
          * 注册验证码的键值（jhr）对应
@@ -87,25 +87,25 @@ public class CaptchaServiceImpl implements CaptchaService {
 
         //检查是否在被Ban列表中
         if (redisUtil.hasKey(regBanKey)) {
-            return Result.error("错误次数过多，禁止注册10分钟");
+            return Response.error("错误次数过多，禁止注册10分钟");
         }
 
         //检查邮箱发送冷却是否已过期
         if (redisUtil.hasKey(regSleepKey)) {
-            return Result.error("请等一会再发送验证码");
+            return Response.error("请等一会再发送验证码");
         }
 
         //检查邮箱是否超过一天的发送限度
         if (redisUtil.hasKey(regCountKey)) {
             int regCount = (int) redisUtil.get(regCountKey);
             if (regCount >= MAX_SEND_COUNT) {
-                return Result.error("该邮箱发送太多邮件，请明天再来");
+                return Response.error("该邮箱发送太多邮件，请明天再来");
             }
         }
        //调用用户微服务模块查看邮箱是否被注册
-        Result result = memberFeignService.queryUserEmail(emailAddress);
-        if ("500".equals(result.get("code"))) {
-            return Result.error("该邮箱已被注册");
+        Response response = memberFeignService.queryUserEmail(emailAddress);
+        if ("500".equals(response.get("code"))) {
+            return Response.error("该邮箱已被注册");
         }
 
         //使用redis添加验证码,随机六位英文字符
@@ -147,6 +147,6 @@ public class CaptchaServiceImpl implements CaptchaService {
             redisUtil.set(regCountKey, REG_SEND_EXPIRE_TIME, 1);
         }
 
-        return Result.ok();
+        return Response.ok();
     }
 }

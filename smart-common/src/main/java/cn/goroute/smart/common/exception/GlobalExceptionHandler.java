@@ -2,7 +2,7 @@ package cn.goroute.smart.common.exception;
 
 import cn.dev33.satoken.exception.NotLoginException;
 import cn.goroute.smart.common.api.ResultCode;
-import cn.goroute.smart.common.utils.Result;
+import cn.goroute.smart.common.entity.resp.Response;
 import cn.hutool.extra.servlet.ServletUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -39,10 +39,10 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(MissingServletRequestParameterException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Result missingServletRequestParameterExceptionHandler(HttpServletRequest request, MissingServletRequestParameterException e) {
+    public Response missingServletRequestParameterExceptionHandler(HttpServletRequest request, MissingServletRequestParameterException e) {
         log.error("MissingServletRequestParameterException, uri:{}", request.getRequestURI());
         log.error("msg={}", e.getParameterName());
-        return Result.error(ResultCode.FAILED.getCode(), "参数缺失异常: [" + e.getParameterName() + "]");
+        return Response.error(ResultCode.FAILED.getCode(), "参数缺失异常: [" + e.getParameterName() + "]");
     }
 
     /**
@@ -53,7 +53,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Result handleParamCheckException(HttpServletRequest request, MethodArgumentNotValidException e) {
+    public Response handleParamCheckException(HttpServletRequest request, MethodArgumentNotValidException e) {
         log.error("MethodArgumentNotValidException, uri:{}", request.getRequestURI());
         BindingResult bindingResult = e.getBindingResult();
         StringJoiner errMsgJoiner = new StringJoiner(",", "[", "]");
@@ -67,12 +67,12 @@ public class GlobalExceptionHandler {
             }
         }
         log.error("msg={},uri={}", errMsgJoiner,request.getRequestURI());
-        return Result.error(ResultCode.FAILED.getCode(), "参数检验失败: " + errMsgJoiner);
+        return Response.error(ResultCode.FAILED.getCode(), "参数检验失败: " + errMsgJoiner);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Result constraintViolationExceptionHandler(HttpServletRequest request, ConstraintViolationException e) {
+    public Response constraintViolationExceptionHandler(HttpServletRequest request, ConstraintViolationException e) {
         log.error("ConstraintViolationException, uri:{}", request.getRequestURI());
         Set<ConstraintViolation<?>> constraintViolations = e.getConstraintViolations();
         StringJoiner errMsgJoiner = new StringJoiner(",", "[", "]");
@@ -83,7 +83,7 @@ public class GlobalExceptionHandler {
             }
         }
         log.warn("msg={}", errMsgJoiner);
-        return Result.error(ResultCode.VALIDATE_FAILED.getCode(), "参数校验失败: " + errMsgJoiner);
+        return Response.error(ResultCode.VALIDATE_FAILED.getCode(), "参数校验失败: " + errMsgJoiner);
     }
 
     /**
@@ -93,11 +93,11 @@ public class GlobalExceptionHandler {
      * @return 异常信息
      */
     @ExceptionHandler(ServiceException.class)
-    public Result apiExceptionHandler(HttpServletRequest request, ServiceException e) {
+    public Response apiExceptionHandler(HttpServletRequest request, ServiceException e) {
         log.info("ServiceException, uri:{}", request.getRequestURI());
         String message = e.getMessage();
         log.error("message={}", message);
-        return Result.error(e.getMessage());
+        return Response.error(e.getMessage());
     }
 
     /**
@@ -107,10 +107,10 @@ public class GlobalExceptionHandler {
      * @return
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public Result httpRequestMethodNotSupportedExceptionHandler(HttpServletRequest request,HttpRequestMethodNotSupportedException e){
+    public Response httpRequestMethodNotSupportedExceptionHandler(HttpServletRequest request, HttpRequestMethodNotSupportedException e){
 
         log.info("错误的请求方法,请求ip={},请求uri={},msg=>{}", ServletUtil.getClientIP(request),request.getRequestURI(),e.getMessage());
-        return Result.error(ResultCode.FAILED.getCode(), ResultCode.FAILED.getMessage());
+        return Response.error(ResultCode.FAILED.getCode(), ResultCode.FAILED.getMessage());
     }
 
 
@@ -123,7 +123,7 @@ public class GlobalExceptionHandler {
      * @throws Exception
      */
     @ExceptionHandler(NotLoginException.class)
-    public Result handlerNotLoginException(NotLoginException nle, HttpServletRequest request, HttpServletResponse response)
+    public Response handlerNotLoginException(NotLoginException nle, HttpServletRequest request, HttpServletResponse response)
             throws Exception {
 
         // 判断场景值，定制化异常信息
@@ -147,7 +147,7 @@ public class GlobalExceptionHandler {
             message = "当前未登录账号，请登陆后再访问！";
         }
         // 返回给前端
-        return Result.error(ResultCode.UNAUTHORIZED.getCode(),message);
+        return Response.error(ResultCode.UNAUTHORIZED.getCode(),message);
     }
 
     /**
@@ -158,9 +158,9 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Result exceptionHandler(HttpServletRequest request, Exception e) {
+    public Response exceptionHandler(HttpServletRequest request, Exception e) {
         log.error("Exception, uri:{}", request.getRequestURI(), e);
-        return Result.error();
+        return Response.error();
     }
 
 }

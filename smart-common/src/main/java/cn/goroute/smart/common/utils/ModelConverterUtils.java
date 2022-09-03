@@ -36,7 +36,7 @@ public class ModelConverterUtils {
      * @param source 源对象
      * @param target 目标对象
      */
-    public static void copyProperties(Object source, Object target) {
+    public static void copy(Object source, Object target) {
         if (source == null) {
             return;
         }
@@ -56,7 +56,7 @@ public class ModelConverterUtils {
             return null;
         }
         T target = newInstance(targetClass);
-        copyProperties(source, target);
+        copy(source, target);
         return target;
     }
 

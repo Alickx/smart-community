@@ -3,16 +3,6 @@ package cn.goroute.smart.common.constant;
 public class RedisKeyConstant {
 
     /**
-     * 用户权限
-     */
-    public static final String PERMISSION_LIST_KEY = "auth:permission:";
-
-    /**
-     * 用户角色
-     */
-    public static final String ROLE_LIST_KEY = "auth:role:";
-
-    /**
      * 注册ban
      */
     public static final String REG_SEND_BAN_KEY = "reg:SendBan:";

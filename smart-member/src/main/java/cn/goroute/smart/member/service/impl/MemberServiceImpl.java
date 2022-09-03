@@ -3,7 +3,7 @@ package cn.goroute.smart.member.service.impl;
 import cn.goroute.smart.common.entity.dto.MemberDto;
 import cn.goroute.smart.common.exception.ServiceException;
 import cn.goroute.smart.common.service.AuthService;
-import cn.goroute.smart.common.utils.Result;
+import cn.goroute.smart.common.entity.resp.Response;
 import cn.goroute.smart.member.entity.pojo.Member;
 import cn.goroute.smart.member.entity.vo.MemberInfoUpdateVo;
 import cn.goroute.smart.member.mapper.MemberMapper;
@@ -34,7 +34,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
      * @return 更新结果
      */
     @Override
-    public Result updateMemberInfo(MemberInfoUpdateVo memberVO) {
+    public Response updateMemberInfo(MemberInfoUpdateVo memberVO) {
 
         //检查用户名是否存在违禁词
 //        Boolean nickNameCheckResult = illegalTextCheckUtil.checkText(memberVO.getNickName());
@@ -47,10 +47,10 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
         BeanUtils.copyProperties(memberVO, member);
         member.setId(loginId);
         int result = memberMapper.updateById(member);
-        MemberDto dto = new MemberDto();
-        BeanUtils.copyProperties(member, dto);
+        MemberDto memberDto = new MemberDto();
+        BeanUtils.copyProperties(member, memberDto);
         if (result > 0) {
-            return Result.ok("用户信息更新成功！").put("data", dto);
+            return Response.success(memberDto);
         } else {
             log.error("用户信息更新失败！用户信息=>{}", memberVO);
             throw new ServiceException("用户信息更新失败");

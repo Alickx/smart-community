@@ -1,15 +1,15 @@
 package cn.goroute.smart.gateway.config.satoken;
 
 import cn.dev33.satoken.stp.StpInterface;
-import cn.goroute.smart.common.constant.RedisKeyConstant;
+import cn.goroute.smart.gateway.constant.GatewayConstant;
+import cn.goroute.smart.gateway.entity.pojo.Permission;
+import cn.goroute.smart.gateway.entity.pojo.RolePermission;
+import cn.goroute.smart.gateway.entity.pojo.UserRole;
 import cn.goroute.smart.gateway.mapper.PermissionMapper;
 import cn.goroute.smart.gateway.mapper.RoleMapper;
 import cn.goroute.smart.gateway.mapper.RolePermissionMapper;
 import cn.goroute.smart.gateway.mapper.UserRoleMapper;
-import cn.goroute.smart.gateway.entity.pojo.Permission;
-import cn.goroute.smart.gateway.entity.pojo.RolePermission;
-import cn.goroute.smart.gateway.entity.pojo.UserRole;
-import cn.goroute.smart.common.utils.RedisUtil;
+import cn.goroute.smart.redis.util.RedisUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +63,7 @@ public class StpInterfaceImpl implements StpInterface {
             }
         }
 
-        redisUtil.set(RedisKeyConstant.PERMISSION_LIST_KEY + loginId, permissionList);
+        redisUtil.set(GatewayConstant.MemberRedisKey.PERMISSION_LIST_KEY + loginId, permissionList);
 
         return permissionList;
     }
@@ -74,7 +74,7 @@ public class StpInterfaceImpl implements StpInterface {
 
         List<String> roleNameByMemberUid = roleMapper.getRoleNameByMemberUid((Long) loginId);
 
-        redisUtil.set(RedisKeyConstant.ROLE_LIST_KEY + loginId, roleNameByMemberUid);
+        redisUtil.set(GatewayConstant.MemberRedisKey.ROLE_LIST_KEY + loginId, roleNameByMemberUid);
 
         return roleNameByMemberUid;
     }

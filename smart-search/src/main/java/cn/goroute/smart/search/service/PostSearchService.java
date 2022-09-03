@@ -1,24 +1,19 @@
 package cn.goroute.smart.search.service;
 
-import cn.goroute.smart.common.entity.dto.PostListDto;
-import cn.goroute.smart.common.entity.pojo.Post;
-import cn.goroute.smart.common.exception.ServiceException;
-import cn.goroute.smart.common.constant.PostConstant;
 import cn.goroute.smart.common.constant.RedisKeyConstant;
+import cn.goroute.smart.common.entity.resp.Response;
 import cn.goroute.smart.common.service.AuthService;
-import cn.goroute.smart.common.utils.RedisUtil;
-import cn.goroute.smart.common.utils.Result;
+import cn.goroute.smart.redis.util.RedisUtil;
 import cn.goroute.smart.search.constant.EsConstant;
 import cn.goroute.smart.search.feign.MemberFeignService;
 import cn.goroute.smart.search.feign.PostFeignService;
 import cn.goroute.smart.search.model.PostEsModel;
 import cn.goroute.smart.search.model.PostSearchParam;
 import cn.goroute.smart.search.model.PostSearchResponse;
-import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.text.CharSequenceUtil;
+import cn.hutool.json.JSON;
 import cn.hutool.json.JSONUtil;
-import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.index.IndexRequest;
@@ -94,13 +89,13 @@ public class PostSearchService {
      *                        curPage: 页数
      * @return 查询结果
      */
-    public Result search(PostSearchParam postSearchParam) {
+    public Response search(PostSearchParam postSearchParam) {
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
         if (!CharSequenceUtil.isEmpty(postSearchParam.getKeyword())) {
             boolQuery.must(QueryBuilders.multiMatchQuery(postSearchParam.getKeyword(), "title", "summary", "content"));
         } else {
-            return Result.error("搜索字段不存在");
+            return Response.error("搜索字段不存在");
         }
         boolQuery.filter(QueryBuilders.termQuery("status", 0));
         searchSourceBuilder.query(boolQuery);
@@ -150,9 +145,10 @@ public class PostSearchService {
             postSearchResponse.setPageNum(postSearchParam.getCurPage());
             int totalPages = (int) (total % EsConstant.PAGE_SIZE) == 0 ? (int) (total / EsConstant.PAGE_SIZE) : (int) (total / EsConstant.PAGE_SIZE + 1);
             postSearchResponse.setTotalPages(totalPages);
-            return Result.ok().put("data", postSearchResponse);
+            return Response.success(postSearchResponse);
         } catch (IOException e) {
-            throw new ServiceException(ExceptionUtil.getMessage(e));
+            log.error("查询文章失败=>{}", e.getMessage());
+            return Response.error();
         }
     }
 

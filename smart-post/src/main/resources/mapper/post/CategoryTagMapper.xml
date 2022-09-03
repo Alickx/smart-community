@@ -6,10 +6,10 @@
 
     <resultMap id="BaseResultMap" type="cn.goroute.smart.post.entity.pojo.CategoryTag">
             <id property="uid" column="uid" jdbcType="INTEGER"/>
-            <result property="categoryUid" column="category_uid" jdbcType="INTEGER"/>
-            <result property="tagUid" column="tag_uid" jdbcType="INTEGER"/>
-            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
-            <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+            <response property="categoryUid" column="category_uid" jdbcType="INTEGER"/>
+            <response property="tagUid" column="tag_uid" jdbcType="INTEGER"/>
+            <response property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <response property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">

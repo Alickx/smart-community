@@ -1,9 +1,9 @@
 package cn.goroute.smart.member.service.impl;
 
+import cn.goroute.smart.common.entity.resp.Response;
 import cn.goroute.smart.member.mapper.CheckInMapper;
 import cn.goroute.smart.member.entity.pojo.CheckIn;
 import cn.goroute.smart.common.service.AuthService;
-import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.member.service.CheckInService;
 import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.map.MapUtil;
@@ -34,14 +34,14 @@ public class CheckInServiceImpl extends ServiceImpl<CheckInMapper, CheckIn>
      * @return 签到结果
      */
     @Override
-    public Result checkIn() {
+    public Response checkIn() {
 
         Long loginUid = authService.getLoginUid();
 
         // 获取用户今天已经是否签到了
         CheckIn checkIn = checkInMapper.getMemberIsCheckInToday(loginUid);
         if (checkIn != null) {
-            return Result.error("今天已经签到了");
+            return Response.error("今天已经签到了");
         }
 
         // 进行签到操作
@@ -52,7 +52,7 @@ public class CheckInServiceImpl extends ServiceImpl<CheckInMapper, CheckIn>
 
         //TODO 签到后的逻辑，积分增加，站内信发送等等
 
-        return Result.ok("签到成功");
+        return Response.ok("签到成功");
     }
 
     /**
@@ -60,7 +60,7 @@ public class CheckInServiceImpl extends ServiceImpl<CheckInMapper, CheckIn>
      * @return 签到数据
      */
     @Override
-    public Result getCheckInInfo() {
+    public Response getCheckInInfo() {
 
         // 获取签到数据
         Long loginUid = authService.getLoginUid();
@@ -72,7 +72,7 @@ public class CheckInServiceImpl extends ServiceImpl<CheckInMapper, CheckIn>
         HashMap<Object, Object> map = MapUtil.newHashMap(2);
         map.put("checkInDays", checkInDays);
         map.put("checkInList", memberCheckInMonth);
-        return Result.ok().put("data", map);
+        return Response.ok().put("data", map);
     }
 
 }

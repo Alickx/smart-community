@@ -1,23 +1,23 @@
 package cn.goroute.smart.post.service.impl;
 
-import cn.goroute.smart.common.constant.PostConstant;
+import cn.goroute.smart.common.entity.resp.Response;
+import cn.goroute.smart.post.constant.PostConstant;
 import cn.goroute.smart.common.constant.RedisKeyConstant;
 import cn.goroute.smart.common.entity.bo.EventRemindBo;
-import cn.goroute.smart.post.mapper.PostMapper;
-import cn.goroute.smart.post.mapper.ThumbMapper;
-import cn.goroute.smart.post.entity.dto.PostListDto;
-import cn.goroute.smart.post.entity.pojo.Post;
-import cn.goroute.smart.post.entity.pojo.Thumb;
 import cn.goroute.smart.common.exception.ServiceException;
 import cn.goroute.smart.common.service.AuthService;
-import cn.goroute.smart.common.utils.*;
+import cn.goroute.smart.common.utils.QueryParam;
+import cn.goroute.smart.post.entity.pojo.Post;
+import cn.goroute.smart.post.entity.pojo.Thumb;
 import cn.goroute.smart.post.manage.IThumbManage;
+import cn.goroute.smart.post.mapper.PostMapper;
+import cn.goroute.smart.post.mapper.ThumbMapper;
 import cn.goroute.smart.post.service.ThumbService;
 import cn.goroute.smart.post.util.ConvertRemindUtil;
 import cn.goroute.smart.post.util.RabbitmqUtil;
+import cn.goroute.smart.redis.util.RedisUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +29,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author Alickx
@@ -70,7 +72,7 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbMapper, Thumb>
      * @return 点赞结果
      */
     @Override
-    public Result thumbSave(Thumb thumb) {
+    public Response thumbSave(Thumb thumb) {
 
         //判断点赞文章是否存在
         Post post = postMapper.selectOne(new LambdaQueryWrapper<Post>()
@@ -78,7 +80,7 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbMapper, Thumb>
                 .eq(Post::getStatus, PostConstant.NORMAL_STATUS));
 
         if (post == null) {
-            return Result.error("文章不存在，点赞失败!");
+            return Response.error("文章不存在，点赞失败!");
         }
 
         // 判断是否已经点赞
@@ -87,7 +89,7 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbMapper, Thumb>
         if (redisUtil.hHasKey(RedisKeyConstant.POST_THUMB_KEY, redisKey)) {
             Thumb thumbCache = (Thumb) redisUtil.hget(RedisKeyConstant.POST_THUMB_KEY, redisKey);
             if (Objects.equals(thumbCache.getStatus(), PostConstant.NORMAL_STATUS)) {
-                return Result.error("已经点赞过了!");
+                return Response.error("已经点赞过了!");
             }
         }
 
@@ -102,7 +104,7 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbMapper, Thumb>
             thumbEntity.setStatus(PostConstant.NORMAL_STATUS);
             thumbMapper.updateById(thumbEntity);
             incrPostThumbCount(thumb, post);
-            return Result.ok();
+            return Response.success();
         }
 
         //设置点赞缓存
@@ -114,7 +116,7 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbMapper, Thumb>
         rabbitmqUtil.sendEventRemind(eventRemindBo);
 
         incrPostThumbCount(thumb, post);
-        return Result.ok();
+        return Response.success();
     }
 
 
@@ -136,7 +138,7 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbMapper, Thumb>
      * @return 取消结果
      */
     @Override
-    public Result thumbCancel(Thumb thumb) {
+    public Response thumbCancel(Thumb thumb) {
 
         //判断点赞文章是否存在
         Post post = postMapper.selectOne(new LambdaQueryWrapper<Post>()
@@ -144,7 +146,7 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbMapper, Thumb>
                 .eq(Post::getStatus, PostConstant.NORMAL_STATUS));
 
         if (post == null) {
-            return Result.error("文章不存在，点赞失败!");
+            return Response.error("文章不存在，点赞失败!");
         }
 
         long loginUid = authService.getLoginUid();
@@ -173,7 +175,7 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbMapper, Thumb>
             redisUtil.hset(countKey, RedisKeyConstant.POST_THUMB_COUNT_KEY, thumbCount);
         }
         redisUtil.hdecr(countKey, RedisKeyConstant.POST_THUMB_COUNT_KEY, 1);
-        return Result.ok();
+        return Response.success();
 
     }
 
@@ -226,22 +228,25 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbMapper, Thumb>
      * @return 文章集合
      */
     @Override
-    public Result listByMemberUid(QueryParam queryParam) {
+    public Response listByMemberUid(QueryParam queryParam) {
 
-        IPage<Thumb> thumbPage = thumbMapper.selectPage(new Query<Thumb>().getPage(queryParam),
-                new LambdaQueryWrapper<Thumb>()
-                        .eq(Thumb::getMemberId, queryParam.getUid())
-                        .orderByDesc(Thumb::getCreatedTime));
+        // TODO 重构
 
-        List<Long> postIdList = thumbPage.getRecords().stream().map(Thumb::getPostId).collect(Collectors.toList());
-
-        List<PostListDto> postDTOList = iThumbManage.getPostDTOListByPostIdList(postIdList);
-
-        PageUtils page = new PageUtils(thumbPage);
-
-        page.setList(postDTOList);
-
-        return Result.ok().put("data", page);
+//        IPage<Thumb> thumbPage = thumbMapper.selectPage(new Query<Thumb>().getPage(queryParam),
+//                new LambdaQueryWrapper<Thumb>()
+//                        .eq(Thumb::getMemberId, queryParam.getUid())
+//                        .orderByDesc(Thumb::getCreatedTime));
+//
+//        List<Long> postIdList = thumbPage.getRecords().stream().map(Thumb::getPostId).collect(Collectors.toList());
+//
+//        List<PostListDto> postDTOList = iThumbManage.getPostDTOListByPostIdList(postIdList);
+//
+//        PageUtils page = new PageUtils(thumbPage);
+//
+//        page.setList(postDTOList);
+//
+//        return Result.ok().put("data", page);
+        return null;
     }
 
     /**

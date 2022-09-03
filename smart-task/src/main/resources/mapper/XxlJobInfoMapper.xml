@@ -4,38 +4,38 @@
 <mapper namespace="cn.goroute.smart.task.dao.XxlJobInfoDao">
 
 	<resultMap id="XxlJobInfo" type="cn.goroute.smart.task.core.model.XxlJobInfo" >
-		<result column="id" property="id" />
+		<response column="id" property="id" />
 
-		<result column="job_group" property="jobGroup" />
-	    <result column="job_desc" property="jobDesc" />
+		<response column="job_group" property="jobGroup" />
+	    <response column="job_desc" property="jobDesc" />
 
-	    <result column="add_time" property="addTime" />
-	    <result column="update_time" property="updateTime" />
+	    <response column="add_time" property="addTime" />
+	    <response column="update_time" property="updateTime" />
 
-	    <result column="author" property="author" />
-	    <result column="alarm_email" property="alarmEmail" />
+	    <response column="author" property="author" />
+	    <response column="alarm_email" property="alarmEmail" />
 
-		<result column="schedule_type" property="scheduleType" />
-		<result column="schedule_conf" property="scheduleConf" />
-		<result column="misfire_strategy" property="misfireStrategy" />
+		<response column="schedule_type" property="scheduleType" />
+		<response column="schedule_conf" property="scheduleConf" />
+		<response column="misfire_strategy" property="misfireStrategy" />
 
-		<result column="executor_route_strategy" property="executorRouteStrategy" />
-		<result column="executor_handler" property="executorHandler" />
-	    <result column="executor_param" property="executorParam" />
-		<result column="executor_block_strategy" property="executorBlockStrategy" />
-		<result column="executor_timeout" property="executorTimeout" />
-		<result column="executor_fail_retry_count" property="executorFailRetryCount" />
+		<response column="executor_route_strategy" property="executorRouteStrategy" />
+		<response column="executor_handler" property="executorHandler" />
+	    <response column="executor_param" property="executorParam" />
+		<response column="executor_block_strategy" property="executorBlockStrategy" />
+		<response column="executor_timeout" property="executorTimeout" />
+		<response column="executor_fail_retry_count" property="executorFailRetryCount" />
 
-	    <result column="glue_type" property="glueType" />
-	    <result column="glue_source" property="glueSource" />
-	    <result column="glue_remark" property="glueRemark" />
-		<result column="glue_updatetime" property="glueUpdatetime" />
+	    <response column="glue_type" property="glueType" />
+	    <response column="glue_source" property="glueSource" />
+	    <response column="glue_remark" property="glueRemark" />
+		<response column="glue_updatetime" property="glueUpdatetime" />
 
-		<result column="child_jobid" property="childJobId" />
+		<response column="child_jobid" property="childJobId" />
 
-		<result column="trigger_status" property="triggerStatus" />
-		<result column="trigger_last_time" property="triggerLastTime" />
-		<result column="trigger_next_time" property="triggerNextTime" />
+		<response column="trigger_status" property="triggerStatus" />
+		<response column="trigger_last_time" property="triggerLastTime" />
+		<response column="trigger_next_time" property="triggerNextTime" />
 	</resultMap>
 
 	<sql id="Base_Column_List">

@@ -5,13 +5,13 @@
 
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="cn.goroute.smart.post.entity.pojo.Category" id="sectionMap">
-        <result property="uid" column="uid"/>
-        <result property="name" column="name"/>
-        <result property="icon" column="icon"/>
-        <result property="url" column="url"/>
-        <result property="intro" column="intro"/>
-        <result property="updatedTime" column="updated_time"/>
-        <result property="createdTime" column="created_time"/>
+        <response property="uid" column="uid"/>
+        <response property="name" column="name"/>
+        <response property="icon" column="icon"/>
+        <response property="url" column="url"/>
+        <response property="intro" column="intro"/>
+        <response property="updatedTime" column="updated_time"/>
+        <response property="createdTime" column="created_time"/>
     </resultMap>
 
 

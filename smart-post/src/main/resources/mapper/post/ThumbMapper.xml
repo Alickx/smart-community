@@ -6,12 +6,12 @@
 
     <resultMap id="BaseResultMap" type="cn.goroute.smart.post.entity.pojo.Thumb">
         <id property="uid" column="uid" jdbcType="INTEGER"/>
-        <result property="memberUid" column="member_uid" jdbcType="VARCHAR"/>
-        <result property="toMemberUid" column="to_member_uid" jdbcType="VARCHAR"/>
-        <result property="postUid" column="post_uid" jdbcType="VARCHAR"/>
-        <result property="type" column="type" jdbcType="INTEGER"/>
-        <result property="content" column="content" jdbcType="VARCHAR"/>
-        <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+        <response property="memberUid" column="member_uid" jdbcType="VARCHAR"/>
+        <response property="toMemberUid" column="to_member_uid" jdbcType="VARCHAR"/>
+        <response property="postUid" column="post_uid" jdbcType="VARCHAR"/>
+        <response property="type" column="type" jdbcType="INTEGER"/>
+        <response property="content" column="content" jdbcType="VARCHAR"/>
+        <response property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">

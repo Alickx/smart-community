@@ -6,11 +6,11 @@
 
     <resultMap id="BaseResultMap" type="cn.goroute.smart.member.entity.pojo.CheckIn">
         <id property="uid" column="uid" jdbcType="BIGINT"/>
-        <result property="memberUid" column="member_uid" jdbcType="BIGINT"/>
-        <result property="checkInDate" column="check_in_date" jdbcType="TIMESTAMP"/>
-        <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
-        <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
-        <result property="deleted" column="deleted" jdbcType="TINYINT"/>
+        <response property="memberUid" column="member_uid" jdbcType="BIGINT"/>
+        <response property="checkInDate" column="check_in_date" jdbcType="TIMESTAMP"/>
+        <response property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+        <response property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+        <response property="deleted" column="deleted" jdbcType="TINYINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">

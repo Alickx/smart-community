@@ -5,10 +5,10 @@
 
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="cn.goroute.smart.post.entity.pojo.PostTag" id="postTagMap">
-        <result property="uid" column="uid"/>
-        <result property="postUid" column="post_uid"/>
-        <result property="tagUid" column="tag_uid"/>
-        <result property="createdTime" column="created_time"/>
+        <response property="uid" column="uid"/>
+        <response property="postUid" column="post_uid"/>
+        <response property="tagUid" column="tag_uid"/>
+        <response property="createdTime" column="created_time"/>
     </resultMap>
 
 

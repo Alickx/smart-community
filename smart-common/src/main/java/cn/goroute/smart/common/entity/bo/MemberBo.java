@@ -1,48 +1,37 @@
-package cn.goroute.smart.auth.entity.pojo;
+package cn.goroute.smart.common.entity.bo;
 
-import cn.goroute.smart.common.entity.base.BaseEntity;
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
-import javax.validation.constraints.NotBlank;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 用户信息表
- *
- * @author Alickx
- * @email llwstu@gmail.com
- * @date 2022-02-25 09:45:33
+ * @Author: Alickx
+ * @Date: 2022/09/03/16:30
+ * @Description: 用户bo
  */
-@EqualsAndHashCode(callSuper = true)
 @Data
-@TableName("t_member")
-public class Member extends BaseEntity implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class MemberBo {
+
+    /**
+     * 主键id
+     */
+    private Long id;
+
     /**
      * 呢称
      */
-    @TableField(fill = FieldFill.INSERT)
-    @NotBlank(message = "昵称不能为空")
     private String nickName;
     /**
      * 登录账号
      */
-    @NotBlank(message = "登录账号不能为空")
     private String email;
     /**
      * 密码
      */
-    @NotBlank(message = "密码不能为空")
     private String passWord;
     /**
      * 性别 0 = 男 1= 女 2=私密
      */
-    @TableField(fill = FieldFill.INSERT)
     private String gender;
     /**
      * 手机号
@@ -51,7 +40,6 @@ public class Member extends BaseEntity implements Serializable {
     /**
      * 头像地址
      */
-    @TableField(fill = FieldFill.INSERT)
     private String avatar;
     /**
      * 个人介绍
@@ -109,5 +97,6 @@ public class Member extends BaseEntity implements Serializable {
      * 上一次登录的ip
      */
     private String lastLoginIp;
+
 
 }

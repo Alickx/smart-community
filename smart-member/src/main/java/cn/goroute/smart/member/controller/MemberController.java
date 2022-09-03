@@ -2,14 +2,17 @@ package cn.goroute.smart.member.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.goroute.smart.common.entity.resp.Response;
 import cn.goroute.smart.common.service.AuthService;
-import cn.goroute.smart.common.utils.Result;
 import cn.goroute.smart.common.entity.dto.MemberDto;
 import cn.goroute.smart.member.entity.pojo.Member;
 import cn.goroute.smart.member.entity.vo.MemberInfoUpdateVo;
 import cn.goroute.smart.member.service.MemberService;
 import cn.goroute.smart.redis.util.RedisUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +34,7 @@ import java.util.Objects;
 @RestController
 @RequestMapping("smart/member")
 @Slf4j
+@Api(tags = "用户信息")
 public class MemberController {
     @Autowired
     private MemberService memberService;
@@ -44,16 +48,15 @@ public class MemberController {
     /**
      * 用户id集合查询用户信
      *
-     * @param memberUidList uid集合
+     * @param memberIdList uid集合
      * @return 用户信息集合
      */
     @PostMapping("/list")
-    public List<MemberDto> batchQueryUsersByIdList(@RequestBody List<String> memberUidList) {
+    @ApiOperation(value = "用户id集合查询用户信息", notes = "用户id集合查询用户信息", response = Member.class, responseContainer = "List")
+    public List<MemberDto> batchQueryUsersByIdList(@RequestBody List<String> memberIdList) {
 
-        List<MemberDto> res = new ArrayList<>(memberUidList.size());
-
-
-        memberUidList.forEach(uid -> {
+        List<MemberDto> res = new ArrayList<>(memberIdList.size());
+        memberIdList.forEach(uid -> {
             Member member = memberService.getById(uid);
             if (Objects.nonNull(member)) {
                 MemberDto memberDTO = new MemberDto();
@@ -72,15 +75,17 @@ public class MemberController {
      * @return true 已注册
      * false 未注册
      */
-    @GetMapping("/info/email")
-    public Result queryUserEmail(@RequestParam String email) {
+    @GetMapping("/isEmailRegistered")
+    @ApiOperation(value = "查询邮箱是否注册", notes = "查询邮箱是否注册", response = Boolean.class)
+    @ApiParam(name = "email", value = "邮箱地址", required = true)
+    public Response isEmailRegistered(@RequestParam String email) {
         Member member = memberService.getOne(new LambdaQueryWrapper<Member>().eq(Member::getEmail, email));
 
         // 如果为空，则说明该邮箱没有被注册
         if (member == null) {
-            return Result.ok();
+            return Response.success();
         } else {
-            return Result.error();
+            return Response.failure();
         }
     }
 
@@ -89,10 +94,11 @@ public class MemberController {
      *
      * @return 用户角色列表
      */
+    @ApiOperation(value = "查询用户的角色", notes = "查询用户的角色", response = String.class, responseContainer = "List")
     @GetMapping("/getRole")
-    public Result getRole() {
+    public Response getRole() {
         List<String> roleList = StpUtil.getRoleList();
-        return Result.ok().put("data", roleList);
+        return Response.success(roleList);
     }
 
     /**
@@ -101,32 +107,18 @@ public class MemberController {
      * @param uid 用户uid
      * @return 用户信息
      */
-    @GetMapping("/info/{uid}")
-    public Result info(@PathVariable("uid") String uid) {
+    @GetMapping("/info/{id}")
+    @ApiOperation(value = "获取用户信息", notes = "获取用户信息", response = Member.class)
+    @ApiParam(name = "id", value = "用户uid", required = true)
+    public Response info(@PathVariable("id") String uid) {
         Member member = memberService.getById(uid);
         if (member != null) {
             MemberDto memberDTO = new MemberDto();
             BeanUtils.copyProperties(Objects.requireNonNull(member), memberDTO);
-            return Result.ok().put("data", memberDTO);
+            return Response.success(memberDTO);
         } else {
-            return Result.error("该用户不存在!");
+            return Response.failure("该用户不存在!");
         }
-    }
-
-    /**
-     * 微服务间调用
-     *
-     * @param uid 用户uid
-     * @return 用户DTO实体类
-     */
-    @GetMapping("/getMemberByUid")
-    public MemberDto getMemberByUid(@RequestParam String uid) {
-        Member member = memberService.getById(uid);
-        MemberDto memberDTO = new MemberDto();
-        if (member != null) {
-            BeanUtils.copyProperties(member, memberDTO);
-        }
-        return memberDTO;
     }
 
     /**
@@ -137,28 +129,32 @@ public class MemberController {
      */
     @SaCheckLogin
     @PostMapping("/profile/update")
-    public Result update(@RequestBody MemberInfoUpdateVo memberInfoUpdateVO) {
+    @ApiOperation(value = "更新用户信息", notes = "更新用户信息", response = Member.class,httpMethod = "POST")
+    @ApiParam(name = "memberInfoUpdateVO", value = "用户信息vo", required = true)
+    public Response update(@RequestBody MemberInfoUpdateVo memberInfoUpdateVO) {
 
         return memberService.updateMemberInfo(memberInfoUpdateVO);
     }
 
     @PostMapping("/logout")
-    public Result logout() {
+    @ApiOperation(value = "退出登录", notes = "退出登录", httpMethod = "POST")
+    public Response logout() {
         Boolean isLogin = authService.getIsLogin();
         if (Boolean.TRUE.equals(isLogin)) {
             authService.logOut(authService.getLoginUid());
-            return Result.ok();
+            return Response.success();
         }
-        return Result.error("用户未登录");
+        return Response.failure("用户未登录");
     }
 
     @GetMapping("/isLogin")
-    public Result isLogin() {
-        Boolean isLogin = authService.getIsLogin();
+    @ApiOperation(value = "查询用户是否登录", notes = "查询用户是否登录", response = Boolean.class,httpMethod = "GET")
+    public Response isLogin() {
+        boolean isLogin = authService.getIsLogin();
         if (Boolean.TRUE.equals(isLogin)) {
-            return Result.ok();
+            return Response.success();
         }
-        return Result.error("用户未登录");
+        return Response.failure();
     }
 
 

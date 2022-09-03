@@ -1,6 +1,5 @@
 package cn.goroute.smart.post;
 
-import cn.goroute.smart.common.utils.RedisUtil;
 import cn.goroute.smart.post.entity.dto.CategoryTagDto;
 import cn.goroute.smart.post.entity.pojo.Category;
 import cn.goroute.smart.post.entity.pojo.CategoryTag;
@@ -8,6 +7,7 @@ import cn.goroute.smart.post.entity.pojo.Tag;
 import cn.goroute.smart.post.mapper.CategoryMapper;
 import cn.goroute.smart.post.mapper.CategoryTagMapper;
 import cn.goroute.smart.post.mapper.TagMapper;
+import cn.goroute.smart.redis.util.RedisUtil;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.mybatis.spring.annotation.MapperScan;

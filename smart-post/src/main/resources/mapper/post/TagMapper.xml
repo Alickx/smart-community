@@ -5,13 +5,13 @@
 
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="cn.goroute.smart.post.entity.pojo.Tag" id="tagMap">
-        <result property="uid" column="uid"/>
-        <result property="content" column="content"/>
-        <result property="status" column="status"/>
-        <result property="intro" column="intro"/>
-        <result property="sort" column="sort"/>
-        <result property="createdTime" column="created_time"/>
-        <result property="updatedTime" column="updated_time"/>
+        <response property="uid" column="uid"/>
+        <response property="content" column="content"/>
+        <response property="status" column="status"/>
+        <response property="intro" column="intro"/>
+        <response property="sort" column="sort"/>
+        <response property="createdTime" column="created_time"/>
+        <response property="updatedTime" column="updated_time"/>
     </resultMap>
 
 

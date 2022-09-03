@@ -1,10 +1,10 @@
 package cn.goroute.smart.post.service;
 
+import cn.goroute.smart.common.entity.resp.Response;
 import cn.goroute.smart.post.entity.pojo.Post;
 import cn.goroute.smart.post.entity.vo.PostQueryVo;
 import cn.goroute.smart.post.entity.vo.PostVo;
 import cn.goroute.smart.common.utils.QueryParam;
-import cn.goroute.smart.common.utils.Result;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -16,14 +16,14 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface PostService extends IService<Post> {
 
-    Result queryPage(PostQueryVo postQueryVO);
+    Response queryPage(PostQueryVo postQueryVO);
 
-    Result savePost(PostVo postVo);
+    Response savePost(PostVo postVo);
 
-    Result getPostByUid(Long uid);
+    Response getPostByUid(Long uid);
 
-    Result deletePost(Long postUid);
+    Response deletePost(Long postUid);
 
-    Result listByMemberUid(QueryParam queryParam);
+    Response listByMemberUid(QueryParam queryParam);
 }
 

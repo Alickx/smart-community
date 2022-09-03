@@ -2,8 +2,10 @@ package cn.goroute.smart.notify.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.goroute.smart.common.utils.QueryParam;
-import cn.goroute.smart.common.utils.Result;
+import cn.goroute.smart.common.entity.resp.Response;
 import cn.goroute.smart.notify.service.EventRemindService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("smart/notification")
+@Api(tags = "事件通知")
 public class EventRemindController {
 
     @Autowired
@@ -29,7 +32,8 @@ public class EventRemindController {
      */
     @SaCheckLogin
     @PostMapping("/eventRemind/query")
-    public Result queryEventRemind(@RequestBody QueryParam queryParam){
+    @ApiParam(name = "queryParam", value = "查询参数", required = true)
+    public Response queryEventRemind(@RequestBody QueryParam queryParam){
         return eventRemindService.queryEventRemind(queryParam);
     }
 

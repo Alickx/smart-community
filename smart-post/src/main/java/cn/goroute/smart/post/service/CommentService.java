@@ -3,7 +3,7 @@ package cn.goroute.smart.post.service;
 import cn.goroute.smart.post.entity.pojo.Comment;
 import cn.goroute.smart.post.entity.vo.CommentVo;
 import cn.goroute.smart.common.utils.QueryParam;
-import cn.goroute.smart.common.utils.Result;
+import cn.goroute.smart.common.entity.resp.Response;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.io.IOException;
@@ -15,9 +15,9 @@ import java.io.IOException;
 */
 public interface CommentService extends IService<Comment> {
 
-    Result getCommentByPost(QueryParam queryParam, Long postUid) throws IOException;
+    Response getCommentByPost(QueryParam queryParam, Long postUid) throws IOException;
 
-    Result del(CommentVo commentVo);
+    Response del(CommentVo commentVo);
 
-    Result saveComment(CommentVo commentVo);
+    Response saveComment(CommentVo commentVo);
 }

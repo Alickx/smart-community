@@ -1,4 +1,4 @@
-package cn.goroute.smart.common.constant;
+package cn.goroute.smart.post.constant;
 
 
 /**

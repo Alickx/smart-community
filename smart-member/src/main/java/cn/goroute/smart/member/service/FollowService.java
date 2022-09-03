@@ -1,7 +1,7 @@
 package cn.goroute.smart.member.service;
 
+import cn.goroute.smart.common.entity.resp.Response;
 import cn.goroute.smart.member.entity.pojo.Follow;
-import cn.goroute.smart.common.utils.Result;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -16,7 +16,7 @@ public interface FollowService extends IService<Follow> {
      * @param followMemberId 关注目标的uid
      * @return 关注结果
      */
-    Result saveFollow(Long followMemberId);
+    Response saveFollow(Long followMemberId);
 
-    Result queryFollow(Long followMemberId);
+    Response queryFollow(Long followMemberId);
 }

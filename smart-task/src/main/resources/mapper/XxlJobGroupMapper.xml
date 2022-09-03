@@ -4,12 +4,12 @@
 <mapper namespace="cn.goroute.smart.task.dao.XxlJobGroupDao">
 	
 	<resultMap id="XxlJobGroup" type="cn.goroute.smart.task.core.model.XxlJobGroup" >
-		<result column="id" property="id" />
-	    <result column="app_name" property="appname" />
-	    <result column="title" property="title" />
-		<result column="address_type" property="addressType" />
-		<result column="address_list" property="addressList" />
-		<result column="update_time" property="updateTime" />
+		<response column="id" property="id" />
+	    <response column="app_name" property="appname" />
+	    <response column="title" property="title" />
+		<response column="address_type" property="addressType" />
+		<response column="address_list" property="addressList" />
+		<response column="update_time" property="updateTime" />
 	</resultMap>
 
 	<sql id="Base_Column_List">

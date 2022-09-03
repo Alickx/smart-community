@@ -1,15 +1,13 @@
 package cn.goroute.smart.post.service.impl;
 
-import cn.goroute.smart.common.api.ResultCode;
-import cn.goroute.smart.common.constant.PostConstant;
 import cn.goroute.smart.common.constant.RedisKeyConstant;
 import cn.goroute.smart.common.entity.bo.EventRemindBo;
-import cn.goroute.smart.common.entity.dto.MemberDto;
-import cn.goroute.smart.common.exception.ServiceException;
+import cn.goroute.smart.common.entity.resp.Response;
 import cn.goroute.smart.common.feign.MemberFeignService;
 import cn.goroute.smart.common.service.AuthService;
-import cn.goroute.smart.common.utils.*;
-import cn.goroute.smart.post.entity.dto.CommentDto;
+import cn.goroute.smart.common.utils.PageUtils;
+import cn.goroute.smart.common.utils.QueryParam;
+import cn.goroute.smart.post.constant.PostConstant;
 import cn.goroute.smart.post.entity.pojo.Comment;
 import cn.goroute.smart.post.entity.pojo.Post;
 import cn.goroute.smart.post.entity.pojo.Thumb;
@@ -20,10 +18,8 @@ import cn.goroute.smart.post.mapper.ThumbMapper;
 import cn.goroute.smart.post.service.CommentService;
 import cn.goroute.smart.post.util.ConvertRemindUtil;
 import cn.goroute.smart.post.util.RabbitmqUtil;
+import cn.goroute.smart.redis.util.RedisUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +30,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -81,51 +75,53 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
      * @throws IOException io异常
      */
     @Override
-    public Result getCommentByPost(QueryParam queryParam, Long postUid) throws IOException {
+    public Response getCommentByPost(QueryParam queryParam, Long postUid) throws IOException {
 
-        IPage<Comment> pageResult = commentMapper.selectPage(new Query<Comment>().getPage(queryParam),
-                new LambdaQueryWrapper<Comment>().eq(Comment::getPostId, postUid)
-                        .isNull(Comment::getFirstCommentId)
-                        .eq(Comment::getStatus, PostConstant.NORMAL_STATUS));
-
-        if (pageResult.getRecords().isEmpty()) {
-            return Result.ok().put("data", new PageUtils(pageResult));
-        }
-
-        List<Comment> commentList = pageResult.getRecords();
-
-        List<CommentDto> commentDTOList = new ArrayList<>();
-
-        CommentDto commentDTO;
-
-        for (Comment comment : commentList) {
-            commentDTO = new CommentDto();
-
-            MemberDto fromMember = memberFeignService.getMemberByUid(comment.getMemberId());
-            MemberDto toMember = memberFeignService.getMemberByUid(comment.getToMemberId());
-
-            Long thumbCount = getThumbCount(comment);
-            boolean isLike = isLike(comment);
-
-            PageUtils reply = getReply(comment.getId());
-            commentDTO.setId(comment.getId());
-            commentDTO.setFromMember(fromMember);
-            commentDTO.setToMember(toMember);
-            commentDTO.setContent(comment.getContent());
-            commentDTO.setCreatedTime(comment.getCreatedTime());
-            commentDTO.setReplyInfo((List<CommentDto>) reply.getList());
-            commentDTO.setThumbCount(thumbCount);
-            commentDTO.setIsLike(isLike);
-            commentDTO.setHasMore(reply.getTotalPage() > 1);
-            commentDTOList.add(commentDTO);
-        }
-        IPage<CommentDto> commentDTOPage = new Page<>();
-        BeanUtils.copyProperties(pageResult, commentDTOPage);
-        commentDTOPage.setRecords(commentDTOList);
-
-
-        PageUtils page = new PageUtils(commentDTOPage);
-        return Result.ok().put("data", page);
+        // TODO 重构
+//        IPage<Comment> pageResult = commentMapper.selectPage(new Query<Comment>().getPage(queryParam),
+//                new LambdaQueryWrapper<Comment>().eq(Comment::getPostId, postUid)
+//                        .isNull(Comment::getFirstCommentId)
+//                        .eq(Comment::getStatus, PostConstant.NORMAL_STATUS));
+//
+//        if (pageResult.getRecords().isEmpty()) {
+//            return Result.ok().put("data", new PageUtils(pageResult));
+//        }
+//
+//        List<Comment> commentList = pageResult.getRecords();
+//
+//        List<CommentDto> commentDTOList = new ArrayList<>();
+//
+//        CommentDto commentDTO;
+//
+//        for (Comment comment : commentList) {
+//            commentDTO = new CommentDto();
+//
+//            MemberDto fromMember = memberFeignService.getMemberByUid(comment.getMemberId());
+//            MemberDto toMember = memberFeignService.getMemberByUid(comment.getToMemberId());
+//
+//            Long thumbCount = getThumbCount(comment);
+//            boolean isLike = isLike(comment);
+//
+//            PageUtils reply = getReply(comment.getId());
+//            commentDTO.setId(comment.getId());
+//            commentDTO.setFromMember(fromMember);
+//            commentDTO.setToMember(toMember);
+//            commentDTO.setContent(comment.getContent());
+//            commentDTO.setCreatedTime(comment.getCreatedTime());
+//            commentDTO.setReplyInfo((List<CommentDto>) reply.getList());
+//            commentDTO.setThumbCount(thumbCount);
+//            commentDTO.setIsLike(isLike);
+//            commentDTO.setHasMore(reply.getTotalPage() > 1);
+//            commentDTOList.add(commentDTO);
+//        }
+//        IPage<CommentDto> commentDTOPage = new Page<>();
+//        BeanUtils.copyProperties(pageResult, commentDTOPage);
+//        commentDTOPage.setRecords(commentDTOList);
+//
+//
+//        PageUtils page = new PageUtils(commentDTOPage);
+//        return Result.ok().put("data", page);
+        return Response.success();
     }
 
     /**
@@ -135,20 +131,20 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
      * @return 删除结果
      */
     @Override
-    public Result del(CommentVo commentVo) {
+    public Response del(CommentVo commentVo) {
 
         Comment comment = commentMapper.selectById(commentVo.getId());
         if (comment != null) {
             long memberUid = comment.getMemberId();
             // 判断是否是评论者
             if (!Objects.equals(memberUid, authService.getLoginUid())) {
-                return Result.error();
+                return Response.error();
             }
             // 逻辑删除
             comment.setStatus(PostConstant.DELETE_STATUS);
             int result = commentMapper.updateById(comment);
             if (result != 1) {
-                return Result.error();
+                return Response.error();
             }
             //更新redis中的数据
             String key = RedisKeyConstant.POST_COUNT_KEY + comment.getPostId();
@@ -167,9 +163,9 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
                     }
                 }
             }
-            return Result.ok();
+            return Response.success();
         }
-        return Result.error(ResultCode.FAILED.getCode(), ResultCode.FAILED.getMessage());
+        return Response.failure();
     }
 
     /**
@@ -179,7 +175,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
      * @return 保存结果
      */
     @Override
-    public Result saveComment(CommentVo commentVo) {
+    public Response saveComment(CommentVo commentVo) {
         //审核评论
 //        boolean checkResult = illegalTextCheckUtil.checkText(commentVo.getContent());
 //        if (checkResult) {
@@ -193,7 +189,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
                 .eq(Post::getIsPublish, PostConstant.PUBLISH));
 
         if (post == null) {
-            return Result.error(ResultCode.FAILED.getCode(), ResultCode.FAILED.getMessage());
+            return Response.error();
         }
 
         Comment comment = new Comment();
@@ -202,7 +198,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
         comment.setMemberId(authService.getLoginUid());
         int result = commentMapper.insert(comment);
         if (result != 1) {
-            throw new ServiceException("评论发布失败");
+            return Response.error();
         }
         //发送消息通知
         EventRemindBo eventRemind = ConvertRemindUtil.convertCommentNotification(comment, post.getTitle());
@@ -213,17 +209,11 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
         if (redisUtil.hHasKey(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY)) {
             redisUtil.hincr(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY, 1);
         } else {
-            synchronized (this) {
-                if (redisUtil.hHasKey(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY)) {
-                    redisUtil.hincr(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY, 1);
-                } else {
-                    redisUtil.hset(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY, post.getCommentCount());
-                    redisUtil.hincr(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY, 1);
-                }
-            }
+            redisUtil.hset(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY, post.getCommentCount());
+            redisUtil.hincr(key, RedisKeyConstant.POST_COMMENT_COUNT_KEY, 1);
         }
 
-        return Result.ok().put("data", comment.getId());
+        return Response.success(comment.getId());
     }
 
     /**
@@ -289,42 +279,43 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
      * @throws IOException IO异常
      */
     private PageUtils getReply(Long firstCommentUid) throws IOException {
-
-        QueryParam queryParam = new QueryParam();
-        queryParam.setLimit("3");
-        queryParam.setSidx("created_time");
-        IPage<Comment> pageResult = commentMapper.selectPage(new Query<Comment>().getPage(queryParam), new QueryWrapper<Comment>()
-                .eq("first_comment_uid", firstCommentUid)
-                .eq("status", PostConstant.NORMAL_STATUS));
-
-        List<Comment> commentList = pageResult.getRecords();
-        List<CommentDto> commentDTOList = new ArrayList<>();
-
-        CommentDto commentDTO;
-
-        for (Comment comment : commentList) {
-            commentDTO = new CommentDto();
-            MemberDto fromMember = memberFeignService.getMemberByUid(comment.getMemberId());
-            MemberDto toMember = memberFeignService.getMemberByUid(comment.getToMemberId());
-            long thumbCount = getThumbCount(comment);
-            boolean isLike = isLike(comment);
-            commentDTO.setId(comment.getId());
-            commentDTO.setFromMember(fromMember);
-            commentDTO.setToMember(toMember);
-            commentDTO.setContent(comment.getContent());
-            commentDTO.setCreatedTime(comment.getCreatedTime());
-            commentDTO.setThumbCount(thumbCount);
-            commentDTO.setIsLike(isLike);
-            commentDTO.setHasMore(false);
-            commentDTOList.add(commentDTO);
-        }
-        IPage<CommentDto> commentDTOIPage = new Page<>();
-        BeanUtils.copyProperties(pageResult, commentDTOIPage);
-        commentDTOIPage.setRecords(commentDTOList);
-
-
-        return new PageUtils(commentDTOIPage);
-
+        // TODO 重构
+//
+//        QueryParam queryParam = new QueryParam();
+//        queryParam.setLimit("3");
+//        queryParam.setSidx("created_time");
+//        IPage<Comment> pageResult = commentMapper.selectPage(new Query<Comment>().getPage(queryParam), new QueryWrapper<Comment>()
+//                .eq("first_comment_uid", firstCommentUid)
+//                .eq("status", PostConstant.NORMAL_STATUS));
+//
+//        List<Comment> commentList = pageResult.getRecords();
+//        List<CommentDto> commentDTOList = new ArrayList<>();
+//
+//        CommentDto commentDTO;
+//
+//        for (Comment comment : commentList) {
+//            commentDTO = new CommentDto();
+//            MemberDto fromMember = memberFeignService.getMemberByUid(comment.getMemberId());
+//            MemberDto toMember = memberFeignService.getMemberByUid(comment.getToMemberId());
+//            long thumbCount = getThumbCount(comment);
+//            boolean isLike = isLike(comment);
+//            commentDTO.setId(comment.getId());
+//            commentDTO.setFromMember(fromMember);
+//            commentDTO.setToMember(toMember);
+//            commentDTO.setContent(comment.getContent());
+//            commentDTO.setCreatedTime(comment.getCreatedTime());
+//            commentDTO.setThumbCount(thumbCount);
+//            commentDTO.setIsLike(isLike);
+//            commentDTO.setHasMore(false);
+//            commentDTOList.add(commentDTO);
+//        }
+//        IPage<CommentDto> commentDTOIPage = new Page<>();
+//        BeanUtils.copyProperties(pageResult, commentDTOIPage);
+//        commentDTOIPage.setRecords(commentDTOList);
+//
+//
+//        return new PageUtils(commentDTOIPage);
+        return null;
     }
 }
 

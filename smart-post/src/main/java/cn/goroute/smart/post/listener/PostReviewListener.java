@@ -1,6 +1,6 @@
 package cn.goroute.smart.post.listener;
 
-import cn.goroute.smart.common.constant.PostConstant;
+import cn.goroute.smart.post.constant.PostConstant;
 import cn.goroute.smart.common.exception.ServiceException;
 import cn.goroute.smart.post.entity.pojo.Post;
 import cn.goroute.smart.post.entity.pojo.PostTag;

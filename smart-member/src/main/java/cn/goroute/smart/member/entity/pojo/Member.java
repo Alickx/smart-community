@@ -24,7 +24,6 @@ public class Member extends BaseEntity implements Serializable {
     /**
      * 呢称
      */
-    @TableField(fill = FieldFill.INSERT)
     @NotBlank(message = "昵称不能为空")
     private String nickName;
     /**
@@ -40,7 +39,6 @@ public class Member extends BaseEntity implements Serializable {
     /**
      * 性别 0 = 男 1= 女 2=私密
      */
-    @TableField(fill = FieldFill.INSERT)
     private String gender;
     /**
      * 手机号
@@ -49,7 +47,6 @@ public class Member extends BaseEntity implements Serializable {
     /**
      * 头像地址
      */
-    @TableField(fill = FieldFill.INSERT)
     private String avatar;
     /**
      * 个人介绍

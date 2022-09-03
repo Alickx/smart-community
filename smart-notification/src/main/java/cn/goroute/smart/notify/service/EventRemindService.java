@@ -1,8 +1,8 @@
 package cn.goroute.smart.notify.service;
 
+import cn.goroute.smart.common.entity.resp.Response;
 import cn.goroute.smart.notify.entity.pojo.EventRemind;
 import cn.goroute.smart.common.utils.QueryParam;
-import cn.goroute.smart.common.utils.Result;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -12,7 +12,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface EventRemindService extends IService<EventRemind> {
 
-    Result queryEventRemind(QueryParam queryParam);
+    Response queryEventRemind(QueryParam queryParam);
 
-    Result queryUnreadCountRemind();
+    Response queryUnreadCountRemind();
 }

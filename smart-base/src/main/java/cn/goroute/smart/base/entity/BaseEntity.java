@@ -1,5 +1,7 @@
 package cn.goroute.smart.base.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -19,6 +21,7 @@ public class BaseEntity {
      * 主键id
      */
     @TableId
+    @TableField(value = "id",fill = FieldFill.INSERT)
     private Long id;
 
     /**
