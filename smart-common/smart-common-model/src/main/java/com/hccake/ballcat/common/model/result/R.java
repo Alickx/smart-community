@@ -1,6 +1,5 @@
 package com.hccake.ballcat.common.model.result;
 
-import com.hccake.ballcat.common.i18n.I18nClass;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import lombok.*;
@@ -14,7 +13,6 @@ import java.io.Serializable;
  * @param <T>
  * @author Hccake
  */
-@I18nClass
 @Getter
 @Setter
 @ToString

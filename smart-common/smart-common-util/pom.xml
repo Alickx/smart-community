@@ -3,13 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>ballcat-common</artifactId>
-        <groupId>com.hccake</groupId>
-		<version>${revision}</version>
+		<artifactId>smart-common</artifactId>
+		<groupId>cn.goroute.smart</groupId>
+		<version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>ballcat-common-util</artifactId>
+    <artifactId>smart-common-util</artifactId>
 
     <dependencies>
 		<!-- json 工具支持, 默认 jackson 按需替换-->

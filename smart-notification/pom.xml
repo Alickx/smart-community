@@ -46,7 +46,7 @@
         <!--        mybatis-plus-->
         <dependency>
             <groupId>cn.goroute.smart</groupId>
-            <artifactId>smart-mybatis-plus-starter</artifactId>
+            <artifactId>smart-extend-mybatis-plus</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <!--        基础类-->
@@ -56,11 +56,6 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <!--        rabbitmq-->
-        <dependency>
-            <groupId>cn.goroute.smart</groupId>
-            <artifactId>smart-rabbitmq-starter</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
     </dependencies>
 
 

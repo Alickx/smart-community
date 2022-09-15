@@ -1,6 +1,6 @@
 package cn.goroute.smart.base.entity;
 
-import cn.goroute.smart.common.entity.req.PageableConstants;
+import com.hccake.ballcat.common.model.domain.PageableConstants;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.Getter;

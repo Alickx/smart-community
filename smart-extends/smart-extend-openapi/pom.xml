@@ -39,8 +39,9 @@
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>com.hccake</groupId>
-			<artifactId>ballcat-spring-boot-starter-web</artifactId>
+			<groupId>cn.goroute.smart</groupId>
+			<artifactId>smart-spring-boot-starter-web</artifactId>
+			<version>1.0-SNAPSHOT</version>
 			<optional>true</optional>
 		</dependency>
 	</dependencies>

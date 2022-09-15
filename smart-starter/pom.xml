@@ -10,11 +10,14 @@
 
     <packaging>pom</packaging>
     <modules>
-        <module>smart-swagger3-starter</module>
-        <module>smart-mybatis-plus-starter</module>
-        <module>smart-rabbitmq-starter</module>
-        <module>smart-redis-starter</module>
-        <module>smart-satoken-starter</module>
+        <module>smart-spring-boot-starter-file</module>
+        <module>smart-spring-boot-starter-job</module>
+        <module>smart-spring-boot-starter-log</module>
+        <module>smart-spring-boot-starter-mail</module>
+        <module>smart-spring-boot-starter-oss</module>
+        <module>smart-spring-boot-starter-redis</module>
+        <module>smart-spring-boot-starter-swagger</module>
+        <module>smart-spring-boot-starter-web</module>
     </modules>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>smart-starter</artifactId>

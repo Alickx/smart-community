@@ -60,13 +60,13 @@
         <!--        mybatis-plus-->
         <dependency>
             <groupId>cn.goroute.smart</groupId>
-            <artifactId>smart-mybatis-plus-starter</artifactId>
+            <artifactId>smart-extend-mybatis-plus</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 <!--        redis-->
         <dependency>
             <groupId>cn.goroute.smart</groupId>
-            <artifactId>smart-redis-starter</artifactId>
+            <artifactId>smart-spring-boot-starter-redis</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
