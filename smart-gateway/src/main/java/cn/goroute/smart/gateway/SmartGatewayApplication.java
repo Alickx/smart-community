@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 
-@SpringBootApplication(scanBasePackages = {"cn.goroute.smart"})
+@SpringBootApplication
 @MapperScan("cn.goroute.smart.*.mapper")
 @RefreshScope
 @EnableDiscoveryClient
