@@ -11,7 +11,7 @@
     <packaging>jar</packaging>
     <artifactId>smart-user</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>smart-member</name>
+    <name>smart-user</name>
     <description>智慧社区用户服务</description>
     <properties>
         <java.version>1.8</java.version>
@@ -49,7 +49,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <!-- 指定该Main Class为全局的唯一入口 -->
-                    <mainClass>cn.goroute.smart.member.SmartMemberApplication</mainClass>
+                    <mainClass>cn.goroute.smart.user.SmartMemberApplication</mainClass>
                     <layout>ZIP</layout>
                 </configuration>
                 <executions>

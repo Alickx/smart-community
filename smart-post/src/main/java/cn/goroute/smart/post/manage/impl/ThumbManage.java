@@ -1,7 +1,7 @@
 package cn.goroute.smart.post.manage.impl;
 
 import cn.goroute.smart.post.mapper.PostMapper;
-import cn.goroute.smart.common.entity.dto.MemberDto;
+import cn.goroute.smart.common.entity.dto.UserProfileDto;
 import cn.goroute.smart.post.entity.dto.PostListDto;
 import cn.goroute.smart.post.entity.pojo.Post;
 import cn.goroute.smart.common.feign.MemberFeignService;
@@ -50,7 +50,7 @@ public class ThumbManage implements IThumbManage {
         for (Post post : posts) {
             PostListDto postListDTO = new PostListDto();
             Long memberUid = post.getMemberId();
-            MemberDto member = memberFeignService.getMemberByUid(memberUid);
+            UserProfileDto member = memberFeignService.getMemberByUid(memberUid);
             postListDTO.setAuthorInfo(member);
             BeanUtils.copyProperties(post, postListDTO);
             postListDTO.setIsLike(iPostManage.checkIsThumbOrCollect(post.getId(), memberUid, 0));

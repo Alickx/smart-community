@@ -1,14 +1,10 @@
 package cn.goroute.smart.post.domain;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-import javax.validation.constraints.NotNull;
-
-import java.io.Serializable;
-
-import java.time.LocalDateTime;
 import io.swagger.annotations.ApiModelProperty;
-import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
 * 文章标签表
@@ -39,13 +35,13 @@ public class PostTag implements Serializable {
     */
     @NotNull(message="[]不能为空")
     @ApiModelProperty("")
-    private LocalDateTime createdTime;
+    private LocalDateTime createTime;
     /**
     * 
     */
     @NotNull(message="[]不能为空")
     @ApiModelProperty("")
-    private LocalDateTime updatedTime;
+    private LocalDateTime updateTime;
     /**
     * 
     */
@@ -77,15 +73,15 @@ public class PostTag implements Serializable {
     /**
     * 
     */
-    private void setCreatedTime(LocalDateTime createdTime){
-    this.createdTime = createdTime;
+    private void setCreatedTime(LocalDateTime createTime){
+    this.createTime = createTime;
     }
 
     /**
     * 
     */
-    private void setUpdatedTime(LocalDateTime updatedTime){
-    this.updatedTime = updatedTime;
+    private void setUpdatedTime(LocalDateTime updateTime){
+    this.updateTime = updateTime;
     }
 
     /**
@@ -121,14 +117,14 @@ public class PostTag implements Serializable {
     * 
     */
     private LocalDateTime getCreatedTime(){
-    return this.createdTime;
+    return this.createTime;
     }
 
     /**
     * 
     */
     private LocalDateTime getUpdatedTime(){
-    return this.updatedTime;
+    return this.updateTime;
     }
 
     /**

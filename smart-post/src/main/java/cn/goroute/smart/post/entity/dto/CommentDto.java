@@ -1,6 +1,6 @@
 package cn.goroute.smart.post.entity.dto;
 
-import cn.goroute.smart.common.entity.dto.MemberDto;
+import cn.goroute.smart.common.entity.dto.UserProfileDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,12 +23,12 @@ public class CommentDto {
     /**
      * 发送者
      */
-    private MemberDto fromMember;
+    private UserProfileDto fromMember;
 
     /**
      * 接受者
      */
-    private MemberDto toMember;
+    private UserProfileDto toMember;
 
     /**
      * 评论内容

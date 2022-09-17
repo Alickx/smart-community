@@ -1,8 +1,10 @@
 package cn.goroute.smart.auth.service;
 
 import cn.goroute.smart.auth.domain.Role;
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.hccake.ballcat.common.model.result.R;
 import com.hccake.extend.mybatis.plus.service.ExtendService;
+
+import java.util.List;
 
 /**
 * @author caiguopeng
@@ -11,4 +13,5 @@ import com.hccake.extend.mybatis.plus.service.ExtendService;
 */
 public interface RoleService extends ExtendService<Role> {
 
+    R<List<String>> getRole();
 }

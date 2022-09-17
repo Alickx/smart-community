@@ -1,6 +1,6 @@
 package cn.goroute.smart.notify.entity.dto;
 
-import cn.goroute.smart.common.entity.dto.MemberDto;
+import cn.goroute.smart.common.entity.dto.UserProfileDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,7 +23,7 @@ public class EventRemindDto {
     /**
      * 点赞人信息
      */
-    private MemberDto sender;
+    private UserProfileDto sender;
 
     /**
      * 主键id

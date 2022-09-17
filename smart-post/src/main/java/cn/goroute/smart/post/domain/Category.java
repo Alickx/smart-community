@@ -1,14 +1,12 @@
 package cn.goroute.smart.post.domain;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-import javax.validation.constraints.NotNull;
-
-import java.io.Serializable;
-
-import java.time.LocalDateTime;
 import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
 * 板块表
@@ -48,7 +46,7 @@ public class Category implements Serializable {
     */
     @Size(max= 2048,message="编码长度不能超过2048")
     @ApiModelProperty("板块介绍")
-    @Length(max= 2,048,message="编码长度不能超过2,048")
+    @Length(max= 2048,message="编码长度不能超过2,048")
     private String intro;
     /**
     * 

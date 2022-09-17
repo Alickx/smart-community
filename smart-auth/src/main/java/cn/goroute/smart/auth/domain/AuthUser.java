@@ -1,19 +1,20 @@
 package cn.goroute.smart.auth.domain;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-import javax.validation.constraints.NotNull;
-
-import java.io.Serializable;
-
-import java.time.LocalDateTime;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
 * 用户授权表
 * @TableName auth_user
 */
+@Data
 public class AuthUser implements Serializable {
 
     /**
@@ -25,8 +26,8 @@ public class AuthUser implements Serializable {
     /**
     * 1手机号 2邮箱 3用户名 4qq 5微信 6腾讯微博 7新浪微博
     */
-    @NotNull(message="[1手机号 2邮箱 3用户名 4qq 5微信 6腾讯微博 7新浪微博]不能为空")
-    @ApiModelProperty("1手机号 2邮箱 3用户名 4qq 5微信 6腾讯微博 7新浪微博")
+    @NotNull(message="[登录类型]不能为空")
+    @ApiModelProperty("1手机号 2邮箱 3用户名 4qq 5微信")
     private Integer identityType;
     /**
     * 手机号 邮箱 用户名或第三方应用的唯一标识
@@ -56,90 +57,4 @@ public class AuthUser implements Serializable {
     @NotNull(message="[更新绑定时间]不能为空")
     @ApiModelProperty("更新绑定时间")
     private LocalDateTime updateTime;
-
-    /**
-    * 
-    */
-    private void setId(Long id){
-    this.id = id;
-    }
-
-    /**
-    * 1手机号 2邮箱 3用户名 4qq 5微信 6腾讯微博 7新浪微博
-    */
-    private void setIdentityType(Integer identityType){
-    this.identityType = identityType;
-    }
-
-    /**
-    * 手机号 邮箱 用户名或第三方应用的唯一标识
-    */
-    private void setIdentifier(String identifier){
-    this.identifier = identifier;
-    }
-
-    /**
-    * 密码凭证(站内的保存密码，站外的不保存或保存token)
-    */
-    private void setCertificate(String certificate){
-    this.certificate = certificate;
-    }
-
-    /**
-    * 绑定时间
-    */
-    private void setCreateTime(LocalDateTime createTime){
-    this.createTime = createTime;
-    }
-
-    /**
-    * 更新绑定时间
-    */
-    private void setUpdateTime(LocalDateTime updateTime){
-    this.updateTime = updateTime;
-    }
-
-
-    /**
-    * 
-    */
-    private Long getId(){
-    return this.id;
-    }
-
-    /**
-    * 1手机号 2邮箱 3用户名 4qq 5微信 6腾讯微博 7新浪微博
-    */
-    private Integer getIdentityType(){
-    return this.identityType;
-    }
-
-    /**
-    * 手机号 邮箱 用户名或第三方应用的唯一标识
-    */
-    private String getIdentifier(){
-    return this.identifier;
-    }
-
-    /**
-    * 密码凭证(站内的保存密码，站外的不保存或保存token)
-    */
-    private String getCertificate(){
-    return this.certificate;
-    }
-
-    /**
-    * 绑定时间
-    */
-    private LocalDateTime getCreateTime(){
-    return this.createTime;
-    }
-
-    /**
-    * 更新绑定时间
-    */
-    private LocalDateTime getUpdateTime(){
-    return this.updateTime;
-    }
-
 }

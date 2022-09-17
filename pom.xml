@@ -46,6 +46,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <ballcat.version>0.9.0</ballcat.version>
+        <satoken.version>1.31.0</satoken.version>
     </properties>
 
     <modules>
@@ -137,6 +138,22 @@
                 <artifactId>xxl-job-core</artifactId>
                 <version>${xxl.job.version}</version>
             </dependency>
+            <!--            satoken 认证授权-->
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-reactor-spring-boot-starter</artifactId>
+                <version>${satoken.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-spring-boot-starter</artifactId>
+                <version>${satoken.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-dao-redis-jackson</artifactId>
+                <version>${satoken.version}</version>
+            </dependency>
             <!--        ballcat starter依赖-->
             <dependency>
                 <groupId>com.hccake</groupId>
@@ -208,6 +225,11 @@
                 <artifactId>ballcat-spring-boot-starter-swagger</artifactId>
                 <version>${ballcat.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.hccake</groupId>
+                <artifactId>ballcat-common-core</artifactId>
+                <version>${ballcat.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -263,7 +285,9 @@
                         </imageTags>
                         <dockerHost>http://localhost:2375</dockerHost>
                         <baseImage>openjdk:8</baseImage>
-                        <entryPoint>["java", "-jar", "-Dspring.profiles.active=prod","/${project.build.finalName}.jar"]</entryPoint>
+                        <entryPoint>["java", "-jar",
+                            "-Dspring.profiles.active=prod","/${project.build.finalName}.jar"]
+                        </entryPoint>
                         <resources>
                             <resource>
                                 <targetPath>/</targetPath>

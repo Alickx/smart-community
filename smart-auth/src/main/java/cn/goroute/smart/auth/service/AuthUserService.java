@@ -1,7 +1,10 @@
 package cn.goroute.smart.auth.service;
 
 import cn.goroute.smart.auth.domain.AuthUser;
-import com.baomidou.mybatisplus.extension.service.IService;
+import cn.goroute.smart.auth.entity.CustomUserDetails;
+import cn.goroute.smart.auth.entity.vo.UserLoginVo;
+import cn.goroute.smart.auth.entity.vo.UserRegisterVo;
+import com.hccake.ballcat.common.model.result.R;
 import com.hccake.extend.mybatis.plus.service.ExtendService;
 
 /**
@@ -11,4 +14,23 @@ import com.hccake.extend.mybatis.plus.service.ExtendService;
 */
 public interface AuthUserService extends ExtendService<AuthUser> {
 
+    /**
+     * 用户登录
+     * @param userLoginVo 用户登录信息
+     * @return 用户信息
+     */
+    R<CustomUserDetails> login(UserLoginVo userLoginVo);
+
+    /**
+     * 用户注册
+     * @param userRegisterVo 用户注册信息
+     * @return 用户信息
+     */
+    R<Boolean> register(UserRegisterVo userRegisterVo);
+
+    /**
+     * 登出
+     * @return 登出结果
+     */
+    R<Boolean> logout();
 }

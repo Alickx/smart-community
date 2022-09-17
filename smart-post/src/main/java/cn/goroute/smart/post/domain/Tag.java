@@ -1,14 +1,13 @@
 package cn.goroute.smart.post.domain;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-import javax.validation.constraints.NotNull;
-
-import java.io.Serializable;
-
-import java.time.LocalDateTime;
 import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
 * 标签表
@@ -28,7 +27,7 @@ public class Tag implements Serializable {
     @NotBlank(message="[]不能为空")
     @Size(max= 1000,message="编码长度不能超过1000")
     @ApiModelProperty("")
-    @Length(max= 1,000,message="编码长度不能超过1,000")
+    @Length(max= 1000,message="编码长度不能超过1,000")
     private String content;
     /**
     * 0 = 正常
@@ -40,7 +39,7 @@ public class Tag implements Serializable {
     */
     @Size(max= 2048,message="编码长度不能超过2048")
     @ApiModelProperty("")
-    @Length(max= 2,048,message="编码长度不能超过2,048")
+    @Length(max= 2048,message="编码长度不能超过2048")
     private String intro;
     /**
     * 

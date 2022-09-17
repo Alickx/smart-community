@@ -1,14 +1,13 @@
 package cn.goroute.smart.post.domain;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-import javax.validation.constraints.NotNull;
-
-import java.io.Serializable;
-
-import java.time.LocalDateTime;
 import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
 * 文章表
@@ -32,7 +31,7 @@ public class Post implements Serializable {
     */
     @NotNull(message="[]不能为空")
     @ApiModelProperty("")
-    private Long memberId;
+    private Long userId;
     /**
     * 
     */
@@ -54,7 +53,7 @@ public class Post implements Serializable {
     */
     @NotNull(message="[文章状态 0 = 正常]不能为空")
     @ApiModelProperty("文章状态 0 = 正常")
-    private Integer status;
+    private Integer state;
     /**
     * 
     */
@@ -124,8 +123,8 @@ public class Post implements Serializable {
     /**
     * 
     */
-    private void setMemberId(Long memberId){
-    this.memberId = memberId;
+    private void setUserId(Long userId){
+    this.userId = userId;
     }
 
     /**
@@ -146,7 +145,7 @@ public class Post implements Serializable {
     * 文章状态 0 = 正常
     */
     private void setStatus(Integer status){
-    this.status = status;
+    this.state = status;
     }
 
     /**
@@ -223,8 +222,8 @@ public class Post implements Serializable {
     /**
     * 
     */
-    private Long getMemberId(){
-    return this.memberId;
+    private Long getUserId(){
+    return this.userId;
     }
 
     /**
@@ -245,7 +244,7 @@ public class Post implements Serializable {
     * 文章状态 0 = 正常
     */
     private Integer getStatus(){
-    return this.status;
+    return this.state;
     }
 
     /**

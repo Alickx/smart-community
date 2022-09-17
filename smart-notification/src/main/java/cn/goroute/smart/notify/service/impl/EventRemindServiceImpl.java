@@ -85,7 +85,7 @@ public class EventRemindServiceImpl extends ServiceImpl<EventRemindMapper, Event
 //        for (int i = 0; i < records.size(); i++) {
 //            EventRemindDto eventRemindDTO = new EventRemindDto();
 //            MemberBo memberBo = memberBoList.get(i);
-//            MemberDto memberDto = ModelConverterUtils.convert(memberBo, MemberDto.class);
+//            UserDto memberDto = ModelConverterUtils.convert(memberBo, UserDto.class);
 //            eventRemindDTO.setSender(memberDto);
 //            BeanUtils.copyProperties(records.get(i), eventRemindDTO);
 //            eventReminds.add(eventRemindDTO);
