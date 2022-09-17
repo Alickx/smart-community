@@ -9,10 +9,10 @@
     </parent>
 
     <packaging>jar</packaging>
-    <artifactId>smart-member</artifactId>
+    <artifactId>smart-user</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>smart-member</name>
-    <description>smart-member</description>
+    <description>智慧社区用户服务</description>
     <properties>
         <java.version>1.8</java.version>
     </properties>
@@ -24,11 +24,6 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>cn.goroute.smart</groupId>

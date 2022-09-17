@@ -50,7 +50,7 @@
 
     <modules>
         <module>smart-common</module>
-        <module>smart-member</module>
+        <module>smart-user</module>
         <module>smart-post</module>
         <module>smart-gateway</module>
         <module>smart-thirdpart</module>

@@ -45,18 +45,8 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
-            <version>1.2.8</version>
         </dependency>
-        <!--        mybatis-plus-->
-        <dependency>
-            <groupId>com.hccake</groupId>
-            <artifactId>ballcat-extend-mybatis-plus</artifactId>
-        </dependency>
-        <!--        swagger3-->
-        <dependency>
-            <groupId>com.hccake</groupId>
-            <artifactId>ballcat-spring-boot-starter-swagger</artifactId>
-        </dependency>
+
     </dependencies>
 
     <build>
