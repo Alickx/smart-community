@@ -1,16 +1,14 @@
 package cn.goroute.smart.post.mapper;
 
-import cn.goroute.smart.post.entity.pojo.CategoryTag;
+import cn.goroute.smart.post.domain.CategoryTag;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Mapper;
 
 /**
-* @author Alickx
-* @description 针对表【t_section_tag(分类标签关联表)】的数据库操作Mapper
-* @createDate 2022-03-04 16:06:54
-* @Entity cn.goroute.smart.common.entity.pojo.SectionTag
+* @author caiguopeng
+* @description 针对表【category_tag(分类标签关联表)】的数据库操作Mapper
+* @createDate 2022-09-17 19:31:22
+* @Entity cn.goroute.smart.post.domain.CategoryTag
 */
-@Mapper
 public interface CategoryTagMapper extends BaseMapper<CategoryTag> {
 
 }

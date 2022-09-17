@@ -1,104 +1,19 @@
 package cn.goroute.smart.post.service.impl;
 
-import cn.goroute.smart.common.entity.resp.Response;
-import cn.goroute.smart.post.entity.dto.CategoryTagDto;
-import cn.goroute.smart.post.entity.pojo.CategoryTag;
-import cn.goroute.smart.post.entity.pojo.Tag;
-import cn.goroute.smart.post.mapper.CategoryMapper;
-import cn.goroute.smart.post.mapper.CategoryTagMapper;
-import cn.goroute.smart.post.service.CategoryTagService;
-import cn.goroute.smart.post.service.TagService;
-import cn.goroute.smart.redis.util.RedisUtil;
-import cn.hutool.core.collection.CollUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import cn.goroute.smart.post.domain.CategoryTag;
+import cn.goroute.smart.post.service.CategoryTagService;
+import cn.goroute.smart.post.mapper.CategoryTagMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 /**
-* @author Alickx
-* @description 针对表【t_section_tag(分类标签关联表)】的数据库操作Service实现
-* @createDate 2022-03-04 16:06:54
+* @author caiguopeng
+* @description 针对表【category_tag(分类标签关联表)】的数据库操作Service实现
+* @createDate 2022-09-17 19:31:22
 */
 @Service
-@Slf4j
 public class CategoryTagServiceImpl extends ServiceImpl<CategoryTagMapper, CategoryTag>
-    implements CategoryTagService {
-
-    @Autowired
-    CategoryMapper categoryMapper;
-
-    @Autowired
-    CategoryTagMapper categoryTagMapper;
-
-    @Autowired
-    TagService tagService;
-
-    @Autowired
-    RedisUtil redisUtil;
-
-    /**
-     * @description 根据分类id查询标签
-     * @param categoryUid 分类id
-     * @return 标签列表
-     */
-    @Override
-    public Response getTagByCategory(Long categoryUid) {
-
-        List<CategoryTag> categoryTagList = categoryTagMapper
-                .selectList(new LambdaQueryWrapper<CategoryTag>()
-                        .eq(CategoryTag::getCategoryId, categoryUid));
-
-        if (CollUtil.isEmpty(categoryTagList)) {
-            return Response.error("没有此分类标签数据");
-        }
-
-        List<Long> tagIds = categoryTagList.stream()
-                .map(CategoryTag::getTagId).distinct().collect(Collectors.toList());
-
-        if (CollUtil.isEmpty(tagIds)) {
-            return Response.error("该分类下没有标签");
-        }
-
-        List<Map<String,Object>> tagContentList = new ArrayList<>(16);
-
-        List<Tag> tagList = tagService.listByIds(tagIds);
-        tagList.parallelStream().forEach(t -> {
-            Map<String,Object> map = new HashMap<>(2);
-            map.put("label", t.getContent());
-            map.put("value", t.getId());
-            tagContentList.add(map);
-        });
-
-
-
-        return Response.success(tagContentList);
-
-    }
-
-    /**
-     * @description 查询获取所有分类标签
-     * @return
-     */
-    @Override
-    public Response getCategoryTagAll() {
-
-        List<CategoryTagDto> categoryTagDtoList = (List<CategoryTagDto>) redisUtil.get("category");
-
-        if (CollUtil.isEmpty(categoryTagDtoList)) {
-            return Response.error("没有分类标签数据");
-        }
-
-        return Response.success(categoryTagDtoList);
-    }
-
+    implements CategoryTagService{
 
 }
 

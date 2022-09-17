@@ -26,8 +26,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <skipTests>true</skipTests>
-        <spring.cloud.alibaba.version>2021.1</spring.cloud.alibaba.version>
-        <spring.cloud.version>2021.0.4</spring.cloud.version>
+        <spring.cloud.alibaba.version>2021.0.1.0</spring.cloud.alibaba.version>
+        <spring.cloud.version>2021.0.1</spring.cloud.version>
         <mybatis-plus.version>3.5.2</mybatis-plus.version>
         <druid.version>1.2.11</druid.version>
         <lombok.version>1.18.24</lombok.version>
@@ -38,22 +38,14 @@
         <elasticsearch.version>7.16.3</elasticsearch.version>
         <aliyun.oss.version>3.15.1</aliyun.oss.version>
         <docker.maven.version>1.2.2</docker.maven.version>
-        <spring.boot.version>2.7.3.RELEASE</spring.boot.version>
+        <spring.boot.version>2.7.3</spring.boot.version>
         <redisson.version>3.17.5</redisson.version>
-        <spring-cloud-openfeign.version>2.2.6.RELEASE</spring-cloud-openfeign.version>
-        <commons-pool2.version>2.11.1</commons-pool2.version>
-        <swagger3.version>3.0.0</swagger3.version>
-        <io.swagger.v3.version>2.2.0</io.swagger.v3.version>
-        <springdoc-openapi.verison>1.6.11</springdoc-openapi.verison>
-        <fastjson.version>1.2.83</fastjson.version>
-        <jsoup.version>1.15.3</jsoup.version>
-        <software.amazon.awssdk.version>2.17.154</software.amazon.awssdk.version>
         <org.mapstruct.version>1.5.2.Final</org.mapstruct.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
         <maven-compiler-plugin.verison>3.8.0</maven-compiler-plugin.verison>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <spring-boot.version>2.7.3</spring-boot.version>
+        <ballcat.version>0.9.0</ballcat.version>
     </properties>
 
     <modules>
@@ -67,9 +59,6 @@
         <module>smart-notification</module>
         <module>smart-auth</module>
         <module>smart-starter</module>
-        <module>smart-base</module>
-        <module>smart-extends</module>
-        <module>smart-starter/smart-spring-boot-starter-rocketmq</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -96,20 +85,6 @@
                 <groupId>com.alibaba</groupId>
                 <artifactId>druid-spring-boot-starter</artifactId>
                 <version>${druid.version}</version>
-            </dependency>
-            <!--        lombok依赖-->
-            <dependency>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <version>${lombok.version}</version>
-            </dependency>
-            <!-- hutool工具类 -->
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-bom</artifactId>
-                <version>${hutool.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
             </dependency>
             <!--        logstash日志收集-->
             <dependency>
@@ -162,131 +137,76 @@
                 <artifactId>xxl-job-core</artifactId>
                 <version>${xxl.job.version}</version>
             </dependency>
-            <!--    阿里云SDK-->
+            <!--        ballcat starter依赖-->
             <dependency>
-                <groupId>com.aliyun.oss</groupId>
-                <artifactId>aliyun-sdk-oss</artifactId>
-                <version>${aliyun.oss.version}</version>
-            </dependency>
-            <!--swagger v3-->
-            <dependency>
-                <groupId>io.swagger.core.v3</groupId>
-                <artifactId>swagger-annotations</artifactId>
-                <version>${io.swagger.v3.version}</version>
+                <groupId>com.hccake</groupId>
+                <artifactId>ballcat-spring-boot-starter-file</artifactId>
+                <version>${ballcat.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.swagger.core.v3</groupId>
-                <artifactId>swagger-models</artifactId>
-                <version>${io.swagger.v3.version}</version>
+                <groupId>com.hccake</groupId>
+                <artifactId>ballcat-spring-boot-starter-job</artifactId>
+                <version>${ballcat.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-boot-starter</artifactId>
-                <version>${swagger3.version}</version>
-            </dependency>
-            <!-- SpringDoc -->
-            <dependency>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-common</artifactId>
-                <version>${springdoc-openapi.verison}</version>
+                <groupId>com.hccake</groupId>
+                <artifactId>ballcat-spring-boot-starter-log</artifactId>
+                <version>${ballcat.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-webmvc-core</artifactId>
-                <version>${springdoc-openapi.verison}</version>
+                <groupId>com.hccake</groupId>
+                <artifactId>ballcat-spring-boot-starter-mail</artifactId>
+                <version>${ballcat.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-webflux-core</artifactId>
-                <version>${springdoc-openapi.verison}</version>
+                <groupId>com.hccake</groupId>
+                <artifactId>ballcat-spring-boot-starter-oss</artifactId>
+                <version>${ballcat.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-kotlin</artifactId>
-                <version>${springdoc-openapi.verison}</version>
+                <groupId>com.hccake</groupId>
+                <artifactId>ballcat-spring-boot-starter-redis</artifactId>
+                <version>${ballcat.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-hateoas</artifactId>
-                <version>${springdoc-openapi.verison}</version>
+                <groupId>com.hccake</groupId>
+                <artifactId>ballcat-extend-redis-module</artifactId>
+                <version>${ballcat.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-data-rest</artifactId>
-                <version>${springdoc-openapi.verison}</version>
+                <groupId>com.hccake</groupId>
+                <artifactId>ballcat-common-redis</artifactId>
+                <version>${ballcat.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-security</artifactId>
-                <version>${springdoc-openapi.verison}</version>
+                <groupId>com.hccake</groupId>
+                <artifactId>ballcat-spring-boot-starter-web</artifactId>
+                <version>${ballcat.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-groovy</artifactId>
-                <version>${springdoc-openapi.verison}</version>
+                <groupId>com.hccake</groupId>
+                <artifactId>ballcat-common-core</artifactId>
+                <version>${ballcat.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-ui</artifactId>
-                <version>${springdoc-openapi.verison}</version>
+                <groupId>com.hccake</groupId>
+                <artifactId>ballcat-common-idempotent</artifactId>
+                <version>${ballcat.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-webflux-ui</artifactId>
-                <version>${springdoc-openapi.verison}</version>
+                <groupId>com.hccake</groupId>
+                <artifactId>ballcat-common-log</artifactId>
+                <version>${ballcat.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-javadoc</artifactId>
-                <version>${springdoc-openapi.verison}</version>
-            </dependency>
-            <!--mybatis plus extension,包含了mybatis plus core-->
-            <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-extension</artifactId>
-                <version>${mybatis-plus.version}</version>
+                <groupId>com.hccake</groupId>
+                <artifactId>ballcat-extend-mybatis-plus</artifactId>
+                <version>${ballcat.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-core</artifactId>
-                <version>${mybatis-plus.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-annotation</artifactId>
-                <version>${mybatis-plus.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-boot-starter</artifactId>
-                <version>${mybatis-plus.version}</version>
-            </dependency>
-            <!-- fastjson -->
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>fastjson</artifactId>
-                <version>${fastjson.version}</version>
-                <optional>true</optional>
-            </dependency>
-            <!-- ftp用 -->
-            <dependency>
-                <groupId>commons-net</groupId>
-                <artifactId>commons-net</artifactId>
-                <version>3.8.0</version>
-            </dependency>
-            <!--jsoup-->
-            <dependency>
-                <groupId>org.jsoup</groupId>
-                <artifactId>jsoup</artifactId>
-                <version>${jsoup.version}</version>
-            </dependency>
-            <!-- 亚马逊云 Java sdk -->
-            <dependency>
-                <groupId>software.amazon.awssdk</groupId>
-                <artifactId>bom</artifactId>
-                <version>${software.amazon.awssdk.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
+                <groupId>com.hccake</groupId>
+                <artifactId>ballcat-spring-boot-starter-swagger</artifactId>
+                <version>${ballcat.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -305,7 +225,6 @@
             <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -316,18 +235,12 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bootstrap</artifactId>
+        </dependency>
     </dependencies>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
 
     <build>
         <pluginManagement>
@@ -335,7 +248,7 @@
                 <plugin>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
-                    <version>${spring-boot.version}</version>
+                    <version>${spring.boot.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>com.spotify</groupId>
@@ -398,7 +311,7 @@
                             <path>
                                 <groupId>org.springframework.boot</groupId>
                                 <artifactId>spring-boot-configuration-processor</artifactId>
-                                <version>${spring-boot.version}</version>
+                                <version>${spring.boot.version}</version>
                             </path>
                         </annotationProcessorPaths>
                     </configuration>

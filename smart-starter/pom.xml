@@ -10,14 +10,7 @@
 
     <packaging>pom</packaging>
     <modules>
-        <module>smart-spring-boot-starter-file</module>
-        <module>smart-spring-boot-starter-job</module>
-        <module>smart-spring-boot-starter-log</module>
-        <module>smart-spring-boot-starter-mail</module>
-        <module>smart-spring-boot-starter-oss</module>
-        <module>smart-spring-boot-starter-redis</module>
-        <module>smart-spring-boot-starter-swagger</module>
-        <module>smart-spring-boot-starter-web</module>
+        <module>smart-spring-boot-starter-rocketmq</module>
     </modules>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>smart-starter</artifactId>

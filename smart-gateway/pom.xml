@@ -49,34 +49,20 @@
             <artifactId>javax.servlet-api</artifactId>
             <scope>compile</scope>
         </dependency>
-        <!--        基础类-->
-        <dependency>
-            <groupId>cn.goroute.smart</groupId>
-            <artifactId>smart-base</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
         <!--        nacos服务发现和注册-->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-            <version>2021.1</version>
         </dependency>
         <!--        nacos配置管理-->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
-            <version>2021.1</version>
         </dependency>
-<!--        mybatis-plus-->
+        <!--        mybatis-plus-->
         <dependency>
-            <groupId>cn.goroute.smart</groupId>
-            <artifactId>smart-extend-mybatis-plus</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>3.5.2</version>
+            <groupId>com.hccake</groupId>
+            <artifactId>ballcat-extend-mybatis-plus</artifactId>
         </dependency>
     </dependencies>
 

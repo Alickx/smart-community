@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.goroute.smart.auth.mapper.AuthLoginLogMapper">
+
+    <resultMap id="BaseResultMap" type="cn.goroute.smart.auth.domain.AuthLoginLog">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="type" column="type" jdbcType="TINYINT"/>
+            <result property="command" column="command" jdbcType="TINYINT"/>
+            <result property="version" column="version" jdbcType="VARCHAR"/>
+            <result property="client" column="client" jdbcType="VARCHAR"/>
+            <result property="deviceId" column="device_id" jdbcType="VARCHAR"/>
+            <result property="lastip" column="lastip" jdbcType="VARCHAR"/>
+            <result property="os" column="os" jdbcType="VARCHAR"/>
+            <result property="osver" column="osver" jdbcType="VARCHAR"/>
+            <result property="text" column="text" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,type,command,
+        version,client,device_id,
+        lastip,os,osver,
+        text,create_time
+    </sql>
+</mapper>

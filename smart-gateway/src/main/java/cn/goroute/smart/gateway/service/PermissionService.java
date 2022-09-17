@@ -1,6 +1,7 @@
 package cn.goroute.smart.gateway.service;
 
 import cn.goroute.smart.gateway.entity.pojo.Permission;
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.hccake.extend.mybatis.plus.service.ExtendService;
 
 /**
