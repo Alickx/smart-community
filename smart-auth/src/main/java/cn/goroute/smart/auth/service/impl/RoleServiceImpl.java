@@ -34,7 +34,7 @@ public class RoleServiceImpl extends ExtendServiceImpl<RoleMapper, Role>
      * @return 角色列表
      */
     @Override
-    @Cached(key = "role:",keyJoint = "#userId", ttl = 120)
+    @Cached(key = "role",keyJoint = "#userId", ttl = 120)
     public R<List<String>> getRole(Long userId) {
 
         List<Long> roleIds = userRoleMapper.selectByUserId(userId);

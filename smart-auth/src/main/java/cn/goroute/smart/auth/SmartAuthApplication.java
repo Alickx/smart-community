@@ -1,5 +1,6 @@
 package cn.goroute.smart.auth;
 
+import com.hccake.ballcat.common.swagger.annotation.EnableSwagger2Provider;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,7 +17,6 @@ import springfox.documentation.oas.annotations.EnableOpenApi;
 @MapperScan("cn.goroute.smart.*.mapper")
 @EnableFeignClients
 @EnableOpenApi
-@EnableWebMvc
 public class SmartAuthApplication {
 
     public static void main(String[] args) {

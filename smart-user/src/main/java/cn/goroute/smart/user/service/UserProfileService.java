@@ -14,10 +14,10 @@ public interface UserProfileService extends ExtendService<UserProfile> {
 
     /**
      * 获取用户信息
-     * @param token 用户token
+     * @param userId 用户id
      * @return 用户信息
      */
-    R<UserProfileDto> getUserProfile(String token);
+    R<UserProfileDto> getUserProfile(Long userId);
 
     /**
      * 初始化用户信息

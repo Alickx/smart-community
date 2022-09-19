@@ -14,7 +14,6 @@ import springfox.documentation.oas.annotations.EnableOpenApi;
 @EnableFeignClients
 @MapperScan("cn.goroute.smart.*.mapper")
 @EnableOpenApi
-@EnableWebMvc
 @Slf4j
 public class SmartUserApplication {
 

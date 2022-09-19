@@ -1,5 +1,6 @@
 package cn.goroute.smart.auth.service;
 
+import cn.goroute.smart.common.config.FeignInterceptor;
 import cn.goroute.smart.common.entity.dto.UserProfileDto;
 import com.hccake.ballcat.common.model.result.R;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -13,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @Date: 2022/09/18/2:03
  * @Description:
  */
-@FeignClient(name = "smart-gateway", path = "/api/v1/user")
+@FeignClient(name = "smart-gateway"
+        , path = "/api/v1/user"
+        ,configuration = FeignInterceptor.class)
 public interface FeignUserProfileService {
 
     /**
@@ -21,7 +24,7 @@ public interface FeignUserProfileService {
      * @return
      */
     @GetMapping(value = "/profile")
-    R<UserProfileDto> getUserProfile(@RequestParam("token") String token);
+    R<UserProfileDto> getUserProfile(@RequestParam("userId") Long userId);
 
     /**
      * 初始化用户信息

@@ -1,10 +1,9 @@
-package cn.goroute.smart.auth.config;
+package cn.goroute.smart.task.config;
 
 import cn.dev33.satoken.context.SaHolder;
 import cn.dev33.satoken.filter.SaServletFilter;
 import cn.dev33.satoken.id.SaIdUtil;
 import cn.dev33.satoken.util.SaResult;
-import org.checkerframework.checker.units.qual.C;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -12,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 /**
  * @Author: 蔡国鹏
  * @Date: 2022/09/19/10:37
- * @Description: 通知服务全局过滤器
+ * @Description: 调度服务全局过滤器
  */
 @Configuration
 public class SaTokenConfigure implements WebMvcConfigurer {

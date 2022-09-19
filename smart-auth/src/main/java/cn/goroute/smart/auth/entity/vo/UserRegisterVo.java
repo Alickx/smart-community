@@ -33,9 +33,4 @@ public class UserRegisterVo {
     @Parameter(description = "渠道类型")
     private Integer identityType;
 
-    @NotBlank(message = "验证码不能为空")
-    @Pattern(regexp = "^[a-zA-Z0-9]{6}$", message = "验证码格式不正确")
-    @Parameter(description = "验证码")
-    private String captcha;
-
 }

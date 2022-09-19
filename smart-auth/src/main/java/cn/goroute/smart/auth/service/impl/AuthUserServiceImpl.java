@@ -70,7 +70,7 @@ public class AuthUserServiceImpl extends ExtendServiceImpl<AuthUserMapper, AuthU
         StpUtil.login(userId);
         String tokenValue = StpUtil.getTokenValue();
 
-        R<UserProfileDto> userProfileResult = feignUserProfileService.getUserProfile(tokenValue);
+        R<UserProfileDto> userProfileResult = feignUserProfileService.getUserProfile(userId);
         if (userProfileResult.getData() == null) {
             log.error("获取用户信息失败,用户信息:{}",userLoginVo);
             return R.failed(ErrorCodeEnum.SYSTEM_ERROR);

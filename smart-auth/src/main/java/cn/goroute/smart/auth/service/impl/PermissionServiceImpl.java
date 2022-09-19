@@ -34,7 +34,7 @@ public class PermissionServiceImpl extends ExtendServiceImpl<PermissionMapper, P
      * @return 权限列表
      */
     @Override
-    @CachePut(key = "permission:",keyJoint = "#userId", ttl = 120)
+    @CachePut(key = "permission",keyJoint = "#userId", ttl = 120)
     public R<List<String>> getPermission(Long userId) {
 
         List<Long> roleIds = userRoleMapper.selectByUserId(userId);

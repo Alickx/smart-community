@@ -3,6 +3,9 @@ server:
 spring:
   application:
     name: smart-auth
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
   cloud:
     nacos:
       discovery:
@@ -38,3 +41,6 @@ ballcat:
     title: smart-auth
     description: '认证授权中心'
     version: 1.0.0
+logging:
+  level:
+    feign.Logger: debug

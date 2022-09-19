@@ -1,5 +1,7 @@
 package cn.goroute.smart.user.controller;
 
+import cn.dev33.satoken.stp.StpUtil;
+import cn.goroute.smart.common.constant.ErrorCodeEnum;
 import cn.goroute.smart.common.entity.dto.UserProfileDto;
 import cn.goroute.smart.user.service.UserProfileService;
 import com.hccake.ballcat.common.model.result.R;
@@ -27,8 +29,9 @@ public class UserProfileController {
      */
     @GetMapping("/profile")
     @Operation(summary = "获取用户信息", description = "获取用户信息")
-    public R<UserProfileDto> getUserProfile(@RequestParam("token") String token) {
-        return userProfileService.getUserProfile(token);
+    public R<UserProfileDto> getUserProfile(@RequestParam("userId") Long userId) {
+        return userProfileService.getUserProfile(userId);
+
     }
 
     /**

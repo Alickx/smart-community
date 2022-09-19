@@ -32,14 +32,9 @@ public class UserProfileServiceImpl extends ExtendServiceImpl<UserProfileMapper,
      * @return 用户信息
      */
     @Override
-    @CachePut(key = "user:profile",keyJoint = "#token", ttl = 120)
-    @Cached(key = "user:profile",keyJoint = "#token")
-    public R<UserProfileDto> getUserProfile(String token) {
-
-        String userId = (String) StpUtil.getLoginIdByToken(token);
-        if (userId == null) {
-            return R.failed(ErrorCodeEnum.USER_NOT_LOGIN);
-        }
+    @CachePut(key = "user:profile",keyJoint = "#userId", ttl = 120)
+    @Cached(key = "user:profile",keyJoint = "#userId")
+    public R<UserProfileDto> getUserProfile(Long userId) {
 
         UserProfile userProfile = userProfileMapper
                 .selectOne(new LambdaQueryWrapper<UserProfile>().eq(UserProfile::getUserId, userId));

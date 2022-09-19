@@ -30,8 +30,6 @@ public class EmailRegisterImpl extends AbstractRegister implements IRegister {
     @Transactional(rollbackFor = Exception.class)
     public R<Boolean> register(UserRegisterVo userRegisterVo) {
 
-        //TODO 校验验证码
-
         AuthUser authUser = new AuthUser();
         authUser.setIdentityType(RegisterEnum.Email.getRegisterType());
         authUser.setIdentifier(userRegisterVo.getUsername());
