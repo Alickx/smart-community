@@ -1,30 +1,41 @@
 package cn.goroute.smart.auth.entity.vo;
 
-import lombok.AllArgsConstructor;
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.springdoc.api.annotations.ParameterObject;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 /**
  * @author Alickx
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Schema(name = "用户注册信息")
+@ParameterObject
 public class UserRegisterVo {
 
     @Pattern(regexp = "^([A-Za-z0-9_\\-\\.\\u4e00-\\u9fa5])+\\@([A-Za-z0-9_\\-\\.])+\\.([A-Za-z]{2,8})$", message = "用户名格式不正确")
     @NotBlank(message = "用户名不能为空")
+    @Parameter(description = "用户名")
     private String username;
 
     @Pattern(regexp = "^[a-zA-Z0-9_-]{6,18}$", message = "密码格式不正确")
     @NotBlank(message = "密码不能为空")
-    private String passWord;
+    @Parameter(description = "密码")
+    private String password;
+
+    @NotNull(message="[渠道类型]不能为空")
+    @ApiModelProperty("1手机号 2邮箱 3用户名 4qq 5微信")
+    @Parameter(description = "渠道类型")
+    private Integer identityType;
 
     @NotBlank(message = "验证码不能为空")
     @Pattern(regexp = "^[a-zA-Z0-9]{6}$", message = "验证码格式不正确")
+    @Parameter(description = "验证码")
     private String captcha;
 
 }

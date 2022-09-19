@@ -1,19 +1,18 @@
 package cn.goroute.smart.auth.domain;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-import javax.validation.constraints.NotNull;
-
-import java.io.Serializable;
-
-import java.time.LocalDateTime;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
 * 
 * @TableName role
 */
+@Data
 public class Role implements Serializable {
 
     /**
@@ -45,76 +44,4 @@ public class Role implements Serializable {
     */
     @ApiModelProperty("")
     private LocalDateTime updateTime;
-
-    /**
-    * 
-    */
-    private void setId(Long id){
-    this.id = id;
-    }
-
-    /**
-    * 
-    */
-    private void setRoleName(String roleName){
-    this.roleName = roleName;
-    }
-
-    /**
-    * 
-    */
-    private void setDescription(String description){
-    this.description = description;
-    }
-
-    /**
-    * 
-    */
-    private void setCreateTime(LocalDateTime createTime){
-    this.createTime = createTime;
-    }
-
-    /**
-    * 
-    */
-    private void setUpdateTime(LocalDateTime updateTime){
-    this.updateTime = updateTime;
-    }
-
-
-    /**
-    * 
-    */
-    private Long getId(){
-    return this.id;
-    }
-
-    /**
-    * 
-    */
-    private String getRoleName(){
-    return this.roleName;
-    }
-
-    /**
-    * 
-    */
-    private String getDescription(){
-    return this.description;
-    }
-
-    /**
-    * 
-    */
-    private LocalDateTime getCreateTime(){
-    return this.createTime;
-    }
-
-    /**
-    * 
-    */
-    private LocalDateTime getUpdateTime(){
-    return this.updateTime;
-    }
-
 }

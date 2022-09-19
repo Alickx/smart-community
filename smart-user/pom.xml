@@ -49,7 +49,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <!-- 指定该Main Class为全局的唯一入口 -->
-                    <mainClass>cn.goroute.smart.user.SmartMemberApplication</mainClass>
+                    <mainClass>cn.goroute.smart.user.SmartUserApplication</mainClass>
                     <layout>ZIP</layout>
                 </configuration>
                 <executions>

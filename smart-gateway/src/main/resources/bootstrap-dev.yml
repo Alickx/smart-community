@@ -1,3 +1,5 @@
+server:
+  port: 8601
 spring:
   application:
     name: smart-gateway
@@ -5,10 +7,64 @@ spring:
     nacos:
       discovery:
         server-addr: localhost:8848
-        namespace: af0252de-6da5-45a8-905b-53efeb106bc1
+    gateway:
+      routes:
+        - id: route_member
+          uri: 'lb://smart-user'
+          predicates:
+            - Path=/api/v1/user/**
+          filters:
+            - 'RewritePath=/api/v1/user(?<segment>/?.*),/user$\{segment}'
+        - id: route_auth
+          uri: 'lb://smart-auth'
+          predicates:
+            - Path=/api/v1/auth/**
+          filters:
+            - 'RewritePath=/api/v1/auth(?<segment>/?.*),/auth$\{segment}'
+        - id: route_post
+          uri: 'lb://smart-post'
+          predicates:
+            - Path=/api/v1/post/**
+          filters:
+            - 'RewritePath=/api/v1/post,/'
+        - id: route_notify
+          uri: 'lb://smart-notify'
+          predicates:
+            - Path=/api/v1/notification/**
+          filters:
+            - 'RewritePath=/api/v1/notification,/'
+        - id: route_thirdpart
+          uri: 'lb://smart-thirdpart'
+          predicates:
+            - Path=/api/v1/thirdpart/**
+          filters:
+            - 'RewritePath=/api/v1/thirdpart,/'
+        - id: route_search
+          uri: 'lb://smart-search'
+          predicates:
+            - Path=/api/v1/search/**
+          filters:
+            - 'RewritePath=/api/v1/search,/'
+        - id: route_task
+          uri: 'lb://smart-task'
+          predicates:
+            - Path=/api/v1/task/**
+          filters:
+            - 'RewritePath=/api/v1/task,/'
+  redis:
+    database: 0
+    host: 127.0.0.1
+    port: 6379
+    timeout: 10s
+    lettuce:
+      pool:
+        max-active: 200
+        max-wait: -1ms
+        max-idle: 10
+        min-idle: 0
+sa-token:
+  token-name: 'Authorization'
+  timeout: 2592000
+  activity-timeout: -1
+  token-style: simple-uuid
 
-      config:
-        server-addr: localhost:8848
-        namespace: af0252de-6da5-45a8-905b-53efeb106bc1
-        file-extension: yml
-        group: DEFAULT_GROUP

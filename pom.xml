@@ -34,19 +34,19 @@
         <hutool.version>5.8.5</hutool.version>
         <logstash.version>6.6</logstash.version>
         <logback.version>1.2.10</logback.version>
-        <xxl.job.version>2.3.0</xxl.job.version>
         <elasticsearch.version>7.16.3</elasticsearch.version>
         <aliyun.oss.version>3.15.1</aliyun.oss.version>
         <docker.maven.version>1.2.2</docker.maven.version>
         <spring.boot.version>2.7.3</spring.boot.version>
         <redisson.version>3.17.5</redisson.version>
-        <org.mapstruct.version>1.5.2.Final</org.mapstruct.version>
-        <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
         <maven-compiler-plugin.verison>3.8.0</maven-compiler-plugin.verison>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <ballcat.version>0.9.0</ballcat.version>
         <satoken.version>1.31.0</satoken.version>
+        <swagger3.version>3.0.0</swagger3.version>
+        <spring.cloud.loadbalancer.version>3.0.3</spring.cloud.loadbalancer.version>
+        <rocketmq.version>2.2.2</rocketmq.version>
     </properties>
 
     <modules>
@@ -93,11 +93,6 @@
                 <artifactId>logstash-logback-encoder</artifactId>
                 <version>${logstash.version}</version>
             </dependency>
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-classic</artifactId>
-                <version>${logback.version}</version>
-            </dependency>
             <!--        logback日志记录框架-->
             <dependency>
                 <groupId>ch.qos.logback</groupId>
@@ -132,11 +127,23 @@
                 <artifactId>elasticsearch-rest-client</artifactId>
                 <version>${elasticsearch.version}</version>
             </dependency>
-            <!-- xxl-job-core -->
+            <!--            swagger3-->
             <dependency>
-                <groupId>com.xuxueli</groupId>
-                <artifactId>xxl-job-core</artifactId>
-                <version>${xxl.job.version}</version>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-boot-starter</artifactId>
+                <version>${swagger3.version}</version>
+            </dependency>
+            <!--            loadbalancer-->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+                <version>${spring.cloud.loadbalancer.version}</version>
+            </dependency>
+            <!--            ORM框架-->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
             </dependency>
             <!--            satoken 认证授权-->
             <dependency>
@@ -154,16 +161,34 @@
                 <artifactId>sa-token-dao-redis-jackson</artifactId>
                 <version>${satoken.version}</version>
             </dependency>
-            <!--        ballcat starter依赖-->
+            <!--            注册中心,配置中心-->
             <dependency>
-                <groupId>com.hccake</groupId>
-                <artifactId>ballcat-spring-boot-starter-file</artifactId>
-                <version>${ballcat.version}</version>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+                <version>${spring.cloud.alibaba.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.hccake</groupId>
-                <artifactId>ballcat-spring-boot-starter-job</artifactId>
-                <version>${ballcat.version}</version>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+                <version>${spring.cloud.alibaba.version}</version>
+            </dependency>
+            <!--            限流-->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+                <version>${spring.cloud.alibaba.version}</version>
+            </dependency>
+            <!--            rocketMq消息队列-->
+            <dependency>
+                <groupId>org.apache.rocketmq</groupId>
+                <artifactId>rocketmq-spring-boot-starter</artifactId>
+                <version>${rocketmq.version}</version>
+            </dependency>
+            <!--            日志组件-->
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.hccake</groupId>
@@ -183,11 +208,6 @@
             <dependency>
                 <groupId>com.hccake</groupId>
                 <artifactId>ballcat-spring-boot-starter-redis</artifactId>
-                <version>${ballcat.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.hccake</groupId>
-                <artifactId>ballcat-extend-redis-module</artifactId>
                 <version>${ballcat.version}</version>
             </dependency>
             <dependency>
@@ -217,6 +237,21 @@
             </dependency>
             <dependency>
                 <groupId>com.hccake</groupId>
+                <artifactId>ballcat-common-util</artifactId>
+                <version>${ballcat.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hccake</groupId>
+                <artifactId>ballcat-common-model</artifactId>
+                <version>${ballcat.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hccake</groupId>
+                <artifactId>ballcat-spring-boot-starter-job</artifactId>
+                <version>${ballcat.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hccake</groupId>
                 <artifactId>ballcat-extend-mybatis-plus</artifactId>
                 <version>${ballcat.version}</version>
             </dependency>
@@ -225,21 +260,10 @@
                 <artifactId>ballcat-spring-boot-starter-swagger</artifactId>
                 <version>${ballcat.version}</version>
             </dependency>
-            <dependency>
-                <groupId>com.hccake</groupId>
-                <artifactId>ballcat-common-core</artifactId>
-                <version>${ballcat.version}</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <dependencies>
-        <!-- bean 转换工具类 -->
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-            <version>${org.mapstruct.version}</version>
-        </dependency>
         <!-- lombok 代码简化处理器 -->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -250,11 +274,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -314,23 +333,10 @@
                         <skip>true</skip>
                         <annotationProcessorPaths>
                             <path>
-                                <groupId>org.mapstruct</groupId>
-                                <artifactId>mapstruct-processor</artifactId>
-                                <version>${org.mapstruct.version}</version>
-                            </path>
-                            <path>
                                 <groupId>org.projectlombok</groupId>
                                 <artifactId>lombok</artifactId>
                                 <version>${lombok.version}</version>
                             </path>
-
-                            <!-- additional annotation processor required as of Lombok 1.18.16 -->
-                            <path>
-                                <groupId>org.projectlombok</groupId>
-                                <artifactId>lombok-mapstruct-binding</artifactId>
-                                <version>${lombok-mapstruct-binding.version}</version>
-                            </path>
-
                             <!-- spring-boot 配置处理 -->
                             <path>
                                 <groupId>org.springframework.boot</groupId>

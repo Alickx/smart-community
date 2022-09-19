@@ -13,5 +13,9 @@ import java.util.List;
 */
 public interface RoleService extends ExtendService<Role> {
 
-    R<List<String>> getRole();
+    /**
+     * 获取角色
+     * @return 角色列表
+     */
+    R<List<String>> getRole(Long userId);
 }

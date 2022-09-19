@@ -20,13 +20,13 @@ public class AuthUser implements Serializable {
     /**
     * 
     */
-    @NotNull(message="[]不能为空")
+    @NotNull(message="[主键id]不能为空")
     @ApiModelProperty("")
     private Long id;
     /**
     * 1手机号 2邮箱 3用户名 4qq 5微信 6腾讯微博 7新浪微博
     */
-    @NotNull(message="[登录类型]不能为空")
+    @NotNull(message="[渠道类型]不能为空")
     @ApiModelProperty("1手机号 2邮箱 3用户名 4qq 5微信")
     private Integer identityType;
     /**

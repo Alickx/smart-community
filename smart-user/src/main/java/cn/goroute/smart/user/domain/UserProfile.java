@@ -1,6 +1,7 @@
 package cn.goroute.smart.user.domain;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
@@ -11,8 +12,10 @@ import java.time.LocalDateTime;
 
 /**
 * 用户信息表
-* @TableName user_profile
+* @author Alickx
+ * @TableName user_profile
 */
+@Data
 public class UserProfile implements Serializable {
 
     /**
@@ -21,6 +24,13 @@ public class UserProfile implements Serializable {
     @NotNull(message="[主键id]不能为空")
     @ApiModelProperty("主键id")
     private Long id;
+
+    /**
+     * 用户id
+     */
+    @NotNull(message="[用户id]不能为空")
+    @ApiModelProperty("用户id")
+    private Long userId;
     /**
     * 呢称
     */
@@ -158,314 +168,4 @@ public class UserProfile implements Serializable {
     @NotNull(message="[]不能为空")
     @ApiModelProperty("")
     private LocalDateTime createTime;
-
-    /**
-    * 主键id
-    */
-    private void setId(Long id){
-    this.id = id;
-    }
-
-    /**
-    * 呢称
-    */
-    private void setNickName(String nickName){
-    this.nickName = nickName;
-    }
-
-    /**
-    * 登录账号
-    */
-    private void setEmail(String email){
-    this.email = email;
-    }
-
-    /**
-    * 性别 0 = 男 1= 女
-    */
-    private void setGender(String gender){
-    this.gender = gender;
-    }
-
-    /**
-    * 手机号
-    */
-    private void setPhone(String phone){
-    this.phone = phone;
-    }
-
-    /**
-    * 头像地址
-    */
-    private void setAvatar(String avatar){
-    this.avatar = avatar;
-    }
-
-    /**
-    * 个人介绍
-    */
-    private void setIntro(String intro){
-    this.intro = intro;
-    }
-
-    /**
-    * 粉丝数
-    */
-    private void setFans(Integer fans){
-    this.fans = fans;
-    }
-
-    /**
-    * 关注数
-    */
-    private void setFollow(Integer follow){
-    this.follow = follow;
-    }
-
-    /**
-    * 积分
-    */
-    private void setScore(Integer score){
-    this.score = score;
-    }
-
-    /**
-    * gitee地址
-    */
-    private void setGitee(String gitee){
-    this.gitee = gitee;
-    }
-
-    /**
-    * github地址
-    */
-    private void setGithub(String github){
-    this.github = github;
-    }
-
-    /**
-    * 访问系统
-    */
-    private void setOs(String os){
-    this.os = os;
-    }
-
-    /**
-    * QQ号码
-    */
-    private void setQqNumber(String qqNumber){
-    this.qqNumber = qqNumber;
-    }
-
-    /**
-    * 0 = 正常 1 = 不可评论
-    */
-    private void setCommentState(Integer commentState){
-    this.commentState = commentState;
-    }
-
-    /**
-    * 访问浏览器
-    */
-    private void setBrowser(String browser){
-    this.browser = browser;
-    }
-
-    /**
-    * 用户的标签 0 = 普通用户
-    */
-    private void setUserTag(Integer userTag){
-    this.userTag = userTag;
-    }
-
-    /**
-    * 用户状态 0 = 正常
-    */
-    private void setState(Integer state){
-    this.state = state;
-    }
-
-    /**
-    * 上一次登录的时间
-    */
-    private void setLastLoginTime(LocalDateTime lastLoginTime){
-    this.lastLoginTime = lastLoginTime;
-    }
-
-    /**
-    * 上一次登录的ip
-    */
-    private void setLastLoginIp(String lastLoginIp){
-    this.lastLoginIp = lastLoginIp;
-    }
-
-    /**
-    * 
-    */
-    private void setUpdateTime(LocalDateTime updateTime){
-    this.updateTime = updateTime;
-    }
-
-    /**
-    * 
-    */
-    private void setCreateTime(LocalDateTime createTime){
-    this.createTime = createTime;
-    }
-
-
-    /**
-    * 主键id
-    */
-    private Long getId(){
-    return this.id;
-    }
-
-    /**
-    * 呢称
-    */
-    private String getNickName(){
-    return this.nickName;
-    }
-
-    /**
-    * 登录账号
-    */
-    private String getEmail(){
-    return this.email;
-    }
-
-    /**
-    * 性别 0 = 男 1= 女
-    */
-    private String getGender(){
-    return this.gender;
-    }
-
-    /**
-    * 手机号
-    */
-    private String getPhone(){
-    return this.phone;
-    }
-
-    /**
-    * 头像地址
-    */
-    private String getAvatar(){
-    return this.avatar;
-    }
-
-    /**
-    * 个人介绍
-    */
-    private String getIntro(){
-    return this.intro;
-    }
-
-    /**
-    * 粉丝数
-    */
-    private Integer getFans(){
-    return this.fans;
-    }
-
-    /**
-    * 关注数
-    */
-    private Integer getFollow(){
-    return this.follow;
-    }
-
-    /**
-    * 积分
-    */
-    private Integer getScore(){
-    return this.score;
-    }
-
-    /**
-    * gitee地址
-    */
-    private String getGitee(){
-    return this.gitee;
-    }
-
-    /**
-    * github地址
-    */
-    private String getGithub(){
-    return this.github;
-    }
-
-    /**
-    * 访问系统
-    */
-    private String getOs(){
-    return this.os;
-    }
-
-    /**
-    * QQ号码
-    */
-    private String getQqNumber(){
-    return this.qqNumber;
-    }
-
-    /**
-    * 0 = 正常 1 = 不可评论
-    */
-    private Integer getCommentState(){
-    return this.commentState;
-    }
-
-    /**
-    * 访问浏览器
-    */
-    private String getBrowser(){
-    return this.browser;
-    }
-
-    /**
-    * 用户的标签 0 = 普通用户
-    */
-    private Integer getUserTag(){
-    return this.userTag;
-    }
-
-    /**
-    * 用户状态 0 = 正常
-    */
-    private Integer getState(){
-    return this.state;
-    }
-
-    /**
-    * 上一次登录的时间
-    */
-    private LocalDateTime getLastLoginTime(){
-    return this.lastLoginTime;
-    }
-
-    /**
-    * 上一次登录的ip
-    */
-    private String getLastLoginIp(){
-    return this.lastLoginIp;
-    }
-
-    /**
-    * 
-    */
-    private LocalDateTime getUpdateTime(){
-    return this.updateTime;
-    }
-
-    /**
-    * 
-    */
-    private LocalDateTime getCreateTime(){
-    return this.createTime;
-    }
-
 }

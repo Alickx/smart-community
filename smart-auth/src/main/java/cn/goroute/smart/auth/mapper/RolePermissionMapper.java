@@ -1,8 +1,9 @@
 package cn.goroute.smart.auth.mapper;
 
 import cn.goroute.smart.auth.domain.RolePermission;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hccake.extend.mybatis.plus.mapper.ExtendMapper;
+
+import java.util.List;
 
 /**
 * @author caiguopeng
@@ -12,6 +13,12 @@ import com.hccake.extend.mybatis.plus.mapper.ExtendMapper;
 */
 public interface RolePermissionMapper extends ExtendMapper<RolePermission> {
 
+    /**
+     * 根据角色id查询权限
+     * @param roleIds 角色id
+     * @return 权限列表
+     */
+    List<String> selectByRoleIds(List<Long> roleIds);
 }
 
 

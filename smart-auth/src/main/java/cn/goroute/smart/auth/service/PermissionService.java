@@ -13,5 +13,9 @@ import java.util.List;
 */
 public interface PermissionService extends ExtendService<Permission> {
 
-    R<List<String>> getPermission();
+    /**
+     * 获取权限
+     * @return 权限列表
+     */
+    R<List<String>> getPermission(Long userId);
 }

@@ -7,13 +7,22 @@ import cn.goroute.smart.auth.entity.vo.UserLoginVo;
 import cn.goroute.smart.auth.entity.vo.UserRegisterVo;
 import cn.goroute.smart.auth.mapper.AuthUserMapper;
 import cn.goroute.smart.auth.service.AuthUserService;
+import cn.goroute.smart.auth.service.FeignUserProfileService;
+import cn.goroute.smart.auth.service.PermissionService;
+import cn.goroute.smart.auth.service.RoleService;
+import cn.goroute.smart.auth.strategy.register.RegisterEnum;
+import cn.goroute.smart.auth.strategy.register.RegisterStrategy;
 import cn.goroute.smart.common.constant.ErrorCodeEnum;
+import cn.goroute.smart.common.entity.dto.UserProfileDto;
 import cn.hutool.crypto.digest.BCrypt;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.hccake.ballcat.common.model.result.R;
 import com.hccake.extend.mybatis.plus.service.impl.ExtendServiceImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
 * @author caiguopeng
@@ -22,10 +31,19 @@ import org.springframework.stereotype.Service;
 */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthUserServiceImpl extends ExtendServiceImpl<AuthUserMapper, AuthUser>
     implements AuthUserService{
 
     private final AuthUserMapper authUserMapper;
+
+    private final RegisterStrategy registerStrategy;
+
+    private final FeignUserProfileService feignUserProfileService;
+
+    private final RoleService roleService;
+
+    private final PermissionService permissionService;
 
     /**
      * 用户登录
@@ -43,22 +61,39 @@ public class AuthUserServiceImpl extends ExtendServiceImpl<AuthUserMapper, AuthU
             return R.failed(ErrorCodeEnum.USER_NOT_EXIST);
         }
 
-        if (BCrypt.checkpw(userLoginVo.getPassword(), authUser.getCertificate())) {
+        if (!BCrypt.checkpw(userLoginVo.getPassword(), authUser.getCertificate())) {
             return R.failed(ErrorCodeEnum.USERNAME_OR_PASSWORD_ERROR);
         }
 
-        StpUtil.login(authUser.getId());
+        Long userId = authUser.getId();
 
-        // TODO 调用用户信息接口
+        StpUtil.login(userId);
+        String tokenValue = StpUtil.getTokenValue();
+
+        R<UserProfileDto> userProfileResult = feignUserProfileService.getUserProfile(tokenValue);
+        if (userProfileResult.getData() == null) {
+            log.error("获取用户信息失败,用户信息:{}",userLoginVo);
+            return R.failed(ErrorCodeEnum.SYSTEM_ERROR);
+        }
+
+        R<List<String>> permissionResult = permissionService.getPermission(userId);
+        if (permissionResult.getData() == null) {
+            log.error("获取用户权限失败,用户信息:{}",userLoginVo);
+            return R.failed(ErrorCodeEnum.SYSTEM_ERROR);
+        }
+
+        R<List<String>> roleResult = roleService.getRole(userId);
+        if (roleResult.getData() == null) {
+            log.error("获取用户角色失败,用户信息:{}",userLoginVo);
+            return R.failed(ErrorCodeEnum.SYSTEM_ERROR);
+        }
 
         CustomUserDetails customUserDetails = new CustomUserDetails();
         customUserDetails
-                .setAccessToken(StpUtil.getTokenValue())
-                .setUserProfileDto(null)
-                .setPermissions(null)
-                .setRoles(null);
-
-        // TODO 事件通知
+                .setAccessToken(tokenValue)
+                .setUserProfileDto(userProfileResult.getData())
+                .setPermissions(permissionResult.getData())
+                .setRoles(roleResult.getData());
 
         return R.ok(customUserDetails);
 
@@ -72,7 +107,24 @@ public class AuthUserServiceImpl extends ExtendServiceImpl<AuthUserMapper, AuthU
      */
     @Override
     public R<Boolean> register(UserRegisterVo userRegisterVo) {
-        return null;
+
+        AuthUser authUser = authUserMapper.selectOne(new LambdaQueryWrapper<AuthUser>()
+                .eq(AuthUser::getIdentifier, userRegisterVo.getUsername()));
+
+        if (authUser != null) {
+            return R.failed(ErrorCodeEnum.USER_ALREADY_EXIST);
+        }
+
+        RegisterEnum registerEnum = RegisterEnum.getRegisterEnum(userRegisterVo.getIdentityType());
+        if (registerEnum == null) {
+            return R.failed(ErrorCodeEnum.PARAM_ERROR);
+        }
+        registerStrategy
+                .setRegisterExecute(registerEnum);
+        registerStrategy.register(userRegisterVo);
+
+        return R.ok();
+
     }
 
     /**
@@ -82,7 +134,8 @@ public class AuthUserServiceImpl extends ExtendServiceImpl<AuthUserMapper, AuthU
      */
     @Override
     public R<Boolean> logout() {
-        return null;
+        StpUtil.logout();
+        return R.ok();
     }
 }
 

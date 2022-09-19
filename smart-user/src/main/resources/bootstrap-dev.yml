@@ -1,13 +1,40 @@
+server:
+  port: 12000
 spring:
   application:
-    name: smart-member
+    name: smart-user
   cloud:
     nacos:
       discovery:
         server-addr: localhost:8848
-        namespace: af0252de-6da5-45a8-905b-53efeb106bc1
-      config:
-        server-addr: localhost:8848
-        namespace: af0252de-6da5-45a8-905b-53efeb106bc1
-        file-extension: yml
-        group: DEFAULT_GROUP
+  redis:
+    database: 0
+    host: 127.0.0.1
+    port: 6379
+    timeout: 10s
+    lettuce:
+      pool:
+        max-active: 200
+        max-wait: -1ms
+        max-idle: 10
+        min-idle: 0
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/smart_member?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+sa-token:
+  token-name: 'Authorization'
+  timeout: 2592000
+  activity-timeout: -1
+  token-style: simple-uuid
+ballcat:
+  redis:
+    key-prefix: 'smart-user:'
+  swagger:
+    documentation-type: oas_30
+    enabled: true
+    title: smart-user
+    description: '用户中心'
+    version: 1.0.0

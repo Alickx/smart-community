@@ -1,7 +1,7 @@
 package cn.goroute.smart.user.mapper;
 
 import cn.goroute.smart.user.domain.UserProfile;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.hccake.extend.mybatis.plus.mapper.ExtendMapper;
 
 /**
 * @author caiguopeng
@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @createDate 2022-09-17 19:30:44
 * @Entity cn.goroute.smart.user.domain.UserProfile
 */
-public interface UserProfileMapper extends BaseMapper<UserProfile> {
+public interface UserProfileMapper extends ExtendMapper<UserProfile> {
 
 }
 

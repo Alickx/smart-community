@@ -1,5 +1,6 @@
-package cn.goroute.smart.auth;
+package cn.goroute.smart.user;
 
+import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -8,19 +9,17 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import springfox.documentation.oas.annotations.EnableOpenApi;
 
-/**
- * @author Alickx
- */
-@SpringBootApplication(scanBasePackages = "cn.goroute.smart")
+@SpringBootApplication(scanBasePackages = {"cn.goroute.smart"})
 @EnableDiscoveryClient
-@MapperScan("cn.goroute.smart.*.mapper")
 @EnableFeignClients
+@MapperScan("cn.goroute.smart.*.mapper")
 @EnableOpenApi
 @EnableWebMvc
-public class SmartAuthApplication {
+@Slf4j
+public class SmartUserApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SmartAuthApplication.class, args);
+        SpringApplication.run(SmartUserApplication.class, args);
     }
 
 }

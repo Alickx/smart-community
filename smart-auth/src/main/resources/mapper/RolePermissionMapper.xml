@@ -16,4 +16,17 @@
         id,role_id,permission_uid,
         create_time,update_time
     </sql>
+
+    <select id="selectByRoleIds" resultType="string">
+        SELECT
+            p.permission_name
+        FROM
+            role_permission rp
+        LEFT JOIN permission p ON rp.permission_id = p.id
+        WHERE
+            rp.role_id IN
+            <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
+                #{roleId}
+            </foreach>
+    </select>
 </mapper>

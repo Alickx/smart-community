@@ -1,8 +1,9 @@
 package cn.goroute.smart.auth.mapper;
 
 import cn.goroute.smart.auth.domain.UserRole;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hccake.extend.mybatis.plus.mapper.ExtendMapper;
+
+import java.util.List;
 
 /**
 * @author caiguopeng
@@ -12,6 +13,7 @@ import com.hccake.extend.mybatis.plus.mapper.ExtendMapper;
 */
 public interface UserRoleMapper extends ExtendMapper<UserRole> {
 
+    List<Long> selectByUserId(long userId);
 }
 
 
