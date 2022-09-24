@@ -30,7 +30,7 @@ public class CustomUserDetails {
      * 用戶信息
      */
     @Parameter(description = "用戶信息")
-    private UserProfileDto userProfileDto;
+    private UserProfileDto userProfile;
 
     /**
      * 权限列表

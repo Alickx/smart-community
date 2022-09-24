@@ -30,6 +30,10 @@ public class UserProfileController {
     @GetMapping("/profile")
     @Operation(summary = "获取用户信息", description = "获取用户信息")
     public R<UserProfileDto> getUserProfile(@RequestParam("userId") Long userId) {
+        // 如果请求参数中没有userId，则从token中获取
+        if (userId == null) {
+            userId = StpUtil.getLoginIdAsLong();
+        }
         return userProfileService.getUserProfile(userId);
 
     }

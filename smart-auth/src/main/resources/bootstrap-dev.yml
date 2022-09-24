@@ -38,9 +38,3 @@ ballcat:
   swagger:
     documentation-type: oas_30
     enabled: true
-    title: smart-auth
-    description: '认证授权中心'
-    version: 1.0.0
-logging:
-  level:
-    feign.Logger: debug

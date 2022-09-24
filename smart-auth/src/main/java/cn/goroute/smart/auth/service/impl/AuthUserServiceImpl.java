@@ -91,7 +91,7 @@ public class AuthUserServiceImpl extends ExtendServiceImpl<AuthUserMapper, AuthU
         CustomUserDetails customUserDetails = new CustomUserDetails();
         customUserDetails
                 .setAccessToken(tokenValue)
-                .setUserProfileDto(userProfileResult.getData())
+                .setUserProfile(userProfileResult.getData())
                 .setPermissions(permissionResult.getData())
                 .setRoles(roleResult.getData());
 

@@ -4,9 +4,11 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.common.constant.ErrorCodeEnum;
 import cn.goroute.smart.common.entity.dto.UserProfileDto;
 import cn.goroute.smart.user.domain.UserProfile;
+import cn.goroute.smart.user.manager.UserProfileManager;
 import cn.goroute.smart.user.mapper.UserProfileMapper;
 import cn.goroute.smart.user.service.UserProfileService;
 import cn.hutool.core.convert.Convert;
+import cn.hutool.http.useragent.Browser;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.hccake.ballcat.common.model.result.R;
 import com.hccake.ballcat.common.redis.core.annotation.CachePut;
@@ -27,6 +29,8 @@ public class UserProfileServiceImpl extends ExtendServiceImpl<UserProfileMapper,
 
     private final UserProfileMapper userProfileMapper;
 
+    private final UserProfileManager userProfileManager;
+
     /**
      * 获取用户信息
      * @return 用户信息
@@ -35,6 +39,10 @@ public class UserProfileServiceImpl extends ExtendServiceImpl<UserProfileMapper,
     @CachePut(key = "user:profile",keyJoint = "#userId", ttl = 120)
     @Cached(key = "user:profile",keyJoint = "#userId")
     public R<UserProfileDto> getUserProfile(Long userId) {
+
+        if (userId == null) {
+            return R.failed(ErrorCodeEnum.USER_NOT_LOGIN);
+        }
 
         UserProfile userProfile = userProfileMapper
                 .selectOne(new LambdaQueryWrapper<UserProfile>().eq(UserProfile::getUserId, userId));
@@ -56,8 +64,15 @@ public class UserProfileServiceImpl extends ExtendServiceImpl<UserProfileMapper,
         UserProfile userProfile = Convert
                 .convert(UserProfile.class, userProfileDto);
 
-        return R.ok(userProfileMapper.insert(userProfile) > 0);
+        userProfile.setAvatar("https://img.llwstu.com/img/202208212352490.png");
+        userProfile.setNickName("用户" + StpUtil.getLoginIdAsLong());
+
+        userProfileManager.initUserProfile(userProfile);
+
+        return R.ok();
     }
+
+
 
 }
 

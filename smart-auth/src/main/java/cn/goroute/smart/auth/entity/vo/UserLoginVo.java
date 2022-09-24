@@ -20,7 +20,7 @@ public class UserLoginVo {
 
 
 
-    @Pattern(regexp = "^([A-Za-z0-9_\\-\\.\\u4e00-\\u9fa5])+\\@([A-Za-z0-9_\\-\\.])+\\.([A-Za-z]{2,8})$", message = "用户名格式不正确")
+    @Pattern(regexp = "^([A-Za-z0-9_\\-.\\u4e00-\\u9fa5])+@([A-Za-z0-9_\\-.])+\\.([A-Za-z]{2,8})$", message = "用户名格式不正确")
     @Parameter(description = "用户名")
     private String username;
 

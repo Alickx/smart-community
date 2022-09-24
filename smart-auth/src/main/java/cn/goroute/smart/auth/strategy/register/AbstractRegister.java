@@ -21,8 +21,8 @@ public abstract class AbstractRegister {
     protected  FeignUserProfileService feignUserProfileService;
 
     protected Boolean initUserProfile(UserProfileDto userProfileDto){
-        R<Boolean> booleanR = feignUserProfileService.initUserProfile(userProfileDto);
-        return booleanR.getData();
+        R<Boolean> resp = feignUserProfileService.initUserProfile(userProfileDto);
+        return resp.getCode() == 200;
     }
 
 }
