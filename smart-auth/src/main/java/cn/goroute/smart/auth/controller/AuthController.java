@@ -2,8 +2,8 @@ package cn.goroute.smart.auth.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.auth.entity.CustomUserDetails;
-import cn.goroute.smart.auth.entity.vo.UserLoginVo;
-import cn.goroute.smart.auth.entity.vo.UserRegisterVo;
+import cn.goroute.smart.auth.entity.vo.UserLoginVO;
+import cn.goroute.smart.auth.entity.vo.UserRegisterVO;
 import cn.goroute.smart.auth.service.AuthUserService;
 import cn.goroute.smart.auth.service.PermissionService;
 import cn.goroute.smart.auth.service.RoleService;
@@ -38,7 +38,7 @@ public class AuthController {
      */
     @PostMapping("/login")
     @Operation(summary = "用户登录", description = "用户登录")
-    public R<CustomUserDetails> login(@RequestBody @Valid UserLoginVo userLoginVo) {
+    public R<CustomUserDetails> login(@RequestBody @Valid UserLoginVO userLoginVo) {
         return authUserService.login(userLoginVo);
     }
 
@@ -49,7 +49,7 @@ public class AuthController {
      */
     @PostMapping("/register")
     @Operation(summary = "用户注册", description = "用户注册")
-    public R<Boolean> register(@RequestBody @Valid UserRegisterVo userRegisterVo) {
+    public R<Boolean> register(@RequestBody @Valid UserRegisterVO userRegisterVo) {
         return authUserService.register(userRegisterVo);
     }
 

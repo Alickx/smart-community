@@ -1,18 +1,18 @@
 package cn.goroute.smart.post.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import cn.goroute.smart.post.domain.Category;
-import cn.goroute.smart.post.service.CategoryService;
 import cn.goroute.smart.post.mapper.CategoryMapper;
+import cn.goroute.smart.post.service.CategoryService;
+import com.hccake.extend.mybatis.plus.service.impl.ExtendServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**
-* @author caiguopeng
+* @author Alickx
 * @description 针对表【category(板块表)】的数据库操作Service实现
-* @createDate 2022-09-17 19:31:22
+* @createDate 2022-09-25 16:53:24
 */
 @Service
-public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category>
+public class CategoryServiceImpl extends ExtendServiceImpl<CategoryMapper, Category>
     implements CategoryService{
 
 }

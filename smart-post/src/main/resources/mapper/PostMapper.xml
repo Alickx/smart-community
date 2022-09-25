@@ -7,25 +7,25 @@
     <resultMap id="BaseResultMap" type="cn.goroute.smart.post.domain.Post">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="categoryId" column="category_id" jdbcType="BIGINT"/>
-            <result property="memberId" column="member_id" jdbcType="BIGINT"/>
+            <result property="authorId" column="author_id" jdbcType="BIGINT"/>
             <result property="title" column="title" jdbcType="VARCHAR"/>
             <result property="content" column="content" jdbcType="VARCHAR"/>
-            <result property="status" column="status" jdbcType="TINYINT"/>
+            <result property="state" column="state" jdbcType="TINYINT"/>
             <result property="collectCount" column="collect_count" jdbcType="INTEGER"/>
             <result property="thumbCount" column="thumb_count" jdbcType="INTEGER"/>
-            <result property="isPublish" column="is_publish" jdbcType="VARCHAR"/>
             <result property="commentCount" column="comment_count" jdbcType="INTEGER"/>
+            <result property="isPublish" column="is_publish" jdbcType="TINYINT"/>
             <result property="summary" column="summary" jdbcType="VARCHAR"/>
-            <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
-            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="deleted" column="deleted" jdbcType="TINYINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,category_id,member_id,
-        title,content,status,
-        collect_count,thumb_count,is_publish,
-        comment_count,summary,updated_time,
-        created_time,deleted
+        id,category_id,author_id,
+        title,content,state,
+        collect_count,thumb_count,comment_count,
+        is_publish,summary,update_time,
+        create_time,deleted
     </sql>
 </mapper>

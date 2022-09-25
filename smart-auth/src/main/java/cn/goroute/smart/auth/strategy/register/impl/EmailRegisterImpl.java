@@ -1,7 +1,7 @@
 package cn.goroute.smart.auth.strategy.register.impl;
 
 import cn.goroute.smart.auth.domain.AuthUser;
-import cn.goroute.smart.auth.entity.vo.UserRegisterVo;
+import cn.goroute.smart.auth.entity.vo.UserRegisterVO;
 import cn.goroute.smart.auth.mapper.AuthUserMapper;
 import cn.goroute.smart.auth.strategy.register.AbstractRegister;
 import cn.goroute.smart.auth.strategy.register.IRegister;
@@ -28,7 +28,7 @@ public class EmailRegisterImpl extends AbstractRegister implements IRegister {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public R<Boolean> register(UserRegisterVo userRegisterVo) {
+    public R<Boolean> register(UserRegisterVO userRegisterVo) {
 
         AuthUser authUser = new AuthUser();
         authUser.setIdentityType(RegisterEnum.Email.getRegisterType());

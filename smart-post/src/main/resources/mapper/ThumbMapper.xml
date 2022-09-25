@@ -13,12 +13,11 @@
             <result property="type" column="type" jdbcType="INTEGER"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
-            <result property="state" column="state" jdbcType="TINYINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,user_id,to_user_id,
         post_id,to_id,type,
-        create_time,update_time,state
+        create_time,update_time
     </sql>
 </mapper>

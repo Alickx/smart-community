@@ -1,306 +1,92 @@
 package cn.goroute.smart.post.domain;
 
-import io.swagger.annotations.ApiModelProperty;
-import org.hibernate.validator.constraints.Length;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
-* 文章表
-* @TableName post
-*/
+ * 文章表
+ * @author Alickx
+ * @TableName post
+ */
+@TableName(value ="post")
+@Data
 public class Post implements Serializable {
+    /**
+     * 
+     */
+    @TableId
+    private Long id;
 
     /**
-    * 
-    */
-    @NotNull(message="[]不能为空")
-    @ApiModelProperty("")
-    private Long id;
-    /**
-    * 
-    */
-    @ApiModelProperty("")
+     * 板块id
+     */
     private Long categoryId;
+
     /**
-    * 
-    */
-    @NotNull(message="[]不能为空")
-    @ApiModelProperty("")
-    private Long userId;
+     * 作者id
+     */
+    private Long authorId;
+
     /**
-    * 
-    */
-    @NotBlank(message="[]不能为空")
-    @Size(max= 255,message="编码长度不能超过255")
-    @ApiModelProperty("")
-    @Length(max= 255,message="编码长度不能超过255")
+     * 文章题目
+     */
     private String title;
+
     /**
-    * 
-    */
-    @NotBlank(message="[]不能为空")
-    @Size(max= -1,message="编码长度不能超过-1")
-    @ApiModelProperty("")
-    @Length(max= -1,message="编码长度不能超过-1")
+     * 文章内容
+     */
     private String content;
+
     /**
-    * 文章状态 0 = 正常
-    */
-    @NotNull(message="[文章状态 0 = 正常]不能为空")
-    @ApiModelProperty("文章状态 0 = 正常")
+     * 文章状态 0 = 正常
+     */
     private Integer state;
+
     /**
-    * 
-    */
-    @NotNull(message="[]不能为空")
-    @ApiModelProperty("")
+     * 收藏数量
+     */
     private Integer collectCount;
+
     /**
-    * 
-    */
-    @NotNull(message="[]不能为空")
-    @ApiModelProperty("")
+     * 点赞数量
+     */
     private Integer thumbCount;
+
     /**
-    * 0 = 不公布  1 = 公布
-    */
-    @NotBlank(message="[0 = 不公布  1 = 公布]不能为空")
-    @Size(max= 1,message="编码长度不能超过1")
-    @ApiModelProperty("0 = 不公布  1 = 公布")
-    @Length(max= 1,message="编码长度不能超过1")
-    private String isPublish;
-    /**
-    * 
-    */
-    @NotNull(message="[]不能为空")
-    @ApiModelProperty("")
+     * 评论数量
+     */
     private Integer commentCount;
+
     /**
-    * 
-    */
-    @Size(max= 255,message="编码长度不能超过255")
-    @ApiModelProperty("")
-    @Length(max= 255,message="编码长度不能超过255")
+     * 0 = 不公布  1 = 公布
+     */
+    private Integer isPublish;
+
+    /**
+     * 文章摘要
+     */
     private String summary;
+
     /**
-    * 
-    */
-    @NotNull(message="[]不能为空")
-    @ApiModelProperty("")
-    private LocalDateTime updatedTime;
+     * 更新时间
+     */
+    private LocalDateTime updateTime;
+
     /**
-    * 
-    */
-    @NotNull(message="[]不能为空")
-    @ApiModelProperty("")
-    private LocalDateTime createdTime;
+     * 创建时间
+     */
+    private LocalDateTime createTime;
+
     /**
-    * 
-    */
-    @NotNull(message="[]不能为空")
-    @ApiModelProperty("")
+     * 逻辑删除 0 = 未删除 1 = 已删除
+     */
     private Integer deleted;
 
-    /**
-    * 
-    */
-    private void setId(Long id){
-    this.id = id;
-    }
-
-    /**
-    * 
-    */
-    private void setCategoryId(Long categoryId){
-    this.categoryId = categoryId;
-    }
-
-    /**
-    * 
-    */
-    private void setUserId(Long userId){
-    this.userId = userId;
-    }
-
-    /**
-    * 
-    */
-    private void setTitle(String title){
-    this.title = title;
-    }
-
-    /**
-    * 
-    */
-    private void setContent(String content){
-    this.content = content;
-    }
-
-    /**
-    * 文章状态 0 = 正常
-    */
-    private void setStatus(Integer status){
-    this.state = status;
-    }
-
-    /**
-    * 
-    */
-    private void setCollectCount(Integer collectCount){
-    this.collectCount = collectCount;
-    }
-
-    /**
-    * 
-    */
-    private void setThumbCount(Integer thumbCount){
-    this.thumbCount = thumbCount;
-    }
-
-    /**
-    * 0 = 不公布  1 = 公布
-    */
-    private void setIsPublish(String isPublish){
-    this.isPublish = isPublish;
-    }
-
-    /**
-    * 
-    */
-    private void setCommentCount(Integer commentCount){
-    this.commentCount = commentCount;
-    }
-
-    /**
-    * 
-    */
-    private void setSummary(String summary){
-    this.summary = summary;
-    }
-
-    /**
-    * 
-    */
-    private void setUpdatedTime(LocalDateTime updatedTime){
-    this.updatedTime = updatedTime;
-    }
-
-    /**
-    * 
-    */
-    private void setCreatedTime(LocalDateTime createdTime){
-    this.createdTime = createdTime;
-    }
-
-    /**
-    * 
-    */
-    private void setDeleted(Integer deleted){
-    this.deleted = deleted;
-    }
-
-
-    /**
-    * 
-    */
-    private Long getId(){
-    return this.id;
-    }
-
-    /**
-    * 
-    */
-    private Long getCategoryId(){
-    return this.categoryId;
-    }
-
-    /**
-    * 
-    */
-    private Long getUserId(){
-    return this.userId;
-    }
-
-    /**
-    * 
-    */
-    private String getTitle(){
-    return this.title;
-    }
-
-    /**
-    * 
-    */
-    private String getContent(){
-    return this.content;
-    }
-
-    /**
-    * 文章状态 0 = 正常
-    */
-    private Integer getStatus(){
-    return this.state;
-    }
-
-    /**
-    * 
-    */
-    private Integer getCollectCount(){
-    return this.collectCount;
-    }
-
-    /**
-    * 
-    */
-    private Integer getThumbCount(){
-    return this.thumbCount;
-    }
-
-    /**
-    * 0 = 不公布  1 = 公布
-    */
-    private String getIsPublish(){
-    return this.isPublish;
-    }
-
-    /**
-    * 
-    */
-    private Integer getCommentCount(){
-    return this.commentCount;
-    }
-
-    /**
-    * 
-    */
-    private String getSummary(){
-    return this.summary;
-    }
-
-    /**
-    * 
-    */
-    private LocalDateTime getUpdatedTime(){
-    return this.updatedTime;
-    }
-
-    /**
-    * 
-    */
-    private LocalDateTime getCreatedTime(){
-    return this.createdTime;
-    }
-
-    /**
-    * 
-    */
-    private Integer getDeleted(){
-    return this.deleted;
-    }
-
+    @TableField(exist = false)
+    private static final long serialVersionUID = 1L;
 }

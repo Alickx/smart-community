@@ -1,18 +1,18 @@
 package cn.goroute.smart.post.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import cn.goroute.smart.post.domain.Tag;
-import cn.goroute.smart.post.service.TagService;
 import cn.goroute.smart.post.mapper.TagMapper;
+import cn.goroute.smart.post.service.TagService;
+import com.hccake.extend.mybatis.plus.service.impl.ExtendServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**
-* @author caiguopeng
+* @author Alickx
 * @description 针对表【tag(标签表)】的数据库操作Service实现
-* @createDate 2022-09-17 19:31:22
+* @createDate 2022-09-25 16:53:24
 */
 @Service
-public class TagServiceImpl extends ServiceImpl<TagMapper, Tag>
+public class TagServiceImpl extends ExtendServiceImpl<TagMapper, Tag>
     implements TagService{
 
 }

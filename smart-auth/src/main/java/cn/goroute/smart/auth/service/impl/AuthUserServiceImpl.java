@@ -3,8 +3,8 @@ package cn.goroute.smart.auth.service.impl;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.auth.domain.AuthUser;
 import cn.goroute.smart.auth.entity.CustomUserDetails;
-import cn.goroute.smart.auth.entity.vo.UserLoginVo;
-import cn.goroute.smart.auth.entity.vo.UserRegisterVo;
+import cn.goroute.smart.auth.entity.vo.UserLoginVO;
+import cn.goroute.smart.auth.entity.vo.UserRegisterVO;
 import cn.goroute.smart.auth.mapper.AuthUserMapper;
 import cn.goroute.smart.auth.service.AuthUserService;
 import cn.goroute.smart.auth.service.FeignUserProfileService;
@@ -52,7 +52,7 @@ public class AuthUserServiceImpl extends ExtendServiceImpl<AuthUserMapper, AuthU
      * @return 用户信息
      */
     @Override
-    public R<CustomUserDetails> login(UserLoginVo userLoginVo) {
+    public R<CustomUserDetails> login(UserLoginVO userLoginVo) {
 
         AuthUser authUser = authUserMapper.selectOne(new LambdaQueryWrapper<AuthUser>()
             .eq(AuthUser::getIdentifier, userLoginVo.getUsername()));
@@ -106,7 +106,7 @@ public class AuthUserServiceImpl extends ExtendServiceImpl<AuthUserMapper, AuthU
      * @return 用户信息
      */
     @Override
-    public R<Boolean> register(UserRegisterVo userRegisterVo) {
+    public R<Boolean> register(UserRegisterVO userRegisterVo) {
 
         AuthUser authUser = authUserMapper.selectOne(new LambdaQueryWrapper<AuthUser>()
                 .eq(AuthUser::getIdentifier, userRegisterVo.getUsername()));

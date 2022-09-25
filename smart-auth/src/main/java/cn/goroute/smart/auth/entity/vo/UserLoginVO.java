@@ -16,7 +16,7 @@ import javax.validation.constraints.Size;
 @Data
 @Schema(name = "用户登录信息")
 @ParameterObject
-public class UserLoginVo {
+public class UserLoginVO {
 
 
 

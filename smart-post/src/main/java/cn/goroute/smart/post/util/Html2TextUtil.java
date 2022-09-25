@@ -1,7 +1,7 @@
 package cn.goroute.smart.post.util;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.StringUtils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -11,7 +11,7 @@ public class Html2TextUtil {
 
     public static String Html2Text(String content) {
 
-        if (StringUtils.isEmpty(content)) {
+        if (StrUtil.isEmpty(content)) {
             return "";
         }
 
@@ -73,7 +73,7 @@ public class Html2TextUtil {
             textStr = htmlStr;
 
         } catch (Exception e) {
-            log.info("Html2Text:{}", e.getMessage());
+            log.info("Html2Text error:", e);
         }
 
         // 返回文本字符串

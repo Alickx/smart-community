@@ -1,6 +1,6 @@
 package cn.goroute.smart.auth.strategy.register;
 
-import cn.goroute.smart.auth.entity.vo.UserRegisterVo;
+import cn.goroute.smart.auth.entity.vo.UserRegisterVO;
 import com.hccake.ballcat.common.model.result.R;
 
 import java.util.Map;
@@ -24,7 +24,7 @@ public class RegisterStrategy {
         this.registerMap = registerMap;
     }
 
-    public R<Boolean> register(UserRegisterVo userRegisterVo) {
+    public R<Boolean> register(UserRegisterVO userRegisterVo) {
         return registerExecute.register(userRegisterVo);
     }
 

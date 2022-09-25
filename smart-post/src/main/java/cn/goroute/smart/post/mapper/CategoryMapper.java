@@ -1,15 +1,15 @@
 package cn.goroute.smart.post.mapper;
 
 import cn.goroute.smart.post.domain.Category;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.hccake.extend.mybatis.plus.mapper.ExtendMapper;
 
 /**
-* @author caiguopeng
+* @author Alickx
 * @description 针对表【category(板块表)】的数据库操作Mapper
-* @createDate 2022-09-17 19:31:22
+* @createDate 2022-09-25 16:53:24
 * @Entity cn.goroute.smart.post.domain.Category
 */
-public interface CategoryMapper extends BaseMapper<Category> {
+public interface CategoryMapper extends ExtendMapper<Category> {
 
 }
 

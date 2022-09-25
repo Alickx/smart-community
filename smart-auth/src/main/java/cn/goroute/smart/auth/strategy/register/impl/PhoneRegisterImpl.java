@@ -1,6 +1,6 @@
 package cn.goroute.smart.auth.strategy.register.impl;
 
-import cn.goroute.smart.auth.entity.vo.UserRegisterVo;
+import cn.goroute.smart.auth.entity.vo.UserRegisterVO;
 import cn.goroute.smart.auth.strategy.register.IRegister;
 import cn.goroute.smart.common.entity.dto.UserProfileDto;
 import com.hccake.ballcat.common.model.result.R;
@@ -18,7 +18,7 @@ public class PhoneRegisterImpl implements IRegister {
      * @return R 注册的结果
      */
     @Override
-    public R<Boolean> register(UserRegisterVo userRegisterVo) {
+    public R<Boolean> register(UserRegisterVO userRegisterVo) {
         return null;
     }
 

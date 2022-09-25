@@ -10,13 +10,14 @@
             <result property="icon" column="icon" jdbcType="VARCHAR"/>
             <result property="url" column="url" jdbcType="VARCHAR"/>
             <result property="intro" column="intro" jdbcType="VARCHAR"/>
+            <result property="state" column="state" jdbcType="INTEGER"/>
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,name,icon,
-        url,intro,update_time,
-        create_time
+        url,intro,state,
+        update_time,create_time
     </sql>
 </mapper>

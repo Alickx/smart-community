@@ -1,162 +1,56 @@
 package cn.goroute.smart.post.domain;
 
-import io.swagger.annotations.ApiModelProperty;
-import org.hibernate.validator.constraints.Length;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import lombok.Data;
 
 /**
-* 标签表
-* @TableName tag
-*/
+ * 标签表
+ * @TableName tag
+ */
+@TableName(value ="tag")
+@Data
 public class Tag implements Serializable {
+    /**
+     * 主键id
+     */
+    @TableId(type = IdType.AUTO)
+    private Long id;
 
     /**
-    * 
-    */
-    @NotNull(message="[]不能为空")
-    @ApiModelProperty("")
-    private Long id;
-    /**
-    * 
-    */
-    @NotBlank(message="[]不能为空")
-    @Size(max= 1000,message="编码长度不能超过1000")
-    @ApiModelProperty("")
-    @Length(max= 1000,message="编码长度不能超过1,000")
+     * 标签内容
+     */
     private String content;
+
     /**
-    * 0 = 正常
-    */
-    @ApiModelProperty("0 = 正常")
+     * 标签状态 0 = 正常
+     */
     private Integer state;
+
     /**
-    * 
-    */
-    @Size(max= 2048,message="编码长度不能超过2048")
-    @ApiModelProperty("")
-    @Length(max= 2048,message="编码长度不能超过2048")
+     * 标签介绍
+     */
     private String intro;
+
     /**
-    * 
-    */
-    @NotNull(message="[]不能为空")
-    @ApiModelProperty("")
+     * 排序字段
+     */
     private Integer sort;
+
     /**
-    * 
-    */
-    @NotNull(message="[]不能为空")
-    @ApiModelProperty("")
+     * 创建时间
+     */
     private LocalDateTime createTime;
+
     /**
-    * 
-    */
-    @NotNull(message="[]不能为空")
-    @ApiModelProperty("")
+     * 更新时间
+     */
     private LocalDateTime updateTime;
 
-    /**
-    * 
-    */
-    private void setId(Long id){
-    this.id = id;
-    }
-
-    /**
-    * 
-    */
-    private void setContent(String content){
-    this.content = content;
-    }
-
-    /**
-    * 0 = 正常
-    */
-    private void setState(Integer state){
-    this.state = state;
-    }
-
-    /**
-    * 
-    */
-    private void setIntro(String intro){
-    this.intro = intro;
-    }
-
-    /**
-    * 
-    */
-    private void setSort(Integer sort){
-    this.sort = sort;
-    }
-
-    /**
-    * 
-    */
-    private void setCreateTime(LocalDateTime createTime){
-    this.createTime = createTime;
-    }
-
-    /**
-    * 
-    */
-    private void setUpdateTime(LocalDateTime updateTime){
-    this.updateTime = updateTime;
-    }
-
-
-    /**
-    * 
-    */
-    private Long getId(){
-    return this.id;
-    }
-
-    /**
-    * 
-    */
-    private String getContent(){
-    return this.content;
-    }
-
-    /**
-    * 0 = 正常
-    */
-    private Integer getState(){
-    return this.state;
-    }
-
-    /**
-    * 
-    */
-    private String getIntro(){
-    return this.intro;
-    }
-
-    /**
-    * 
-    */
-    private Integer getSort(){
-    return this.sort;
-    }
-
-    /**
-    * 
-    */
-    private LocalDateTime getCreateTime(){
-    return this.createTime;
-    }
-
-    /**
-    * 
-    */
-    private LocalDateTime getUpdateTime(){
-    return this.updateTime;
-    }
-
+    @TableField(exist = false)
+    private static final long serialVersionUID = 1L;
 }
