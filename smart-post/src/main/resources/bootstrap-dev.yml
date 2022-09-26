@@ -3,6 +3,9 @@ server:
 spring:
   application:
     name: smart-post
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
   cloud:
     nacos:
       discovery:
