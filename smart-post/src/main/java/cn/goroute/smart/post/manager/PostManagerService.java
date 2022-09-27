@@ -11,14 +11,12 @@ import cn.goroute.smart.post.entity.dto.CategoryDTO;
 import cn.goroute.smart.post.entity.dto.PostDTO;
 import cn.goroute.smart.post.entity.dto.TagDTO;
 import cn.goroute.smart.post.service.*;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hccake.ballcat.common.model.result.R;
 import com.hccake.extend.mybatis.plus.conditions.query.LambdaQueryWrapperX;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
@@ -162,23 +160,23 @@ public class PostManagerService {
 		LambdaQueryWrapperX<Thumb> thumbQueryWrapper;
 		LambdaQueryWrapperX<Comment> commentQueryWrapper;
 		// 获取文章id集合
-		for (int i = 0; i < records.size(); i++) {
+		for (PostDTO record : records) {
 			// 查询是否点赞
 			postExpansionBO = new PostExpansionBO();
 			thumbQueryWrapper = new LambdaQueryWrapperX<>();
 			thumbQueryWrapper.eq(Thumb::getUserId, userId);
-			thumbQueryWrapper.eq(Thumb::getPostId, records.get(i).getId());
+			thumbQueryWrapper.eq(Thumb::getPostId, record.getId());
 			Thumb thumb = thumbService.getBaseMapper().selectOne(thumbQueryWrapper);
 			postExpansionBO.setIsThumb(thumb != null);
 
 			// 查询是否评论
 			commentQueryWrapper = new LambdaQueryWrapperX<>();
 			commentQueryWrapper.eq(Comment::getUserId, userId);
-			commentQueryWrapper.eq(Comment::getPostId, records.get(i).getId());
+			commentQueryWrapper.eq(Comment::getPostId, record.getId());
 			Comment comment = commentService.getBaseMapper().selectOne(commentQueryWrapper);
 			postExpansionBO.setIsComment(comment != null);
 
-			records.get(i).setExpansion(postExpansionBO);
+			record.setExpansion(postExpansionBO);
 
 		}
 
