@@ -1,6 +1,6 @@
 package cn.goroute.smart.post.entity.dto;
 
-import cn.goroute.smart.common.entity.dto.UserProfileDto;
+import cn.goroute.smart.common.entity.dto.UserProfileDTO;
 import lombok.Data;
 import lombok.ToString;
 
@@ -23,7 +23,7 @@ public class PostAbbreviationDTO {
 	/**
 	 * 文章作者信息
 	 */
-	private UserProfileDto author;
+	private UserProfileDTO author;
 
 	/**
 	 * 板块信息

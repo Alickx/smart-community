@@ -7,13 +7,13 @@ import cn.goroute.smart.auth.entity.vo.UserLoginVO;
 import cn.goroute.smart.auth.entity.vo.UserRegisterVO;
 import cn.goroute.smart.auth.mapper.AuthUserMapper;
 import cn.goroute.smart.auth.service.AuthUserService;
-import cn.goroute.smart.auth.service.FeignUserProfileService;
+import cn.goroute.smart.common.feign.FeignUserProfileService;
 import cn.goroute.smart.auth.service.PermissionService;
 import cn.goroute.smart.auth.service.RoleService;
 import cn.goroute.smart.auth.strategy.register.RegisterEnum;
 import cn.goroute.smart.auth.strategy.register.RegisterStrategy;
 import cn.goroute.smart.common.constant.ErrorCodeEnum;
-import cn.goroute.smart.common.entity.dto.UserProfileDto;
+import cn.goroute.smart.common.entity.dto.UserProfileDTO;
 import cn.hutool.crypto.digest.BCrypt;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.hccake.ballcat.common.model.result.R;
@@ -70,7 +70,7 @@ public class AuthUserServiceImpl extends ExtendServiceImpl<AuthUserMapper, AuthU
         StpUtil.login(userId);
         String tokenValue = StpUtil.getTokenValue();
 
-        R<UserProfileDto> userProfileResult = feignUserProfileService.getUserProfile(userId);
+        R<UserProfileDTO> userProfileResult = feignUserProfileService.getUserProfile(userId);
         if (userProfileResult.getData() == null) {
             log.error("获取用户信息失败,用户信息:{}",userLoginVo);
             return R.failed(ErrorCodeEnum.SYSTEM_ERROR);

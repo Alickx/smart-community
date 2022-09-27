@@ -3,9 +3,13 @@ package cn.goroute.smart.post.service;
 import cn.goroute.smart.post.domain.Post;
 import cn.goroute.smart.post.entity.dto.PostDTO;
 import cn.goroute.smart.post.entity.qo.PostQO;
+import cn.goroute.smart.post.entity.vo.PostVO;
 import com.hccake.ballcat.common.model.domain.PageParam;
 import com.hccake.ballcat.common.model.domain.PageResult;
+import com.hccake.ballcat.common.model.result.R;
 import com.hccake.extend.mybatis.plus.service.ExtendService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 /**
 * @author Alickx
@@ -20,12 +24,19 @@ public interface PostService extends ExtendService<Post> {
 	 * @param postQO 查询参数对象
 	 * @return 查询结果
 	 */
-	PageResult<PostDTO> infoPage(PageParam pageParam, PostQO postQO);
+	R<PageResult<PostDTO>> infoPage(PageParam pageParam, PostQO postQO);
 
 	/**
 	 * 根据文章Id查询文章详情
 	 * @param postId 文章Id
 	 * @return 文章详情
 	 */
-	PostDTO info(Long postId);
+	R<PostDTO> info(Long postId);
+
+	/**
+	 * 保存文章
+	 * @param postVO 文章视图对象
+	 * @return 文章Id
+	 */
+	R<Long> save(PostVO postVO);
 }

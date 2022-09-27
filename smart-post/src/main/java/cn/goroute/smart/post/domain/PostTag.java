@@ -18,7 +18,7 @@ public class PostTag implements Serializable {
     /**
      * 
      */
-    @TableId
+	@TableId(type = IdType.AUTO)
     private Long id;
 
     /**

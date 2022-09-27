@@ -18,7 +18,7 @@ public class CategoryTag implements Serializable {
     /**
      * 
      */
-    @TableId
+	@TableId(type = IdType.AUTO)
     private Long id;
 
     /**

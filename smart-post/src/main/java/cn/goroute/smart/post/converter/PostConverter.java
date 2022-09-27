@@ -3,6 +3,7 @@ package cn.goroute.smart.post.converter;
 import cn.goroute.smart.post.domain.Post;
 import cn.goroute.smart.post.entity.dto.PostAbbreviationDTO;
 import cn.goroute.smart.post.entity.dto.PostDTO;
+import cn.goroute.smart.post.entity.vo.PostVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -35,6 +36,10 @@ public interface PostConverter {
 	@Mapping(target = "author", ignore = true)
 	PostAbbreviationDTO poToAbbreviationDto(Post post);
 
-
-
+	/**
+	 * VO 转 PO
+	 * @param postVO 文章视图对象
+	 * @return Post 文章
+	 */
+    Post voToPo(PostVO postVO);
 }

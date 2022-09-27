@@ -2,7 +2,7 @@ package cn.goroute.smart.auth.strategy.register.impl;
 
 import cn.goroute.smart.auth.entity.vo.UserRegisterVO;
 import cn.goroute.smart.auth.strategy.register.IRegister;
-import cn.goroute.smart.common.entity.dto.UserProfileDto;
+import cn.goroute.smart.common.entity.dto.UserProfileDTO;
 import com.hccake.ballcat.common.model.result.R;
 
 /**
@@ -26,7 +26,7 @@ public class PhoneRegisterImpl implements IRegister {
      * 发布事件
      */
     @Override
-    public void publishEvent(UserProfileDto userProfileDto) {
+    public void publishEvent(UserProfileDTO userProfileDto) {
 
     }
 }

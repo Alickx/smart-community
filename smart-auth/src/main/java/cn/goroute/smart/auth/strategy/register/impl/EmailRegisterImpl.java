@@ -7,7 +7,7 @@ import cn.goroute.smart.auth.strategy.register.AbstractRegister;
 import cn.goroute.smart.auth.strategy.register.IRegister;
 import cn.goroute.smart.auth.strategy.register.RegisterEnum;
 import cn.goroute.smart.common.constant.ErrorCodeEnum;
-import cn.goroute.smart.common.entity.dto.UserProfileDto;
+import cn.goroute.smart.common.entity.dto.UserProfileDTO;
 import com.hccake.ballcat.common.model.result.R;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +36,7 @@ public class EmailRegisterImpl extends AbstractRegister implements IRegister {
         authUser.setCertificate(encryptPassword(userRegisterVo.getPassword()));
         authUserMapper.insert(authUser);
 
-        UserProfileDto userProfileDto = new UserProfileDto();
+        UserProfileDTO userProfileDto = new UserProfileDTO();
         userProfileDto.setUserId(authUser.getId());
         Boolean initResult = super.initUserProfile(userProfileDto);
         // TODO 分布式事务
@@ -54,7 +54,7 @@ public class EmailRegisterImpl extends AbstractRegister implements IRegister {
      * 发布事件
      */
     @Override
-    public void publishEvent(UserProfileDto userProfileDto) {
+    public void publishEvent(UserProfileDTO userProfileDto) {
 
     }
 }

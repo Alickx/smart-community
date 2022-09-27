@@ -3,8 +3,12 @@ package cn.goroute.smart.post.service.impl;
 import cn.goroute.smart.post.domain.PostTag;
 import cn.goroute.smart.post.mapper.PostTagMapper;
 import cn.goroute.smart.post.service.PostTagService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.hccake.extend.mybatis.plus.service.impl.ExtendServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
 * @author Alickx
@@ -12,9 +16,9 @@ import org.springframework.stereotype.Service;
 * @createDate 2022-09-25 16:53:24
 */
 @Service
+@RequiredArgsConstructor
 public class PostTagServiceImpl extends ExtendServiceImpl<PostTagMapper, PostTag>
     implements PostTagService{
-
 }
 
 

@@ -1,7 +1,7 @@
 package cn.goroute.smart.auth.strategy.register;
 
 import cn.goroute.smart.auth.entity.vo.UserRegisterVO;
-import cn.goroute.smart.common.entity.dto.UserProfileDto;
+import cn.goroute.smart.common.entity.dto.UserProfileDTO;
 import cn.hutool.crypto.digest.BCrypt;
 import com.hccake.ballcat.common.model.result.R;
 
@@ -24,7 +24,7 @@ public interface IRegister {
      * 发布事件
      * @param userProfileDto 用户信息
      */
-    void publishEvent(UserProfileDto userProfileDto);
+    void publishEvent(UserProfileDTO userProfileDto);
 
     /**
      * 加密密码

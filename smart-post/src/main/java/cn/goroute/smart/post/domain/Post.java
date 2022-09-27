@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Data
 public class Post implements Serializable {
     /**
-     * 
+     * 主键id
      */
     @TableId
     private Long id;

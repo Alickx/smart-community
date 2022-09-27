@@ -1,6 +1,6 @@
 package cn.goroute.smart.search.feign;
 
-import cn.goroute.smart.common.entity.dto.UserProfileDto;
+import cn.goroute.smart.common.entity.dto.UserProfileDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface MemberFeignService {
 
     @GetMapping("/member/member/getMemberByUid")
-    UserProfileDto getMemberByUid(@RequestParam(value = "uid") Long uid);
+    UserProfileDTO getMemberByUid(@RequestParam(value = "uid") Long uid);
 
 }

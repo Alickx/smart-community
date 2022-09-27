@@ -1,18 +1,32 @@
 package cn.goroute.smart.post.service.impl;
 
 import cn.goroute.smart.common.constant.CommonConstant;
+import cn.goroute.smart.common.entity.dto.UserProfileDTO;
+import cn.goroute.smart.post.converter.CategoryConverter;
 import cn.goroute.smart.post.converter.PostConverter;
+import cn.goroute.smart.post.domain.Category;
 import cn.goroute.smart.post.domain.Post;
+import cn.goroute.smart.post.entity.dto.CategoryDTO;
 import cn.goroute.smart.post.entity.dto.PostDTO;
 import cn.goroute.smart.post.entity.qo.PostQO;
+import cn.goroute.smart.post.entity.vo.PostVO;
+import cn.goroute.smart.post.manager.PostManagerService;
 import cn.goroute.smart.post.mapper.PostMapper;
+import cn.goroute.smart.post.service.CategoryService;
 import cn.goroute.smart.post.service.PostService;
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.hccake.ballcat.common.model.domain.PageParam;
 import com.hccake.ballcat.common.model.domain.PageResult;
+import com.hccake.ballcat.common.model.result.R;
 import com.hccake.extend.mybatis.plus.service.impl.ExtendServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
 * @author Alickx
@@ -24,6 +38,7 @@ import org.springframework.stereotype.Service;
 public class PostServiceImpl extends ExtendServiceImpl<PostMapper, Post>
     implements PostService{
 
+	private final PostManagerService postManagerService;
 
 	/**
 	 * 文章详情 - 分页查询
@@ -32,8 +47,20 @@ public class PostServiceImpl extends ExtendServiceImpl<PostMapper, Post>
 	 * @return 查询结果
 	 */
 	@Override
-	public PageResult<PostDTO> infoPage(PageParam pageParam, PostQO postQO) {
-		return baseMapper.queryPage(pageParam, postQO);
+	public R<PageResult<PostDTO>> infoPage(PageParam pageParam, PostQO postQO) {
+		PageResult<PostDTO> postPage = baseMapper.queryPage(pageParam, postQO);
+		List<PostDTO> records = postPage.getRecords();
+
+		if (CollUtil.isEmpty(records)) {
+			return R.ok(postPage);
+		}
+
+		// 补充文章作者，板块和标签等信息
+		List<PostDTO> postDTOList = postManagerService.supplementaryPostInformation(records);
+		postPage.setRecords(postDTOList);
+
+		return R.ok(postPage);
+
 	}
 
 	/**
@@ -43,13 +70,28 @@ public class PostServiceImpl extends ExtendServiceImpl<PostMapper, Post>
 	 * @return 文章详情
 	 */
 	@Override
-	public PostDTO info(Long postId) {
+	public R<PostDTO> info(Long postId) {
 		LambdaQueryWrapper<Post> wrapper = new LambdaQueryWrapper<>();
 		wrapper.eq(Post::getId, postId);
 		wrapper.notIn(Post::getDeleted, CommonConstant.DELETE_STATE);
 		wrapper.eq(Post::getState, CommonConstant.NORMAL_STATE);
 		Post post = baseMapper.selectOne(wrapper);
-		return PostConverter.INSTANCE.poToDto(post);
+		return R.ok(PostConverter.INSTANCE.poToDto(post));
+	}
+
+	/**
+	 * 保存文章
+	 *
+	 * @param postVO 文章视图对象
+	 * @return 文章Id
+	 */
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public R<Long> save(PostVO postVO) {
+
+		Post post = PostConverter.INSTANCE.voToPo(postVO);
+		baseMapper.insert(post);
+		return R.ok(post.getId());
 	}
 }
 

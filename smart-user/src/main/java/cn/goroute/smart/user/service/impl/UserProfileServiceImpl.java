@@ -2,13 +2,13 @@ package cn.goroute.smart.user.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.common.constant.ErrorCodeEnum;
-import cn.goroute.smart.common.entity.dto.UserProfileDto;
+import cn.goroute.smart.common.entity.dto.UserProfileDTO;
+import cn.goroute.smart.user.converter.UserProfileConverter;
 import cn.goroute.smart.user.domain.UserProfile;
 import cn.goroute.smart.user.manager.UserProfileManager;
 import cn.goroute.smart.user.mapper.UserProfileMapper;
 import cn.goroute.smart.user.service.UserProfileService;
 import cn.hutool.core.convert.Convert;
-import cn.hutool.http.useragent.Browser;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.hccake.ballcat.common.model.result.R;
 import com.hccake.ballcat.common.redis.core.annotation.CachePut;
@@ -16,6 +16,8 @@ import com.hccake.ballcat.common.redis.core.annotation.Cached;
 import com.hccake.extend.mybatis.plus.service.impl.ExtendServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
 * @author caiguopeng
@@ -38,7 +40,7 @@ public class UserProfileServiceImpl extends ExtendServiceImpl<UserProfileMapper,
     @Override
     @CachePut(key = "user:profile",keyJoint = "#userId", ttl = 120)
     @Cached(key = "user:profile",keyJoint = "#userId")
-    public R<UserProfileDto> getUserProfile(Long userId) {
+    public R<UserProfileDTO> getUserProfile(Long userId) {
 
         if (userId == null) {
             return R.failed(ErrorCodeEnum.USER_NOT_LOGIN);
@@ -46,8 +48,8 @@ public class UserProfileServiceImpl extends ExtendServiceImpl<UserProfileMapper,
 
         UserProfile userProfile = userProfileMapper
                 .selectOne(new LambdaQueryWrapper<UserProfile>().eq(UserProfile::getUserId, userId));
-        UserProfileDto userProfileDto = Convert
-                .convert(UserProfileDto.class, userProfile);
+        UserProfileDTO userProfileDto = Convert
+                .convert(UserProfileDTO.class, userProfile);
 
         return R.ok(userProfileDto);
     }
@@ -59,19 +61,35 @@ public class UserProfileServiceImpl extends ExtendServiceImpl<UserProfileMapper,
      * @return 是否成功
      */
     @Override
-    public R<Boolean> initUserProfile(UserProfileDto userProfileDto) {
+    public R<Boolean> initUserProfile(UserProfileDTO userProfileDto) {
 
         UserProfile userProfile = Convert
                 .convert(UserProfile.class, userProfileDto);
-
+		//TODO 完善初始化用户信息
         userProfile.setAvatar("https://img.llwstu.com/img/202208212352490.png");
         userProfile.setNickName("用户" + StpUtil.getLoginIdAsLong());
-
         userProfileManager.initUserProfile(userProfile);
-
         return R.ok();
     }
 
+	/**
+	 * 批量获取用户信息
+	 *
+	 * @param userIds 用户id集合
+	 * @return 用户信息集合
+	 */
+	@Override
+	public R<List<UserProfileDTO>> batchGetUserProfile(List<Long> userIds) {
+
+		List<UserProfile> userProfiles = userProfileMapper
+				.selectList(new LambdaQueryWrapper<UserProfile>()
+						.in(UserProfile::getUserId, userIds));
+
+		List<UserProfileDTO> result = UserProfileConverter.INSTANCE.poToDto(userProfiles);
+
+		return R.ok(result);
+
+	}
 
 
 }

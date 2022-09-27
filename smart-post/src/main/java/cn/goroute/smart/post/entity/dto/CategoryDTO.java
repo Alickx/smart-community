@@ -15,7 +15,7 @@ public class CategoryDTO {
 	/**
 	 * 板块id
 	 */
-	private Long id;
+	private Long categoryId;
 
 	/**
 	 * 板块名称

@@ -1,6 +1,6 @@
 package cn.goroute.smart.auth.entity;
 
-import cn.goroute.smart.common.entity.dto.UserProfileDto;
+import cn.goroute.smart.common.entity.dto.UserProfileDTO;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -30,7 +30,7 @@ public class CustomUserDetails {
      * 用戶信息
      */
     @Parameter(description = "用戶信息")
-    private UserProfileDto userProfile;
+    private UserProfileDTO userProfile;
 
     /**
      * 权限列表

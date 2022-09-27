@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  * @Description: Feign全局拦截器
  */
 @Component
-public class FeignInterceptor implements RequestInterceptor {
+public class FeignConfig implements RequestInterceptor {
 
     @Override
     public void apply(RequestTemplate requestTemplate) {
