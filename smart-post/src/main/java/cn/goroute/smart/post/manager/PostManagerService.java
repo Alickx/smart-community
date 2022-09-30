@@ -148,6 +148,10 @@ public class PostManagerService {
 		}));
 	}
 
+	/**
+	 * 补充文章点赞信息和收藏信息
+	 * @param records 文章列表
+	 */
 	private void supplementaryExpansion(List<PostDTO> records) {
 
 		if (!StpUtil.isLogin()) {
