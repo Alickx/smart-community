@@ -10,8 +10,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 /**
  * @author Alickx
  */
-@SpringBootApplication(scanBasePackages = {"cn.goroute.smart"})
-@RefreshScope
+@SpringBootApplication
 @EnableDiscoveryClient
 @EnableFeignClients("cn.goroute.smart.common.feign")
 @MapperScan("cn.goroute.smart.*.mapper")
