@@ -96,12 +96,12 @@ public class PostManagerService {
 
 			// 获取标签信息
 			List<Tag> tags = tagService.listByIds(tagIds);
-			List<TagDTO> tagDTOS = TagConverter.INSTANCE.poToDTO(tags);
+			List<TagDTO> tagDtoS = TagConverter.INSTANCE.poToDTO(tags);
 
 			// 补充标签信息
 			for (PostDTO postDTO : records) {
 				if (postDTO.getId().equals(postId)) {
-					postDTO.setTags(tagDTOS);
+					postDTO.setTags(tagDtoS);
 				}
 			}
 

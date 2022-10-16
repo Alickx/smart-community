@@ -14,7 +14,7 @@ import springfox.documentation.oas.annotations.EnableOpenApi;
 @SpringBootApplication(scanBasePackages = {"cn.goroute.smart"})
 @EnableDiscoveryClient
 @MapperScan("cn.goroute.smart.*.mapper")
-@EnableFeignClients
+@EnableFeignClients(basePackages = {"cn.goroute.smart.*.feign"})
 @EnableOpenApi
 public class SmartPostApplication {
 

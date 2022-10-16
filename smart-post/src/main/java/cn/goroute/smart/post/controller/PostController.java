@@ -1,6 +1,5 @@
 package cn.goroute.smart.post.controller;
 
-import cn.goroute.smart.post.domain.Post;
 import cn.goroute.smart.post.entity.dto.PostDTO;
 import cn.goroute.smart.post.entity.qo.PostQO;
 import cn.goroute.smart.post.entity.vo.PostVO;
