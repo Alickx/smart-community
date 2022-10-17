@@ -1,7 +1,11 @@
 package cn.goroute.smart.post.service;
 
 import cn.goroute.smart.post.domain.Tag;
+import com.hccake.ballcat.common.model.domain.SelectData;
+import com.hccake.ballcat.common.model.result.R;
 import com.hccake.extend.mybatis.plus.service.ExtendService;
+
+import java.util.List;
 
 /**
 * @author Alickx
@@ -10,4 +14,9 @@ import com.hccake.extend.mybatis.plus.service.ExtendService;
 */
 public interface TagService extends ExtendService<Tag> {
 
+	/**
+	 * 获取标签下拉数据
+	 * @return 所有板块对应标签的下拉数据
+	 */
+    R<List<SelectData<Tag>>> getSelectData();
 }

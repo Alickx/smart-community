@@ -21,16 +21,6 @@ public class PostVO {
 	private Long categoryId;
 
 	/**
-	 * 标签id
-	 */
-	private Long tagId;
-
-	/**
-	 * 作者id
-	 */
-	private Long authorId;
-
-	/**
 	 * 文章题目
 	 */
 	private String title;
