@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 /**
  * @Author: Alickx
  * @Date: 2022/09/26/0:05
@@ -52,7 +54,7 @@ public class PostController {
 	 * @return 文章保存主键
 	 */
 	@PostMapping("/save")
-	public R<Long> save(@RequestBody PostVO postVO) {
+	public R<Long> save(@RequestBody @Valid PostVO postVO) {
 		return postService.save(postVO);
 	}
 

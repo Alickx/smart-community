@@ -27,6 +27,11 @@ public class Post implements Serializable {
      */
     private Long categoryId;
 
+	/**
+	 * 标签id
+	 */
+	private Long tagId;
+
     /**
      * 作者id
      */
@@ -63,14 +68,9 @@ public class Post implements Serializable {
     private Integer commentCount;
 
     /**
-     * 0 = 不公布  1 = 公布
+     * 0:false = 不公布  1:true = 公布
      */
-    private Integer isPublish;
-
-    /**
-     * 文章摘要
-     */
-    private String summary;
+    private Boolean isPublish;
 
     /**
      * 更新时间

@@ -1,18 +1,14 @@
 package cn.goroute.smart.post.service.impl;
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.common.constant.CommonConstant;
-import cn.goroute.smart.common.entity.dto.UserProfileDTO;
-import cn.goroute.smart.post.converter.CategoryConverter;
 import cn.goroute.smart.post.converter.PostConverter;
-import cn.goroute.smart.post.domain.Category;
 import cn.goroute.smart.post.domain.Post;
-import cn.goroute.smart.post.entity.dto.CategoryDTO;
 import cn.goroute.smart.post.entity.dto.PostDTO;
 import cn.goroute.smart.post.entity.qo.PostQO;
 import cn.goroute.smart.post.entity.vo.PostVO;
 import cn.goroute.smart.post.manager.PostManagerService;
 import cn.goroute.smart.post.mapper.PostMapper;
-import cn.goroute.smart.post.service.CategoryService;
 import cn.goroute.smart.post.service.PostService;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -24,9 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
 * @author Alickx
@@ -89,7 +83,16 @@ public class PostServiceImpl extends ExtendServiceImpl<PostMapper, Post>
 	@Override
 	public R<Long> save(PostVO postVO) {
 
-		Post post = PostConverter.INSTANCE.voToPo(postVO);
+		Post post = new Post();
+		post.setTitle(postVO.getTitle());
+		post.setCategoryId(postVO.getCategoryId());
+		post.setTagId(postVO.getTagId());
+		post.setContent(postVO.getContent());
+		post.setIsPublish(postVO.getIsPublish());
+		post.setAuthorId(StpUtil.getLoginIdAsLong());
+
+		//TODO 待完善 积分增加，文章数增加，风控检查处理等
+
 		baseMapper.insert(post);
 		return R.ok(post.getId());
 	}
