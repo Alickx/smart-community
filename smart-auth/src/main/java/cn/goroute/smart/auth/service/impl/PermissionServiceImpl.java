@@ -7,7 +7,7 @@ import cn.goroute.smart.auth.mapper.UserRoleMapper;
 import cn.goroute.smart.auth.service.PermissionService;
 import cn.hutool.core.collection.CollUtil;
 import com.hccake.ballcat.common.model.result.R;
-import com.hccake.ballcat.common.redis.core.annotation.CachePut;
+import com.hccake.ballcat.common.redis.core.annotation.Cached;
 import com.hccake.extend.mybatis.plus.service.impl.ExtendServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ public class PermissionServiceImpl extends ExtendServiceImpl<PermissionMapper, P
      * @return 权限列表
      */
     @Override
-    @CachePut(key = "permission",keyJoint = "#userId", ttl = 120)
+    @Cached(key = "permission",keyJoint = "#userId")
     public R<List<String>> getPermission(Long userId) {
 
         List<Long> roleIds = userRoleMapper.selectByUserId(userId);

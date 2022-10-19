@@ -12,7 +12,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hccake.ballcat.common.model.domain.SelectData;
 import com.hccake.ballcat.common.model.result.R;
-import com.hccake.ballcat.common.redis.core.annotation.CachePut;
+import com.hccake.ballcat.common.redis.core.annotation.Cached;
 import com.hccake.extend.mybatis.plus.service.impl.ExtendServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -40,7 +40,7 @@ public class CategoryServiceImpl extends ExtendServiceImpl<CategoryMapper, Categ
 	 * @return 板块下拉数据及其标签数据
 	 */
 	@Override
-	@CachePut(key = "category:selectData")
+	@Cached(key = "category:selectData")
 	public R<List<SelectData<List<SelectData<Tag>>>>> getSelectData() {
 
 		List<Category> list = this.list();

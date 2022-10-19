@@ -11,7 +11,6 @@ import cn.goroute.smart.user.service.UserProfileService;
 import cn.hutool.core.convert.Convert;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.hccake.ballcat.common.model.result.R;
-import com.hccake.ballcat.common.redis.core.annotation.CachePut;
 import com.hccake.ballcat.common.redis.core.annotation.Cached;
 import com.hccake.extend.mybatis.plus.service.impl.ExtendServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +37,6 @@ public class UserProfileServiceImpl extends ExtendServiceImpl<UserProfileMapper,
      * @return 用户信息
      */
     @Override
-    @CachePut(key = "user:profile",keyJoint = "#userId", ttl = 120)
     @Cached(key = "user:profile",keyJoint = "#userId")
     public R<UserProfileDTO> getUserProfile(Long userId) {
 

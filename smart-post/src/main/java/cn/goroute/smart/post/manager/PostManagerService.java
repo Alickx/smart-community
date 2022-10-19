@@ -4,13 +4,16 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.common.entity.dto.UserProfileDTO;
 import cn.goroute.smart.common.feign.FeignUserProfileService;
 import cn.goroute.smart.post.converter.CategoryConverter;
-import cn.goroute.smart.post.converter.TagConverter;
-import cn.goroute.smart.post.domain.*;
+import cn.goroute.smart.post.domain.Category;
+import cn.goroute.smart.post.domain.Comment;
+import cn.goroute.smart.post.domain.Thumb;
 import cn.goroute.smart.post.entity.bo.PostExpansionBO;
 import cn.goroute.smart.post.entity.dto.CategoryDTO;
 import cn.goroute.smart.post.entity.dto.PostDTO;
-import cn.goroute.smart.post.entity.dto.TagDTO;
-import cn.goroute.smart.post.service.*;
+import cn.goroute.smart.post.service.CategoryService;
+import cn.goroute.smart.post.service.CommentService;
+import cn.goroute.smart.post.service.TagService;
+import cn.goroute.smart.post.service.ThumbService;
 import com.hccake.ballcat.common.model.result.R;
 import com.hccake.extend.mybatis.plus.conditions.query.LambdaQueryWrapperX;
 import lombok.RequiredArgsConstructor;
@@ -33,8 +36,6 @@ public class PostManagerService {
 	private final CategoryService categoryService;
 
 	private final TagService tagService;
-
-	private final PostTagService postTagService;
 
 	private final ThumbService thumbService;
 
@@ -65,48 +66,10 @@ public class PostManagerService {
 		// 补充板块信息
 		supplementaryCategory(records);
 
-		// 补充标签信息
-		supplementaryTag(records);
-
 		// 补充点赞信息和收藏信息
 		supplementaryExpansion(records);
 
 		return records;
-	}
-
-	/**
-	 * 补充标签信息
-	 *
-	 * @param records 文章列表
-	 */
-	private void supplementaryTag(List<PostDTO> records) {
-		// 获取文章id集合
-		List<Long> postIds = records.stream().map(PostDTO::getId).collect(Collectors.toList());
-
-		for (Long postId : postIds) {
-
-			// 获取文章标签id集合
-			LambdaQueryWrapperX<PostTag> postTagQueryWrapper = new LambdaQueryWrapperX<>();
-			postTagQueryWrapper.eq(PostTag::getPostId, postId);
-			List<PostTag> postTagDTOList = postTagService.getBaseMapper().selectList(postTagQueryWrapper);
-			List<Long> tagIds = postTagDTOList
-					.stream()
-					.map(PostTag::getTagId)
-					.collect(Collectors.toList());
-
-			// 获取标签信息
-			List<Tag> tags = tagService.listByIds(tagIds);
-			List<TagDTO> tagDtoS = TagConverter.INSTANCE.poToDTO(tags);
-
-			// 补充标签信息
-			for (PostDTO postDTO : records) {
-				if (postDTO.getId().equals(postId)) {
-					postDTO.setTags(tagDtoS);
-				}
-			}
-
-		}
-
 	}
 
 	/**
