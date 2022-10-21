@@ -2,6 +2,7 @@ package cn.goroute.smart.post.entity.dto;
 
 import cn.goroute.smart.common.entity.dto.UserProfileDTO;
 import cn.goroute.smart.post.entity.bo.PostExpansionBO;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -9,7 +10,6 @@ import lombok.ToString;
 import org.springdoc.api.annotations.ParameterObject;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * @Author: Alickx
@@ -33,6 +33,12 @@ public class PostDTO {
 	 */
 	@Parameter(description = "板块id")
 	private Long categoryId;
+
+	/**
+	 * 标签id
+	 */
+	@Parameter(description = "标签id")
+	private Long tagId;
 
 	/**
 	 * 文章作者id
@@ -80,12 +86,14 @@ public class PostDTO {
 	 * 更新时间
 	 */
 	@Parameter(description = "更新时间")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime updateTime;
 
 	/**
 	 * 创建时间
 	 */
 	@Parameter(description = "创建时间")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime createTime;
 
 	/**
@@ -104,7 +112,7 @@ public class PostDTO {
 	 * 标签信息
 	 */
 	@Parameter(description = "标签信息")
-	private List<TagDTO> tags;
+	private TagDTO tag;
 
 	/**
 	 * 文章扩展信息

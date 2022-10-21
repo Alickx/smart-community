@@ -1,6 +1,7 @@
 package cn.goroute.smart.post.service;
 
 import cn.goroute.smart.post.domain.Thumb;
+import com.hccake.ballcat.common.model.result.R;
 import com.hccake.extend.mybatis.plus.service.ExtendService;
 
 /**
@@ -10,4 +11,10 @@ import com.hccake.extend.mybatis.plus.service.ExtendService;
 */
 public interface ThumbService extends ExtendService<Thumb> {
 
+	/**
+	 * 保存点赞
+	 * @param postId 文章Id
+	 * @return 是否成功
+	 */
+	R<Boolean> saveThumb(Long postId);
 }

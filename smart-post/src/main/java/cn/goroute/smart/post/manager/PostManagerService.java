@@ -4,18 +4,21 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.common.entity.dto.UserProfileDTO;
 import cn.goroute.smart.common.feign.FeignUserProfileService;
 import cn.goroute.smart.post.converter.CategoryConverter;
+import cn.goroute.smart.post.converter.TagConverter;
 import cn.goroute.smart.post.domain.Category;
 import cn.goroute.smart.post.domain.Comment;
+import cn.goroute.smart.post.domain.Tag;
 import cn.goroute.smart.post.domain.Thumb;
 import cn.goroute.smart.post.entity.bo.PostExpansionBO;
 import cn.goroute.smart.post.entity.dto.CategoryDTO;
-import cn.goroute.smart.post.entity.dto.PostDTO;
-import cn.goroute.smart.post.service.CategoryService;
-import cn.goroute.smart.post.service.CommentService;
-import cn.goroute.smart.post.service.TagService;
-import cn.goroute.smart.post.service.ThumbService;
+import cn.goroute.smart.post.entity.dto.PostAbbreviationDTO;
+import cn.goroute.smart.post.entity.dto.TagDTO;
+import cn.goroute.smart.post.mapper.CategoryMapper;
+import cn.goroute.smart.post.mapper.CommentMapper;
+import cn.goroute.smart.post.mapper.TagMapper;
+import cn.goroute.smart.post.mapper.ThumbMapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.hccake.ballcat.common.model.result.R;
-import com.hccake.extend.mybatis.plus.conditions.query.LambdaQueryWrapperX;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -33,13 +36,13 @@ public class PostManagerService {
 
 	private final FeignUserProfileService feignUserProfileService;
 
-	private final CategoryService categoryService;
+	private final CategoryMapper categoryMapper;
 
-	private final TagService tagService;
+	private final TagMapper tagMapper;
 
-	private final ThumbService thumbService;
+	private final ThumbMapper thumbMapper;
 
-	private final CommentService commentService;
+	private final CommentMapper commentMapper;
 
 
 	public UserProfileDTO getUserProfile(Long userId) {
@@ -58,7 +61,9 @@ public class PostManagerService {
 	 * @param records 文章列表
 	 * @return 补充后的文章列表
 	 */
-	public List<PostDTO> supplementaryPostInformation(List<PostDTO> records) {
+	public List<PostAbbreviationDTO> supplementaryPostInformation(List<PostAbbreviationDTO> records) {
+
+		//TODO 使用异步多线程优化
 
 		// 补充作者信息
 		supplementaryAuthor(records);
@@ -69,7 +74,22 @@ public class PostManagerService {
 		// 补充点赞信息和收藏信息
 		supplementaryExpansion(records);
 
+		// 补充标签信息
+		supplementaryTag(records);
+
 		return records;
+	}
+
+	/**
+	 * 补充文章标签信息
+	 * @param records 文章列表
+	 */
+	private void supplementaryTag(List<PostAbbreviationDTO> records) {
+		for (PostAbbreviationDTO record : records) {
+			Tag tag = tagMapper.selectById(record.getTagId());
+			TagDTO tagDTO = TagConverter.INSTANCE.poToDTO(tag);
+			record.setTag(tagDTO);
+		}
 	}
 
 	/**
@@ -77,10 +97,10 @@ public class PostManagerService {
 	 *
 	 * @param records 文章列表
 	 */
-	private void supplementaryAuthor(List<PostDTO> records) {
+	private void supplementaryAuthor(List<PostAbbreviationDTO> records) {
 		List<Long> authorIds = records
 				.stream()
-				.map(PostDTO::getAuthorId).collect(Collectors.toList());
+				.map(PostAbbreviationDTO::getAuthorId).collect(Collectors.toList());
 		List<UserProfileDTO> userProfileDTOList = this.batchGetUserProfile(authorIds);
 
 		records.forEach(postDTO -> userProfileDTOList.forEach(userProfileDTO -> {
@@ -95,13 +115,13 @@ public class PostManagerService {
 	 *
 	 * @param records 文章列表
 	 */
-	private void supplementaryCategory(List<PostDTO> records) {
+	private void supplementaryCategory(List<PostAbbreviationDTO> records) {
 		List<Long> categoryIds = records
 				.stream()
-				.map(PostDTO::getCategoryId)
+				.map(PostAbbreviationDTO::getCategoryId)
 				.collect(Collectors.toList());
 
-		List<Category> categoryList = categoryService.listByIds(categoryIds);
+		List<Category> categoryList = categoryMapper.selectBatchIds(categoryIds);
 		List<CategoryDTO> categoryDTOList = CategoryConverter.INSTANCE.poToDTO(categoryList);
 
 		records.forEach(postDTO -> categoryDTOList.forEach(categoryDTO -> {
@@ -115,7 +135,7 @@ public class PostManagerService {
 	 * 补充文章点赞信息和收藏信息
 	 * @param records 文章列表
 	 */
-	private void supplementaryExpansion(List<PostDTO> records) {
+	private void supplementaryExpansion(List<PostAbbreviationDTO> records) {
 
 		if (!StpUtil.isLogin()) {
 			return;
@@ -124,23 +144,23 @@ public class PostManagerService {
 		long userId = StpUtil.getLoginIdAsLong();
 
 		PostExpansionBO postExpansionBO;
-		LambdaQueryWrapperX<Thumb> thumbQueryWrapper;
-		LambdaQueryWrapperX<Comment> commentQueryWrapper;
+		LambdaQueryWrapper<Thumb> thumbQueryWrapper;
+		LambdaQueryWrapper<Comment> commentQueryWrapper;
 		// 获取文章id集合
-		for (PostDTO record : records) {
+		for (PostAbbreviationDTO record : records) {
 			// 查询是否点赞
 			postExpansionBO = new PostExpansionBO();
-			thumbQueryWrapper = new LambdaQueryWrapperX<>();
+			thumbQueryWrapper = new LambdaQueryWrapper<>();
 			thumbQueryWrapper.eq(Thumb::getUserId, userId);
 			thumbQueryWrapper.eq(Thumb::getPostId, record.getId());
-			Thumb thumb = thumbService.getBaseMapper().selectOne(thumbQueryWrapper);
+			Thumb thumb = thumbMapper.selectOne(thumbQueryWrapper);
 			postExpansionBO.setIsThumb(thumb != null);
 
 			// 查询是否评论
-			commentQueryWrapper = new LambdaQueryWrapperX<>();
+			commentQueryWrapper = new LambdaQueryWrapper<>();
 			commentQueryWrapper.eq(Comment::getUserId, userId);
 			commentQueryWrapper.eq(Comment::getPostId, record.getId());
-			Comment comment = commentService.getBaseMapper().selectOne(commentQueryWrapper);
+			Comment comment = commentMapper.selectOne(commentQueryWrapper);
 			postExpansionBO.setIsComment(comment != null);
 
 			record.setExpansion(postExpansionBO);

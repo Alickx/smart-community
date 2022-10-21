@@ -4,6 +4,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.common.constant.CommonConstant;
 import cn.goroute.smart.post.converter.PostConverter;
 import cn.goroute.smart.post.domain.Post;
+import cn.goroute.smart.post.entity.dto.PostAbbreviationDTO;
 import cn.goroute.smart.post.entity.dto.PostDTO;
 import cn.goroute.smart.post.entity.qo.PostQO;
 import cn.goroute.smart.post.entity.vo.PostVO;
@@ -41,16 +42,16 @@ public class PostServiceImpl extends ExtendServiceImpl<PostMapper, Post>
 	 * @return 查询结果
 	 */
 	@Override
-	public R<PageResult<PostDTO>> infoPage(PageParam pageParam, PostQO postQO) {
-		PageResult<PostDTO> postPage = baseMapper.queryPage(pageParam, postQO);
-		List<PostDTO> records = postPage.getRecords();
+	public R<PageResult<PostAbbreviationDTO>> infoPage(PageParam pageParam, PostQO postQO) {
+		PageResult<PostAbbreviationDTO> postPage = baseMapper.queryPage(pageParam, postQO);
+		List<PostAbbreviationDTO> records = postPage.getRecords();
 
 		if (CollUtil.isEmpty(records)) {
 			return R.ok(postPage);
 		}
 
-		// 补充文章作者，板块和标签等信息
-		List<PostDTO> postDTOList = postManagerService.supplementaryPostInformation(records);
+		// 补充文章作者，板块等信息
+		List<PostAbbreviationDTO> postDTOList = postManagerService.supplementaryPostInformation(records);
 		postPage.setRecords(postDTOList);
 
 		return R.ok(postPage);

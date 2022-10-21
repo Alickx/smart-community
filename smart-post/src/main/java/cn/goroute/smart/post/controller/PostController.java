@@ -1,5 +1,6 @@
 package cn.goroute.smart.post.controller;
 
+import cn.goroute.smart.post.entity.dto.PostAbbreviationDTO;
 import cn.goroute.smart.post.entity.dto.PostDTO;
 import cn.goroute.smart.post.entity.qo.PostQO;
 import cn.goroute.smart.post.entity.vo.PostVO;
@@ -33,7 +34,7 @@ public class PostController {
 	 * @return 查询结果
 	 */
 	@GetMapping("/info/page")
-	public R<PageResult<PostDTO>> infoPage(@Validated PageParam pageParam, PostQO postQO) {
+	public R<PageResult<PostAbbreviationDTO>> infoPage(@Validated PageParam pageParam, PostQO postQO) {
 		return postService.infoPage(pageParam, postQO);
 	}
 

@@ -3,6 +3,7 @@ package cn.goroute.smart.post.mapper;
 import cn.goroute.smart.common.constant.CommonConstant;
 import cn.goroute.smart.post.converter.PostConverter;
 import cn.goroute.smart.post.domain.Post;
+import cn.goroute.smart.post.entity.dto.PostAbbreviationDTO;
 import cn.goroute.smart.post.entity.dto.PostDTO;
 import cn.goroute.smart.post.entity.qo.PostQO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -26,15 +27,16 @@ public interface PostMapper extends ExtendMapper<Post> {
 	 * @param postQO 查询参数对象
 	 * @return PageResult<PostDTO> 分页数据
 	 */
-	default PageResult<PostDTO> queryPage(PageParam pageParam, PostQO postQO) {
+	default PageResult<PostAbbreviationDTO> queryPage(PageParam pageParam, PostQO postQO) {
 		IPage<Post> page = this.prodPage(pageParam);
 		LambdaQueryWrapperX<Post> wrapperX = WrappersX.lambdaQueryX(Post.class)
 				.eqIfPresent(Post::getCategoryId, postQO.getCategoryId())
 				.eqIfPresent(Post::getAuthorId, postQO.getAuthorId())
 				.eq(Post::getState, CommonConstant.NORMAL_STATE)
-				.notIn(Post::getDeleted, CommonConstant.DELETE_STATE);
+				.notIn(Post::getDeleted, CommonConstant.DELETE_STATE)
+				.orderByDesc(Post::getUpdateTime);
 		this.selectPage(page, wrapperX);
-		IPage<PostDTO> dtoPage = page.convert(PostConverter.INSTANCE::poToDto);
+		IPage<PostAbbreviationDTO> dtoPage = page.convert(PostConverter.INSTANCE::poToAbbreviationDto);
 		return new PageResult<>(dtoPage.getRecords(), dtoPage.getTotal());
 
 	}
