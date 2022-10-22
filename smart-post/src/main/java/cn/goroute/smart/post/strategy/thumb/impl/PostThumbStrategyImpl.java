@@ -1,5 +1,6 @@
 package cn.goroute.smart.post.strategy.thumb.impl;
 
+import cn.goroute.smart.common.constant.CommonConstant;
 import cn.goroute.smart.common.util.RedisUtil;
 import cn.goroute.smart.post.constant.PostConstant;
 import cn.goroute.smart.post.domain.Post;
@@ -8,6 +9,7 @@ import cn.goroute.smart.post.service.PostService;
 import cn.goroute.smart.post.service.ThumbService;
 import cn.goroute.smart.post.strategy.thumb.AbstractThumbStrategy;
 import cn.hutool.core.date.LocalDateTimeUtil;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -48,7 +50,12 @@ public class PostThumbStrategyImpl extends AbstractThumbStrategy {
 				String.valueOf(LocalDateTimeUtil.now().toEpochSecond(ZoneOffset.of("+8"))));
 
 		// 先保存点赞记录
-		thumbService.save(thumb);
+		thumb.setDeleted(CommonConstant.NORMAL_STATE);
+		thumbService.getBaseMapper()
+				.update(thumb,new LambdaUpdateWrapper<Thumb>()
+						.eq(Thumb::getUserId, userId)
+						.eq(Thumb::getToId, toId)
+						.eq(Thumb::getType, thumb.getType()));
 
 		// 再更新文章点赞数
 		Post post = postService.getById(toId);
@@ -76,11 +83,15 @@ public class PostThumbStrategyImpl extends AbstractThumbStrategy {
 
 
 		// 先删除点赞记录
-		Long postId = thumb.getToId();
-		thumbService.cancelThumb(thumb);
+		thumb.setDeleted(CommonConstant.DELETE_STATE);
+		thumbService.getBaseMapper()
+				.update(thumb,new LambdaUpdateWrapper<Thumb>()
+						.eq(Thumb::getUserId, userId)
+						.eq(Thumb::getToId, toId)
+						.eq(Thumb::getType, thumb.getType()));
 
 		// 再更新文章点赞数
-		Post post = postService.getById(postId);
+		Post post = postService.getById(toId);
 		post.setThumbCount(post.getThumbCount() - 1);
 		postService.updateById(post);
 	}

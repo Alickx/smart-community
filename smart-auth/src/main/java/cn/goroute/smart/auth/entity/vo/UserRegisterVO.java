@@ -1,6 +1,5 @@
 package cn.goroute.smart.auth.entity.vo;
 
-import io.swagger.annotations.ApiModelProperty;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -29,7 +28,6 @@ public class UserRegisterVO {
     private String password;
 
     @NotNull(message="[渠道类型]不能为空")
-    @ApiModelProperty("1手机号 2邮箱 3用户名 4qq 5微信")
     @Parameter(description = "渠道类型")
     private Integer identityType;
 

@@ -3,7 +3,6 @@ package cn.goroute.smart.rocketmq.listener;
 import cn.goroute.smart.rocketmq.constant.RocketMqSysConstant;
 import cn.goroute.smart.rocketmq.domain.BaseMqMessage;
 import cn.goroute.smart.rocketmq.template.RocketMqTemplate;
-import cn.goroute.smart.rocketmq.util.JsonUtil;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.client.producer.SendStatus;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
@@ -100,7 +99,7 @@ public abstract class BaseMqMessageListener<T extends BaseMqMessage> {
     public void dispatchMessage(T message) {
         MDC.put(RocketMqSysConstant.TRACE_ID, message.getTraceId());
         // 基础日志记录被父类处理了
-        logger.info("[{}]消费者收到消息[{}]", consumerName(), JsonUtil.toJson(message));
+        logger.info("[{}]消费者收到消息[{}]", consumerName(), message);
         if (isFilter(message)) {
             logger.info("消息不满足消费条件，已过滤");
             return;

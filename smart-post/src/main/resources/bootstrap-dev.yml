@@ -27,6 +27,7 @@ spring:
     url: jdbc:mysql://localhost:3306/smart_post?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     username: root
     password: root
+
 sa-token:
   token-name: 'Authorization'
   timeout: 2592000

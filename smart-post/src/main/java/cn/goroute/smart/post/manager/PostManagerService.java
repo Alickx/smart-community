@@ -1,6 +1,7 @@
 package cn.goroute.smart.post.manager;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.goroute.smart.common.constant.CommonConstant;
 import cn.goroute.smart.common.entity.dto.UserProfileDTO;
 import cn.goroute.smart.common.feign.FeignUserProfileService;
 import cn.goroute.smart.common.util.RedisUtil;
@@ -25,6 +26,7 @@ import cn.hutool.core.date.LocalDateTimeUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.hccake.ballcat.common.model.result.R;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +42,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PostManagerService {
 
 	private final FeignUserProfileService feignUserProfileService;
@@ -54,6 +57,7 @@ public class PostManagerService {
 
 	private final RedisUtil redisUtil;
 
+	private final ThreadLocal<Map<Object,Object>> thumbThreadLocal = new ThreadLocal<>();
 
 	public UserProfileDTO getUserProfile(Long userId) {
 		R<UserProfileDTO> userProfile = feignUserProfileService.getUserProfile(userId);
@@ -72,8 +76,6 @@ public class PostManagerService {
 	 * @return 补充后的文章列表
 	 */
 	public List<PostAbbreviationDTO> supplementaryPostInformation(List<PostAbbreviationDTO> records) {
-
-		//TODO 使用异步多线程优化
 
 		// 补充作者信息
 		supplementaryAuthor(records);
@@ -149,45 +151,64 @@ public class PostManagerService {
 	 */
 	private void supplementaryExpansion(List<PostAbbreviationDTO> records) {
 
-		if (!StpUtil.isLogin()) {
-			return;
-		}
+		boolean login = StpUtil.isLogin();
 
-		String userId = StpUtil.getLoginIdAsString();
+		String userId = login ? StpUtil.getLoginIdAsString() : null;
 
 		PostExpansionBO postExpansionBO;
-		LambdaQueryWrapper<Comment> commentQueryWrapper;
+
+		if (login) {
+			// 获取用户点赞缓存
+			getUserThumbRecord(StpUtil.getLoginIdAsString());
+		}
+
 		// 获取文章id集合
 		for (PostAbbreviationDTO record : records) {
 			postExpansionBO = new PostExpansionBO();
+
+			// 判断是否登录
+			if (!login) {
+				postExpansionBO.setIsThumb(false);
+				postExpansionBO.setIsComment(false);
+				record.setExpansion(postExpansionBO);
+				continue;
+			}
 			Long postId = record.getId();
 
-			postExpansionBO.setIsThumb(getIsThumb(userId, postId));
+			// 查询点赞信息
+			postExpansionBO.setIsThumb(checkThumbCache(userId, postId));
 
 			// 查询是否评论
-			//TODO 查询评论
-			commentQueryWrapper = new LambdaQueryWrapper<>();
-			commentQueryWrapper.eq(Comment::getUserId, userId);
-			commentQueryWrapper.eq(Comment::getPostId, postId);
-			Comment comment = commentMapper.selectOne(commentQueryWrapper);
-			postExpansionBO.setIsComment(comment != null);
+			postExpansionBO.setIsComment(getIsComment(userId,postId));
 
 			record.setExpansion(postExpansionBO);
 
 		}
 
+		// 清除缓存，避免内存泄漏
+		thumbThreadLocal.remove();
+
+	}
+
+	private Boolean getIsComment(String userId, Long postId) {
+		//TODO 查询评论
+		LambdaQueryWrapper<Comment> commentQueryWrapper;
+		commentQueryWrapper = new LambdaQueryWrapper<>();
+		commentQueryWrapper.eq(Comment::getUserId, userId);
+		commentQueryWrapper.eq(Comment::getPostId, postId);
+		Comment comment = commentMapper.selectOne(commentQueryWrapper);
+		return comment != null;
 	}
 
 	@SuppressWarnings("AlibabaUndefineMagicConstant")
-	private Boolean getIsThumb(String userId, Long postId) {
-		LambdaQueryWrapper<Thumb> thumbQueryWrapper;
+	private void getUserThumbRecord(String userId) {
 		// 查询是否点赞
 		Map<Object, Object> entries =
 				redisUtil.hGetAll(PostConstant.Thumb.POST_THUMB_KEY + userId);
 
 		// 判断是否存在点赞hash缓存
 		if (entries.isEmpty()) {
-			return false;
+			thumbDbSearchAndCache(userId);
 		} else {
 			long ttl = Long.parseLong((String) entries.get(PostConstant.Thumb.POST_THUMB_TTL));
 			// 判断是否过期
@@ -201,23 +222,24 @@ public class PostManagerService {
 				}
 			} else {
 				// 缓存已过期，查询数据库
-				thumbDbSearch(userId);
+				thumbDbSearchAndCache(userId);
 			}
-			return checkThumbCache(userId, postId, entries);
 		}
+
+		thumbThreadLocal.set(entries);
 	}
 
 	/**
-	 * 数据库查询点赞信息
+	 * 数据库查询点赞信息并更新写入缓存
 	 *
 	 * @param userId 用户id
 	 */
-	private void thumbDbSearch(String userId) {
-		LambdaQueryWrapper<Thumb> thumbQueryWrapper;
+	private void thumbDbSearchAndCache(String userId) {
 		// 如果过期，则查询用户一段时间内容的点赞记录
-		thumbQueryWrapper = new LambdaQueryWrapper<>();
+		LambdaQueryWrapper<Thumb>  thumbQueryWrapper = new LambdaQueryWrapper<>();
 		thumbQueryWrapper.eq(Thumb::getUserId, userId);
 		thumbQueryWrapper.eq(Thumb::getType, ThumbTypeEnum.POST.getCode());
+		thumbQueryWrapper.eq(Thumb::getDeleted, CommonConstant.NORMAL_STATE);
 		thumbQueryWrapper.ge(Thumb::getCreateTime, LocalDateTimeUtil.now().minusSeconds(PostConstant.Thumb.POST_THUMB_EXPIRE));
 		thumbQueryWrapper.orderByAsc(Thumb::getToId);
 		List<Thumb> thumbs = thumbMapper.selectList(thumbQueryWrapper);
@@ -235,6 +257,9 @@ public class PostManagerService {
 			redisUtil.hPut(PostConstant.Thumb.POST_THUMB_KEY + userId,
 					PostConstant.Thumb.POST_THUMB_MIN_CID, String.valueOf(thumbs.get(0).getToId()));
 		}
+
+		// 更新ThreadLocal
+		thumbThreadLocal.set(redisUtil.hGetAll(PostConstant.Thumb.POST_THUMB_KEY + userId));
 	}
 
 	/**
@@ -242,30 +267,29 @@ public class PostManagerService {
 	 *
 	 * @param userId  用户id
 	 * @param postId  文章id
-	 * @param entries 缓存map
 	 * @return 是否点赞 true:点赞 false:未点赞
 	 */
 	@NotNull
-	private Boolean checkThumbCache(String userId, Long postId, Map<Object, Object> entries) {
-		LambdaQueryWrapper<Thumb> thumbQueryWrapper;
+	private Boolean checkThumbCache(String userId, Long postId) {
+
+		Map<Object, Object> entries = thumbThreadLocal.get();
+
 		// 查询文章id是否在缓存中
 		if (entries.containsKey(String.valueOf(postId))) {
 			return true;
 		} else {
 			// 如果文章id不在缓存中，则查询文章id是否小于缓存中的文章最小值
-			if (!entries.containsKey(PostConstant.Thumb.POST_THUMB_MIN_CID)) {
-				// 如果缓存中没有最小值字段，则未点赞
-				return false;
-			}
-			Long minCid = (Long) entries.get(PostConstant.Thumb.POST_THUMB_MIN_CID);
+			Long minCid = Long.parseLong((String) entries.get(PostConstant.Thumb.POST_THUMB_MIN_CID));
 			if (postId > minCid) {
 				// 如果文章id大于缓存中的文章最小值，则未点赞
 				return false;
 			} else {
 				// 查询db
-				thumbQueryWrapper = new LambdaQueryWrapper<>();
+				LambdaQueryWrapper<Thumb> thumbQueryWrapper = new LambdaQueryWrapper<>();
 				thumbQueryWrapper.eq(Thumb::getUserId, userId);
 				thumbQueryWrapper.eq(Thumb::getToId, postId);
+				thumbQueryWrapper.eq(Thumb::getType, ThumbTypeEnum.POST.getCode());
+				thumbQueryWrapper.eq(Thumb::getDeleted, CommonConstant.NORMAL_STATE);
 				Thumb thumb = thumbMapper.selectOne(thumbQueryWrapper);
 				return thumb != null;
 			}

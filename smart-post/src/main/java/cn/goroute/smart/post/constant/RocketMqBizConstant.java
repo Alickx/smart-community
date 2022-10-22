@@ -14,13 +14,9 @@ public class RocketMqBizConstant {
 
 		public static final String THUMB_TOPIC = "thumb_topic";
 
-		public static final String THUMB_SAVE_GROUP = "thumb_save_group";
+		public static final String THUMB_HANDLE_GROUP = "thumb_handle_group";
 
-		public static final String THUMB_SAVE_TAG = "thumb_save_tag";
-
-		public static final String THUMB_CANCEL_GROUP = "thumb_cancel_group";
-
-		public static final String THUMB_CANCEL_TAG = "thumb_cancel_tag";
+		public static final String THUMB_HANDLE_TAG = "thumb_handle_tag";
 
 	}
 

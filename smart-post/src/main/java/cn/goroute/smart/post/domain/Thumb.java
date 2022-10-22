@@ -36,6 +36,11 @@ public class Thumb implements Serializable {
      */
     private Integer type;
 
+	/**
+	 * 逻辑删除 1 = 已取消点赞
+	 */
+	private Integer deleted;
+
     /**
      * 点赞时间
      */

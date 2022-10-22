@@ -49,7 +49,7 @@ public class ThumbServiceImpl extends ExtendServiceImpl<ThumbMapper, Thumb>
 
 		// 发送到消息队列
 		SendResult sendResult = thumbMessageTemplate
-				.sendPostSaveThumb(Long.valueOf(userId), thumb.getToId(), thumb.getType());
+				.sendPostThumbMessage(Long.valueOf(userId), thumb.getToId(), thumb.getType());
 
 		if (sendResult.getSendStatus().equals(SendStatus.SEND_OK)) {
 			return R.ok(true);

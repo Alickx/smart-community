@@ -1,7 +1,5 @@
 package cn.goroute.smart.common.entity.dto;
 
-import io.swagger.annotations.ApiModelProperty;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

@@ -21,11 +21,11 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @RocketMQMessageListener(
 		topic = RocketMqBizConstant.Thumb.THUMB_TOPIC,
-		consumerGroup = RocketMqBizConstant.Thumb.THUMB_SAVE_GROUP,
-		selectorExpression = RocketMqBizConstant.Thumb.THUMB_SAVE_TAG,
+		consumerGroup = RocketMqBizConstant.Thumb.THUMB_HANDLE_GROUP,
+		selectorExpression = RocketMqBizConstant.Thumb.THUMB_HANDLE_TAG,
 		consumeThreadNumber = 10
 )
-public class ThumbSaveListener extends BaseMqMessageListener<RocketMqEntityMessage >
+public class ThumbListener extends BaseMqMessageListener<RocketMqEntityMessage >
 		implements RocketMQListener<RocketMqEntityMessage > {
 	/**
 	 * 消息者名称
@@ -44,7 +44,6 @@ public class ThumbSaveListener extends BaseMqMessageListener<RocketMqEntityMessa
 	 */
 	@Override
 	protected void handleMessage(RocketMqEntityMessage message) {
-		log.info("点赞业务监听者接收到消息:[{}]", message.toString());
 		// 执行点赞策略
 		Thumb thumb = JsonUtil.toObject(message.getMessage(), Thumb.class);
 		ThumbStrategy strategy = ThumbStrategyEnum.getStrategyByType(thumb.getType());
@@ -52,7 +51,11 @@ public class ThumbSaveListener extends BaseMqMessageListener<RocketMqEntityMessa
 			log.error("点赞业务监听者未找到对应的点赞策略:[{}]", JsonUtil.toJsonString(message));
 			return;
 		}
-		strategy.saveThumb(thumb);
+		if (message.getLogicFlag()) {
+			strategy.saveThumb(thumb);
+		} else {
+			strategy.cancelThumb(thumb);
+		}
 	}
 
 	/**
