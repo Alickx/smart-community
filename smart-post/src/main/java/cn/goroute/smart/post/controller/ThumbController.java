@@ -1,5 +1,6 @@
 package cn.goroute.smart.post.controller;
 
+import cn.goroute.smart.post.domain.Thumb;
 import cn.goroute.smart.post.service.ThumbService;
 import com.hccake.ballcat.common.model.result.R;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +22,13 @@ public class ThumbController {
 	private final ThumbService thumbService;
 
 	@PostMapping("/save")
-	public R<Boolean> save(@RequestBody Long postId) {
-		return thumbService.saveThumb(postId);
+	public R<Boolean> save(@RequestBody Thumb thumb) {
+		return thumbService.saveThumb(thumb);
+	}
+
+	@PostMapping("/cancel")
+	public R<Boolean> cancel(@RequestBody Thumb thumb) {
+		return thumbService.cancelThumb(thumb);
 	}
 
 

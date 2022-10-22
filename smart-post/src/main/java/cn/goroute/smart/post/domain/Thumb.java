@@ -1,12 +1,12 @@
 package cn.goroute.smart.post.domain;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import lombok.Data;
 
 /**
  * 点赞表
@@ -25,16 +25,6 @@ public class Thumb implements Serializable {
      * 点赞用户id
      */
     private Long userId;
-
-    /**
-     * 点赞目标的id
-     */
-    private Long toUserId;
-
-    /**
-     * 点赞所在的帖子id
-     */
-    private Long postId;
 
     /**
      * 点赞内容的id

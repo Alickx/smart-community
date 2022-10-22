@@ -13,8 +13,15 @@ public interface ThumbService extends ExtendService<Thumb> {
 
 	/**
 	 * 保存点赞
-	 * @param postId 文章Id
+	 * @param thumb 点赞实体类
 	 * @return 是否成功
 	 */
-	R<Boolean> saveThumb(Long postId);
+	R<Boolean> saveThumb(Thumb thumb);
+
+	/**
+	 * 取消点赞
+	 * @param thumb 点赞实体类
+	 * @return 是否成功
+	 */
+	R<Boolean> cancelThumb(Thumb thumb);
 }

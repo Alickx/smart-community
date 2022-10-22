@@ -2,7 +2,6 @@ package cn.goroute.smart.post.entity.dto;
 
 import cn.goroute.smart.common.entity.dto.UserProfileDTO;
 import cn.goroute.smart.post.entity.bo.PostExpansionBO;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -86,14 +85,12 @@ public class PostDTO {
 	 * 更新时间
 	 */
 	@Parameter(description = "更新时间")
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime updateTime;
 
 	/**
 	 * 创建时间
 	 */
 	@Parameter(description = "创建时间")
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime createTime;
 
 	/**
