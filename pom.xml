@@ -51,6 +51,7 @@
 		<guava.version>31.1-jre</guava.version>
 		<jackson-datatype-jsr310.version>2.13.2</jackson-datatype-jsr310.version>
 		<dynamic-tp.version>1.0.8</dynamic-tp.version>
+		<mica-ip2region.version>2.7.5</mica-ip2region.version>
 	</properties>
 
 	<modules>
@@ -193,21 +194,16 @@
 				<artifactId>guava</artifactId>
 				<version>${guava.version}</version>
 			</dependency>
-			<!--            caffeine缓存组件-->
-			<dependency>
-				<groupId>com.github.ben-manes.caffeine</groupId>
-				<artifactId>caffeine</artifactId>
-			</dependency>
-			<!--            日志组件-->
-			<dependency>
-				<groupId>ch.qos.logback</groupId>
-				<artifactId>logback-classic</artifactId>
-				<version>${logback.version}</version>
-			</dependency>
 			<dependency>
 				<groupId>com.hccake</groupId>
 				<artifactId>ballcat-spring-boot-starter-log</artifactId>
 				<version>${ballcat.version}</version>
+			</dependency>
+			<!--			离线IP地址定位库-->
+			<dependency>
+				<groupId>net.dreamlu</groupId>
+				<artifactId>mica-ip2region</artifactId>
+				<version>${mica-ip2region.version}</version>
 			</dependency>
 			<!--            通用工具-->
 			<dependency>
@@ -310,6 +306,11 @@
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct</artifactId>
 			<version>${org.mapstruct.version}</version>
+		</dependency>
+		<!--            caffeine缓存组件-->
+		<dependency>
+			<groupId>com.github.ben-manes.caffeine</groupId>
+			<artifactId>caffeine</artifactId>
 		</dependency>
 	</dependencies>
 

@@ -1,5 +1,6 @@
 package cn.goroute.smart.post;
 
+import com.hccake.ballcat.common.job.annotation.EnableXxlJob;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,6 +16,7 @@ import springfox.documentation.oas.annotations.EnableOpenApi;
 @EnableDiscoveryClient
 @MapperScan("cn.goroute.smart.*.mapper")
 @EnableFeignClients(basePackages = {"cn.goroute.smart.*.feign"})
+@EnableXxlJob
 @EnableOpenApi
 public class SmartPostApplication {
 

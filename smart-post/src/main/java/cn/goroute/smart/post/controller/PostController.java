@@ -1,7 +1,7 @@
 package cn.goroute.smart.post.controller;
 
 import cn.goroute.smart.post.entity.dto.PostAbbreviationDTO;
-import cn.goroute.smart.post.entity.dto.PostDTO;
+import cn.goroute.smart.post.entity.dto.PostInfoDTO;
 import cn.goroute.smart.post.entity.qo.PostQO;
 import cn.goroute.smart.post.entity.vo.PostVO;
 import cn.goroute.smart.post.service.PostService;
@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 /**
@@ -45,7 +46,7 @@ public class PostController {
 	 * @return 查询结果
 	 */
 	@GetMapping("/info/{postId}")
-	public R<PostDTO> info(@PathVariable("postId") Long postId) {
+	public R<PostInfoDTO> info(@PathVariable("postId") Long postId) {
 		return postService.info(postId);
 	}
 
@@ -55,8 +56,8 @@ public class PostController {
 	 * @return 文章保存主键
 	 */
 	@PostMapping("/save")
-	public R<Long> save(@RequestBody @Valid PostVO postVO) {
-		return postService.save(postVO);
+	public R<Long> save(@RequestBody @Valid PostVO postVO, HttpServletRequest request) {
+		return postService.save(postVO,request);
 	}
 
 

@@ -9,19 +9,22 @@ import org.springdoc.api.annotations.ParameterObject;
 
 /**
  * @Author: Alickx
- * @Date: 2022/09/25/18:13
- * @Description: 文章缩略信息对象
+ * @Date: 2022/09/25/18:12
+ * @Description: 文章信息对象
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
 @ToString
-@Schema(name = "文章缩略DTO对象")
+@EqualsAndHashCode(callSuper = true)
+@Schema(name = "文章详情DTO对象")
 @ParameterObject
-public class PostAbbreviationDTO extends PostBaseDTO {
+public class PostInfoDTO extends PostBaseDTO {
 
 	/**
-	 * 文章摘要
+	 * 文章内容
 	 */
-	@Parameter(description = "文章摘要")
-	private String summary;
+	@Parameter(description = "文章内容")
+	private String content;
+
+
+
 }

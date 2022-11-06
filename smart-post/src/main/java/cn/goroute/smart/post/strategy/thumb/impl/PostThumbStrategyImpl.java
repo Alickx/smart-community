@@ -46,7 +46,7 @@ public class PostThumbStrategyImpl extends AbstractThumbStrategy {
 
 		// 设置缓存过期字段和文章点赞状态
 		redisUtil.hPut(PostConstant.Thumb.POST_THUMB_KEY + userId, String.valueOf(toId), "1");
-		redisUtil.hPut(PostConstant.Thumb.POST_THUMB_KEY + userId, PostConstant.Thumb.POST_THUMB_TTL,
+		redisUtil.hPut(PostConstant.Thumb.POST_THUMB_KEY + userId, PostConstant.Thumb.THUMB_TTL_FIELD,
 				String.valueOf(LocalDateTimeUtil.now().toEpochSecond(ZoneOffset.of("+8"))));
 
 		// 先保存点赞记录
@@ -78,7 +78,7 @@ public class PostThumbStrategyImpl extends AbstractThumbStrategy {
 
 		// 设置缓存过期字段和文章点赞状态
 		redisUtil.hDelete(PostConstant.Thumb.POST_THUMB_KEY + userId, String.valueOf(toId));
-		redisUtil.hPut(PostConstant.Thumb.POST_THUMB_KEY + userId, PostConstant.Thumb.POST_THUMB_TTL,
+		redisUtil.hPut(PostConstant.Thumb.POST_THUMB_KEY + userId, PostConstant.Thumb.THUMB_TTL_FIELD,
 				String.valueOf(LocalDateTimeUtil.now().toEpochSecond(ZoneOffset.of("+8"))));
 
 

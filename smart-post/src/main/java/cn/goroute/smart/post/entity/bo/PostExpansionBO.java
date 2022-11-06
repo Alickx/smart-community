@@ -1,6 +1,5 @@
 package cn.goroute.smart.post.entity.bo;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -20,14 +19,18 @@ public class PostExpansionBO {
 	 * 是否收藏
 	 */
 	@Parameter(description = "是否评论")
-	@JsonProperty(defaultValue = "false")
 	private Boolean isComment;
 
 	/**
 	 * 是否点赞
 	 */
 	@Parameter(description = "是否点赞")
-	@JsonProperty(defaultValue = "false")
 	private Boolean isThumb;
+
+	/**
+	 * 是否是作者
+	 */
+	@Parameter(description = "是否是作者")
+	private Boolean isAuthor;
 
 }

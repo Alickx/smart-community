@@ -2,10 +2,12 @@ package cn.goroute.smart.post.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.common.constant.CommonConstant;
+import cn.goroute.smart.common.constant.ErrorCodeEnum;
 import cn.goroute.smart.post.converter.PostConverter;
 import cn.goroute.smart.post.domain.Post;
 import cn.goroute.smart.post.entity.dto.PostAbbreviationDTO;
-import cn.goroute.smart.post.entity.dto.PostDTO;
+import cn.goroute.smart.post.entity.dto.PostBaseDTO;
+import cn.goroute.smart.post.entity.dto.PostInfoDTO;
 import cn.goroute.smart.post.entity.qo.PostQO;
 import cn.goroute.smart.post.entity.vo.PostVO;
 import cn.goroute.smart.post.manager.PostManagerService;
@@ -13,14 +15,19 @@ import cn.goroute.smart.post.mapper.PostMapper;
 import cn.goroute.smart.post.service.PostService;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.google.common.collect.Lists;
 import com.hccake.ballcat.common.model.domain.PageParam;
 import com.hccake.ballcat.common.model.domain.PageResult;
 import com.hccake.ballcat.common.model.result.R;
+import com.hccake.ballcat.common.util.IpUtils;
 import com.hccake.extend.mybatis.plus.service.impl.ExtendServiceImpl;
 import lombok.RequiredArgsConstructor;
+import net.dreamlu.mica.ip2region.core.Ip2regionSearcher;
+import net.dreamlu.mica.ip2region.core.IpInfo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -34,6 +41,9 @@ public class PostServiceImpl extends ExtendServiceImpl<PostMapper, Post>
     implements PostService{
 
 	private final PostManagerService postManagerService;
+
+	private final Ip2regionSearcher ip2regionSearcher;
+
 
 	/**
 	 * 文章详情 - 分页查询
@@ -51,8 +61,8 @@ public class PostServiceImpl extends ExtendServiceImpl<PostMapper, Post>
 		}
 
 		// 补充文章作者，板块等信息
-		List<PostAbbreviationDTO> postDTOList = postManagerService.supplementaryPostInformation(records);
-		postPage.setRecords(postDTOList);
+		List<? extends PostBaseDTO> postDTOList =postManagerService.fillInfo(records);
+		postPage.setRecords((List<PostAbbreviationDTO>) postDTOList);
 
 		return R.ok(postPage);
 
@@ -65,13 +75,29 @@ public class PostServiceImpl extends ExtendServiceImpl<PostMapper, Post>
 	 * @return 文章详情
 	 */
 	@Override
-	public R<PostDTO> info(Long postId) {
+	public R<PostInfoDTO> info(Long postId) {
+
+
 		LambdaQueryWrapper<Post> wrapper = new LambdaQueryWrapper<>();
 		wrapper.eq(Post::getId, postId);
 		wrapper.notIn(Post::getDeleted, CommonConstant.DELETE_STATE);
-		wrapper.eq(Post::getState, CommonConstant.NORMAL_STATE);
 		Post post = baseMapper.selectOne(wrapper);
-		return R.ok(PostConverter.INSTANCE.poToDto(post));
+
+		if (post == null) {
+			return R.failed(ErrorCodeEnum.POST_NOT_EXIST);
+		}
+
+		PostInfoDTO postInfoDTO = PostConverter.INSTANCE.poToDto(post);
+		IpInfo ipInfo = ip2regionSearcher.memorySearch(post.getIp());
+
+		if (ipInfo != null) {
+			postInfoDTO.setRegion(ipInfo.getProvince());
+		}
+
+		List<? extends PostBaseDTO> postBaseDTOS =
+				postManagerService.fillInfo(Lists.asList(postInfoDTO, new PostInfoDTO[0]));
+
+		return R.ok((PostInfoDTO) postBaseDTOS.get(0));
 	}
 
 	/**
@@ -82,19 +108,15 @@ public class PostServiceImpl extends ExtendServiceImpl<PostMapper, Post>
 	 */
 	@Transactional(rollbackFor = Exception.class)
 	@Override
-	public R<Long> save(PostVO postVO) {
+	public R<Long> save(PostVO postVO, HttpServletRequest request) {
 
-		Post post = new Post();
-		post.setTitle(postVO.getTitle());
-		post.setCategoryId(postVO.getCategoryId());
-		post.setTagId(postVO.getTagId());
-		post.setContent(postVO.getContent());
-		post.setIsPublish(postVO.getIsPublish());
+		Post post = PostConverter.INSTANCE.voToPo(postVO);
 		post.setAuthorId(StpUtil.getLoginIdAsLong());
+		String ipAddr = IpUtils.getIpAddr(request);
+		post.setIp(ipAddr);
 
 		//TODO 待完善 积分增加，文章数增加，风控检查处理等
-
-		baseMapper.insert(post);
+		postManagerService.savePost2Db(post);
 		return R.ok(post.getId());
 	}
 }

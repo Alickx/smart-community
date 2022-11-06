@@ -9,18 +9,12 @@ import cn.goroute.smart.post.constant.PostConstant;
 import cn.goroute.smart.post.constant.ThumbTypeEnum;
 import cn.goroute.smart.post.converter.CategoryConverter;
 import cn.goroute.smart.post.converter.TagConverter;
-import cn.goroute.smart.post.domain.Category;
-import cn.goroute.smart.post.domain.Comment;
-import cn.goroute.smart.post.domain.Tag;
-import cn.goroute.smart.post.domain.Thumb;
+import cn.goroute.smart.post.domain.*;
 import cn.goroute.smart.post.entity.bo.PostExpansionBO;
 import cn.goroute.smart.post.entity.dto.CategoryDTO;
-import cn.goroute.smart.post.entity.dto.PostAbbreviationDTO;
+import cn.goroute.smart.post.entity.dto.PostBaseDTO;
 import cn.goroute.smart.post.entity.dto.TagDTO;
-import cn.goroute.smart.post.mapper.CategoryMapper;
-import cn.goroute.smart.post.mapper.CommentMapper;
-import cn.goroute.smart.post.mapper.TagMapper;
-import cn.goroute.smart.post.mapper.ThumbMapper;
+import cn.goroute.smart.post.mapper.*;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.LocalDateTimeUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -29,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZoneOffset;
 import java.util.List;
@@ -57,14 +52,11 @@ public class PostManagerService {
 
 	private final RedisUtil redisUtil;
 
+	private final PostMapper postMapper;
+
 	private final ThreadLocal<Map<Object,Object>> thumbThreadLocal = new ThreadLocal<>();
 
-	public UserProfileDTO getUserProfile(Long userId) {
-		R<UserProfileDTO> userProfile = feignUserProfileService.getUserProfile(userId);
-		return userProfile.getData();
-	}
-
-	public List<UserProfileDTO> batchGetUserProfile(List<Long> userIds) {
+	private List<UserProfileDTO> batchGetUserProfile(List<Long> userIds) {
 		R<List<UserProfileDTO>> userProfile = feignUserProfileService.batchGetUserProfile(userIds);
 		return userProfile.getData();
 	}
@@ -75,19 +67,19 @@ public class PostManagerService {
 	 * @param records 文章列表
 	 * @return 补充后的文章列表
 	 */
-	public List<PostAbbreviationDTO> supplementaryPostInformation(List<PostAbbreviationDTO> records) {
+	public List<? extends PostBaseDTO> fillInfo(List<? extends PostBaseDTO> records) {
 
 		// 补充作者信息
-		supplementaryAuthor(records);
+		fillAuthor(records);
 
 		// 补充板块信息
-		supplementaryCategory(records);
+		fillCategory(records);
 
 		// 补充点赞信息和收藏信息
-		supplementaryExpansion(records);
+		fillExpansion(records);
 
 		// 补充标签信息
-		supplementaryTag(records);
+		fillTag(records);
 
 		return records;
 	}
@@ -97,8 +89,8 @@ public class PostManagerService {
 	 *
 	 * @param records 文章列表
 	 */
-	private void supplementaryTag(List<PostAbbreviationDTO> records) {
-		for (PostAbbreviationDTO record : records) {
+	private void fillTag(List<? extends PostBaseDTO> records) {
+		for (PostBaseDTO record : records) {
 			Tag tag = tagMapper.selectById(record.getTagId());
 			TagDTO tagDTO = TagConverter.INSTANCE.poToDTO(tag);
 			record.setTag(tagDTO);
@@ -110,10 +102,10 @@ public class PostManagerService {
 	 *
 	 * @param records 文章列表
 	 */
-	private void supplementaryAuthor(List<PostAbbreviationDTO> records) {
+	private void fillAuthor(List<? extends PostBaseDTO> records) {
 		List<Long> authorIds = records
 				.stream()
-				.map(PostAbbreviationDTO::getAuthorId).collect(Collectors.toList());
+				.map(PostBaseDTO::getAuthorId).collect(Collectors.toList());
 		List<UserProfileDTO> userProfileDTOList = this.batchGetUserProfile(authorIds);
 
 		records.forEach(postDTO -> userProfileDTOList.forEach(userProfileDTO -> {
@@ -128,10 +120,10 @@ public class PostManagerService {
 	 *
 	 * @param records 文章列表
 	 */
-	private void supplementaryCategory(List<PostAbbreviationDTO> records) {
+	private void fillCategory(List<? extends PostBaseDTO> records) {
 		List<Long> categoryIds = records
 				.stream()
-				.map(PostAbbreviationDTO::getCategoryId)
+				.map(PostBaseDTO::getCategoryId)
 				.collect(Collectors.toList());
 
 		List<Category> categoryList = categoryMapper.selectBatchIds(categoryIds);
@@ -145,11 +137,11 @@ public class PostManagerService {
 	}
 
 	/**
-	 * 补充文章点赞信息和收藏信息
+	 * 补充文章拓展信息
 	 *
 	 * @param records 文章列表
 	 */
-	private void supplementaryExpansion(List<PostAbbreviationDTO> records) {
+	private void fillExpansion(List<? extends PostBaseDTO> records) {
 
 		boolean login = StpUtil.isLogin();
 
@@ -163,13 +155,14 @@ public class PostManagerService {
 		}
 
 		// 获取文章id集合
-		for (PostAbbreviationDTO record : records) {
+		for (PostBaseDTO record : records) {
 			postExpansionBO = new PostExpansionBO();
 
 			// 判断是否登录
 			if (!login) {
 				postExpansionBO.setIsThumb(false);
 				postExpansionBO.setIsComment(false);
+				postExpansionBO.setIsAuthor(false);
 				record.setExpansion(postExpansionBO);
 				continue;
 			}
@@ -180,6 +173,9 @@ public class PostManagerService {
 
 			// 查询是否评论
 			postExpansionBO.setIsComment(getIsComment(userId,postId));
+
+			// 判断是否是作者
+			postExpansionBO.setIsAuthor(record.getAuthorId().equals(Long.valueOf(userId)));
 
 			record.setExpansion(postExpansionBO);
 
@@ -210,15 +206,16 @@ public class PostManagerService {
 		if (entries.isEmpty()) {
 			thumbDbSearchAndCache(userId);
 		} else {
-			long ttl = Long.parseLong((String) entries.get(PostConstant.Thumb.POST_THUMB_TTL));
+			long ttl = Long.parseLong((String) entries.get(PostConstant.Thumb.THUMB_TTL_FIELD));
 			// 判断是否过期
 			// 当前时间戳 - 过期时间 < ttl，证明还未过期
-			long expire = LocalDateTimeUtil.now().minusSeconds(PostConstant.Thumb.POST_THUMB_EXPIRE).toEpochSecond(ZoneOffset.of("+8"));
+			long expire = LocalDateTimeUtil.now()
+					.minusSeconds(PostConstant.Thumb.POST_THUMB_EXPIRE).toEpochSecond(ZoneOffset.of("+8"));
 			if (expire < ttl) {
 				// 判断是否需要更新缓存时间,如果小于创建/更新时间戳的1/3，则更新缓存时间
 				if ((ttl - expire) < ttl / 3) {
 					redisUtil.hPut(PostConstant.Thumb.POST_THUMB_KEY + userId,
-							PostConstant.Thumb.POST_THUMB_TTL, String.valueOf(LocalDateTimeUtil.now().toEpochSecond(ZoneOffset.of("+8"))));
+							PostConstant.Thumb.THUMB_TTL_FIELD, String.valueOf(LocalDateTimeUtil.now().toEpochSecond(ZoneOffset.of("+8"))));
 				}
 			} else {
 				// 缓存已过期，查询数据库
@@ -251,11 +248,11 @@ public class PostManagerService {
 		}
 		// 更新缓存ttl时间
 		redisUtil.hPut(PostConstant.Thumb.POST_THUMB_KEY + userId,
-				PostConstant.Thumb.POST_THUMB_TTL, String.valueOf(LocalDateTimeUtil.now().toEpochSecond(ZoneOffset.of("+8"))));
+				PostConstant.Thumb.THUMB_TTL_FIELD, String.valueOf(LocalDateTimeUtil.now().toEpochSecond(ZoneOffset.of("+8"))));
 		// 更新minCid的值
 		if (CollUtil.isNotEmpty(thumbs)) {
 			redisUtil.hPut(PostConstant.Thumb.POST_THUMB_KEY + userId,
-					PostConstant.Thumb.POST_THUMB_MIN_CID, String.valueOf(thumbs.get(0).getToId()));
+					PostConstant.Thumb.THUMB_MIN_CID_FIELD, String.valueOf(thumbs.get(0).getToId()));
 		}
 
 		// 更新ThreadLocal
@@ -279,10 +276,21 @@ public class PostManagerService {
 			return true;
 		} else {
 			// 如果文章id不在缓存中，则查询文章id是否小于缓存中的文章最小值
-			Long minCid = Long.parseLong((String) entries.get(PostConstant.Thumb.POST_THUMB_MIN_CID));
-			if (postId > minCid) {
-				// 如果文章id大于缓存中的文章最小值，则未点赞
-				return false;
+			if (entries.containsKey(PostConstant.Thumb.THUMB_MIN_CID_FIELD)) {
+				Long minCid = Long.parseLong((String) entries.get(PostConstant.Thumb.THUMB_MIN_CID_FIELD));
+				if (postId > minCid) {
+					// 如果文章id大于缓存中的文章最小值，则未点赞
+					return false;
+				} else {
+					// 查询db
+					LambdaQueryWrapper<Thumb> thumbQueryWrapper = new LambdaQueryWrapper<>();
+					thumbQueryWrapper.eq(Thumb::getUserId, userId);
+					thumbQueryWrapper.eq(Thumb::getToId, postId);
+					thumbQueryWrapper.eq(Thumb::getType, ThumbTypeEnum.POST.getCode());
+					thumbQueryWrapper.eq(Thumb::getDeleted, CommonConstant.NORMAL_STATE);
+					Thumb thumb = thumbMapper.selectOne(thumbQueryWrapper);
+					return thumb != null;
+				}
 			} else {
 				// 查询db
 				LambdaQueryWrapper<Thumb> thumbQueryWrapper = new LambdaQueryWrapper<>();
@@ -294,6 +302,18 @@ public class PostManagerService {
 				return thumb != null;
 			}
 		}
+	}
+
+
+	/**
+	 * 保存文章到数据库
+	 * @param post 文章实体类
+	 */
+	@Transactional(rollbackFor = Exception.class)
+	public void savePost2Db(Post post) {
+
+		postMapper.insert(post);
+
 	}
 
 }

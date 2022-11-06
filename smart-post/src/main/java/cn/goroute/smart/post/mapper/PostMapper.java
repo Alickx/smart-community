@@ -4,7 +4,6 @@ import cn.goroute.smart.common.constant.CommonConstant;
 import cn.goroute.smart.post.converter.PostConverter;
 import cn.goroute.smart.post.domain.Post;
 import cn.goroute.smart.post.entity.dto.PostAbbreviationDTO;
-import cn.goroute.smart.post.entity.dto.PostDTO;
 import cn.goroute.smart.post.entity.qo.PostQO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.hccake.ballcat.common.model.domain.PageParam;
@@ -25,7 +24,7 @@ public interface PostMapper extends ExtendMapper<Post> {
 	 * 分页查询
 	 * @param pageParam 分页参数
 	 * @param postQO 查询参数对象
-	 * @return PageResult<PostDTO> 分页数据
+	 * @return PageResult<PostInfoDTO> 分页数据
 	 */
 	default PageResult<PostAbbreviationDTO> queryPage(PageParam pageParam, PostQO postQO) {
 		IPage<Post> page = this.prodPage(pageParam);

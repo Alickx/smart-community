@@ -56,18 +56,6 @@ rocketmq:
     enableMsgTrace: false
     # 消息跟踪主题的名称值。如果不进行配置，可以使用默认的跟踪主题名称
     customizedTraceTopic: RMQ_SYS_TRACE_TOPIC
-  consumer:
-    # 配置指定group是否启动监听器 group1.topic1 = false
-    listeners:
-      # key：group名称
-      rocketmq_source_code_group:
-        rocketmq_source_code: true
-    # 指定消费组
-    group: springboot_consumer_group
-    # 指定topic，启动时就会注册
-    #topic: springboot_consumer_xxx
-    # 一次拉取消息最大值，注意是拉取消息的最大值而非消费最大值
-    pull-batch-size: 10
 
 # 日志配置
 logging:
@@ -75,3 +63,14 @@ logging:
   level:
     org.apache.rocketmq: error
     RocketmqClient: error
+
+xxl:
+  job:
+    admin:
+      addresses: http://localhost:8080/xxl-job-admin
+    executor:
+      appname: ${spring.application.name}
+      log-path: /data/applogs/smart-user/jobhandler
+      log-retention-days: 30
+      access-token: 16ae0070d35b4bffa4cc9fa1e59faa0b
+

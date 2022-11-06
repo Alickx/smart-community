@@ -3,23 +3,17 @@ package cn.goroute.smart.post.entity.dto;
 import cn.goroute.smart.common.entity.dto.UserProfileDTO;
 import cn.goroute.smart.post.entity.bo.PostExpansionBO;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import lombok.ToString;
-import org.springdoc.api.annotations.ParameterObject;
 
 import java.time.LocalDateTime;
 
 /**
  * @Author: Alickx
- * @Date: 2022/09/25/18:12
- * @Description: 文章信息对象
+ * @Date: 2022/10/28/0:08
+ * @Description: 文章基础信息对象
  */
 @Data
-@ToString
-@Schema(name = "文章DTO对象")
-@ParameterObject
-public class PostDTO {
+public class PostBaseDTO {
 
 	/**
 	 * 文章id
@@ -52,12 +46,6 @@ public class PostDTO {
 	private String title;
 
 	/**
-	 * 文章内容
-	 */
-	@Parameter(description = "文章内容")
-	private String content;
-
-	/**
 	 * 收藏数量
 	 */
 	@Parameter(description = "收藏数量")
@@ -74,12 +62,6 @@ public class PostDTO {
 	 */
 	@Parameter(description = "评论数量")
 	private Integer commentCount;
-
-	/**
-	 * 文章摘要
-	 */
-	@Parameter(description = "文章摘要")
-	private String summary;
 
 	/**
 	 * 更新时间
@@ -116,5 +98,13 @@ public class PostDTO {
 	 */
 	@Parameter(description = "文章扩展信息")
 	private PostExpansionBO expansion;
+
+
+	/**
+	 * 文章作者发布时的地址
+	 */
+	@Parameter(description = "文章作者发布时的地址")
+	private String region;
+
 
 }

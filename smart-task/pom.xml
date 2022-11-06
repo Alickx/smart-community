@@ -10,11 +10,6 @@
     <packaging>jar</packaging>
 
     <dependencies>
-        <!--        定时任务-->
-        <dependency>
-            <groupId>com.hccake</groupId>
-            <artifactId>ballcat-spring-boot-starter-job</artifactId>
-        </dependency>
         <!--        公用模块-->
         <dependency>
             <groupId>cn.goroute.smart</groupId>

@@ -2,13 +2,15 @@ package cn.goroute.smart.post.service;
 
 import cn.goroute.smart.post.domain.Post;
 import cn.goroute.smart.post.entity.dto.PostAbbreviationDTO;
-import cn.goroute.smart.post.entity.dto.PostDTO;
+import cn.goroute.smart.post.entity.dto.PostInfoDTO;
 import cn.goroute.smart.post.entity.qo.PostQO;
 import cn.goroute.smart.post.entity.vo.PostVO;
 import com.hccake.ballcat.common.model.domain.PageParam;
 import com.hccake.ballcat.common.model.domain.PageResult;
 import com.hccake.ballcat.common.model.result.R;
 import com.hccake.extend.mybatis.plus.service.ExtendService;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
 * @author Alickx
@@ -30,12 +32,12 @@ public interface PostService extends ExtendService<Post> {
 	 * @param postId 文章Id
 	 * @return 文章详情
 	 */
-	R<PostDTO> info(Long postId);
+	R<PostInfoDTO> info(Long postId);
 
 	/**
 	 * 保存文章
 	 * @param postVO 文章视图对象
 	 * @return 文章Id
 	 */
-	R<Long> save(PostVO postVO);
+	R<Long> save(PostVO postVO, HttpServletRequest request);
 }

@@ -72,6 +72,11 @@ public class Post implements Serializable {
      */
     private Boolean isPublish;
 
+	/**
+	 * 文章作者发布时的ip
+	 */
+	private String ip;
+
     /**
      * 更新时间
      */

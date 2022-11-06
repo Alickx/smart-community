@@ -3,8 +3,9 @@ package cn.goroute.smart.rocketmq.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.rocketmq.spring.support.RocketMQMessageConverter;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.messaging.converter.CompositeMessageConverter;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
@@ -15,7 +16,8 @@ import java.util.List;
 /**
  * RocketMQ序列化器处理
  */
-@Configuration
+@AutoConfiguration
+@ConditionalOnBean(RocketMQMessageConverter.class)
 public class RocketMqConfig {
 
     /**
