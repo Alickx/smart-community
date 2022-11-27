@@ -1,7 +1,7 @@
 package cn.goroute.smart.post.converter;
 
 import cn.goroute.smart.post.domain.Tag;
-import cn.goroute.smart.post.entity.dto.TagDTO;
+import cn.goroute.smart.post.model.dto.TagDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;

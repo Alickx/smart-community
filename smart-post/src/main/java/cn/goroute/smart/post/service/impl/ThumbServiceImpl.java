@@ -3,7 +3,7 @@ package cn.goroute.smart.post.service.impl;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.common.util.RedisUtil;
 import cn.goroute.smart.post.domain.Thumb;
-import cn.goroute.smart.post.entity.mq.ThumbMessageTemplate;
+import cn.goroute.smart.post.model.mq.ThumbMessageTemplate;
 import cn.goroute.smart.post.mapper.ThumbMapper;
 import cn.goroute.smart.post.service.PostService;
 import cn.goroute.smart.post.service.ThumbService;

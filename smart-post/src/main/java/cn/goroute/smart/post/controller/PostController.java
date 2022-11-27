@@ -1,9 +1,9 @@
 package cn.goroute.smart.post.controller;
 
-import cn.goroute.smart.post.entity.dto.PostAbbreviationDTO;
-import cn.goroute.smart.post.entity.dto.PostInfoDTO;
-import cn.goroute.smart.post.entity.qo.PostQO;
-import cn.goroute.smart.post.entity.vo.PostVO;
+import cn.goroute.smart.post.model.dto.PostAbbreviationDTO;
+import cn.goroute.smart.post.model.dto.PostInfoDTO;
+import cn.goroute.smart.post.model.qo.PostQO;
+import cn.goroute.smart.post.model.vo.PostVO;
 import cn.goroute.smart.post.service.PostService;
 import com.hccake.ballcat.common.model.domain.PageParam;
 import com.hccake.ballcat.common.model.domain.PageResult;

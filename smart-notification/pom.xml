@@ -26,6 +26,11 @@
             <artifactId>smart-common</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+		<!--        定时任务-->
+		<dependency>
+			<groupId>com.hccake</groupId>
+			<artifactId>ballcat-spring-boot-starter-job</artifactId>
+		</dependency>
     </dependencies>
 
 

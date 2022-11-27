@@ -17,7 +17,7 @@
 	<version>1.0-SNAPSHOT</version>
 
 	<properties>
-		<java.version>1.8</java.version>
+		<java.version>17</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<skipTests>true</skipTests>
@@ -42,7 +42,7 @@
 		<maven-compiler-plugin.verison>3.8.0</maven-compiler-plugin.verison>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<ballcat.version>0.9.0</ballcat.version>
+		<ballcat.version>1.0.1</ballcat.version>
 		<satoken.version>1.31.0</satoken.version>
 		<spring.cloud.loadbalancer.version>3.0.3</spring.cloud.loadbalancer.version>
 		<rocketmq.version>2.2.2</rocketmq.version>
@@ -51,7 +51,6 @@
 		<guava.version>31.1-jre</guava.version>
 		<jackson-datatype-jsr310.version>2.13.2</jackson-datatype-jsr310.version>
 		<dynamic-tp.version>1.0.8</dynamic-tp.version>
-		<mica-ip2region.version>2.7.5</mica-ip2region.version>
 	</properties>
 
 	<modules>
@@ -60,7 +59,6 @@
 		<module>smart-post</module>
 		<module>smart-gateway</module>
 		<module>smart-thirdpart</module>
-		<module>smart-task</module>
 		<module>smart-search</module>
 		<module>smart-notification</module>
 		<module>smart-auth</module>
@@ -201,9 +199,9 @@
 			</dependency>
 			<!--			离线IP地址定位库-->
 			<dependency>
-				<groupId>net.dreamlu</groupId>
-				<artifactId>mica-ip2region</artifactId>
-				<version>${mica-ip2region.version}</version>
+				<groupId>com.hccake</groupId>
+				<artifactId>ballcat-spring-boot-starter-ip2region</artifactId>
+				<version>${ballcat.version}</version>
 			</dependency>
 			<!--            通用工具-->
 			<dependency>

@@ -63,7 +63,7 @@ public class CategoryServiceImpl extends ExtendServiceImpl<CategoryMapper, Categ
 					.map(CategoryTag::getTagId).collect(Collectors.toList());
 
 			if (tagIdList.isEmpty()) {
-				categorySelectData.setExtendObj(ListUtil.empty());
+				categorySelectData.setAttributes(ListUtil.empty());
 				return categorySelectData;
 			}
 
@@ -77,7 +77,7 @@ public class CategoryServiceImpl extends ExtendServiceImpl<CategoryMapper, Categ
 						return tagSelectData;
 					}).collect(Collectors.toList());
 
-			categorySelectData.setExtendObj(tagSelectDataList);
+			categorySelectData.setAttributes(tagSelectDataList);
 			return categorySelectData;
 
 		}).collect(Collectors.toList());

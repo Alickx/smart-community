@@ -2,9 +2,9 @@ package cn.goroute.smart.post.converter;
 
 import cn.goroute.smart.post.converter.impl.PostConvertDecorator;
 import cn.goroute.smart.post.domain.Post;
-import cn.goroute.smart.post.entity.dto.PostAbbreviationDTO;
-import cn.goroute.smart.post.entity.dto.PostInfoDTO;
-import cn.goroute.smart.post.entity.vo.PostVO;
+import cn.goroute.smart.post.model.dto.PostAbbreviationDTO;
+import cn.goroute.smart.post.model.dto.PostInfoDTO;
+import cn.goroute.smart.post.model.vo.PostVO;
 import org.mapstruct.DecoratedWith;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

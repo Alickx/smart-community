@@ -1,10 +1,9 @@
 package cn.goroute.smart.post.converter;
 
 import cn.goroute.smart.post.domain.Category;
-import cn.goroute.smart.post.entity.dto.CategoryDTO;
+import cn.goroute.smart.post.model.dto.CategoryDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;

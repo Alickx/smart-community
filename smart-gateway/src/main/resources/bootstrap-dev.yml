@@ -6,7 +6,7 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: localhost:8848
+        server-addr: 124.223.80.135:8848
     gateway:
       routes:
         - id: route_member
@@ -27,8 +27,8 @@ spring:
             - Path=/api/v1/post/**
           filters:
             - 'RewritePath=/api/v1/post,/'
-        - id: route_notify
-          uri: 'lb://smart-notify'
+        - id: route_notification
+          uri: 'lb://smart-notification'
           predicates:
             - Path=/api/v1/notification/**
           filters:
@@ -45,15 +45,9 @@ spring:
             - Path=/api/v1/search/**
           filters:
             - 'RewritePath=/api/v1/search,/'
-        - id: route_task
-          uri: 'lb://smart-task'
-          predicates:
-            - Path=/api/v1/task/**
-          filters:
-            - 'RewritePath=/api/v1/task,/'
   redis:
     database: 0
-    host: 127.0.0.1
+    host: 124.223.80.135
     port: 6379
     timeout: 10s
     lettuce:
@@ -62,6 +56,7 @@ spring:
         max-wait: -1ms
         max-idle: 10
         min-idle: 0
+    password: ak87715700
 sa-token:
   token-name: 'Authorization'
   timeout: 2592000

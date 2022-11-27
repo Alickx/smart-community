@@ -14,10 +14,14 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MyRedissonConfig {
 
-    @Bean(destroyMethod = "shutdown") // 服务停止后调用 shutdown 方法。
+	// 服务停止后调用 shutdown 方法。
+    @Bean(destroyMethod = "shutdown")
     public RedissonClient redisson() {
         Config config = new Config();
-        config.useSingleServer().setAddress("redis://127.0.0.1:6379");
+        config.useSingleServer()
+				.setAddress("redis://124.223.80.135:6379")
+				.setPassword("ak87715700");
+
         return Redisson.create(config);
     }
 }

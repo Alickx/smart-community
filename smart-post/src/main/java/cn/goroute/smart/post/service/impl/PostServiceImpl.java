@@ -5,11 +5,11 @@ import cn.goroute.smart.common.constant.CommonConstant;
 import cn.goroute.smart.common.constant.ErrorCodeEnum;
 import cn.goroute.smart.post.converter.PostConverter;
 import cn.goroute.smart.post.domain.Post;
-import cn.goroute.smart.post.entity.dto.PostAbbreviationDTO;
-import cn.goroute.smart.post.entity.dto.PostBaseDTO;
-import cn.goroute.smart.post.entity.dto.PostInfoDTO;
-import cn.goroute.smart.post.entity.qo.PostQO;
-import cn.goroute.smart.post.entity.vo.PostVO;
+import cn.goroute.smart.post.model.dto.PostAbbreviationDTO;
+import cn.goroute.smart.post.model.dto.PostBaseDTO;
+import cn.goroute.smart.post.model.dto.PostInfoDTO;
+import cn.goroute.smart.post.model.qo.PostQO;
+import cn.goroute.smart.post.model.vo.PostVO;
 import cn.goroute.smart.post.manager.PostManagerService;
 import cn.goroute.smart.post.mapper.PostMapper;
 import cn.goroute.smart.post.service.PostService;
@@ -20,10 +20,10 @@ import com.hccake.ballcat.common.model.domain.PageParam;
 import com.hccake.ballcat.common.model.domain.PageResult;
 import com.hccake.ballcat.common.model.result.R;
 import com.hccake.ballcat.common.util.IpUtils;
+import com.hccake.ballcat.starter.ip2region.core.IpInfo;
+import com.hccake.ballcat.starter.ip2region.searcher.Ip2regionSearcher;
 import com.hccake.extend.mybatis.plus.service.impl.ExtendServiceImpl;
 import lombok.RequiredArgsConstructor;
-import net.dreamlu.mica.ip2region.core.Ip2regionSearcher;
-import net.dreamlu.mica.ip2region.core.IpInfo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -88,7 +88,7 @@ public class PostServiceImpl extends ExtendServiceImpl<PostMapper, Post>
 		}
 
 		PostInfoDTO postInfoDTO = PostConverter.INSTANCE.poToDto(post);
-		IpInfo ipInfo = ip2regionSearcher.memorySearch(post.getIp());
+		IpInfo ipInfo = ip2regionSearcher.search(post.getIp());
 
 		if (ipInfo != null) {
 			postInfoDTO.setRegion(ipInfo.getProvince());

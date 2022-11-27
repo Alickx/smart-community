@@ -1,6 +1,5 @@
 package cn.goroute.smart.user;
 
-import com.hccake.ballcat.common.job.annotation.EnableXxlJob;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,7 +14,6 @@ import springfox.documentation.oas.annotations.EnableOpenApi;
 @EnableDiscoveryClient
 @EnableFeignClients
 @MapperScan("cn.goroute.smart.*.mapper")
-@EnableXxlJob
 @EnableOpenApi
 public class SmartUserApplication {
 
