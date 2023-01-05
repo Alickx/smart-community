@@ -24,4 +24,15 @@
         type,first_comment_id,create_time,
         update_time,deleted
     </sql>
+    <update id="incrThumbNum">
+		update comment
+		set thumb_count = comment.thumb_count + #{thumbNum}
+		where id = #{id}
+	</update>
+
+	<update id="descThumbNum">
+		update comment
+		set thumb_count = IF(comment.thumb_count > 0, comment.thumb_count - #{thumbNum}, 0)
+		where id = #{id}
+	</update>
 </mapper>

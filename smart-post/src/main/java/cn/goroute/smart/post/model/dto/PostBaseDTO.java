@@ -1,7 +1,7 @@
 package cn.goroute.smart.post.model.dto;
 
 import cn.goroute.smart.common.entity.dto.UserProfileDTO;
-import cn.goroute.smart.post.model.bo.PostExpansionBO;
+import cn.goroute.smart.post.model.bo.ContentExpansionDTO;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.Data;
 
@@ -97,7 +97,7 @@ public class PostBaseDTO {
 	 * 文章扩展信息
 	 */
 	@Parameter(description = "文章扩展信息")
-	private PostExpansionBO expansion;
+	private ContentExpansionDTO expansion;
 
 
 	/**

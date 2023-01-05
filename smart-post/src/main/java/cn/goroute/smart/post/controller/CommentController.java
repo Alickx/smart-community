@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
  * @Description: 文章评论
  */
 @RestController
-@RequestMapping("/post/comment")
+@RequestMapping("/comment")
 @RequiredArgsConstructor
 public class CommentController {
 
@@ -32,8 +32,8 @@ public class CommentController {
 	 * @return 分页结果
 	 */
 	@GetMapping("/page")
-	public R<PageResult<CommentDTO>> page(PageParam pageParam, CommentQO commentQO) {
-		return commentService.commentPage(pageParam, commentQO);
+	public R<PageResult<CommentDTO>> page(@Validated PageParam pageParam, CommentQO commentQO) {
+		return commentService.queryPage(pageParam, commentQO);
 	}
 
 	/**

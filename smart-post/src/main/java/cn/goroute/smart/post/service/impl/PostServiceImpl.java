@@ -5,13 +5,13 @@ import cn.goroute.smart.common.constant.CommonConstant;
 import cn.goroute.smart.common.constant.ErrorCodeEnum;
 import cn.goroute.smart.post.converter.PostConverter;
 import cn.goroute.smart.post.domain.Post;
+import cn.goroute.smart.post.manage.PostManageService;
+import cn.goroute.smart.post.mapper.PostMapper;
 import cn.goroute.smart.post.model.dto.PostAbbreviationDTO;
 import cn.goroute.smart.post.model.dto.PostBaseDTO;
 import cn.goroute.smart.post.model.dto.PostInfoDTO;
 import cn.goroute.smart.post.model.qo.PostQO;
 import cn.goroute.smart.post.model.vo.PostVO;
-import cn.goroute.smart.post.manager.PostManagerService;
-import cn.goroute.smart.post.mapper.PostMapper;
 import cn.goroute.smart.post.service.PostService;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -40,7 +40,7 @@ import java.util.List;
 public class PostServiceImpl extends ExtendServiceImpl<PostMapper, Post>
     implements PostService{
 
-	private final PostManagerService postManagerService;
+	private final PostManageService postManageService;
 
 	private final Ip2regionSearcher ip2regionSearcher;
 
@@ -61,7 +61,8 @@ public class PostServiceImpl extends ExtendServiceImpl<PostMapper, Post>
 		}
 
 		// 补充文章作者，板块等信息
-		List<? extends PostBaseDTO> postDTOList =postManagerService.fillInfo(records);
+		List<? extends PostBaseDTO> postDTOList = postManageService.fillInfo(records);
+
 		postPage.setRecords((List<PostAbbreviationDTO>) postDTOList);
 
 		return R.ok(postPage);
@@ -95,7 +96,7 @@ public class PostServiceImpl extends ExtendServiceImpl<PostMapper, Post>
 		}
 
 		List<? extends PostBaseDTO> postBaseDTOS =
-				postManagerService.fillInfo(Lists.asList(postInfoDTO, new PostInfoDTO[0]));
+				postManageService.fillInfo(Lists.asList(postInfoDTO, new PostInfoDTO[0]));
 
 		return R.ok((PostInfoDTO) postBaseDTOS.get(0));
 	}
@@ -116,7 +117,7 @@ public class PostServiceImpl extends ExtendServiceImpl<PostMapper, Post>
 		post.setIp(ipAddr);
 
 		//TODO 待完善 积分增加，文章数增加，风控检查处理等
-		postManagerService.savePost2Db(post);
+		postManageService.savePost2Db(post);
 		return R.ok(post.getId());
 	}
 }

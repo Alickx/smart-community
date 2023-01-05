@@ -80,5 +80,3 @@ ballcat:
       enabled: false
     operation:
       enabled: false
-  ip2region:
-    file-location: classpath:ip2region/ip2region.xdb

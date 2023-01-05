@@ -16,8 +16,10 @@ public enum ThumbStrategyEnum {
 	/**
 	 * 文章点赞
 	 */
-	POST(1, "文章", "postThumbStrategy")
+	POST(1, "文章", "postThumbStrategy"),
 
+
+	COMMENT(2, "评论", "commentThumbStrategy"),
 
 	;
 

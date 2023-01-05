@@ -11,6 +11,7 @@ import com.hccake.ballcat.common.model.domain.PageResult;
 import com.hccake.extend.mybatis.plus.conditions.query.LambdaQueryWrapperX;
 import com.hccake.extend.mybatis.plus.mapper.ExtendMapper;
 import com.hccake.extend.mybatis.plus.toolkit.WrappersX;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * @author Alickx
@@ -39,6 +40,20 @@ public interface PostMapper extends ExtendMapper<Post> {
 		return new PageResult<>(dtoPage.getRecords(), dtoPage.getTotal());
 
 	}
+
+	/**
+	 * 增加文章点赞数
+	 * @param toId 文章id
+	 * @param thumbNum 点赞数
+	 */
+    void incrThumbNum(@Param("toId") long toId,@Param("thumbNum") int thumbNum);
+
+	/**
+	 * 递减文章点赞数
+	 * @param toId 文章id
+	 * @param thumbNum 点赞数
+	 */
+	void descThumbNum(@Param("toId") long toId,@Param("thumbNum") int thumbNum);
 }
 
 

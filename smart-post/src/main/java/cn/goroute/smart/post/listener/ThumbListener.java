@@ -48,7 +48,7 @@ public class ThumbListener extends BaseMqMessageListener<RocketMqEntityMessage >
 		Thumb thumb = JsonUtil.toObject(message.getMessage(), Thumb.class);
 		ThumbStrategy strategy = ThumbStrategyEnum.getStrategyByType(thumb.getType());
 		if (strategy == null) {
-			log.error("点赞业务监听者未找到对应的点赞策略:[{}]", JsonUtil.toJsonString(message));
+			log.error("点赞业务监听者未找到对应的点赞策略:[{}]", JsonUtil.toObject(message.getMessage(), Thumb.class).toString());
 			return;
 		}
 		if (message.getLogicFlag()) {
@@ -65,7 +65,7 @@ public class ThumbListener extends BaseMqMessageListener<RocketMqEntityMessage >
 	 */
 	@Override
 	protected void overMaxRetryTimesMessage(RocketMqEntityMessage message) {
-		log.error("超过重试次数,消息内容:[{}]", JsonUtil.toJsonString(message));
+		log.error("超过重试次数,消息内容:[{}]", JsonUtil.toObject(message.getMessage(), Thumb.class).toString());
 	}
 
 	/**

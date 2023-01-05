@@ -16,9 +16,26 @@ import com.hccake.extend.mybatis.plus.service.ExtendService;
 */
 public interface CommentService extends ExtendService<Comment> {
 
-    R<PageResult<CommentDTO>> commentPage(PageParam pageParam, CommentQO commentQO);
+	/**
+	 * 分页查询
+	 * @param pageParam 分页参数
+	 * @param commentQO 查询参数
+	 * @return 分页结果
+	 */
+    R<PageResult<CommentDTO>> queryPage(PageParam pageParam, CommentQO commentQO);
 
+	/**
+	 * 保存评论/回复
+	 * @param commentVO 评论/回复信息
+	 * @return 保存结果
+	 */
 	R<Boolean> commentSave(CommentVO commentVO);
 
+	/**
+	 * 删除评论/回复
+	 * @param commentVO 评论/回复信息
+	 * @return 删除结果
+	 */
 	R<Boolean> commentDelete(CommentVO commentVO);
+
 }

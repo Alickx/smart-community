@@ -1,7 +1,6 @@
 package cn.goroute.smart.post.strategy.thumb;
 
 import cn.goroute.smart.post.domain.Thumb;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @Author: 蔡国鹏
@@ -15,7 +14,6 @@ public interface ThumbStrategy {
 	 * @param thumb 点赞信息
 	 * @return 是否点赞成功
 	 */
-	@Transactional(rollbackFor = Exception.class)
 	void saveThumb(Thumb thumb);
 
 	/**
@@ -23,7 +21,6 @@ public interface ThumbStrategy {
 	 * @param thumb 点赞信息
 	 * @return 是否取消点赞成功
 	 */
-	@Transactional(rollbackFor = Exception.class)
 	void cancelThumb(Thumb thumb);
 
 }

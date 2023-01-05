@@ -15,7 +15,6 @@
             <result property="thumbCount" column="thumb_count" jdbcType="INTEGER"/>
             <result property="commentCount" column="comment_count" jdbcType="INTEGER"/>
             <result property="isPublish" column="is_publish" jdbcType="TINYINT"/>
-            <result property="summary" column="summary" jdbcType="VARCHAR"/>
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="deleted" column="deleted" jdbcType="TINYINT"/>
@@ -28,4 +27,16 @@
         is_publish,summary,update_time,
         create_time,deleted
     </sql>
+
+    <update id="incrThumbNum">
+		update post
+		set thumb_count = thumb_count + #{thumbNum}
+		where id = #{toId}
+	</update>
+
+	<update id="descThumbNum">
+		update post
+		set thumb_count = IF(thumb_count > 0, thumb_count - #{thumbNum}, 0)
+		where id = #{toId}
+	</update>
 </mapper>

@@ -1,17 +1,16 @@
 package cn.goroute.smart.post.domain;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import java.time.LocalDateTime;
-
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.ToString;
 import org.springdoc.api.annotations.ParameterObject;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * 文章回复表
@@ -71,6 +70,12 @@ public class Comment implements Serializable {
      */
 	@Parameter(description = "一级评论uid")
     private Long firstCommentId;
+
+	/**
+	 * 点赞数量
+	 */
+	@Parameter(description = "点赞数量")
+	private Integer thumbCount;
 
     /**
      * 创建时间

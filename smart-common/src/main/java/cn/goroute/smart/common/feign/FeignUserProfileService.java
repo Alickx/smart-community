@@ -18,7 +18,7 @@ import java.util.List;
  * @Description:
  */
 @FeignClient(name = "smart-gateway"
-		, path = "/api/v1/user"
+		, path = "/api/v1/userApi"
 		, configuration = FeignConfig.class)
 public interface FeignUserProfileService {
 
@@ -27,7 +27,7 @@ public interface FeignUserProfileService {
 	 *
 	 * @return
 	 */
-	@GetMapping(value = "/profile")
+	@GetMapping(value = "/user/profile")
 	R<UserProfileDTO> getUserProfile(@RequestParam("userId") Long userId);
 
 	/**
@@ -36,7 +36,7 @@ public interface FeignUserProfileService {
 	 * @param userProfileDto 用户信息
 	 * @return 是否成功
 	 */
-	@PostMapping("/profile/init")
+	@PostMapping("/user/profile/init")
 	R<Boolean> initUserProfile(@RequestBody UserProfileDTO userProfileDto);
 
 	/**
@@ -45,7 +45,7 @@ public interface FeignUserProfileService {
 	 * @param userIds 用户id列表
 	 * @return 用户信息列表
 	 */
-	@GetMapping("/batch/profile")
+	@GetMapping("/user/batch/profile")
 	@Operation(summary = "批量获取用户信息", description = "批量获取用户信息")
 	R<List<UserProfileDTO>> batchGetUserProfile(@RequestParam("userIds") List<Long> userIds);
 
