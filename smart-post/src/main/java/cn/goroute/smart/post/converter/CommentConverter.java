@@ -6,6 +6,8 @@ import cn.goroute.smart.post.model.vo.CommentVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
+
 /**
  * @Author: Alickx
  * @Date: 2022/11/27/13:18
@@ -29,6 +31,8 @@ public interface CommentConverter {
 	 * @return Comment
 	 */
 	Comment voToPo(CommentVO commentVO);
+
+	List<CommentDTO> poToDto(List<Comment> commentList);
 
 
 }

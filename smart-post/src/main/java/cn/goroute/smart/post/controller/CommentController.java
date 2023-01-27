@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * @Author: Alickx
  * @Date: 2022/11/16/1:16
@@ -54,6 +56,11 @@ public class CommentController {
 	@PostMapping("/delete")
 	public R<Boolean> delete(@RequestBody @Validated(value = {UpdateGroup.class}) CommentVO commentVO) {
 		return commentService.commentDelete(commentVO);
+	}
+
+	@GetMapping("/queryMoreReply")
+	public R<List<CommentDTO>> queryMoreReply(CommentQO commentQO) {
+		return commentService.queryMoreReply(commentQO);
 	}
 
 

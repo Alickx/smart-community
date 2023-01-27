@@ -13,6 +13,8 @@ import com.hccake.extend.mybatis.plus.conditions.query.LambdaQueryWrapperX;
 import com.hccake.extend.mybatis.plus.mapper.ExtendMapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
 * @author Alickx
 * @description 针对表【comment(文章回复表)】的数据库操作Mapper
@@ -60,6 +62,16 @@ public interface CommentMapper extends ExtendMapper<Comment> {
 	 * @param thumbNum 点赞数
 	 */
 	void descThumbNum(@Param("id") Long id,@Param("thumbNum") int thumbNum);
+
+	default List<CommentDTO> queryMoreReply(CommentQO commentQO) {
+		LambdaQueryWrapperX<Comment> wrapper = new LambdaQueryWrapperX<>(Comment.class);
+		wrapper.eqIfPresent(Comment::getPostId, commentQO.getPostId())
+				.eqIfPresent(Comment::getFirstCommentId, commentQO.getFirstCommentId())
+				.eqIfPresent(Comment::getState,CommonConstant.NORMAL_STATE)
+				.eqIfPresent(Comment::getDeleted, BooleanEnum.FALSE.getValue());
+		List<Comment> comments = this.selectList(wrapper);
+		return CommentConverter.INSTANCE.poToDto(comments);
+	}
 }
 
 

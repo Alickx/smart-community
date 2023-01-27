@@ -74,6 +74,12 @@ public class CommentManageService {
 		pageParam.setSorts(Lists.newArrayList(sort));
 
 		records.forEach(record -> {
+
+			// 如果本次查询的评论为二级评论，则不需要查询
+			if (record.getFirstCommentId() != null) {
+				return;
+			}
+
 			// 获取二级回复列表
 			PageResult<CommentDTO> commentDTOPageResult = commentMapper
 					.queryPageReplyList(pageParam, record.getPostId(), record.getId());

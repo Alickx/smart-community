@@ -35,7 +35,6 @@ public class CommentServiceImpl extends ExtendServiceImpl<CommentMapper, Comment
     implements CommentService{
 
 	private final CommentMapper commentMapper;
-
 	private final CommentManageService commentManageService;
 	private final CommentMessageTemplate commentMessageTemplate;
 
@@ -100,6 +99,13 @@ public class CommentServiceImpl extends ExtendServiceImpl<CommentMapper, Comment
 		}
 		log.error("删除评论/回复失败，commentVO:[{}]", commentVO);
 		throw new BusinessException(ErrorCodeEnum.SYSTEM_ERROR);
+	}
+
+	@Override
+	public R<List<CommentDTO>> queryMoreReply(CommentQO commentQO) {
+		List<CommentDTO> commentDTOS = commentMapper.queryMoreReply(commentQO);
+		commentManageService.fillInfo(commentDTOS);
+		return R.ok(commentDTOS);
 	}
 
 }

@@ -9,6 +9,8 @@ import com.hccake.ballcat.common.model.domain.PageResult;
 import com.hccake.ballcat.common.model.result.R;
 import com.hccake.extend.mybatis.plus.service.ExtendService;
 
+import java.util.List;
+
 /**
 * @author Alickx
 * @description 针对表【comment(文章回复表)】的数据库操作Service
@@ -38,4 +40,5 @@ public interface CommentService extends ExtendService<Comment> {
 	 */
 	R<Boolean> commentDelete(CommentVO commentVO);
 
+	R<List<CommentDTO>> queryMoreReply(CommentQO commentQO);
 }
