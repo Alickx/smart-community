@@ -1,6 +1,6 @@
 package cn.goroute.smart.user.service;
 
-import cn.goroute.smart.common.entity.dto.UserProfileDTO;
+import cn.goroute.smart.common.model.dto.UserProfileDTO;
 import cn.goroute.smart.user.domain.UserProfile;
 import com.hccake.ballcat.common.model.result.R;
 import com.hccake.extend.mybatis.plus.service.ExtendService;

@@ -1,4 +1,4 @@
-package cn.goroute.smart.common.entity.dto;
+package cn.goroute.smart.common.model.dto;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;

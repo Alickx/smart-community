@@ -14,9 +14,4 @@ public class RocketMqEntityMessage extends BaseMqMessage {
 	 * 业务消息
 	 */
 	private String message;
-
-	/**
-	 * 业务逻辑标记
-	 */
-	private Boolean logicFlag;
 }

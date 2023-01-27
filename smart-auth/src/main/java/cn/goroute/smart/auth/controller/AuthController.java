@@ -1,9 +1,9 @@
 package cn.goroute.smart.auth.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
-import cn.goroute.smart.auth.entity.CustomUserDetails;
-import cn.goroute.smart.auth.entity.vo.UserLoginVO;
-import cn.goroute.smart.auth.entity.vo.UserRegisterVO;
+import cn.goroute.smart.auth.model.CustomUserDetails;
+import cn.goroute.smart.auth.model.vo.UserLoginVO;
+import cn.goroute.smart.auth.model.vo.UserRegisterVO;
 import cn.goroute.smart.auth.service.AuthUserService;
 import cn.goroute.smart.auth.service.PermissionService;
 import cn.goroute.smart.auth.service.RoleService;

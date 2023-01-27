@@ -1,4 +1,4 @@
-package cn.goroute.smart.post.model.bo;
+package cn.goroute.smart.post.model.dto;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -39,11 +39,23 @@ public class ContentExpansionDTO {
 	@Parameter(description = "是否是作者")
 	private Boolean isAuthor;
 
+	/**
+	 * 是否有更多二级回复
+	 */
+	@Parameter(description = "是否有更多二级回复")
+	private Boolean isMoreReply;
+
 	public void init() {
 		this.isComment = false;
 		this.isCollect = false;
 		this.isThumb = false;
 		this.isAuthor = false;
+	}
+
+	public static ContentExpansionDTO create() {
+		ContentExpansionDTO contentExpansionDTO = new ContentExpansionDTO();
+		contentExpansionDTO.init();
+		return contentExpansionDTO;
 	}
 
 }

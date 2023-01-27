@@ -1,7 +1,7 @@
 package cn.goroute.smart.common.feign;
 
 import cn.goroute.smart.common.config.FeignConfig;
-import cn.goroute.smart.common.entity.dto.UserProfileDTO;
+import cn.goroute.smart.common.model.dto.UserProfileDTO;
 import com.hccake.ballcat.common.model.result.R;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.cloud.openfeign.FeignClient;

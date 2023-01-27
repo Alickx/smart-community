@@ -2,8 +2,7 @@ package cn.goroute.smart.post.listener;
 
 import cn.goroute.smart.common.util.JsonUtil;
 import cn.goroute.smart.post.constant.RocketMqBizConstant;
-import cn.goroute.smart.post.domain.Thumb;
-import cn.goroute.smart.post.model.dto.ThumbDTO;
+import cn.goroute.smart.post.domain.Comment;
 import cn.goroute.smart.rocketmq.domain.RocketMqEntityMessage;
 import cn.goroute.smart.rocketmq.listener.BaseMqMessageListener;
 import com.hccake.ballcat.common.util.SpringUtils;
@@ -13,20 +12,22 @@ import org.apache.rocketmq.spring.core.RocketMQListener;
 import org.springframework.stereotype.Component;
 
 /**
- * @Author: 蔡国鹏
- * @Date: 2022/10/22/16:00
- * @Description: 点赞业务监听者
+ * @Author: Alickx
+ * @Date: 2023/01/07/10:56
+ * @Description: 评论监听器
  */
 @Component
 @Slf4j
 @RocketMQMessageListener(
-		topic = RocketMqBizConstant.Thumb.THUMB_TOPIC,
-		consumerGroup = RocketMqBizConstant.Thumb.THUMB_HANDLE_GROUP,
-		selectorExpression = RocketMqBizConstant.Thumb.THUMB_HANDLE_TAG,
+		topic = RocketMqBizConstant.Comment.COMMENT_TOPIC,
+		consumerGroup = RocketMqBizConstant.Comment.COMMENT_HANDLE_GROUP,
+		selectorExpression = RocketMqBizConstant.Comment.COMMENT_HANDLE_TAG,
 		consumeThreadNumber = 5
 )
-public class ThumbListener extends BaseMqMessageListener<RocketMqEntityMessage>
+public class CommentListener extends BaseMqMessageListener<RocketMqEntityMessage>
 		implements RocketMQListener<RocketMqEntityMessage> {
+
+
 	/**
 	 * 消息者名称
 	 *
@@ -34,7 +35,7 @@ public class ThumbListener extends BaseMqMessageListener<RocketMqEntityMessage>
 	 */
 	@Override
 	protected String consumerName() {
-		return "点赞业务监听者";
+		return "帖子评论监听器";
 	}
 
 	/**
@@ -44,7 +45,7 @@ public class ThumbListener extends BaseMqMessageListener<RocketMqEntityMessage>
 	 */
 	@Override
 	protected void handleMessage(RocketMqEntityMessage message) {
-		SpringUtils.publishEvent(JsonUtil.toObject(message.getMessage(), ThumbDTO.class));
+		SpringUtils.publishEvent(JsonUtil.toObject(message.getMessage(), Comment.class));
 	}
 
 	/**
@@ -54,7 +55,7 @@ public class ThumbListener extends BaseMqMessageListener<RocketMqEntityMessage>
 	 */
 	@Override
 	protected void overMaxRetryTimesMessage(RocketMqEntityMessage message) {
-		log.error("帖子评论监听超过重试次数,消息内容:[{}]", JsonUtil.toObject(message.getMessage(), Thumb.class).toString());
+		log.error("帖子评论监听超过重试次数,消息内容:[{}]", JsonUtil.toObject(message.getMessage(), Comment.class).toString());
 	}
 
 	/**

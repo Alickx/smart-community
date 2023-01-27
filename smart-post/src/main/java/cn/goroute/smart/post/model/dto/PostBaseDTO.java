@@ -1,7 +1,6 @@
 package cn.goroute.smart.post.model.dto;
 
-import cn.goroute.smart.common.entity.dto.UserProfileDTO;
-import cn.goroute.smart.post.model.bo.ContentExpansionDTO;
+import cn.goroute.smart.common.model.dto.UserProfileDTO;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.Data;
 

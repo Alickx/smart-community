@@ -2,18 +2,22 @@ package cn.goroute.smart.post.manage;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.common.constant.CommonConstant;
-import cn.goroute.smart.common.entity.dto.UserProfileDTO;
+import cn.goroute.smart.common.model.dto.UserProfileDTO;
 import cn.goroute.smart.common.feign.FeignUserProfileService;
 import cn.goroute.smart.common.util.RedisUtil;
 import cn.goroute.smart.post.constant.PostConstant;
 import cn.goroute.smart.post.constant.ThumbTypeEnum;
 import cn.goroute.smart.post.domain.Thumb;
+import cn.goroute.smart.post.mapper.CommentMapper;
 import cn.goroute.smart.post.mapper.ThumbMapper;
-import cn.goroute.smart.post.model.bo.ContentExpansionDTO;
+import cn.goroute.smart.post.model.dto.ContentExpansionDTO;
 import cn.goroute.smart.post.model.dto.CommentDTO;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.LocalDateTimeUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.google.common.collect.Lists;
+import com.hccake.ballcat.common.model.domain.PageParam;
+import com.hccake.ballcat.common.model.domain.PageResult;
 import com.hccake.ballcat.common.model.result.R;
 import com.hccake.ballcat.common.model.result.SystemResultCode;
 import lombok.RequiredArgsConstructor;
@@ -43,30 +47,67 @@ public class CommentManageService {
 	private final RedisUtil redisUtil;
 
 	private final ThreadLocal<Map<Object,Object>> thumbThreadLocal = new ThreadLocal<>();
+	private final CommentMapper commentMapper;
+
 
 	public void fillInfo(List<CommentDTO> records) {
 
 		// 获取用户信息
 		this.getUserProfile(records);
 
+		// 获取二级回复列表
+		this.getPageReplyList(records);
+
 		// 获取拓展信息
 		this.getCommentExpansion(records);
 
 	}
 
-	private void getCommentExpansion(List<CommentDTO> commentDTOList) {
+	private void getPageReplyList(List<CommentDTO> records) {
 
-		// 获取点赞信息
-		this.getThumb(commentDTOList);
+		PageParam pageParam = new PageParam();
+		pageParam.setPage(1);
+		pageParam.setSize(3);
+		PageParam.Sort sort = new PageParam.Sort();
+		sort.setField("create_time");
+		sort.setAsc(false);
+		pageParam.setSorts(Lists.newArrayList(sort));
+
+		records.forEach(record -> {
+			// 获取二级回复列表
+			PageResult<CommentDTO> commentDTOPageResult = commentMapper
+					.queryPageReplyList(pageParam, record.getPostId(), record.getId());
+
+			// 二级回复查询用户信息
+			this.getUserProfile(commentDTOPageResult.getRecords());
+
+			// 二级回复查询拓展信息
+			this.getCommentExpansion(commentDTOPageResult.getRecords());
+
+			// 填充
+			record.setReplyList(commentDTOPageResult);
+		});
 
 	}
 
-	private void getThumb(List<CommentDTO> records) {
+	/**
+	 * 检查是否拥有更多回复
+	 * @param commentDTO 评论dto
+	 * @return 是否拥有更多回复 true:有 false:没有
+	 */
+	private Boolean checkIsMoreReply(CommentDTO commentDTO) {
+		if (null != commentDTO.getReplyList()) {
+			return commentDTO.getReplyList().getTotal() > commentDTO.getReplyList().getRecords().size();
+		}
+		return false;
+	}
+
+
+	private void getCommentExpansion(List<CommentDTO> records) {
+
 		boolean login = StpUtil.isLogin();
 
 		String userId = login ? StpUtil.getLoginIdAsString() : null;
-
-		ContentExpansionDTO contentExpansionDTO;
 
 		if (login) {
 			// 获取用户点赞缓存
@@ -75,8 +116,8 @@ public class CommentManageService {
 
 		// 获取文章id集合
 		for (CommentDTO record : records) {
-			contentExpansionDTO = new ContentExpansionDTO();
-			contentExpansionDTO.init();
+
+			ContentExpansionDTO contentExpansionDTO = ContentExpansionDTO.create();
 
 			// 判断是否登录
 			if (!login) {
@@ -90,6 +131,9 @@ public class CommentManageService {
 
 			// 判断是否是作者
 			contentExpansionDTO.setIsAuthor(record.getUserId().equals(Long.valueOf(userId)));
+
+			// 判断是否拥有更多回复
+			contentExpansionDTO.setIsMoreReply(this.checkIsMoreReply(record));
 
 			record.setExpansion(contentExpansionDTO);
 
@@ -123,22 +167,14 @@ public class CommentManageService {
 					return false;
 				} else {
 					// 查询db
-					LambdaQueryWrapper<Thumb> thumbQueryWrapper = new LambdaQueryWrapper<>();
-					thumbQueryWrapper.eq(Thumb::getUserId, userId);
-					thumbQueryWrapper.eq(Thumb::getToId, postId);
-					thumbQueryWrapper.eq(Thumb::getType, ThumbTypeEnum.COMMENT.getCode());
-					thumbQueryWrapper.eq(Thumb::getDeleted, CommonConstant.NORMAL_STATE);
-					Thumb thumb = thumbMapper.selectOne(thumbQueryWrapper);
+					Thumb thumb = thumbMapper.selectByUserIdAndToIdAndType(Long.valueOf(userId), postId,
+							ThumbTypeEnum.COMMENT.getCode());
 					return thumb != null;
 				}
 			} else {
 				// 查询db
-				LambdaQueryWrapper<Thumb> thumbQueryWrapper = new LambdaQueryWrapper<>();
-				thumbQueryWrapper.eq(Thumb::getUserId, userId);
-				thumbQueryWrapper.eq(Thumb::getToId, postId);
-				thumbQueryWrapper.eq(Thumb::getType, ThumbTypeEnum.COMMENT.getCode());
-				thumbQueryWrapper.eq(Thumb::getDeleted, CommonConstant.NORMAL_STATE);
-				Thumb thumb = thumbMapper.selectOne(thumbQueryWrapper);
+				Thumb thumb = thumbMapper.selectByUserIdAndToIdAndType(Long.valueOf(userId), postId,
+						ThumbTypeEnum.COMMENT.getCode());
 				return thumb != null;
 			}
 		}
@@ -150,7 +186,7 @@ public class CommentManageService {
 	 * @param userId 用户id
 	 */
 	private void thumbDbSearchAndCache(String userId) {
-		// 如果过期，则查询用户一段时间内容的点赞记录
+		// 如果缓存过期，则查询用户一段时间内容的点赞记录
 		LambdaQueryWrapper<Thumb>  thumbQueryWrapper = new LambdaQueryWrapper<>();
 		thumbQueryWrapper.eq(Thumb::getUserId, userId);
 		thumbQueryWrapper.eq(Thumb::getType, ThumbTypeEnum.COMMENT.getCode());
@@ -177,6 +213,10 @@ public class CommentManageService {
 		thumbThreadLocal.set(redisUtil.hGetAll(PostConstant.Thumb.COMMENT_THUMB_KEY + userId));
 	}
 
+	/**
+	 * 从缓存中获取用户点赞信息
+	 * @param userId 用户id
+	 */
 	private void getUserThumbRecord(String userId) {
 		// 查询是否点赞
 		Map<Object, Object> entries =
@@ -190,7 +230,7 @@ public class CommentManageService {
 			// 判断是否过期
 			// 当前时间戳 - 过期时间 < ttl，证明还未过期
 			long expire = LocalDateTimeUtil.now()
-					.minusSeconds(PostConstant.Thumb.POST_THUMB_EXPIRE).toEpochSecond(ZoneOffset.of("+8"));
+					.minusSeconds(PostConstant.Thumb.COMMENT_THUMB_EXPIRE).toEpochSecond(ZoneOffset.of("+8"));
 			if (expire < ttl) {
 				// 判断是否需要更新缓存时间,如果小于创建/更新时间戳的1/3，则更新缓存时间
 				if ((ttl - expire) < ttl / 3) {

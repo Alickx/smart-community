@@ -2,7 +2,7 @@ package cn.goroute.smart.post.manage;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.common.constant.CommonConstant;
-import cn.goroute.smart.common.entity.dto.UserProfileDTO;
+import cn.goroute.smart.common.model.dto.UserProfileDTO;
 import cn.goroute.smart.common.feign.FeignUserProfileService;
 import cn.goroute.smart.common.util.RedisUtil;
 import cn.goroute.smart.post.constant.PostConstant;
@@ -11,7 +11,7 @@ import cn.goroute.smart.post.converter.CategoryConverter;
 import cn.goroute.smart.post.converter.TagConverter;
 import cn.goroute.smart.post.domain.*;
 import cn.goroute.smart.post.mapper.*;
-import cn.goroute.smart.post.model.bo.ContentExpansionDTO;
+import cn.goroute.smart.post.model.dto.ContentExpansionDTO;
 import cn.goroute.smart.post.model.dto.CategoryDTO;
 import cn.goroute.smart.post.model.dto.PostBaseDTO;
 import cn.goroute.smart.post.model.dto.TagDTO;

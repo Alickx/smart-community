@@ -1,6 +1,6 @@
-package cn.goroute.smart.auth.entity;
+package cn.goroute.smart.auth.model;
 
-import cn.goroute.smart.common.entity.dto.UserProfileDTO;
+import cn.goroute.smart.common.model.dto.UserProfileDTO;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

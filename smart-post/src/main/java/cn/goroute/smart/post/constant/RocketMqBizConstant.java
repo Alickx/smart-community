@@ -20,5 +20,18 @@ public class RocketMqBizConstant {
 
 	}
 
+	/**
+	 * 评论
+	 */
+	public static class Comment {
+
+		public static final String COMMENT_TOPIC = "comment_topic";
+
+		public static final String COMMENT_HANDLE_GROUP = "comment_handle_group";
+
+		public static final String COMMENT_HANDLE_TAG = "comment_handle_tag";
+
+	}
+
 
 }

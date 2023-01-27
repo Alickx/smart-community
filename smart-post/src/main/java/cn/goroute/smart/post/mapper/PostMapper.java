@@ -54,6 +54,7 @@ public interface PostMapper extends ExtendMapper<Post> {
 	 * @param thumbNum 点赞数
 	 */
 	void descThumbNum(@Param("toId") long toId,@Param("thumbNum") int thumbNum);
+
 }
 
 

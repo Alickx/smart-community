@@ -29,7 +29,7 @@ public interface CommentService extends ExtendService<Comment> {
 	 * @param commentVO 评论/回复信息
 	 * @return 保存结果
 	 */
-	R<Boolean> commentSave(CommentVO commentVO);
+	R<Long> commentSave(CommentVO commentVO);
 
 	/**
 	 * 删除评论/回复

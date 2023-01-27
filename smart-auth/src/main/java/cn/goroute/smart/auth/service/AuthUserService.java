@@ -1,9 +1,9 @@
 package cn.goroute.smart.auth.service;
 
 import cn.goroute.smart.auth.domain.AuthUser;
-import cn.goroute.smart.auth.entity.CustomUserDetails;
-import cn.goroute.smart.auth.entity.vo.UserLoginVO;
-import cn.goroute.smart.auth.entity.vo.UserRegisterVO;
+import cn.goroute.smart.auth.model.CustomUserDetails;
+import cn.goroute.smart.auth.model.vo.UserLoginVO;
+import cn.goroute.smart.auth.model.vo.UserRegisterVO;
 import com.hccake.ballcat.common.model.result.R;
 import com.hccake.extend.mybatis.plus.service.ExtendService;
 

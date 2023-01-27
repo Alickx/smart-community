@@ -7,6 +7,7 @@ import cn.goroute.smart.post.domain.Comment;
 import cn.goroute.smart.post.manage.CommentManageService;
 import cn.goroute.smart.post.mapper.CommentMapper;
 import cn.goroute.smart.post.model.dto.CommentDTO;
+import cn.goroute.smart.post.model.mq.CommentMessageTemplate;
 import cn.goroute.smart.post.model.qo.CommentQO;
 import cn.goroute.smart.post.model.vo.CommentVO;
 import cn.goroute.smart.post.service.CommentService;
@@ -36,6 +37,7 @@ public class CommentServiceImpl extends ExtendServiceImpl<CommentMapper, Comment
 	private final CommentMapper commentMapper;
 
 	private final CommentManageService commentManageService;
+	private final CommentMessageTemplate commentMessageTemplate;
 
 	/**
 	 * 分页查询
@@ -66,14 +68,14 @@ public class CommentServiceImpl extends ExtendServiceImpl<CommentMapper, Comment
 	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public R<Boolean> commentSave(CommentVO commentVO) {
+	public R<Long> commentSave(CommentVO commentVO) {
 
 		Comment comment = CommentConverter.INSTANCE.voToPo(commentVO);
 		comment.setUserId(StpUtil.getLoginIdAsLong());
 		boolean save = this.save(comment);
 		if (save) {
-			//TODO 发布评论回复事件
-			return R.ok(true);
+			commentMessageTemplate.sendPostCommentMessage(comment);
+			return R.ok(comment.getId());
 		}
 		log.error("保存评论/回复失败，commentVO:[{}]", commentVO);
 		throw new BusinessException(ErrorCodeEnum.SYSTEM_ERROR);

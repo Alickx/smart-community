@@ -1,6 +1,6 @@
 package cn.goroute.smart.auth.strategy.register;
 
-import cn.goroute.smart.auth.entity.vo.UserRegisterVO;
+import cn.goroute.smart.auth.model.vo.UserRegisterVO;
 import com.hccake.ballcat.common.model.result.R;
 
 import java.util.Map;

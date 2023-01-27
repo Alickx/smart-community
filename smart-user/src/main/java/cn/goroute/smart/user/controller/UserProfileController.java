@@ -1,7 +1,7 @@
 package cn.goroute.smart.user.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
-import cn.goroute.smart.common.entity.dto.UserProfileDTO;
+import cn.goroute.smart.common.model.dto.UserProfileDTO;
 import cn.goroute.smart.user.service.UserProfileService;
 import com.hccake.ballcat.common.model.result.R;
 import io.swagger.v3.oas.annotations.Operation;

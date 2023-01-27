@@ -1,6 +1,6 @@
 package cn.goroute.smart.user.converter;
 
-import cn.goroute.smart.common.entity.dto.UserProfileDTO;
+import cn.goroute.smart.common.model.dto.UserProfileDTO;
 import cn.goroute.smart.user.domain.UserProfile;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

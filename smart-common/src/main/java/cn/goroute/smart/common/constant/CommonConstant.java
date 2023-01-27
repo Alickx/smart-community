@@ -7,8 +7,14 @@ package cn.goroute.smart.common.constant;
  */
 public class CommonConstant {
 
+	/**
+	 * 通用正常标识
+	 */
 	public static final Integer NORMAL_STATE = 0;
 
+	/**
+	 * 通用不正常标识
+	 */
 	public static final Integer DELETE_STATE = 1;
 
 

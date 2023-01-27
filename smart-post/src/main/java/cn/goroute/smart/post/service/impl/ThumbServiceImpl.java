@@ -44,9 +44,6 @@ public class ThumbServiceImpl extends ExtendServiceImpl<ThumbMapper, Thumb>
 
 		String userId = StpUtil.getLoginIdAsString();
 
-
-		// TODO 搭建分布式计数服务
-
 		// 发送到消息队列
 		SendResult sendResult = thumbMessageTemplate
 				.sendPostThumbMessage(Long.valueOf(userId), thumb.getToId(), thumb.getType());

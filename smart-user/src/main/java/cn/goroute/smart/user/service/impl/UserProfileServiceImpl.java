@@ -2,7 +2,7 @@ package cn.goroute.smart.user.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.common.constant.ErrorCodeEnum;
-import cn.goroute.smart.common.entity.dto.UserProfileDTO;
+import cn.goroute.smart.common.model.dto.UserProfileDTO;
 import cn.goroute.smart.user.converter.UserProfileConverter;
 import cn.goroute.smart.user.domain.UserProfile;
 import cn.goroute.smart.user.manager.UserProfileManager;

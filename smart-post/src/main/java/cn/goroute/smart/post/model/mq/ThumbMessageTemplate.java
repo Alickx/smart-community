@@ -2,10 +2,11 @@ package cn.goroute.smart.post.model.mq;
 
 import cn.goroute.smart.common.util.JsonUtil;
 import cn.goroute.smart.post.constant.RocketMqBizConstant;
-import cn.goroute.smart.post.domain.Thumb;
+import cn.goroute.smart.post.model.dto.ThumbDTO;
 import cn.goroute.smart.rocketmq.domain.RocketMqEntityMessage;
 import cn.goroute.smart.rocketmq.template.RocketMqTemplate;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
  * @Date: 2022/10/22/16:30
  * @Description: 点赞消息模板
  */
+@EqualsAndHashCode(callSuper = true)
 @Component
 @Data
 public class ThumbMessageTemplate extends RocketMqTemplate{
@@ -46,14 +48,14 @@ public class ThumbMessageTemplate extends RocketMqTemplate{
 	@NotNull
 	private static RocketMqEntityMessage getRocketMqEntityMessage(Long userId, Long toId, Integer type,Boolean logicFlag) {
 		RocketMqEntityMessage message = new RocketMqEntityMessage();
-		Thumb thumb = new Thumb();
-		thumb.setUserId(userId);
-		thumb.setToId(toId);
-		thumb.setType(type);
+		ThumbDTO thumbDTO = new ThumbDTO();
+		thumbDTO.setUserId(userId);
+		thumbDTO.setToId(toId);
+		thumbDTO.setType(type);
+		thumbDTO.setIsSave(logicFlag);
 		message.setRetryTimes(3);
-		message.setLogicFlag(logicFlag);
 		message.setSource("点赞信息");
-		message.setMessage(JsonUtil.toJsonString(thumb));
+		message.setMessage(JsonUtil.toJsonString(thumbDTO));
 		return message;
 	}
 

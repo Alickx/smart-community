@@ -1,7 +1,7 @@
 package cn.goroute.smart.auth.strategy.register;
 
 import cn.goroute.smart.common.feign.FeignUserProfileService;
-import cn.goroute.smart.common.entity.dto.UserProfileDTO;
+import cn.goroute.smart.common.model.dto.UserProfileDTO;
 import com.hccake.ballcat.common.model.result.R;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

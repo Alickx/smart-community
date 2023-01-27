@@ -42,7 +42,7 @@ public class CommentController {
 	 * @return 保存结果
 	 */
 	@PostMapping("/save")
-	public R<Boolean> save(@RequestBody @Validated(value = {UpdateGroup.class}) CommentVO commentVO) {
+	public R<Long> save(@RequestBody @Validated(value = {UpdateGroup.class}) CommentVO commentVO) {
 		return commentService.commentSave(commentVO);
 	}
 

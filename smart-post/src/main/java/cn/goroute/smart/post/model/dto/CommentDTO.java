@@ -1,8 +1,8 @@
 package cn.goroute.smart.post.model.dto;
 
-import cn.goroute.smart.common.entity.dto.UserProfileDTO;
-import cn.goroute.smart.post.model.bo.ContentExpansionDTO;
+import cn.goroute.smart.common.model.dto.UserProfileDTO;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.hccake.ballcat.common.model.domain.PageResult;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -84,6 +84,11 @@ public class CommentDTO {
 	@Parameter(description = "拓展内容")
 	private ContentExpansionDTO expansion;
 
+	/**
+	 * 二级回复
+	 */
+	@Parameter(description = "二级回复")
+	private PageResult<CommentDTO> replyList;
 
 	@TableField(exist = false)
 	private static final long serialVersionUID = 1L;
