@@ -69,17 +69,27 @@ public class UserProfile implements Serializable {
     * 粉丝数
     */
     @NotNull(message="[粉丝数]不能为空")
-    private Integer fans;
+    private Integer fanNum;
     /**
     * 关注数
     */
     @NotNull(message="[关注数]不能为空")
-    private Integer follow;
+    private Integer followNum;
+	/**
+	 * 等级
+	 */
+	@NotNull(message="[等级]不能为空")
+	private Integer level;
     /**
     * 积分
     */
     @NotNull(message="[积分]不能为空")
     private Integer score;
+	/**
+	 * 发布文章数
+	 */
+	@NotNull(message="[发布文章数]不能为空")
+	private Integer articleNum;
     /**
     * gitee地址
     */
@@ -104,11 +114,6 @@ public class UserProfile implements Serializable {
     @Size(max= 20,message="编码长度不能超过20")
     @Length(max= 20,message="编码长度不能超过20")
     private String qqNumber;
-    /**
-    * 0 = 正常 1 = 不可评论
-    */
-    @NotNull(message="[0 = 正常 1 = 不可评论]不能为空")
-    private Integer commentState;
     /**
     * 访问浏览器
     */

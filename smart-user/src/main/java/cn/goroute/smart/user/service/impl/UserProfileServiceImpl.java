@@ -46,8 +46,7 @@ public class UserProfileServiceImpl extends ExtendServiceImpl<UserProfileMapper,
 
         UserProfile userProfile = userProfileMapper
                 .selectOne(new LambdaQueryWrapper<UserProfile>().eq(UserProfile::getUserId, userId));
-        UserProfileDTO userProfileDto = Convert
-                .convert(UserProfileDTO.class, userProfile);
+        UserProfileDTO userProfileDto = UserProfileConverter.INSTANCE.poToDto(userProfile);
 
         return R.ok(userProfileDto);
     }

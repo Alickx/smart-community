@@ -76,24 +76,11 @@ public class AuthUserServiceImpl extends ExtendServiceImpl<AuthUserMapper, AuthU
             return R.failed(ErrorCodeEnum.SYSTEM_ERROR);
         }
 
-        R<List<String>> permissionResult = permissionService.getPermission(userId);
-        if (permissionResult.getData() == null) {
-            log.error("获取用户权限失败,用户信息:{}",userLoginVo);
-            return R.failed(ErrorCodeEnum.SYSTEM_ERROR);
-        }
-
-        R<List<String>> roleResult = roleService.getRole(userId);
-        if (roleResult.getData() == null) {
-            log.error("获取用户角色失败,用户信息:{}",userLoginVo);
-            return R.failed(ErrorCodeEnum.SYSTEM_ERROR);
-        }
 
         CustomUserDetails customUserDetails = new CustomUserDetails();
         customUserDetails
                 .setAccessToken(tokenValue)
-                .setUserProfile(userProfileResult.getData())
-                .setPermissions(permissionResult.getData())
-                .setRoles(roleResult.getData());
+                .setUserProfile(userProfileResult.getData());
 
         return R.ok(customUserDetails);
 

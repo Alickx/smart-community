@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.ToString;
 import org.springdoc.api.annotations.ParameterObject;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @author caiguopeng
  */
@@ -45,17 +47,27 @@ public class UserProfileDTO {
 	 * 粉丝数
 	 */
 	@Parameter(description = "粉丝数")
-	private Integer fans;
+	private Integer fanNum;
 	/**
 	 * 关注数
 	 */
 	@Parameter(description = "关注数")
-	private Integer follow;
+	private Integer followNum;
+	/**
+	 * 等级
+	 */
+	@NotNull(message="[等级]不能为空")
+	private Integer level;
 	/**
 	 * 积分
 	 */
 	@Parameter(description = "积分")
 	private Integer score;
+	/**
+	 * 发布文章数
+	 */
+	@NotNull(message="[发布文章数]不能为空")
+	private Integer articleNum;
 	/**
 	 * gitee地址
 	 */
@@ -71,11 +83,6 @@ public class UserProfileDTO {
 	 */
 	@Parameter(description = "QQ号码")
 	private String qqNumber;
-	/**
-	 * 0 = 正常 1 = 不可评论
-	 */
-	@Parameter(description = "0 = 正常 1 = 不可评论")
-	private Integer commentState;
 	/**
 	 * 用户的标签 0 = 普通用户
 	 */

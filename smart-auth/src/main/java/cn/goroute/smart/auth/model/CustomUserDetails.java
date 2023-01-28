@@ -32,16 +32,4 @@ public class CustomUserDetails {
     @Parameter(description = "用戶信息")
     private UserProfileDTO userProfile;
 
-    /**
-     * 权限列表
-     */
-    @Parameter(description = "权限列表")
-    private List<String> permissions;
-
-    /**
-     * 角色列表
-     */
-    @Parameter(description = "角色列表")
-    private List<String> roles;
-
 }
