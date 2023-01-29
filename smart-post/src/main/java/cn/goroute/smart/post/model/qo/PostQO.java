@@ -25,6 +25,6 @@ public class PostQO {
 	 * 文章作者id
 	 */
 	@Parameter(description = "文章作者id")
-	private Long authorId;
+	private Long userId;
 
 }

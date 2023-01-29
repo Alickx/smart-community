@@ -57,7 +57,12 @@ public class PostController {
 	 */
 	@PostMapping("/save")
 	public R<Long> save(@RequestBody @Valid PostVO postVO, HttpServletRequest request) {
-		return postService.save(postVO,request);
+		return postService.savePost(postVO,request);
+	}
+
+	@GetMapping("/query/comment")
+	public R<PageResult<PostAbbreviationDTO>> queryByComment(@Validated PageParam pageParam, PostQO postQO) {
+		return postService.queryByComment(pageParam, postQO);
 	}
 
 

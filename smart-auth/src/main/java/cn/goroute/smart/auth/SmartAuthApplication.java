@@ -5,6 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.scheduling.annotation.EnableAsync;
 import springfox.documentation.oas.annotations.EnableOpenApi;
 
 /**
@@ -13,6 +14,7 @@ import springfox.documentation.oas.annotations.EnableOpenApi;
 @SpringBootApplication(scanBasePackages = "cn.goroute.smart")
 @EnableDiscoveryClient
 @MapperScan("cn.goroute.smart.*.mapper")
+@EnableAsync
 @EnableFeignClients(basePackages = "cn.goroute.smart.*.feign")
 @EnableOpenApi
 public class SmartAuthApplication {

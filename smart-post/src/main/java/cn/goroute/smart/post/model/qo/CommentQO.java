@@ -2,6 +2,7 @@ package cn.goroute.smart.post.model.qo;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springdoc.api.annotations.ParameterObject;
 
@@ -15,6 +16,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @Schema(name = "评论查询对象")
 @ParameterObject
+@AllArgsConstructor
 public class CommentQO {
 
 	/**

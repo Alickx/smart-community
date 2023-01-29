@@ -9,6 +9,7 @@ import cn.goroute.smart.post.mapper.CommentMapper;
 import cn.goroute.smart.post.model.dto.CommentDTO;
 import cn.goroute.smart.post.model.mq.CommentMessageTemplate;
 import cn.goroute.smart.post.model.qo.CommentQO;
+import cn.goroute.smart.post.model.qo.PostQO;
 import cn.goroute.smart.post.model.vo.CommentVO;
 import cn.goroute.smart.post.service.CommentService;
 import com.hccake.ballcat.common.core.exception.BusinessException;
@@ -106,6 +107,17 @@ public class CommentServiceImpl extends ExtendServiceImpl<CommentMapper, Comment
 		List<CommentDTO> commentDTOS = commentMapper.queryMoreReply(commentQO);
 		commentManageService.fillInfo(commentDTOS);
 		return R.ok(commentDTOS);
+	}
+
+	/**
+	 * 通过评论查询文章id
+	 * @param pageParam 分页参数
+	 * @param postQO 查询参数
+	 * @return 分页结果
+	 */
+	@Override
+	public PageResult<Long> queryPostIdsByComment(PageParam pageParam, PostQO postQO) {
+		return baseMapper.queryPostIdsByComment(pageParam, postQO);
 	}
 
 }

@@ -3,6 +3,7 @@ package cn.goroute.smart.post.service;
 import cn.goroute.smart.post.domain.Comment;
 import cn.goroute.smart.post.model.dto.CommentDTO;
 import cn.goroute.smart.post.model.qo.CommentQO;
+import cn.goroute.smart.post.model.qo.PostQO;
 import cn.goroute.smart.post.model.vo.CommentVO;
 import com.hccake.ballcat.common.model.domain.PageParam;
 import com.hccake.ballcat.common.model.domain.PageResult;
@@ -41,4 +42,6 @@ public interface CommentService extends ExtendService<Comment> {
 	R<Boolean> commentDelete(CommentVO commentVO);
 
 	R<List<CommentDTO>> queryMoreReply(CommentQO commentQO);
+
+	PageResult<Long> queryPostIdsByComment(PageParam pageParam, PostQO postQO);
 }

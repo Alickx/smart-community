@@ -31,7 +31,7 @@ public interface PostMapper extends ExtendMapper<Post> {
 		IPage<Post> page = this.prodPage(pageParam);
 		LambdaQueryWrapperX<Post> wrapperX = WrappersX.lambdaQueryX(Post.class)
 				.eqIfPresent(Post::getCategoryId, postQO.getCategoryId())
-				.eqIfPresent(Post::getAuthorId, postQO.getAuthorId())
+				.eqIfPresent(Post::getAuthorId, postQO.getUserId())
 				.eq(Post::getState, CommonConstant.NORMAL_STATE)
 				.notIn(Post::getDeleted, CommonConstant.DELETE_STATE)
 				.orderByDesc(Post::getUpdateTime);

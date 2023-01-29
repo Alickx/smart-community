@@ -5,6 +5,7 @@ import cn.goroute.smart.post.converter.CommentConverter;
 import cn.goroute.smart.post.domain.Comment;
 import cn.goroute.smart.post.model.dto.CommentDTO;
 import cn.goroute.smart.post.model.qo.CommentQO;
+import cn.goroute.smart.post.model.qo.PostQO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.hccake.ballcat.common.core.constant.enums.BooleanEnum;
 import com.hccake.ballcat.common.model.domain.PageParam;
@@ -71,6 +72,19 @@ public interface CommentMapper extends ExtendMapper<Comment> {
 				.eqIfPresent(Comment::getDeleted, BooleanEnum.FALSE.getValue());
 		List<Comment> comments = this.selectList(wrapper);
 		return CommentConverter.INSTANCE.poToDto(comments);
+	}
+
+	default PageResult<Long> queryPostIdsByComment(PageParam pageParam, PostQO postQO) {
+		IPage<Comment> page = this.prodPage(pageParam);
+		LambdaQueryWrapperX<Comment> wrapper = new LambdaQueryWrapperX<>(Comment.class);
+		wrapper.eqIfPresent(Comment::getUserId, postQO.getUserId())
+				.eqIfPresent(Comment::getState,CommonConstant.NORMAL_STATE)
+				.eqIfPresent(Comment::getDeleted, BooleanEnum.FALSE.getValue())
+				.groupBy(Comment::getPostId);
+		wrapper.select(Comment::getPostId);
+		IPage<Comment> commentIPage = this.selectPage(page, wrapper);
+		IPage<Long> convert = commentIPage.convert(Comment::getPostId);
+		return new PageResult<>(convert.getRecords(),convert.getTotal());
 	}
 }
 

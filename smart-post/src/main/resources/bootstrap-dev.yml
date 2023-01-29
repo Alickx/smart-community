@@ -69,10 +69,10 @@ ballcat:
   xxl:
     job:
       admin:
-        addresses: http://124.223.80.135:2222/xxl-job-admin
+        addresses: http://localhost:8080/xxl-job-admin
       executor:
         appname: ${spring.application.name}
-        log-path: /data/applogs/smart-user/jobhandler
+        log-path: /data/applogs/smart-post/jobhandler
         log-retention-days: 30
       access-token: 16ae0070d35b4bffa4cc9fa1e59faa0b
   log:

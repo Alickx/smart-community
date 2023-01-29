@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 /**
  * @author Alickx
@@ -12,6 +13,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @SpringBootApplication(scanBasePackages = {"cn.goroute.smart"})
 @EnableDiscoveryClient
 @RefreshScope
+@EnableAsync
 @EnableFeignClients("cn.goroute.smart.search.feign")
 public class SmartSearchApplication {
 

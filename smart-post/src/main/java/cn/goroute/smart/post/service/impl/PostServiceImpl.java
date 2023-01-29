@@ -12,6 +12,7 @@ import cn.goroute.smart.post.model.dto.PostBaseDTO;
 import cn.goroute.smart.post.model.dto.PostInfoDTO;
 import cn.goroute.smart.post.model.qo.PostQO;
 import cn.goroute.smart.post.model.vo.PostVO;
+import cn.goroute.smart.post.service.CommentService;
 import cn.goroute.smart.post.service.PostService;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -41,8 +42,8 @@ public class PostServiceImpl extends ExtendServiceImpl<PostMapper, Post>
     implements PostService{
 
 	private final PostManageService postManageService;
-
 	private final Ip2regionSearcher ip2regionSearcher;
+	private final CommentService commentService;
 
 
 	/**
@@ -109,7 +110,7 @@ public class PostServiceImpl extends ExtendServiceImpl<PostMapper, Post>
 	 */
 	@Transactional(rollbackFor = Exception.class)
 	@Override
-	public R<Long> save(PostVO postVO, HttpServletRequest request) {
+	public R<Long> savePost(PostVO postVO, HttpServletRequest request) {
 
 		Post post = PostConverter.INSTANCE.voToPo(postVO);
 		post.setAuthorId(StpUtil.getLoginIdAsLong());
@@ -119,6 +120,39 @@ public class PostServiceImpl extends ExtendServiceImpl<PostMapper, Post>
 		//TODO 待完善 积分增加，文章数增加，风控检查处理等
 		postManageService.savePost2Db(post);
 		return R.ok(post.getId());
+	}
+
+	/**
+	 * 查询评论过的文章
+	 *
+	 * @param pageParam 分页参数
+	 * @param postQO    查询参数对象
+	 * @return 查询结果
+	 */
+	@Override
+	public R<PageResult<PostAbbreviationDTO>> queryByComment(PageParam pageParam, PostQO postQO) {
+
+		PageResult<Long> result = commentService.queryPostIdsByComment(pageParam, postQO);
+
+		if (CollUtil.isEmpty(result.getRecords())) {
+			return R.ok(new PageResult<>());
+		}
+		List<Post> posts = baseMapper.selectBatchIds(result.getRecords());
+
+		if (CollUtil.isEmpty(posts)) {
+			return R.ok(new PageResult<>());
+		}
+
+		List<PostAbbreviationDTO> postAbbreviationDTOS = posts.stream()
+				.map(PostConverter.INSTANCE::poToAbbreviationDto)
+				.toList();
+
+		postManageService.fillInfo(postAbbreviationDTOS);
+
+		PageResult<PostAbbreviationDTO> pageResult =
+				new PageResult<>(postAbbreviationDTOS, result.getTotal());
+
+		return R.ok(pageResult);
 	}
 }
 

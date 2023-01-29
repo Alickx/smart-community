@@ -39,5 +39,13 @@ public interface PostService extends ExtendService<Post> {
 	 * @param postVO 文章视图对象
 	 * @return 文章Id
 	 */
-	R<Long> save(PostVO postVO, HttpServletRequest request);
+	R<Long> savePost(PostVO postVO, HttpServletRequest request);
+
+	/**
+	 * 查询评论过的文章
+	 * @param pageParam 分页参数
+	 * @param postQO 查询参数对象
+	 * @return 查询结果
+	 */
+	R<PageResult<PostAbbreviationDTO>> queryByComment(PageParam pageParam, PostQO postQO);
 }

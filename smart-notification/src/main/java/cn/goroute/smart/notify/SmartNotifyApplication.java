@@ -4,15 +4,16 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 /**
  * @author Alickx
  */
 @SpringBootApplication
 @EnableDiscoveryClient
-@EnableFeignClients("cn.goroute.smart.common.feign")
+@EnableFeignClients(basePackages = {"cn.goroute.smart.*.feign"})
+@EnableAsync
 @MapperScan("cn.goroute.smart.*.mapper")
 public class SmartNotifyApplication {
 

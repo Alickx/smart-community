@@ -2,8 +2,8 @@ package cn.goroute.smart.post.manage;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.common.constant.CommonConstant;
-import cn.goroute.smart.common.model.dto.UserProfileDTO;
 import cn.goroute.smart.common.feign.FeignUserProfileService;
+import cn.goroute.smart.common.model.dto.UserProfileDTO;
 import cn.goroute.smart.common.util.RedisUtil;
 import cn.goroute.smart.post.constant.PostConstant;
 import cn.goroute.smart.post.constant.ThumbTypeEnum;
@@ -11,8 +11,8 @@ import cn.goroute.smart.post.converter.CategoryConverter;
 import cn.goroute.smart.post.converter.TagConverter;
 import cn.goroute.smart.post.domain.*;
 import cn.goroute.smart.post.mapper.*;
-import cn.goroute.smart.post.model.dto.ContentExpansionDTO;
 import cn.goroute.smart.post.model.dto.CategoryDTO;
+import cn.goroute.smart.post.model.dto.ContentExpansionDTO;
 import cn.goroute.smart.post.model.dto.PostBaseDTO;
 import cn.goroute.smart.post.model.dto.TagDTO;
 import cn.hutool.core.collection.CollUtil;
@@ -58,11 +58,6 @@ public class PostManageService {
 
 	private final ThreadLocal<Map<Object,Object>> thumbThreadLocal = new ThreadLocal<>();
 
-	private List<UserProfileDTO> batchGetUserProfile(List<Long> userIds) {
-		R<List<UserProfileDTO>> userProfile = feignUserProfileService.batchGetUserProfile(userIds);
-		return userProfile.getData();
-	}
-
 	/**
 	 * 补充文章作者，板块和标签信息
 	 *
@@ -106,8 +101,14 @@ public class PostManageService {
 	 */
 	private void fillAuthor(List<? extends PostBaseDTO> records) {
 		if (CollUtil.isNotEmpty(records)) {
-			List<Long> userIds = records.stream().map(PostBaseDTO::getAuthorId).toList();
-			R<List<UserProfileDTO>> resp = feignUserProfileService.batchGetUserProfile(userIds);
+			List<Long> userIds = records.stream().map(PostBaseDTO::getAuthorId).distinct().toList();
+			R<List<UserProfileDTO>> resp;
+			try {
+				resp = feignUserProfileService.batchGetUserProfile(userIds);
+			} catch (Exception e) {
+				log.error("获取用户信息失败,userIds: [{}],调用用户服务超时或失败", userIds);
+				return;
+			}
 			if (resp.getCode() == SystemResultCode.SUCCESS.getCode() && resp.getData() != null) {
 				Map<Long, UserProfileDTO> userProfileMap = new HashMap<>();
 				for (UserProfileDTO userProfileDTO : resp.getData()) {
