@@ -8,64 +8,17 @@
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 
-	<packaging>jar</packaging>
-	<artifactId>smart-user</artifactId>
+	<packaging>pom</packaging>
+    <modules>
+        <module>smart-user-model</module>
+		<module>smart-user-core</module>
+    </modules>
+    <artifactId>smart-user</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>smart-user</name>
 	<description>智慧社区用户服务</description>
 	<properties>
-		<java.version>1.8</java.version>
+		<java.version>17</java.version>
 	</properties>
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-		<!--		公有模块-->
-		<dependency>
-			<groupId>cn.goroute.smart</groupId>
-			<artifactId>smart-common</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-		<!--        定时任务-->
-		<dependency>
-			<groupId>com.hccake</groupId>
-			<artifactId>ballcat-spring-boot-starter-job</artifactId>
-		</dependency>
-	</dependencies>
-
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<!-- 指定该Main Class为全局的唯一入口 -->
-					<mainClass>cn.goroute.smart.user.SmartUserApplication</mainClass>
-					<layout>ZIP</layout>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>repackage</goal><!--可以把依赖的包都打包到生成的Jar包中-->
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>com.spotify</groupId>
-				<artifactId>docker-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>8</source>
-					<target>8</target>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 
 </project>

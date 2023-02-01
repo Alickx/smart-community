@@ -7,79 +7,16 @@
 		<artifactId>smart-community</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
+	<modules>
+		<module>smart-post-model</module>
+		<module>smart-post-core</module>
+	</modules>
 	<artifactId>smart-post</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>smart-post</name>
-	<description>smart-post</description>
+	<description>文章服务模块</description>
 	<properties>
-		<java.version>1.8</java.version>
+		<java.version>17</java.version>
 	</properties>
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-		<!--        定时任务-->
-		<dependency>
-			<groupId>com.hccake</groupId>
-			<artifactId>ballcat-spring-boot-starter-job</artifactId>
-		</dependency>
-		<!--        分布式锁-->
-		<dependency>
-			<groupId>org.redisson</groupId>
-			<artifactId>redisson</artifactId>
-		</dependency>
-		<!--        common模块-->
-		<dependency>
-			<groupId>cn.goroute.smart</groupId>
-			<artifactId>smart-common</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-		<!--		rocketMq-->
-		<dependency>
-			<groupId>cn.goroute.smart</groupId>
-			<artifactId>smart-spring-boot-starter-rocketmq</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>com.hccake</groupId>
-			<artifactId>ballcat-spring-boot-starter-ip2region</artifactId>
-		</dependency>
-	</dependencies>
-
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<!-- 指定该Main Class为全局的唯一入口 -->
-					<mainClass>cn.goroute.smart.post.SmartPostApplication</mainClass>
-					<layout>ZIP</layout>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>repackage</goal><!--可以把依赖的包都打包到生成的Jar包中-->
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>com.spotify</groupId>
-				<artifactId>docker-maven-plugin</artifactId>
-			</plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>16</source>
-                    <target>16</target>
-                </configuration>
-            </plugin>
-        </plugins>
-	</build>
-
 </project>

@@ -967,13 +967,13 @@ INSERT INTO `tag` VALUES (1,'Java',0,NULL,0,'2022-03-04 01:35:41','2022-03-04 01
 UNLOCK TABLES;
 
 --
--- Table structure for table `thumb`
+-- Table structure for table `thumbDTO`
 --
 
-DROP TABLE IF EXISTS `thumb`;
+DROP TABLE IF EXISTS `thumbDTO`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `thumb` (
+CREATE TABLE `thumbDTO` (
   `id` bigint NOT NULL COMMENT '主键id',
   `user_id` bigint NOT NULL COMMENT '点赞用户id',
   `to_user_id` bigint NOT NULL COMMENT '点赞目标的id',
@@ -989,12 +989,12 @@ CREATE TABLE `thumb` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `thumb`
+-- Dumping data for table `thumbDTO`
 --
 
-LOCK TABLES `thumb` WRITE;
-/*!40000 ALTER TABLE `thumb` DISABLE KEYS */;
-/*!40000 ALTER TABLE `thumb` ENABLE KEYS */;
+LOCK TABLES `thumbDTO` WRITE;
+/*!40000 ALTER TABLE `thumbDTO` DISABLE KEYS */;
+/*!40000 ALTER TABLE `thumbDTO` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
