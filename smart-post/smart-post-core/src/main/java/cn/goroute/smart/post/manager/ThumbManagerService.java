@@ -1,4 +1,4 @@
-package cn.goroute.smart.post.manage;
+package cn.goroute.smart.post.manager;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

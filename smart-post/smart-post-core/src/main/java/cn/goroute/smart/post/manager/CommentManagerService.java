@@ -1,4 +1,4 @@
-package cn.goroute.smart.post.manage;
+package cn.goroute.smart.post.manager;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.common.constant.CommonConstant;
@@ -38,7 +38,7 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CommentManageService {
+public class CommentManagerService {
 
 	private final ThumbMapper thumbMapper;
 

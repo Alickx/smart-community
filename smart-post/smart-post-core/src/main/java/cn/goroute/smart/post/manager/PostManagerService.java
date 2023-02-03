@@ -1,4 +1,4 @@
-package cn.goroute.smart.post.manage;
+package cn.goroute.smart.post.manager;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.common.constant.CommonConstant;
@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class PostManageService {
+public class PostManagerService {
 
 	private final FeignUserProfileService feignUserProfileService;
 

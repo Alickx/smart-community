@@ -4,7 +4,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.common.constant.ErrorCodeEnum;
 import cn.goroute.smart.post.converter.CommentConverter;
 import cn.goroute.smart.post.domain.Comment;
-import cn.goroute.smart.post.manage.CommentManageService;
+import cn.goroute.smart.post.manager.CommentManagerService;
 import cn.goroute.smart.post.mapper.CommentMapper;
 import cn.goroute.smart.post.model.dto.CommentDTO;
 import cn.goroute.smart.post.mq.CommentMessageTemplate;
@@ -36,7 +36,7 @@ public class CommentServiceImpl extends ExtendServiceImpl<CommentMapper, Comment
     implements CommentService{
 
 	private final CommentMapper commentMapper;
-	private final CommentManageService commentManageService;
+	private final CommentManagerService commentManagerService;
 	private final CommentMessageTemplate commentMessageTemplate;
 
 	/**
@@ -53,7 +53,7 @@ public class CommentServiceImpl extends ExtendServiceImpl<CommentMapper, Comment
 
 		List<CommentDTO> records = commentDTOPageResult.getRecords();
 
-		commentManageService.fillInfo(records);
+		commentManagerService.fillInfo(records);
 
 		return R.ok(commentDTOPageResult);
 
@@ -105,7 +105,7 @@ public class CommentServiceImpl extends ExtendServiceImpl<CommentMapper, Comment
 	@Override
 	public R<List<CommentDTO>> queryMoreReply(CommentQO commentQO) {
 		List<CommentDTO> commentDTOS = commentMapper.queryMoreReply(commentQO);
-		commentManageService.fillInfo(commentDTOS);
+		commentManagerService.fillInfo(commentDTOS);
 		return R.ok(commentDTOS);
 	}
 

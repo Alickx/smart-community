@@ -42,10 +42,9 @@ public class PostListener extends BaseMqMessageListener<RocketMqEntityMessage>
 	 * 消息处理
 	 *
 	 * @param message 待处理消息
-	 * @throws Exception 消费异常
 	 */
 	@Override
-	protected void handleMessage(RocketMqEntityMessage message) throws Exception {
+	protected void handleMessage(RocketMqEntityMessage message) {
 		SpringUtils.publishEvent(JsonUtils.toObj(message.getMessage(), Post.class));
 	}
 

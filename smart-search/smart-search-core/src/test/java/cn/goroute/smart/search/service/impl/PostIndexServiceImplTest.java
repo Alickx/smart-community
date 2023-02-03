@@ -1,6 +1,7 @@
 package cn.goroute.smart.search.service.impl;
 
 import cn.goroute.smart.post.domain.Post;
+import com.hccake.ballcat.common.model.domain.PageParam;
 import com.hccake.ballcat.common.model.result.R;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,16 @@ class PostIndexServiceImplTest {
 
 		R<Boolean> save = postService.save(post);
 		System.out.println(save);
+
+	}
+
+	@Test
+	void pageByKeyword() {
+
+		PageParam pageParam = new PageParam();
+		pageParam.setPage(1);
+		pageParam.setSize(10);
+		postService.pageByKeyword(pageParam, "测试");
 
 	}
 }

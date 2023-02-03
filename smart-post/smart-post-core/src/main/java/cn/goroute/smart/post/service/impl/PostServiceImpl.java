@@ -5,7 +5,7 @@ import cn.goroute.smart.common.constant.CommonConstant;
 import cn.goroute.smart.common.constant.ErrorCodeEnum;
 import cn.goroute.smart.post.converter.PostConverter;
 import cn.goroute.smart.post.domain.Post;
-import cn.goroute.smart.post.manage.PostManageService;
+import cn.goroute.smart.post.manager.PostManagerService;
 import cn.goroute.smart.post.mapper.PostMapper;
 import cn.goroute.smart.post.model.dto.PostAbbreviationDTO;
 import cn.goroute.smart.post.model.dto.PostBaseDTO;
@@ -42,7 +42,7 @@ import java.util.List;
 public class PostServiceImpl extends ExtendServiceImpl<PostMapper, Post>
     implements PostService{
 
-	private final PostManageService postManageService;
+	private final PostManagerService postManagerService;
 	private final Ip2regionSearcher ip2regionSearcher;
 	private final CommentService commentService;
 	private final PostMessageTemplate postMessageTemplate;
@@ -64,7 +64,7 @@ public class PostServiceImpl extends ExtendServiceImpl<PostMapper, Post>
 		}
 
 		// 补充文章作者，板块等信息
-		List<? extends PostBaseDTO> postDTOList = postManageService.fillInfo(records);
+		List<? extends PostBaseDTO> postDTOList = postManagerService.fillInfo(records);
 
 		postPage.setRecords((List<PostAbbreviationDTO>) postDTOList);
 
@@ -99,7 +99,7 @@ public class PostServiceImpl extends ExtendServiceImpl<PostMapper, Post>
 		}
 
 		List<? extends PostBaseDTO> postBaseDTOS =
-				postManageService.fillInfo(Lists.asList(postInfoDTO, new PostInfoDTO[0]));
+				postManagerService.fillInfo(Lists.asList(postInfoDTO, new PostInfoDTO[0]));
 
 		return R.ok((PostInfoDTO) postBaseDTOS.get(0));
 	}
@@ -120,7 +120,7 @@ public class PostServiceImpl extends ExtendServiceImpl<PostMapper, Post>
 		post.setIp(ipAddr);
 
 		//TODO 待完善 积分增加，文章数增加，风控检查处理等
-		postManageService.savePost2Db(post);
+		postManagerService.savePost2Db(post);
 
 		postMessageTemplate.sendPostMessage(post);
 
@@ -152,7 +152,7 @@ public class PostServiceImpl extends ExtendServiceImpl<PostMapper, Post>
 				.map(PostConverter.INSTANCE::poToAbbreviationDto)
 				.toList();
 
-		postManageService.fillInfo(postAbbreviationDTOS);
+		postManagerService.fillInfo(postAbbreviationDTOS);
 
 		PageResult<PostAbbreviationDTO> pageResult =
 				new PageResult<>(postAbbreviationDTOS, result.getTotal());
