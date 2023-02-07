@@ -1,5 +1,6 @@
 package cn.goroute.smart.user.controller;
 
+import cn.goroute.smart.user.domain.UserProfile;
 import cn.goroute.smart.user.model.dto.UserProfileDTO;
 import cn.goroute.smart.user.model.vo.UserProfileVO;
 import cn.goroute.smart.user.service.UserProfileService;
@@ -62,5 +63,16 @@ public class UserProfileController {
     public R<Boolean> initUserProfile(@RequestBody UserProfileDTO userProfileDto){
         return userProfileService.initUserProfile(userProfileDto);
     }
+
+	/**
+	 * 根据用户id查询用户信息 - 微服务间调用
+	 * @param userId 用户id
+	 * @return 用户信息
+	 */
+	@GetMapping("/query/{userId}")
+	@Operation(summary = "根据用户id查询用户信息", description = "微服务间调用")
+	public R<UserProfile> queryUserProfile(@PathVariable("userId") Long userId) {
+		return R.ok(userProfileService.getById(userId));
+	}
 
 }

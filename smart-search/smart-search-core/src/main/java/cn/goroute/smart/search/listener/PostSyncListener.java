@@ -1,11 +1,12 @@
 package cn.goroute.smart.search.listener;
 
 import cn.goroute.smart.common.constant.RocketMqBizConstant;
-import cn.goroute.smart.post.domain.Post;
 import cn.goroute.smart.rocketmq.domain.RocketMqEntityMessage;
 import cn.goroute.smart.rocketmq.listener.BaseMqMessageListener;
+import cn.goroute.smart.search.model.index.PostIndex;
+import cn.goroute.smart.search.service.PostIndexService;
 import com.hccake.ballcat.common.util.JsonUtils;
-import com.hccake.ballcat.common.util.SpringUtils;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.apache.rocketmq.spring.core.RocketMQListener;
@@ -18,15 +19,18 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
+@RequiredArgsConstructor
 @RocketMQMessageListener(
 		topic = RocketMqBizConstant.Post.POST_TOPIC,
-		consumerGroup = RocketMqBizConstant.Post.POST_HANDLE_GROUP,
-		selectorExpression = RocketMqBizConstant.Post.POST_HANDLE_TAG,
+		consumerGroup = RocketMqBizConstant.Post.POST_SYNC_SAVE_ES_HANDLE_GROUP,
+		selectorExpression = RocketMqBizConstant.Post.POST_SYNC_SAVE_ES_HANDLE_TAG,
 		consumeThreadNumber = 5
 )
-public class PostListener extends BaseMqMessageListener<RocketMqEntityMessage>
+public class PostSyncListener extends BaseMqMessageListener<RocketMqEntityMessage>
 		implements RocketMQListener<RocketMqEntityMessage> {
 
+
+	private final PostIndexService postIndexService;
 
 	/**
 	 * 消息者名称
@@ -35,7 +39,7 @@ public class PostListener extends BaseMqMessageListener<RocketMqEntityMessage>
 	 */
 	@Override
 	protected String consumerName() {
-		return "文章发布事件监听者";
+		return "文章同步事件监听者";
 	}
 
 	/**
@@ -45,7 +49,8 @@ public class PostListener extends BaseMqMessageListener<RocketMqEntityMessage>
 	 */
 	@Override
 	protected void handleMessage(RocketMqEntityMessage message) {
-		SpringUtils.publishEvent(JsonUtils.toObj(message.getMessage(), Post.class));
+		PostIndex postIndex = JsonUtils.toObj(message.getMessage(), PostIndex.class);
+		postIndexService.postSync(postIndex);
 	}
 
 	/**
@@ -55,7 +60,7 @@ public class PostListener extends BaseMqMessageListener<RocketMqEntityMessage>
 	 */
 	@Override
 	protected void overMaxRetryTimesMessage(RocketMqEntityMessage message) {
-		log.error("文章发布事件监听者超过最大重试次数，消息内容：[{}]", JsonUtils.toJson(message));
+		log.error("文章同步事件监听者超过最大重试次数，消息内容：[{}]", JsonUtils.toJson(message));
 	}
 
 	/**

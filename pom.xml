@@ -43,7 +43,7 @@
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
 		<ballcat.version>1.0.3</ballcat.version>
-		<satoken.version>1.31.0</satoken.version>
+		<satoken.version>1.34.0</satoken.version>
 		<spring.cloud.loadbalancer.version>3.0.3</spring.cloud.loadbalancer.version>
 		<rocketmq.version>2.2.2</rocketmq.version>
 		<org.mapstruct.version>1.5.2.Final</org.mapstruct.version>
@@ -63,7 +63,8 @@
 		<module>smart-notification</module>
 		<module>smart-auth</module>
 		<module>smart-starter</module>
-	</modules>
+        <module>smart-risk</module>
+    </modules>
 	<packaging>pom</packaging>
 
 	<dependencyManagement>

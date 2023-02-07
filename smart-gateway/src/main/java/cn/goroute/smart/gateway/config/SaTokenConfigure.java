@@ -1,7 +1,5 @@
 package cn.goroute.smart.gateway.config;
 
-import cn.dev33.satoken.context.SaHolder;
-import cn.dev33.satoken.id.SaIdUtil;
 import cn.dev33.satoken.reactor.filter.SaReactorFilter;
 import cn.dev33.satoken.util.SaResult;
 import org.springframework.context.annotation.Bean;

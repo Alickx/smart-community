@@ -1,6 +1,8 @@
 package cn.goroute.smart.search.service.impl;
 
 import cn.goroute.smart.post.domain.Post;
+import cn.goroute.smart.search.converter.PostIndexConverter;
+import cn.goroute.smart.search.model.index.PostIndex;
 import com.hccake.ballcat.common.model.domain.PageParam;
 import com.hccake.ballcat.common.model.result.R;
 import org.junit.jupiter.api.Test;
@@ -40,7 +42,9 @@ class PostIndexServiceImplTest {
 		post.setCreateTime(LocalDateTime.now());
 		post.setDeleted(0);
 
-		R<Boolean> save = postService.save(post);
+		PostIndex postIndex = PostIndexConverter.INSTANCE.postToPostIndex(post);
+
+		R<Boolean> save = postService.save(postIndex);
 		System.out.println(save);
 
 	}

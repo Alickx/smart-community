@@ -17,9 +17,7 @@ import java.util.List;
  * @Date: 2022/09/18/2:03
  * @Description:
  */
-@FeignClient(name = "smart-gateway"
-		, path = "/api/v1/userApi"
-		, configuration = FeignConfig.class)
+@FeignClient(name = "smart-user", configuration = FeignConfig.class)
 public interface FeignUserProfileService {
 
 	/**

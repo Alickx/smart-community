@@ -1,3 +1,6 @@
+server:
+    port: 15000
+
 spring:
   application:
     name: smart-search
@@ -45,6 +48,13 @@ rocketmq:
         # 消息跟踪主题的名称值。如果不进行配置，可以使用默认的跟踪主题名称
         customizedTraceTopic: RMQ_SYS_TRACE_TOPIC
 
+sa-token:
+  token-name: 'Authorization'
+  timeout: 2592000
+  activity-timeout: -1
+  token-style: simple-uuid
+
+
 
 ballcat:
     log:
@@ -52,5 +62,4 @@ ballcat:
             enabled: false
         operation:
             enabled: false
-
 

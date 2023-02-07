@@ -1,7 +1,7 @@
 package cn.goroute.smart.search.service;
 
-import cn.goroute.smart.post.domain.Post;
-import cn.goroute.smart.post.model.dto.PostAbbreviationDTO;
+import cn.goroute.smart.search.model.dto.PostIndexDTO;
+import cn.goroute.smart.search.model.index.PostIndex;
 import com.hccake.ballcat.common.model.domain.PageParam;
 import com.hccake.ballcat.common.model.domain.PageResult;
 import com.hccake.ballcat.common.model.result.R;
@@ -12,7 +12,9 @@ import com.hccake.ballcat.common.model.result.R;
  * @Description:
  */
 public interface PostIndexService {
-	R<Boolean> save(Post post);
+	R<Boolean> save(PostIndex postIndex);
 
-	R<PageResult<PostAbbreviationDTO>> pageByKeyword(PageParam pageParam, String keyword);
+	R<PageResult<PostIndexDTO>> pageByKeyword(PageParam pageParam, String keyword);
+
+	void postSync(PostIndex postIndex);
 }

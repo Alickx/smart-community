@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -46,6 +47,11 @@ public class Post implements Serializable {
      * 文章内容
      */
     private String content;
+
+	/**
+	 * 文章摘要
+	 */
+	private String summary;
 
     /**
      * 文章状态 0 = 正常
@@ -92,6 +98,7 @@ public class Post implements Serializable {
      */
     private Integer deleted;
 
-    @TableField(exist = false)
+    @Serial
+	@TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }

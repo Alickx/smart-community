@@ -1,6 +1,6 @@
 package cn.goroute.smart.search.controller;
 
-import cn.goroute.smart.post.model.dto.PostAbbreviationDTO;
+import cn.goroute.smart.search.model.dto.PostIndexDTO;
 import cn.goroute.smart.search.service.PostIndexService;
 import com.hccake.ballcat.common.model.domain.PageParam;
 import com.hccake.ballcat.common.model.domain.PageResult;
@@ -24,7 +24,7 @@ public class PostSearchController {
     private final PostIndexService postIndexService;
 
     @GetMapping
-    public R<PageResult<PostAbbreviationDTO>> pageByKeyword(PageParam pageParam, @RequestParam("keyword") String keyword) {
+    public R<PageResult<PostIndexDTO>> pageByKeyword(PageParam pageParam, @RequestParam("keyword") String keyword) {
         return postIndexService.pageByKeyword(pageParam, keyword);
     }
 

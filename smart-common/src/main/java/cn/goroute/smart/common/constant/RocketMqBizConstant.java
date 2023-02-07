@@ -37,9 +37,30 @@ public class RocketMqBizConstant {
 
 		public static final String POST_TOPIC = "post_topic";
 
+		// 文章发布事件
+
 		public static final String POST_HANDLE_GROUP = "post_handle_group";
 
 		public static final String POST_HANDLE_TAG = "post_handle_tag";
+
+		// 文章更新事件
+
+		public static final String POST_UPDATE_HANDLE_GROUP = "post_update_handle_group";
+
+		public static final String POST_UPDATE_HANDLE_TAG = "post_update_handle_tag";
+
+		// 文章风控事件
+
+		public static final String POST_RISK_HANDLE_GROUP = "post_risk_handle_group";
+
+		public static final String POST_RISK_HANDLE_TAG = "post_risk_handle_tag";
+
+		// 文章同步到ES
+
+		public static final String POST_SYNC_SAVE_ES_HANDLE_GROUP = "post_sync_save_es_handle_group";
+
+		public static final String POST_SYNC_SAVE_ES_HANDLE_TAG = "post_sync_save_es_handle_tag";
+
 	}
 
 

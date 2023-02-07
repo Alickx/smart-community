@@ -2,7 +2,7 @@ package cn.goroute.smart.post.config;
 
 import cn.dev33.satoken.context.SaHolder;
 import cn.dev33.satoken.filter.SaServletFilter;
-import cn.dev33.satoken.id.SaIdUtil;
+import cn.dev33.satoken.same.SaSameUtil;
 import cn.dev33.satoken.util.SaResult;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,8 +22,8 @@ public class SaTokenConfigure implements WebMvcConfigurer {
                 .addInclude("/**")
                 .setAuth(obj -> {
                     // 校验 Id-Token 身份凭证     —— 以下两句代码可简化为：SaIdUtil.checkCurrentRequestToken();
-                    String token = SaHolder.getRequest().getHeader(SaIdUtil.ID_TOKEN);
-                    SaIdUtil.checkToken(token);
+                    String token = SaHolder.getRequest().getHeader(SaSameUtil.SAME_TOKEN);
+                    SaSameUtil.checkToken(token);
                 })
                 .setError(e -> SaResult.error(e.getMessage()))
                 ;

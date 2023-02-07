@@ -1,5 +1,6 @@
 package cn.goroute.smart.post.controller;
 
+import cn.goroute.smart.post.domain.Post;
 import cn.goroute.smart.post.model.dto.PostAbbreviationDTO;
 import cn.goroute.smart.post.model.dto.PostInfoDTO;
 import cn.goroute.smart.post.model.qo.PostQO;
@@ -8,6 +9,7 @@ import cn.goroute.smart.post.service.PostService;
 import com.hccake.ballcat.common.model.domain.PageParam;
 import com.hccake.ballcat.common.model.domain.PageResult;
 import com.hccake.ballcat.common.model.result.R;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -60,8 +62,26 @@ public class PostController {
 		return postService.savePost(postVO,request);
 	}
 
+	/**
+	 * 查询用户回复过的文章
+	 * @param pageParam 分页参数
+	 * @param postQO   文章查询对象
+	 * @return 查询结果
+	 */
 	@GetMapping("/query/comment")
 	public R<PageResult<PostAbbreviationDTO>> queryByComment(@Validated PageParam pageParam, PostQO postQO) {
 		return postService.queryByComment(pageParam, postQO);
+	}
+
+
+	/**
+	 * 内部服务间调用 - 根据id查询文章
+	 * @param postId 文章id
+	 * @return 文章实体类
+	 */
+	@GetMapping("/get/{postId}")
+	@Operation(summary = "根据文章id获取文章实体类", description = "内部服务间调用")
+	public R<Post> getById(@PathVariable("postId") Long postId) {
+		return R.ok(postService.getById(postId));
 	}
 }

@@ -14,7 +14,7 @@ import org.springdoc.api.annotations.ParameterObject;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@ToString
+@ToString(callSuper=true)
 @Schema(name = "文章缩略DTO对象")
 @ParameterObject
 public class PostAbbreviationDTO extends PostBaseDTO {

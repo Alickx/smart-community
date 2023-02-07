@@ -44,6 +44,19 @@ public class PostIndex {
 	@Field(type = FieldType.Long)
 	private Long authorId;
 
+
+	/**
+	 * 文章标签名字
+	 */
+	@Field(type = FieldType.Keyword)
+	private String tagName;
+
+	/**
+	 * 文章板块名字
+	 */
+	@Field(type = FieldType.Keyword)
+	private String categoryName;
+
 	/**
 	 * 文章题目
 	 */
@@ -55,6 +68,12 @@ public class PostIndex {
 	 */
 	@Field(type = FieldType.Text, analyzer = "ik_max_word", copyTo = "descriptiveContent")
 	private String content;
+
+	/**
+	 * 文章摘要
+	 */
+	@Field(type = FieldType.Text, analyzer = "ik_max_word")
+	private String summary;
 
 	/**
 	 * 文章状态 0 = 正常

@@ -26,8 +26,8 @@ public interface PostIndexMapper extends ElasticsearchRepository<PostIndex,Long>
 	 */
 	@Highlight(fields = {
 			@HighlightField(name = PostIndex.Fields.title, parameters = @HighlightParameters(requireFieldMatch = false)),
-			@HighlightField(name = PostIndex.Fields.content, parameters = @HighlightParameters(requireFieldMatch = false)),
+			@HighlightField(name = PostIndex.Fields.summary, parameters = @HighlightParameters(requireFieldMatch = false)),
 	})
-	SearchPage<PostIndex> findByDescriptiveContent(String descriptiveContent, Pageable pageable);
+	SearchPage<PostIndex> findByDescriptiveContentOrderByCreateTimeDesc(String descriptiveContent, Pageable pageable);
 
 }

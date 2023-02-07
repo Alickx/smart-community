@@ -13,7 +13,7 @@ import org.springdoc.api.annotations.ParameterObject;
  * @Description: 文章信息对象
  */
 @Data
-@ToString
+@ToString(callSuper=true)
 @EqualsAndHashCode(callSuper = true)
 @Schema(name = "文章详情DTO对象")
 @ParameterObject
@@ -26,5 +26,10 @@ public class PostInfoDTO extends PostBaseDTO {
 	private String content;
 
 
+	/**
+	 * 文章摘要
+	 */
+	@Parameter(description = "文章摘要")
+	private String summary;
 
 }

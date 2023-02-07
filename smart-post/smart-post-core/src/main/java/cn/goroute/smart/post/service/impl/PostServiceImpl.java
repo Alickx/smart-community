@@ -10,9 +10,9 @@ import cn.goroute.smart.post.mapper.PostMapper;
 import cn.goroute.smart.post.model.dto.PostAbbreviationDTO;
 import cn.goroute.smart.post.model.dto.PostBaseDTO;
 import cn.goroute.smart.post.model.dto.PostInfoDTO;
-import cn.goroute.smart.post.mq.PostMessageTemplate;
 import cn.goroute.smart.post.model.qo.PostQO;
 import cn.goroute.smart.post.model.vo.PostVO;
+import cn.goroute.smart.post.mq.PostMessageTemplate;
 import cn.goroute.smart.post.service.CommentService;
 import cn.goroute.smart.post.service.PostService;
 import cn.hutool.core.collection.CollUtil;
@@ -26,6 +26,7 @@ import com.hccake.ballcat.starter.ip2region.core.IpInfo;
 import com.hccake.ballcat.starter.ip2region.searcher.Ip2regionSearcher;
 import com.hccake.extend.mybatis.plus.service.impl.ExtendServiceImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +39,7 @@ import java.util.List;
 * @createDate 2022-09-25 16:53:24
 */
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class PostServiceImpl extends ExtendServiceImpl<PostMapper, Post>
     implements PostService{
@@ -117,11 +119,11 @@ public class PostServiceImpl extends ExtendServiceImpl<PostMapper, Post>
 		Post post = PostConverter.INSTANCE.voToPo(postVO);
 		post.setAuthorId(StpUtil.getLoginIdAsLong());
 		String ipAddr = IpUtils.getIpAddr(request);
-		post.setIp(ipAddr);
+		post.setIp(ipAddr.equals("0:0:0:0:0:0:0:1") ? "127.0.0.1" : ipAddr);
 
-		//TODO 待完善 积分增加，文章数增加，风控检查处理等
 		postManagerService.savePost2Db(post);
 
+		//TODO 待完善 积分增加，文章数增加，风控检查处理等
 		postMessageTemplate.sendPostMessage(post);
 
 		return R.ok(post.getId());
@@ -158,6 +160,22 @@ public class PostServiceImpl extends ExtendServiceImpl<PostMapper, Post>
 				new PageResult<>(postAbbreviationDTOS, result.getTotal());
 
 		return R.ok(pageResult);
+	}
+
+
+	@Override
+	public void PostRiskHandler(Post post) {
+
+		log.info("文章风控处理，文章id：{}", post.getId());
+		Post postEntity = this.getById(post.getId());
+
+		postEntity.setState(post.getState());
+
+		this.updateById(postEntity);
+
+		// 同步到es
+		postManagerService.sync2Es(postEntity);
+
 	}
 }
 

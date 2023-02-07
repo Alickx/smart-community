@@ -21,7 +21,7 @@ public class PostMessageTemplate extends RocketMqTemplate {
 		rocketMqEntityMessage.setKey(String.valueOf(post.getId()));
 		rocketMqEntityMessage.setSource("文章发布事件");
 		rocketMqEntityMessage.setRetryTimes(3);
-		sendAsync(RocketMqBizConstant.Post.POST_TOPIC, RocketMqBizConstant.Post.POST_HANDLE_TAG, rocketMqEntityMessage);
+		sendAsync(RocketMqBizConstant.Post.POST_TOPIC, RocketMqBizConstant.Post.POST_RISK_HANDLE_TAG, rocketMqEntityMessage);
 	}
 
 }

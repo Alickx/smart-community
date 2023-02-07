@@ -74,6 +74,11 @@
 			<groupId>com.baomidou</groupId>
 			<artifactId>mybatis-plus-boot-starter</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>cn.goroute.smart</groupId>
+			<artifactId>smart-search-model</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 

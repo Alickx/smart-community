@@ -1,11 +1,10 @@
 package cn.goroute.smart.post.converter;
 
-import cn.goroute.smart.post.converter.impl.PostConvertDecorator;
 import cn.goroute.smart.post.domain.Post;
 import cn.goroute.smart.post.model.dto.PostAbbreviationDTO;
 import cn.goroute.smart.post.model.dto.PostInfoDTO;
 import cn.goroute.smart.post.model.vo.PostVO;
-import org.mapstruct.DecoratedWith;
+import cn.goroute.smart.search.model.index.PostIndex;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -15,7 +14,6 @@ import org.mapstruct.factory.Mappers;
  * @Description: 文章
  */
 @Mapper
-@DecoratedWith(PostConvertDecorator.class)
 public interface PostConverter {
 
 	PostConverter INSTANCE = Mappers.getMapper(PostConverter.class);
@@ -41,4 +39,6 @@ public interface PostConverter {
 	 * @return Post 实体类
 	 */
 	Post voToPo(PostVO postVO);
+
+	PostIndex poToPostIndex(Post postEntity);
 }

@@ -1,6 +1,6 @@
 package cn.goroute.smart.gateway.filter;
 
-import cn.dev33.satoken.id.SaIdUtil;
+import cn.dev33.satoken.same.SaSameUtil;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -24,7 +24,7 @@ public class ForwardAuthFilter implements GlobalFilter {
                 .getRequest()
                 .mutate()
                 // 为请求追加 Id-Token 参数
-                .header(SaIdUtil.ID_TOKEN, SaIdUtil.getToken())
+                .header(SaSameUtil.SAME_TOKEN, SaSameUtil.getToken())
                 .build();
         ServerWebExchange newExchange = exchange.mutate().request(newRequest).build();
         return chain.filter(newExchange);

@@ -3,7 +3,6 @@ package cn.goroute.smart.rocketmq.template;
 import cn.goroute.smart.rocketmq.constant.RocketMqSysConstant;
 import cn.goroute.smart.rocketmq.domain.BaseMqMessage;
 import cn.goroute.smart.rocketmq.util.JsonUtil;
-import com.alibaba.fastjson.JSONObject;
 import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
@@ -53,7 +52,7 @@ public class RocketMqTemplate {
 		Message<T> sendMessage = MessageBuilder.withPayload(message).setHeader(RocketMQHeaders.KEYS, message.getKey()).build();
 		SendResult sendResult = template.syncSend(destination, sendMessage);
 		// 此处为了方便查看给日志转了json，根据选择选择日志记录方式，例如ELK采集
-		LOGGER.info("[{}]同步消息[{}]发送结果[{}]", destination, JsonUtil.toJson(message), JSONObject.toJSON(sendResult));
+		LOGGER.info("[{}]同步消息[{}]发送结果[{}]", destination, JsonUtil.toJson(message), JsonUtil.toJson(sendResult));
 		return sendResult;
 	}
 
@@ -71,7 +70,7 @@ public class RocketMqTemplate {
 		template.asyncSend(destination, sendMessage, new SendCallback() {
 			@Override
 			public void onSuccess(SendResult sendResult) {
-				LOGGER.info("[{}]异步消息[{}]发送结果[{}]", destination, JsonUtil.toJson(message), JSONObject.toJSON(sendResult));
+				LOGGER.info("[{}]异步消息[{}]发送结果[{}]", destination, JsonUtil.toJson(message), JsonUtil.toJson(sendResult));
 			}
 
 			@Override

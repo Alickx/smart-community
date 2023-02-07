@@ -6,6 +6,7 @@ import cn.goroute.smart.common.util.RedisUtil;
 import cn.goroute.smart.post.constant.PostConstant;
 import cn.goroute.smart.post.constant.ThumbTypeEnum;
 import cn.goroute.smart.post.converter.CategoryConverter;
+import cn.goroute.smart.post.converter.PostConverter;
 import cn.goroute.smart.post.converter.TagConverter;
 import cn.goroute.smart.post.domain.*;
 import cn.goroute.smart.post.feign.FeignUserProfileService;
@@ -14,15 +15,21 @@ import cn.goroute.smart.post.model.dto.CategoryDTO;
 import cn.goroute.smart.post.model.dto.ContentExpansionDTO;
 import cn.goroute.smart.post.model.dto.PostBaseDTO;
 import cn.goroute.smart.post.model.dto.TagDTO;
+import cn.goroute.smart.post.mq.PostSyncMessageTemplate;
+import cn.goroute.smart.post.service.CategoryService;
+import cn.goroute.smart.post.service.TagService;
+import cn.goroute.smart.search.model.index.PostIndex;
 import cn.goroute.smart.user.model.dto.UserProfileDTO;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.LocalDateTimeUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.hccake.ballcat.common.model.result.R;
 import com.hccake.ballcat.common.model.result.SystemResultCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.jsoup.Jsoup;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,7 +63,11 @@ public class PostManagerService {
 
 	private final PostMapper postMapper;
 
+	private final PostSyncMessageTemplate postSyncMessageTemplate;
+
 	private final ThreadLocal<Map<Object,Object>> thumbThreadLocal = new ThreadLocal<>();
+	private final TagService tagService;
+	private final CategoryService categoryService;
 
 	/**
 	 * 补充文章作者，板块和标签信息
@@ -318,8 +329,36 @@ public class PostManagerService {
 	@Transactional(rollbackFor = Exception.class)
 	public void savePost2Db(Post post) {
 
+		post.setSummary(getPostSummary(post.getContent()));
+
 		postMapper.insert(post);
 
 	}
 
+
+	private String getPostSummary(String content) {
+		String summary = "";
+		if (StrUtil.isNotBlank(content)) {
+			summary = Jsoup.parse(content).text();
+			if (summary.length() > 100) {
+				summary = summary.substring(0, 100) + "...";
+			}
+		}
+		return summary;
+	}
+
+	public void sync2Es(Post postEntity) {
+
+		PostIndex postIndex = PostConverter.INSTANCE.poToPostIndex(postEntity);
+
+		Tag tag = tagService.getById(postEntity.getTagId());
+		Category category = categoryService.getById(postEntity.getCategoryId());
+
+		postIndex.setTagName(tag.getContent());
+		postIndex.setCategoryName(category.getName());
+
+
+		postSyncMessageTemplate.sendPostMessage(postIndex);
+
+	}
 }

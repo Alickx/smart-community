@@ -1,5 +1,6 @@
 package cn.goroute.smart.post.controller;
 
+import cn.goroute.smart.post.domain.Category;
 import cn.goroute.smart.post.domain.Tag;
 import cn.goroute.smart.post.service.CategoryService;
 import com.hccake.ballcat.common.model.domain.SelectData;
@@ -28,4 +29,9 @@ public class CategoryController {
 		return categoryService.getSelectData();
 	}
 
+
+	@GetMapping("/query")
+	public R<Category> queryCategoryById(Long id) {
+		return R.ok(categoryService.getById(id));
+	}
 }

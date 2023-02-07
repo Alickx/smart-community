@@ -48,4 +48,10 @@ public interface PostService extends ExtendService<Post> {
 	 * @return 查询结果
 	 */
 	R<PageResult<PostAbbreviationDTO>> queryByComment(PageParam pageParam, PostQO postQO);
+
+	/**
+	 * 文章风控处理
+	 * @param post 文章对象
+	 */
+	void PostRiskHandler(Post post);
 }

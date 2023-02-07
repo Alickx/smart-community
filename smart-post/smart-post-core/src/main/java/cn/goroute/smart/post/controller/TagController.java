@@ -1,7 +1,10 @@
 package cn.goroute.smart.post.controller;
 
+import cn.goroute.smart.post.domain.Tag;
 import cn.goroute.smart.post.service.TagService;
+import com.hccake.ballcat.common.model.result.R;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,5 +20,9 @@ public class TagController {
 
 	private final TagService tagService;
 
+	@GetMapping("/query")
+	public R<Tag> queryTagById(Long id) {
+		return R.ok(tagService.getById(id));
+	}
 
 }
