@@ -31,6 +31,10 @@ public enum ErrorCodeEnum implements ResultCode {
 
 	POST_NOT_EXIST(20001, "文章不存在"),
 
+	POST_NOT_PUBLISH(20002, "文章为私密文章"),
+
+	POST_HAS_RISK(20003, "文章存在风险"),
+
 
 
 	// 通用错误

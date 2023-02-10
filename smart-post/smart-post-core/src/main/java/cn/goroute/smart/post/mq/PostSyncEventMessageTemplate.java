@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
  * @Description:
  */
 @Component
-public class PostSyncMessageTemplate extends RocketMqTemplate {
+public class PostSyncEventMessageTemplate extends RocketMqTemplate {
 
 	public void sendPostMessage(PostIndex postIndex) {
 		RocketMqEntityMessage rocketMqEntityMessage = new RocketMqEntityMessage();

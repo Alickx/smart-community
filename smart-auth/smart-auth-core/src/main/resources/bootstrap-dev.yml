@@ -36,7 +36,7 @@ sa-token:
 
 ballcat:
   redis:
-    key-prefix: 'smart-auth:'
+    key-prefix: 'SMART_AUTH:'
   swagger:
     documentation-type: oas_30
     enabled: true

@@ -39,4 +39,9 @@
 		set thumb_count = IF(thumb_count > 0, thumb_count - #{thumbNum}, 0)
 		where id = #{toId}
 	</update>
+    <update id="incrCommentCount">
+		update post
+		set comment_count = comment_count + 1
+		where id = #{postId}
+	</update>
 </mapper>

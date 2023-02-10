@@ -1,7 +1,7 @@
 package cn.goroute.smart.post.strategy.thumb.impl;
 
 import cn.goroute.smart.post.domain.Thumb;
-import cn.goroute.smart.post.mapper.PostMapper;
+import cn.goroute.smart.post.mapper.CommentMapper;
 import cn.goroute.smart.post.strategy.thumb.AbstractThumbStrategy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,59 +9,51 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 
 /**
- * @Author: 蔡国鹏
- * @Date: 2022/10/22/16:41
- * @Description:
+ * @Author: Alickx
+ * @Date: 2023/01/04/18:21
+ * @Description: 评论点赞策略
  */
-@Component("postThumbStrategy")
-public class PostThumbStrategyImpl extends AbstractThumbStrategy {
-
-
+@Component
+public class ReplyThumbStrategy extends AbstractThumbStrategy {
 	@Resource
-	private PostMapper postMapper;
+	private CommentMapper commentMapper;
 
 	/**
 	 * 点赞
 	 *
 	 * @param thumb 点赞信息
+	 * @return 是否点赞成功
 	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public void saveThumb(Thumb thumb) {
 
-		long toId = thumb.getToId();
+		// 保存或更新点赞记录
+		saveThumb2DB(thumb);
 
-		// 判断是否已经点赞
-		if (!checkIsThumb(thumb)) {
+		// 更新点赞数
+		commentMapper.incrThumbNum(thumb.getToId(), 1);
 
-			// 保存点赞记录
-			saveThumb2DB(thumb);
+		// 保存/更新用户关系
+		userInteractService.updateThumbUserRelation(thumb, true);
 
-			// 更新文章点赞数
-			postMapper.incrThumbNum(toId, 1);
-
-			// 保存/更新用户关系
-			userInteractService.updateThumbUserRelation(thumb, true);
-		}
 	}
-
 
 	/**
 	 * 取消点赞
 	 *
 	 * @param thumb 点赞信息
+	 * @return 是否取消点赞成功
 	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public void cancelThumb(Thumb thumb) {
 
-		long toId = thumb.getToId();
-
-		// 逻辑删除记录
+		// 逻辑删除点赞记录
 		thumbMapper.deleteById(thumb);
 
-		// 更新文章点赞数
-		postMapper.descThumbNum(toId,1);
+		// 更新点赞数
+		commentMapper.descThumbNum(thumb.getToId(), 1);
 
 		// 保存/更新用户关系
 		userInteractService.updateThumbUserRelation(thumb, false);

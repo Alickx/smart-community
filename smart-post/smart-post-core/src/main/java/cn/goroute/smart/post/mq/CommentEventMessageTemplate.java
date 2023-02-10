@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
  * @Description:
  */
 @Component
-public class CommentMessageTemplate extends RocketMqTemplate {
+public class CommentEventMessageTemplate extends RocketMqTemplate {
 
 
     public void sendPostCommentMessage(Comment comment) {

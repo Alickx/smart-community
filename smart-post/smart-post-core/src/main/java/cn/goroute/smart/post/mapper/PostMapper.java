@@ -32,11 +32,9 @@ public interface PostMapper extends ExtendMapper<Post> {
 		LambdaQueryWrapperX<Post> wrapperX = WrappersX.lambdaQueryX(Post.class)
 				.eqIfPresent(Post::getCategoryId, postQO.getCategoryId())
 				.eqIfPresent(Post::getAuthorId, postQO.getUserId())
-				.eq(Post::getState, CommonConstant.NORMAL_STATE)
-				.notIn(Post::getDeleted, CommonConstant.DELETE_STATE)
-				.orderByDesc(Post::getUpdateTime);
-		this.selectPage(page, wrapperX);
-		IPage<PostAbbreviationDTO> dtoPage = page.convert(PostConverter.INSTANCE::poToAbbreviationDto);
+				.eq(Post::getState, CommonConstant.NORMAL_STATE);
+		IPage<Post> postIPage = this.selectPage(page, wrapperX);
+		IPage<PostAbbreviationDTO> dtoPage = postIPage.convert(PostConverter.INSTANCE::poToAbbreviationDto);
 		return new PageResult<>(dtoPage.getRecords(), dtoPage.getTotal());
 
 	}
@@ -55,6 +53,7 @@ public interface PostMapper extends ExtendMapper<Post> {
 	 */
 	void descThumbNum(@Param("toId") long toId,@Param("thumbNum") int thumbNum);
 
+    void incrCommentCount(@Param("postId") Long postId);
 }
 
 

@@ -1,8 +1,10 @@
 package cn.goroute.smart.post.controller;
 
+import cn.goroute.smart.common.annoation.LogTime;
 import cn.goroute.smart.post.domain.Post;
 import cn.goroute.smart.post.model.dto.PostAbbreviationDTO;
 import cn.goroute.smart.post.model.dto.PostInfoDTO;
+import cn.goroute.smart.post.model.dto.PostViewRankDTO;
 import cn.goroute.smart.post.model.qo.PostQO;
 import cn.goroute.smart.post.model.vo.PostVO;
 import cn.goroute.smart.post.service.PostService;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * @Author: Alickx
@@ -37,6 +40,7 @@ public class PostController {
 	 * @return 查询结果
 	 */
 	@GetMapping("/info/page")
+	@LogTime
 	public R<PageResult<PostAbbreviationDTO>> infoPage(@Validated PageParam pageParam, PostQO postQO) {
 		return postService.infoPage(pageParam, postQO);
 	}
@@ -71,6 +75,11 @@ public class PostController {
 	@GetMapping("/query/comment")
 	public R<PageResult<PostAbbreviationDTO>> queryByComment(@Validated PageParam pageParam, PostQO postQO) {
 		return postService.queryByComment(pageParam, postQO);
+	}
+
+	@GetMapping("/query/todayViewRank")
+	public R<List<PostViewRankDTO>> queryTodayViewRank() {
+		return postService.queryTodayViewRank();
 	}
 
 

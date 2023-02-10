@@ -1,5 +1,8 @@
 package cn.goroute.smart.post.controller;
 
+import cn.dev33.satoken.stp.StpUtil;
+import cn.goroute.smart.common.annoation.LogTime;
+import cn.goroute.smart.common.constant.ErrorCodeEnum;
 import cn.goroute.smart.post.domain.Thumb;
 import cn.goroute.smart.post.service.ThumbService;
 import com.hccake.ballcat.common.model.result.R;
@@ -22,12 +25,20 @@ public class ThumbController {
 	private final ThumbService thumbService;
 
 	@PostMapping("/save")
+	@LogTime
 	public R<Boolean> save(@RequestBody Thumb thumb) {
+		if (!StpUtil.isLogin()) {
+			return R.failed(ErrorCodeEnum.LOGIN_EXPIRED);
+		}
 		return thumbService.saveThumb(thumb);
 	}
 
 	@PostMapping("/cancel")
+	@LogTime
 	public R<Boolean> cancel(@RequestBody Thumb thumb) {
+		if (!StpUtil.isLogin()) {
+			return R.failed(ErrorCodeEnum.LOGIN_EXPIRED);
+		}
 		return thumbService.cancelThumb(thumb);
 	}
 

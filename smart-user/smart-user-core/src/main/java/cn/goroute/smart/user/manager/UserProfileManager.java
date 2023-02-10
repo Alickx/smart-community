@@ -4,6 +4,7 @@ import cn.goroute.smart.common.util.RedisUtil;
 import cn.goroute.smart.user.constant.RedisConstant;
 import cn.goroute.smart.user.domain.UserProfile;
 import cn.goroute.smart.user.mapper.UserProfileMapper;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.hccake.ballcat.common.util.JsonUtils;
@@ -64,11 +65,33 @@ public class UserProfileManager {
 
 		List<UserProfile> ret = new ArrayList<>(userIds.size());
 
+		List<Long> unCachedUserIds = new ArrayList<>();
 		for (Long userId : userIds) {
-			UserProfile userProfile = getUserProfile(userId);
-			if (null != userProfile) {
-				ret.add(userProfile);
+
+			String userProfileKey = RedisConstant.USER_PROFILE + ":" + userId;
+
+			String userProfileJson = redisUtil.get(userProfileKey);
+
+			// 如果缓存中存在用户资料，则直接添加进返回列表
+			if (StrUtil.isNotBlank(userProfileJson)) {
+				ret.add(JsonUtils.toObj(userProfileJson, UserProfile.class));
+			} else {
+				unCachedUserIds.add(userId);
 			}
+		}
+
+		// 从数据库中查询未缓存的用户资料
+		if (CollUtil.isNotEmpty(unCachedUserIds)) {
+			List<UserProfile> userProfiles = userProfileMapper
+					.selectList(new LambdaQueryWrapper<UserProfile>().in(UserProfile::getUserId, unCachedUserIds));
+
+			for (UserProfile userProfile : userProfiles) {
+				String userProfileKey = RedisConstant.USER_PROFILE + ":" + userProfile.getUserId();
+				redisUtil.setEx(userProfileKey, JsonUtils.toJson(userProfile), USER_PROFILE_EXPIRE_TIME,
+						TimeUnit.SECONDS);
+			}
+
+			ret.addAll(userProfiles);
 		}
 
 		return ret;

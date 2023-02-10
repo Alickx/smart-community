@@ -3,6 +3,7 @@ package cn.goroute.smart.post.service;
 import cn.goroute.smart.post.domain.Post;
 import cn.goroute.smart.post.model.dto.PostAbbreviationDTO;
 import cn.goroute.smart.post.model.dto.PostInfoDTO;
+import cn.goroute.smart.post.model.dto.PostViewRankDTO;
 import cn.goroute.smart.post.model.qo.PostQO;
 import cn.goroute.smart.post.model.vo.PostVO;
 import com.hccake.ballcat.common.model.domain.PageParam;
@@ -11,6 +12,7 @@ import com.hccake.ballcat.common.model.result.R;
 import com.hccake.extend.mybatis.plus.service.ExtendService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
 * @author Alickx
@@ -54,4 +56,6 @@ public interface PostService extends ExtendService<Post> {
 	 * @param post 文章对象
 	 */
 	void PostRiskHandler(Post post);
+
+    R<List<PostViewRankDTO>> queryTodayViewRank();
 }

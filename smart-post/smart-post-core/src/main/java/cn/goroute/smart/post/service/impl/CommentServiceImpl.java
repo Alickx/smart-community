@@ -7,7 +7,7 @@ import cn.goroute.smart.post.domain.Comment;
 import cn.goroute.smart.post.manager.CommentManagerService;
 import cn.goroute.smart.post.mapper.CommentMapper;
 import cn.goroute.smart.post.model.dto.CommentDTO;
-import cn.goroute.smart.post.mq.CommentMessageTemplate;
+import cn.goroute.smart.post.mq.CommentEventMessageTemplate;
 import cn.goroute.smart.post.model.qo.CommentQO;
 import cn.goroute.smart.post.model.qo.PostQO;
 import cn.goroute.smart.post.model.vo.CommentVO;
@@ -37,7 +37,7 @@ public class CommentServiceImpl extends ExtendServiceImpl<CommentMapper, Comment
 
 	private final CommentMapper commentMapper;
 	private final CommentManagerService commentManagerService;
-	private final CommentMessageTemplate commentMessageTemplate;
+	private final CommentEventMessageTemplate commentEventMessageTemplate;
 
 	/**
 	 * 分页查询
@@ -74,7 +74,7 @@ public class CommentServiceImpl extends ExtendServiceImpl<CommentMapper, Comment
 		comment.setUserId(StpUtil.getLoginIdAsLong());
 		boolean save = this.save(comment);
 		if (save) {
-			commentMessageTemplate.sendPostCommentMessage(comment);
+			commentEventMessageTemplate.sendPostCommentMessage(comment);
 			return R.ok(comment.getId());
 		}
 		log.error("保存评论/回复失败，commentVO:[{}]", commentVO);

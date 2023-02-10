@@ -35,7 +35,7 @@ public class CommentListener extends BaseMqMessageListener<RocketMqEntityMessage
 	 */
 	@Override
 	protected String consumerName() {
-		return "帖子评论监听器";
+		return "文章评论监听器";
 	}
 
 	/**
@@ -55,7 +55,7 @@ public class CommentListener extends BaseMqMessageListener<RocketMqEntityMessage
 	 */
 	@Override
 	protected void overMaxRetryTimesMessage(RocketMqEntityMessage message) {
-		log.error("帖子评论监听超过重试次数,消息内容:[{}]", JsonUtils.toObj(message.getMessage(), Comment.class).toString());
+		log.error("文章评论监听超过重试次数,消息内容:[{}]", JsonUtils.toObj(message.getMessage(), Comment.class).toString());
 	}
 
 	/**

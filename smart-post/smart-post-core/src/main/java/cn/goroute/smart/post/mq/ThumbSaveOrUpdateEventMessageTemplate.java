@@ -5,7 +5,6 @@ import cn.goroute.smart.post.model.dto.ThumbDTO;
 import cn.goroute.smart.rocketmq.domain.RocketMqEntityMessage;
 import cn.goroute.smart.rocketmq.template.RocketMqTemplate;
 import com.hccake.ballcat.common.util.JsonUtils;
-import org.apache.rocketmq.client.producer.SendResult;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +14,7 @@ import org.springframework.stereotype.Component;
  * @Description: 点赞消息模板
  */
 @Component
-public class ThumbMessageTemplate extends RocketMqTemplate{
+public class ThumbSaveOrUpdateEventMessageTemplate extends RocketMqTemplate{
 
 	/**
 	 * 构建文章点赞消息模板
@@ -24,9 +23,9 @@ public class ThumbMessageTemplate extends RocketMqTemplate{
 	 * @param type 点赞类型
 	 * @return 点赞消息模板
 	 */
-	public SendResult sendPostThumbMessage(Long userId, Long toId, Integer type) {
+	public void sendPostThumbMessage(Long userId, Long toId, Integer type) {
 		RocketMqEntityMessage message = getRocketMqEntityMessage(userId, toId, type,true);
-		return send(RocketMqBizConstant.Thumb.THUMB_TOPIC, RocketMqBizConstant.Thumb.THUMB_HANDLE_TAG, message);
+		sendAsync(RocketMqBizConstant.Thumb.THUMB_TOPIC, RocketMqBizConstant.Thumb.THUMB_HANDLE_TAG, message);
 	}
 
 	/**

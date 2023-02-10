@@ -3,16 +3,14 @@ package cn.goroute.smart.post.service.impl;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.common.util.RedisUtil;
 import cn.goroute.smart.post.domain.Thumb;
-import cn.goroute.smart.post.mq.ThumbMessageTemplate;
 import cn.goroute.smart.post.mapper.ThumbMapper;
+import cn.goroute.smart.post.mq.ThumbSaveOrUpdateEventMessageTemplate;
 import cn.goroute.smart.post.service.PostService;
 import cn.goroute.smart.post.service.ThumbService;
 import com.hccake.ballcat.common.model.result.R;
 import com.hccake.extend.mybatis.plus.service.impl.ExtendServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.rocketmq.client.producer.SendResult;
-import org.apache.rocketmq.client.producer.SendStatus;
 import org.springframework.stereotype.Service;
 
 /**
@@ -31,7 +29,7 @@ public class ThumbServiceImpl extends ExtendServiceImpl<ThumbMapper, Thumb>
 
 	private final RedisUtil redisUtil;
 
-	private final ThumbMessageTemplate thumbMessageTemplate;
+	private final ThumbSaveOrUpdateEventMessageTemplate thumbSaveOrUpdateEventMessageTemplate;
 
 	/**
 	 * 保存点赞
@@ -44,15 +42,11 @@ public class ThumbServiceImpl extends ExtendServiceImpl<ThumbMapper, Thumb>
 
 		String userId = StpUtil.getLoginIdAsString();
 
-		// 发送到消息队列
-		SendResult sendResult = thumbMessageTemplate
+		// 发送消息队列
+		thumbSaveOrUpdateEventMessageTemplate
 				.sendPostThumbMessage(Long.valueOf(userId), thumb.getToId(), thumb.getType());
 
-		if (sendResult.getSendStatus().equals(SendStatus.SEND_OK)) {
-			return R.ok(true);
-		}
-
-		return R.ok(false);
+		return R.ok(true);
 
 	}
 
@@ -67,10 +61,8 @@ public class ThumbServiceImpl extends ExtendServiceImpl<ThumbMapper, Thumb>
 
 		String userId = StpUtil.getLoginIdAsString();
 
-		// TODO 搭建分布式计数服务
-
 		// 发送到消息队列
-		thumbMessageTemplate
+		thumbSaveOrUpdateEventMessageTemplate
 				.sendPostCancelThumb(Long.valueOf(userId), thumb.getToId(), thumb.getType());
 
 		return R.ok(true);

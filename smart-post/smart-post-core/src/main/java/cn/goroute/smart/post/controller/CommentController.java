@@ -1,5 +1,6 @@
 package cn.goroute.smart.post.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.goroute.smart.post.model.dto.CommentDTO;
 import cn.goroute.smart.post.model.qo.CommentQO;
 import cn.goroute.smart.post.model.vo.CommentVO;
@@ -44,6 +45,7 @@ public class CommentController {
 	 * @return 保存结果
 	 */
 	@PostMapping("/save")
+	@SaCheckLogin
 	public R<Long> save(@RequestBody @Validated(value = {UpdateGroup.class}) CommentVO commentVO) {
 		return commentService.commentSave(commentVO);
 	}
@@ -54,6 +56,7 @@ public class CommentController {
 	 * @return 删除结果
 	 */
 	@PostMapping("/delete")
+	@SaCheckLogin
 	public R<Boolean> delete(@RequestBody @Validated(value = {UpdateGroup.class}) CommentVO commentVO) {
 		return commentService.commentDelete(commentVO);
 	}

@@ -15,15 +15,15 @@ public enum ThumbTypeEnum {
 	/**
 	 * 文章点赞
 	 */
-	POST(1, "文章点赞"),
+	POST(0, "文章点赞"),
 	/**
 	 * 评论点赞
 	 */
-	COMMENT(2, "评论点赞"),
+	COMMENT(1, "评论点赞"),
 	/**
 	 * 回复点赞
 	 */
-	REPLY(3, "回复点赞");
+	REPLY(2, "回复点赞");
 
 	private final Integer code;
 

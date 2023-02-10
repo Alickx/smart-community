@@ -79,9 +79,7 @@ public interface CommentMapper extends ExtendMapper<Comment> {
 		LambdaQueryWrapperX<Comment> wrapper = new LambdaQueryWrapperX<>(Comment.class);
 		wrapper.eqIfPresent(Comment::getUserId, postQO.getUserId())
 				.eqIfPresent(Comment::getState,CommonConstant.NORMAL_STATE)
-				.eqIfPresent(Comment::getDeleted, BooleanEnum.FALSE.getValue())
-				.groupBy(Comment::getPostId);
-		wrapper.select(Comment::getPostId);
+				.groupBy(Comment::getId,Comment::getPostId);
 		IPage<Comment> commentIPage = this.selectPage(page, wrapper);
 		IPage<Long> convert = commentIPage.convert(Comment::getPostId);
 		return new PageResult<>(convert.getRecords(),convert.getTotal());

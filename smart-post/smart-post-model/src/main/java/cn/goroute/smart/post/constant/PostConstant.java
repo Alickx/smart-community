@@ -1,58 +1,40 @@
 package cn.goroute.smart.post.constant;
 
 
+import cn.hutool.core.date.DateUtil;
+
 /**
  * @author Alickx
  * @Description: 文章服务常量
  */
 public class PostConstant {
 
-	/**
-	 * 点赞业务常量
-	 */
-    public static class Thumb {
-		/**
-		 * 文章点赞缓存key
-		 */
-		public static final String POST_THUMB_KEY = "post:thumb:";
 
-		/**
-		 * 文章点赞缓存过期时间
-		 */
-		public static final long POST_THUMB_EXPIRE = 60 * 60 * 24 * 7;
+	public static class Post {
 
-		/**
-		 * 评论点赞缓存key
-		 */
-		 public static final String COMMENT_THUMB_KEY = "comment:thumb:";
+		// 文章阅读数缓存key
+		public static String POST_VIEW_COUNT_KEY = "POST:READ:COUNT";
 
-		/**
-		 * 评论点赞缓存过期时间
-		 */
-		public static final long COMMENT_THUMB_EXPIRE = 60 * 60 * 24 * 3;
+		// 24小时文章阅读数排行榜缓存key
+		public static String POST_VIEW_COUNT_RANK_KEY = "POST:READ:COUNT:RANK";
+
+		public static String getTodayPostViewCountKey() {
+			return POST_VIEW_COUNT_KEY + ":" + DateUtil.today();
+		}
+
+	}
 
 
-		/**
-		 * 评论点赞缓存key
-		 */
-		public static final String REPLY_THUMB_KEY = "reply:thumb:";
+	public static class Tag {
 
-		/**
-		 * 评论点赞缓存过期时间
-		 */
-		public static final long REPLY_THUMB_EXPIRE = 60 * 60 * 24 * 3;
+		// 文章标签缓存key
+		public static String POST_TAG_KEY = "POST:TAG";
 
+	}
 
+	public static class category {
 
-		/**
-		 * 文章点赞缓存ttl字段
-		 */
-		public static final String THUMB_TTL_FIELD = "ttl";
-
-		/**
-		 * 文章点赞缓存最小文章id字段
-		 */
-		public static final String THUMB_MIN_CID_FIELD = "minCid";
-
+		// 文章分类缓存key
+		public static String POST_CATEGORY_KEY = "POST:CATEGORY";
 	}
 }

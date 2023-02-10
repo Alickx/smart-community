@@ -2,6 +2,7 @@ package cn.goroute.smart.post.domain;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -93,6 +94,7 @@ public class Comment implements Serializable {
      * 逻辑删除标记 0 = 正常 1 = 删除
      */
 	@Parameter(description = "逻辑删除标记 0 = 正常 1 = 删除")
+    @TableLogic
     private Integer deleted;
 
     @TableField(exist = false)

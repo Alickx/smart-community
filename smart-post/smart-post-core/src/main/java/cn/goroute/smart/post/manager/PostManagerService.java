@@ -1,43 +1,44 @@
 package cn.goroute.smart.post.manager;
 
 import cn.dev33.satoken.stp.StpUtil;
-import cn.goroute.smart.common.constant.CommonConstant;
 import cn.goroute.smart.common.util.RedisUtil;
 import cn.goroute.smart.post.constant.PostConstant;
-import cn.goroute.smart.post.constant.ThumbTypeEnum;
+import cn.goroute.smart.post.constant.UserInteractTypeEnum;
 import cn.goroute.smart.post.converter.CategoryConverter;
 import cn.goroute.smart.post.converter.PostConverter;
 import cn.goroute.smart.post.converter.TagConverter;
-import cn.goroute.smart.post.domain.*;
+import cn.goroute.smart.post.domain.Category;
+import cn.goroute.smart.post.domain.Post;
+import cn.goroute.smart.post.domain.Tag;
+import cn.goroute.smart.post.domain.UserInteract;
 import cn.goroute.smart.post.feign.FeignUserProfileService;
-import cn.goroute.smart.post.mapper.*;
-import cn.goroute.smart.post.model.dto.CategoryDTO;
+import cn.goroute.smart.post.mapper.CategoryMapper;
+import cn.goroute.smart.post.mapper.PostMapper;
+import cn.goroute.smart.post.mapper.TagMapper;
 import cn.goroute.smart.post.model.dto.ContentExpansionDTO;
 import cn.goroute.smart.post.model.dto.PostBaseDTO;
-import cn.goroute.smart.post.model.dto.TagDTO;
-import cn.goroute.smart.post.mq.PostSyncMessageTemplate;
+import cn.goroute.smart.post.mq.PostSyncEventMessageTemplate;
 import cn.goroute.smart.post.service.CategoryService;
 import cn.goroute.smart.post.service.TagService;
+import cn.goroute.smart.post.service.UserInteractService;
 import cn.goroute.smart.search.model.index.PostIndex;
 import cn.goroute.smart.user.model.dto.UserProfileDTO;
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.alibaba.fastjson.JSON;
+import com.hccake.ballcat.common.core.constant.enums.BooleanEnum;
 import com.hccake.ballcat.common.model.result.R;
 import com.hccake.ballcat.common.model.result.SystemResultCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.jsoup.Jsoup;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @Author: 蔡国鹏
@@ -49,316 +50,228 @@ import java.util.stream.Collectors;
 @Slf4j
 public class PostManagerService {
 
-	private final FeignUserProfileService feignUserProfileService;
-
-	private final CategoryMapper categoryMapper;
-
-	private final TagMapper tagMapper;
-
-	private final ThumbMapper thumbMapper;
-
-	private final CommentMapper commentMapper;
-
-	private final RedisUtil redisUtil;
-
-	private final PostMapper postMapper;
-
-	private final PostSyncMessageTemplate postSyncMessageTemplate;
-
-	private final ThreadLocal<Map<Object,Object>> thumbThreadLocal = new ThreadLocal<>();
-	private final TagService tagService;
-	private final CategoryService categoryService;
+    private final FeignUserProfileService feignUserProfileService;
+    private final CategoryMapper categoryMapper;
+    private final TagMapper tagMapper;
+    private final RedisUtil redisUtil;
+    private final PostMapper postMapper;
+    private final PostSyncEventMessageTemplate postSyncEventMessageTemplate;
+    private final TagService tagService;
+    private final CategoryService categoryService;
+	private final UserInteractService userInteractService;
 
 	/**
-	 * 补充文章作者，板块和标签信息
-	 *
-	 * @param records 文章列表
-	 * @return 补充后的文章列表
-	 */
-	public List<? extends PostBaseDTO> fillInfo(List<? extends PostBaseDTO> records) {
+     * 补充文章作者，板块和标签信息
+     *
+     * @param records 文章列表
+     * @return 补充后的文章列表
+     */
+    public List<? extends PostBaseDTO> fillInfo(List<? extends PostBaseDTO> records) {
 
-		// 补充作者信息
-		fillAuthor(records);
+        Long userId = StpUtil.isLogin() ? StpUtil.getLoginIdAsLong() : null;
 
-		// 补充板块信息
-		fillCategory(records);
+        CompletableFuture<Void> fillAuthorFuture = CompletableFuture.runAsync(() -> {
+            // 补充作者信息
+            fillAuthor(records);
+        });
 
-		// 补充点赞信息和收藏信息
-		fillExpansion(records);
+        CompletableFuture<Void> fillCategoryFuture = CompletableFuture.runAsync(() -> {
+            // 补充板块信息
+            fillCategory(records);
+        });
 
-		// 补充标签信息
-		fillTag(records);
+        CompletableFuture<Void> fillExpansionFuture = CompletableFuture.runAsync(() -> {
+            // 补充点赞信息和收藏信息
+            fillExpansion(records,userId);
+        });
 
-		return records;
-	}
 
-	/**
-	 * 补充文章标签信息
-	 *
-	 * @param records 文章列表
-	 */
-	private void fillTag(List<? extends PostBaseDTO> records) {
-		for (PostBaseDTO record : records) {
-			Tag tag = tagMapper.selectById(record.getTagId());
-			TagDTO tagDTO = TagConverter.INSTANCE.poToDTO(tag);
-			record.setTag(tagDTO);
+        CompletableFuture<Void> fillTagFuture = CompletableFuture.runAsync(() -> {
+            // 补充标签信息
+            fillTag(records);
+        });
+
+        CompletableFuture.allOf(fillAuthorFuture, fillCategoryFuture, fillExpansionFuture, fillTagFuture).join();
+
+        return records;
+    }
+
+    /**
+     * 补充文章标签信息
+     *
+     * @param records 文章列表
+     */
+    private void fillTag(List<? extends PostBaseDTO> records) {
+
+        // 查找缓存
+        String tagList = redisUtil.get(PostConstant.Tag.POST_TAG_KEY);
+
+        List<Tag> tags = JSON.parseArray(tagList, Tag.class);
+
+        if (CollUtil.isEmpty(tags)) {
+            // 缓存中没有，从数据库中查找
+            tags = tagMapper.selectList(null);
+            // 放入缓存
+            redisUtil.set(PostConstant.Tag.POST_TAG_KEY, JSON.toJSONString(tags));
+        }
+
+        Map<Long, Tag> tagMap = new HashMap<>(tags.size());
+        tags.forEach(tag -> tagMap.put(tag.getId(), tag));
+
+        records.forEach(record -> {
+            Long tagId = record.getTagId();
+            Tag tag = tagMap.get(tagId);
+            if (tag != null) {
+                record.setTag(TagConverter.INSTANCE.poToDTO(tag));
+            }
+        });
+
+
+    }
+
+    /**
+     * 补充文章作者信息
+     *
+     * @param records 文章列表
+     */
+    private void fillAuthor(List<? extends PostBaseDTO> records) {
+        if (CollUtil.isNotEmpty(records)) {
+            List<Long> userIds = records.stream().map(PostBaseDTO::getAuthorId).distinct().toList();
+            R<List<UserProfileDTO>> resp;
+            try {
+                resp = feignUserProfileService.batchGetUserProfile(userIds);
+            } catch (Exception e) {
+                log.error("获取用户信息失败,userIds: [{}],调用用户服务超时或失败", userIds);
+                return;
+            }
+            if (resp.getCode() == SystemResultCode.SUCCESS.getCode() && resp.getData() != null) {
+                Map<Long, UserProfileDTO> userProfileMap = new HashMap<>();
+                for (UserProfileDTO userProfileDTO : resp.getData()) {
+                    userProfileMap.put(userProfileDTO.getUserId(), userProfileDTO);
+                }
+                for (PostBaseDTO postBaseDTO : records) {
+                    postBaseDTO.setAuthor(userProfileMap.get(postBaseDTO.getAuthorId()));
+                }
+            }
+        }
+    }
+
+    /**
+     * 补充文章板块信息
+     *
+     * @param records 文章列表
+     */
+    private void fillCategory(List<? extends PostBaseDTO> records) {
+
+        // 查找缓存
+        String categoryList = redisUtil.get(PostConstant.category.POST_CATEGORY_KEY);
+
+        List<Category> categories = JSON.parseArray(categoryList, Category.class);
+
+        if (CollUtil.isEmpty(categories)) {
+            // 缓存中没有，从数据库中查找
+            categories = categoryMapper.selectList(null);
+            // 放入缓存
+            redisUtil.set(PostConstant.category.POST_CATEGORY_KEY, JSON.toJSONString(categories));
+        }
+
+        Map<Long, Category> categoryMap = new HashMap<>(categories.size());
+        categories.forEach(category -> categoryMap.put(category.getId(), category));
+
+        records.forEach(record -> {
+            Long categoryId = record.getCategoryId();
+            Category category = categoryMap.get(categoryId);
+            if (category != null) {
+                record.setCategory(CategoryConverter.INSTANCE.poToDTO(category));
+            }
+        });
+
+    }
+
+    /**
+     * 补充文章拓展信息
+     *
+     * @param records 文章列表
+     */
+    private void fillExpansion(List<? extends PostBaseDTO> records,Long userId) {
+
+		if (CollUtil.isEmpty(records)) {
+			return;
 		}
-	}
 
-	/**
-	 * 补充文章作者信息
-	 *
-	 * @param records 文章列表
-	 */
-	private void fillAuthor(List<? extends PostBaseDTO> records) {
-		if (CollUtil.isNotEmpty(records)) {
-			List<Long> userIds = records.stream().map(PostBaseDTO::getAuthorId).distinct().toList();
-			R<List<UserProfileDTO>> resp;
-			try {
-				resp = feignUserProfileService.batchGetUserProfile(userIds);
-			} catch (Exception e) {
-				log.error("获取用户信息失败,userIds: [{}],调用用户服务超时或失败", userIds);
-				return;
-			}
-			if (resp.getCode() == SystemResultCode.SUCCESS.getCode() && resp.getData() != null) {
-				Map<Long, UserProfileDTO> userProfileMap = new HashMap<>();
-				for (UserProfileDTO userProfileDTO : resp.getData()) {
-					userProfileMap.put(userProfileDTO.getUserId(), userProfileDTO);
-				}
-				for (PostBaseDTO postBaseDTO : records) {
-					postBaseDTO.setAuthor(userProfileMap.get(postBaseDTO.getAuthorId()));
-				}
-			}
-		}
-	}
-
-	/**
-	 * 补充文章板块信息
-	 *
-	 * @param records 文章列表
-	 */
-	private void fillCategory(List<? extends PostBaseDTO> records) {
-		List<Long> categoryIds = records
-				.stream()
-				.map(PostBaseDTO::getCategoryId)
-				.collect(Collectors.toList());
-
-		List<Category> categoryList = categoryMapper.selectBatchIds(categoryIds);
-		List<CategoryDTO> categoryDTOList = CategoryConverter.INSTANCE.poToDTO(categoryList);
-
-		records.forEach(postDTO -> categoryDTOList.forEach(categoryDTO -> {
-			if (postDTO.getCategoryId().equals(categoryDTO.getCategoryId())) {
-				postDTO.setCategory(categoryDTO);
-			}
-		}));
-	}
-
-	/**
-	 * 补充文章拓展信息
-	 *
-	 * @param records 文章列表
-	 */
-	private void fillExpansion(List<? extends PostBaseDTO> records) {
-
-		boolean login = StpUtil.isLogin();
-
-		String userId = login ? StpUtil.getLoginIdAsString() : null;
-
-		ContentExpansionDTO contentExpansionDTO;
-
-		if (login) {
-			// 获取用户点赞缓存
-			getUserThumbRecord(StpUtil.getLoginIdAsString());
-		}
-
-		// 获取文章id集合
-		for (PostBaseDTO record : records) {
-			contentExpansionDTO = new ContentExpansionDTO();
-
-			// 判断是否登录
-			if (!login) {
-				contentExpansionDTO.setIsThumb(false);
-				contentExpansionDTO.setIsComment(false);
-				contentExpansionDTO.setIsAuthor(false);
+		if (null == userId) {
+			// 查询的用户为游客
+			for (PostBaseDTO record : records) {
+				ContentExpansionDTO contentExpansionDTO = ContentExpansionDTO.create();
 				record.setExpansion(contentExpansionDTO);
-				continue;
 			}
-			Long postId = record.getId();
-
-			// 查询点赞信息
-			contentExpansionDTO.setIsThumb(checkThumbCache(userId, postId));
-
-			// 查询是否评论
-			contentExpansionDTO.setIsComment(getIsComment(userId,postId));
-
-			// 判断是否是作者
-			contentExpansionDTO.setIsAuthor(record.getAuthorId().equals(Long.valueOf(userId)));
-
-			record.setExpansion(contentExpansionDTO);
-
+			return;
 		}
 
-		// 清除缓存，避免内存泄漏
-		thumbThreadLocal.remove();
 
-	}
+		List<Long> postIds = records.stream().map(PostBaseDTO::getId).toList();
 
-	private Boolean getIsComment(String userId, Long postId) {
-		//TODO 查询评论
-		LambdaQueryWrapper<Comment> commentQueryWrapper;
-		commentQueryWrapper = new LambdaQueryWrapper<>();
-		commentQueryWrapper.eq(Comment::getUserId, userId);
-		commentQueryWrapper.eq(Comment::getPostId, postId);
-		List<Comment> comments = commentMapper.selectList(commentQueryWrapper);
-		return CollUtil.isNotEmpty(comments);
-	}
+		// 调用用户关系表
+		List<UserInteract> userInteractList = userInteractService.batchGetUserPostInteract(postIds, UserInteractTypeEnum.POST.getCode(), userId);
 
+		Map<Long,UserInteract> userInteractMap = new HashMap<>(userInteractList.size());
+		for (UserInteract userInteract : userInteractList) {
+			userInteractMap.put(userInteract.getTargetId(), userInteract);
+		}
 
-	private void getUserThumbRecord(String userId) {
-		// 查询是否点赞
-		Map<Object, Object> entries =
-				redisUtil.hGetAll(PostConstant.Thumb.POST_THUMB_KEY + userId);
-
-		// 判断是否存在点赞hash缓存
-		if (entries.isEmpty()) {
-			thumbDbSearchAndCache(userId);
-		} else {
-			long ttl = Long.parseLong((String) entries.get(PostConstant.Thumb.THUMB_TTL_FIELD));
-			// 判断是否过期
-			// 当前时间戳 - 过期时间 < ttl，证明还未过期
-			long expire = LocalDateTimeUtil.now()
-					.minusSeconds(PostConstant.Thumb.POST_THUMB_EXPIRE).toEpochSecond(ZoneOffset.of("+8"));
-			if (expire < ttl) {
-				// 判断是否需要更新缓存时间,如果小于创建/更新时间戳的1/3，则更新缓存时间
-				if ((ttl - expire) < ttl / 3) {
-					redisUtil.hPut(PostConstant.Thumb.POST_THUMB_KEY + userId,
-							PostConstant.Thumb.THUMB_TTL_FIELD, String.valueOf(LocalDateTimeUtil.now().toEpochSecond(ZoneOffset.of("+8"))));
-				}
+		for (PostBaseDTO record : records) {
+			UserInteract userInteract = userInteractMap.get(record.getId());
+			ContentExpansionDTO contentExpansionDTO = ContentExpansionDTO.create();
+			if (userInteract != null ) {
+				contentExpansionDTO.setIsAuthor(userId.equals(record.getAuthorId()));
+				contentExpansionDTO.setIsThumb(userInteract.getIsThumb() == BooleanEnum.TRUE.getValue());
+				contentExpansionDTO.setIsCollect(userInteract.getIsCollect() == BooleanEnum.TRUE.getValue());
+				contentExpansionDTO.setIsComment(userInteract.getIsComment() == BooleanEnum.TRUE.getValue());
+				record.setExpansion(contentExpansionDTO);
 			} else {
-				// 缓存已过期，查询数据库
-				thumbDbSearchAndCache(userId);
+				record.setExpansion(contentExpansionDTO);
 			}
 		}
 
-		thumbThreadLocal.set(entries);
 	}
 
-	/**
-	 * 数据库查询点赞信息并更新写入缓存
-	 *
-	 * @param userId 用户id
-	 */
-	private void thumbDbSearchAndCache(String userId) {
-		// 如果过期，则查询用户一段时间内容的点赞记录
-		LambdaQueryWrapper<Thumb>  thumbQueryWrapper = new LambdaQueryWrapper<>();
-		thumbQueryWrapper.eq(Thumb::getUserId, userId);
-		thumbQueryWrapper.eq(Thumb::getType, ThumbTypeEnum.POST.getCode());
-		thumbQueryWrapper.eq(Thumb::getDeleted, CommonConstant.NORMAL_STATE);
-		thumbQueryWrapper.ge(Thumb::getCreateTime, LocalDateTimeUtil.now().minusSeconds(PostConstant.Thumb.POST_THUMB_EXPIRE));
-		thumbQueryWrapper.orderByAsc(Thumb::getToId);
-		List<Thumb> thumbs = thumbMapper.selectList(thumbQueryWrapper);
-		// 更新点赞记录
-		redisUtil.delete(PostConstant.Thumb.POST_THUMB_KEY + userId);
-		for (Thumb thumb : thumbs) {
-			redisUtil.hPut(PostConstant.Thumb.POST_THUMB_KEY + userId,
-					String.valueOf(thumb.getToId()), "1");
-		}
-		// 更新缓存ttl时间
-		redisUtil.hPut(PostConstant.Thumb.POST_THUMB_KEY + userId,
-				PostConstant.Thumb.THUMB_TTL_FIELD, String.valueOf(LocalDateTimeUtil.now().toEpochSecond(ZoneOffset.of("+8"))));
-		// 更新minCid的值
-		if (CollUtil.isNotEmpty(thumbs)) {
-			redisUtil.hPut(PostConstant.Thumb.POST_THUMB_KEY + userId,
-					PostConstant.Thumb.THUMB_MIN_CID_FIELD, String.valueOf(thumbs.get(0).getToId()));
-		}
+    /**
+     * 保存文章到数据库
+     *
+     * @param post 文章实体类
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void savePost2Db(Post post) {
 
-		// 更新ThreadLocal
-		thumbThreadLocal.set(redisUtil.hGetAll(PostConstant.Thumb.POST_THUMB_KEY + userId));
-	}
+        post.setSummary(getPostSummary(post.getContent()));
 
-	/**
-	 * 检查文章id是否在缓存中
-	 *
-	 * @param userId  用户id
-	 * @param postId  文章id
-	 * @return 是否点赞 true:点赞 false:未点赞
-	 */
-	@NotNull
-	private Boolean checkThumbCache(String userId, Long postId) {
+        postMapper.insert(post);
 
-		Map<Object, Object> entries = thumbThreadLocal.get();
+    }
 
-		// 查询文章id是否在缓存中
-		if (entries.containsKey(String.valueOf(postId))) {
-			return true;
-		} else {
-			// 如果文章id不在缓存中，则查询文章id是否小于缓存中的文章最小值
-			if (entries.containsKey(PostConstant.Thumb.THUMB_MIN_CID_FIELD)) {
-				Long minCid = Long.parseLong((String) entries.get(PostConstant.Thumb.THUMB_MIN_CID_FIELD));
-				if (postId > minCid) {
-					// 如果文章id大于缓存中的文章最小值，则未点赞
-					return false;
-				} else {
-					// 查询db
-					LambdaQueryWrapper<Thumb> thumbQueryWrapper = new LambdaQueryWrapper<>();
-					thumbQueryWrapper.eq(Thumb::getUserId, userId);
-					thumbQueryWrapper.eq(Thumb::getToId, postId);
-					thumbQueryWrapper.eq(Thumb::getType, ThumbTypeEnum.POST.getCode());
-					thumbQueryWrapper.eq(Thumb::getDeleted, CommonConstant.NORMAL_STATE);
-					Thumb thumb = thumbMapper.selectOne(thumbQueryWrapper);
-					return thumb != null;
-				}
-			} else {
-				// 查询db
-				LambdaQueryWrapper<Thumb> thumbQueryWrapper = new LambdaQueryWrapper<>();
-				thumbQueryWrapper.eq(Thumb::getUserId, userId);
-				thumbQueryWrapper.eq(Thumb::getToId, postId);
-				thumbQueryWrapper.eq(Thumb::getType, ThumbTypeEnum.POST.getCode());
-				thumbQueryWrapper.eq(Thumb::getDeleted, CommonConstant.NORMAL_STATE);
-				Thumb thumb = thumbMapper.selectOne(thumbQueryWrapper);
-				return thumb != null;
-			}
-		}
-	}
+    private String getPostSummary(String content) {
+        String summary = "";
+        if (StrUtil.isNotBlank(content)) {
+            summary = Jsoup.parse(content).text();
+            if (summary.length() > 100) {
+                summary = summary.substring(0, 100) + "...";
+            }
+        }
+        return summary;
+    }
+
+    public void sync2Es(Post postEntity) {
+
+        PostIndex postIndex = PostConverter.INSTANCE.poToPostIndex(postEntity);
+
+        Tag tag = tagService.getById(postEntity.getTagId());
+        Category category = categoryService.getById(postEntity.getCategoryId());
+
+        postIndex.setTagName(tag.getContent());
+        postIndex.setCategoryName(category.getName());
 
 
-	/**
-	 * 保存文章到数据库
-	 * @param post 文章实体类
-	 */
-	@Transactional(rollbackFor = Exception.class)
-	public void savePost2Db(Post post) {
+        postSyncEventMessageTemplate.sendPostMessage(postIndex);
 
-		post.setSummary(getPostSummary(post.getContent()));
-
-		postMapper.insert(post);
-
-	}
-
-
-	private String getPostSummary(String content) {
-		String summary = "";
-		if (StrUtil.isNotBlank(content)) {
-			summary = Jsoup.parse(content).text();
-			if (summary.length() > 100) {
-				summary = summary.substring(0, 100) + "...";
-			}
-		}
-		return summary;
-	}
-
-	public void sync2Es(Post postEntity) {
-
-		PostIndex postIndex = PostConverter.INSTANCE.poToPostIndex(postEntity);
-
-		Tag tag = tagService.getById(postEntity.getTagId());
-		Category category = categoryService.getById(postEntity.getCategoryId());
-
-		postIndex.setTagName(tag.getContent());
-		postIndex.setCategoryName(category.getName());
-
-
-		postSyncMessageTemplate.sendPostMessage(postIndex);
-
-	}
+    }
 }

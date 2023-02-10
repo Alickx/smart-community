@@ -64,6 +64,12 @@ public class PostBaseDTO {
 	private Integer commentCount;
 
 	/**
+	 * 浏览数量
+	 */
+	@Parameter(description = "浏览数量")
+	private Integer viewCount;
+
+	/**
 	 * 更新时间
 	 */
 	@Parameter(description = "更新时间")

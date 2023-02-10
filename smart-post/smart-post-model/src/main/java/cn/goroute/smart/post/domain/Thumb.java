@@ -2,6 +2,7 @@ package cn.goroute.smart.post.domain;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.ToString;
@@ -42,6 +43,7 @@ public class Thumb implements Serializable {
 	/**
 	 * 逻辑删除 1 = 已取消点赞
 	 */
+    @TableLogic
 	private Integer deleted;
 
     /**

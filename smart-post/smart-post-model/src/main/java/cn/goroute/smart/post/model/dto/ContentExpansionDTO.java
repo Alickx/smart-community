@@ -50,6 +50,7 @@ public class ContentExpansionDTO {
 		this.isCollect = false;
 		this.isThumb = false;
 		this.isAuthor = false;
+		this.isMoreReply = false;
 	}
 
 	public static ContentExpansionDTO create() {

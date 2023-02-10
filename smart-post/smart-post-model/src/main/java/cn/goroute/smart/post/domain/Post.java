@@ -2,6 +2,7 @@ package cn.goroute.smart.post.domain;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
@@ -73,6 +74,11 @@ public class Post implements Serializable {
      */
     private Integer commentCount;
 
+	/**
+	 * 浏览数量
+	 */
+	private Integer viewCount;
+
     /**
      * 0:false = 不公布  1:true = 公布
      */
@@ -96,6 +102,7 @@ public class Post implements Serializable {
     /**
      * 逻辑删除 0 = 未删除 1 = 已删除
      */
+	@TableLogic
     private Integer deleted;
 
     @Serial

@@ -3,6 +3,9 @@ package cn.goroute.smart.post.service.impl;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.common.constant.CommonConstant;
 import cn.goroute.smart.common.constant.ErrorCodeEnum;
+import cn.goroute.smart.common.util.RedisUtil;
+import cn.goroute.smart.post.constant.PostConstant;
+import cn.goroute.smart.post.constant.PostStateEnum;
 import cn.goroute.smart.post.converter.PostConverter;
 import cn.goroute.smart.post.domain.Post;
 import cn.goroute.smart.post.manager.PostManagerService;
@@ -10,9 +13,10 @@ import cn.goroute.smart.post.mapper.PostMapper;
 import cn.goroute.smart.post.model.dto.PostAbbreviationDTO;
 import cn.goroute.smart.post.model.dto.PostBaseDTO;
 import cn.goroute.smart.post.model.dto.PostInfoDTO;
+import cn.goroute.smart.post.model.dto.PostViewRankDTO;
 import cn.goroute.smart.post.model.qo.PostQO;
 import cn.goroute.smart.post.model.vo.PostVO;
-import cn.goroute.smart.post.mq.PostMessageTemplate;
+import cn.goroute.smart.post.mq.PostRiskCheckEventMessageTemplate;
 import cn.goroute.smart.post.service.CommentService;
 import cn.goroute.smart.post.service.PostService;
 import cn.hutool.core.collection.CollUtil;
@@ -31,7 +35,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
 * @author Alickx
@@ -47,7 +53,8 @@ public class PostServiceImpl extends ExtendServiceImpl<PostMapper, Post>
 	private final PostManagerService postManagerService;
 	private final Ip2regionSearcher ip2regionSearcher;
 	private final CommentService commentService;
-	private final PostMessageTemplate postMessageTemplate;
+	private final PostRiskCheckEventMessageTemplate postRiskCheckEventMessageTemplate;
+	private final RedisUtil redisUtil;
 
 
 	/**
@@ -93,6 +100,20 @@ public class PostServiceImpl extends ExtendServiceImpl<PostMapper, Post>
 			return R.failed(ErrorCodeEnum.POST_NOT_EXIST);
 		}
 
+		long loginIdAsLong = StpUtil.getLoginIdAsLong();
+		Long authorId = post.getAuthorId();
+
+		if (!authorId.equals(loginIdAsLong)) {
+			// 如果非作者访问，需要判断文章的属性
+			if (!post.getIsPublish()) {
+				return R.failed(ErrorCodeEnum.POST_NOT_PUBLISH);
+			}
+
+			if (!post.getState().equals(PostStateEnum.NORMAL.getCode())) {
+				return R.failed(ErrorCodeEnum.POST_HAS_RISK);
+			}
+		}
+
 		PostInfoDTO postInfoDTO = PostConverter.INSTANCE.poToDto(post);
 		IpInfo ipInfo = ip2regionSearcher.search(post.getIp());
 
@@ -102,6 +123,18 @@ public class PostServiceImpl extends ExtendServiceImpl<PostMapper, Post>
 
 		List<? extends PostBaseDTO> postBaseDTOS =
 				postManagerService.fillInfo(Lists.asList(postInfoDTO, new PostInfoDTO[0]));
+
+		// 缓存文章阅读数和排行榜
+		if (StpUtil.isLogin() && !authorId.equals(loginIdAsLong)) {
+			// 判断是否已经阅读过
+			if (!redisUtil.sIsMember(PostConstant.Post.POST_VIEW_COUNT_KEY + postId, StpUtil.getLoginIdAsString())) {
+				// 增加文章阅读数
+				redisUtil.sAdd(PostConstant.Post.POST_VIEW_COUNT_KEY + postId, StpUtil.getLoginIdAsString());
+
+				// 添加进今日的排行榜中
+				redisUtil.zIncrementScore(PostConstant.Post.getTodayPostViewCountKey(), String.valueOf(postId), 1);
+			}
+		}
 
 		return R.ok((PostInfoDTO) postBaseDTOS.get(0));
 	}
@@ -123,8 +156,8 @@ public class PostServiceImpl extends ExtendServiceImpl<PostMapper, Post>
 
 		postManagerService.savePost2Db(post);
 
-		//TODO 待完善 积分增加，文章数增加，风控检查处理等
-		postMessageTemplate.sendPostMessage(post);
+		// 风控检查
+		postRiskCheckEventMessageTemplate.sendPostMessage(post);
 
 		return R.ok(post.getId());
 	}
@@ -175,6 +208,32 @@ public class PostServiceImpl extends ExtendServiceImpl<PostMapper, Post>
 
 		// 同步到es
 		postManagerService.sync2Es(postEntity);
+
+	}
+
+	@Override
+	public R<List<PostViewRankDTO>> queryTodayViewRank() {
+
+		Set<String> postIdSet = redisUtil
+				.zReverseRangeByScore(PostConstant.Post.getTodayPostViewCountKey(), 0, 5);
+
+		if (CollUtil.isEmpty(postIdSet)) {
+			return R.ok(new ArrayList<>());
+		}
+
+		List<Post> posts = this.listByIds(postIdSet);
+
+		List<PostViewRankDTO> result = new ArrayList<>();
+
+		for (String postId : postIdSet) {
+
+			posts.stream()
+					.filter(post -> post.getId().equals(Long.parseLong(postId)))
+					.findFirst().ifPresent(p -> result.add(PostConverter.INSTANCE.poToViewRankDto(p)));
+
+		}
+
+		return R.ok(result);
 
 	}
 }
