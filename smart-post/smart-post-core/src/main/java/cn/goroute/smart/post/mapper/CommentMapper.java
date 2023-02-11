@@ -1,6 +1,6 @@
 package cn.goroute.smart.post.mapper;
 
-import cn.goroute.smart.common.constant.CommonConstant;
+import cn.goroute.smart.common.constant.StateConstant;
 import cn.goroute.smart.post.converter.CommentConverter;
 import cn.goroute.smart.post.domain.Comment;
 import cn.goroute.smart.post.model.dto.CommentDTO;
@@ -30,7 +30,7 @@ public interface CommentMapper extends ExtendMapper<Comment> {
 		wrapper.eqIfPresent(Comment::getUserId, commentQO.getUserId())
 				.eqIfPresent(Comment::getPostId, commentQO.getPostId())
 				.eqIfPresent(Comment::getType, commentQO.getType())
-				.eqIfPresent(Comment::getState, CommonConstant.NORMAL_STATE)
+				.eqIfPresent(Comment::getState, StateConstant.NORMAL_STATE)
 				.eqIfPresent(Comment::getDeleted, BooleanEnum.FALSE.getValue())
 				.eqIfPresent(Comment::getFirstCommentId, commentQO.getFirstCommentId());
 		IPage<Comment> commentIPage = this.selectPage(page, wrapper);
@@ -43,7 +43,7 @@ public interface CommentMapper extends ExtendMapper<Comment> {
 		LambdaQueryWrapperX<Comment> wrapper = new LambdaQueryWrapperX<>(Comment.class);
 		wrapper.eqIfPresent(Comment::getPostId, postId)
 				.eqIfPresent(Comment::getFirstCommentId, firstCommentId)
-				.eqIfPresent(Comment::getState,CommonConstant.NORMAL_STATE)
+				.eqIfPresent(Comment::getState, StateConstant.NORMAL_STATE)
 				.eqIfPresent(Comment::getDeleted, BooleanEnum.FALSE.getValue());
 		IPage<Comment> commentIPage = this.selectPage(page, wrapper);
 		IPage<CommentDTO> convert = commentIPage.convert(CommentConverter.INSTANCE::poToDto);
@@ -68,7 +68,7 @@ public interface CommentMapper extends ExtendMapper<Comment> {
 		LambdaQueryWrapperX<Comment> wrapper = new LambdaQueryWrapperX<>(Comment.class);
 		wrapper.eqIfPresent(Comment::getPostId, commentQO.getPostId())
 				.eqIfPresent(Comment::getFirstCommentId, commentQO.getFirstCommentId())
-				.eqIfPresent(Comment::getState,CommonConstant.NORMAL_STATE)
+				.eqIfPresent(Comment::getState, StateConstant.NORMAL_STATE)
 				.eqIfPresent(Comment::getDeleted, BooleanEnum.FALSE.getValue());
 		List<Comment> comments = this.selectList(wrapper);
 		return CommentConverter.INSTANCE.poToDto(comments);
@@ -78,7 +78,7 @@ public interface CommentMapper extends ExtendMapper<Comment> {
 		IPage<Comment> page = this.prodPage(pageParam);
 		LambdaQueryWrapperX<Comment> wrapper = new LambdaQueryWrapperX<>(Comment.class);
 		wrapper.eqIfPresent(Comment::getUserId, postQO.getUserId())
-				.eqIfPresent(Comment::getState,CommonConstant.NORMAL_STATE)
+				.eqIfPresent(Comment::getState, StateConstant.NORMAL_STATE)
 				.groupBy(Comment::getId,Comment::getPostId);
 		IPage<Comment> commentIPage = this.selectPage(page, wrapper);
 		IPage<Long> convert = commentIPage.convert(Comment::getPostId);

@@ -1,7 +1,7 @@
 package cn.goroute.smart.post.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
-import cn.goroute.smart.common.constant.ErrorCodeEnum;
+import cn.goroute.smart.common.constant.enums.ErrorCodeEnum;
 import cn.goroute.smart.post.converter.CommentConverter;
 import cn.goroute.smart.post.domain.Comment;
 import cn.goroute.smart.post.manager.CommentManagerService;

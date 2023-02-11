@@ -1,6 +1,6 @@
 package cn.goroute.smart.post.mapper;
 
-import cn.goroute.smart.common.constant.CommonConstant;
+import cn.goroute.smart.common.constant.StateConstant;
 import cn.goroute.smart.post.converter.PostConverter;
 import cn.goroute.smart.post.domain.Post;
 import cn.goroute.smart.post.model.dto.PostAbbreviationDTO;
@@ -32,7 +32,7 @@ public interface PostMapper extends ExtendMapper<Post> {
 		LambdaQueryWrapperX<Post> wrapperX = WrappersX.lambdaQueryX(Post.class)
 				.eqIfPresent(Post::getCategoryId, postQO.getCategoryId())
 				.eqIfPresent(Post::getAuthorId, postQO.getUserId())
-				.eq(Post::getState, CommonConstant.NORMAL_STATE);
+				.eq(Post::getState, StateConstant.NORMAL_STATE);
 		IPage<Post> postIPage = this.selectPage(page, wrapperX);
 		IPage<PostAbbreviationDTO> dtoPage = postIPage.convert(PostConverter.INSTANCE::poToAbbreviationDto);
 		return new PageResult<>(dtoPage.getRecords(), dtoPage.getTotal());

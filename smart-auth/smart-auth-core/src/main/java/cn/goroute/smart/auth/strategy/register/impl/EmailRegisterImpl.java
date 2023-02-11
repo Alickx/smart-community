@@ -6,7 +6,7 @@ import cn.goroute.smart.auth.model.vo.UserRegisterVO;
 import cn.goroute.smart.auth.strategy.register.AbstractRegister;
 import cn.goroute.smart.auth.strategy.register.IRegister;
 import cn.goroute.smart.auth.strategy.register.RegisterEnum;
-import cn.goroute.smart.common.constant.ErrorCodeEnum;
+import cn.goroute.smart.common.constant.enums.ErrorCodeEnum;
 import cn.goroute.smart.user.model.dto.UserProfileDTO;
 import com.hccake.ballcat.common.model.result.R;
 import lombok.RequiredArgsConstructor;

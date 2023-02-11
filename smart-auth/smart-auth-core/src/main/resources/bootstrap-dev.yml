@@ -33,6 +33,7 @@ sa-token:
   timeout: 2592000
   activity-timeout: -1
   token-style: simple-uuid
+  is-print: false
 
 ballcat:
   redis:

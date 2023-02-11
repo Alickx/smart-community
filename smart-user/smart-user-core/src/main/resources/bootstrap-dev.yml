@@ -17,11 +17,14 @@ spring:
     url: jdbc:mysql://124.223.80.135:3306/smart_user?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     username: smart
     password: smart
+
 sa-token:
   token-name: 'Authorization'
   timeout: 2592000
   activity-timeout: -1
   token-style: simple-uuid
+  is-print: false
+
 ballcat:
   redis:
     key-prefix: 'SMART_USER:'

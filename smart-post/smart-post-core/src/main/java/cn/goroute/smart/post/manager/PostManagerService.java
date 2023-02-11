@@ -38,7 +38,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * @Author: 蔡国鹏
@@ -70,28 +69,18 @@ public class PostManagerService {
 
         Long userId = StpUtil.isLogin() ? StpUtil.getLoginIdAsLong() : null;
 
-        CompletableFuture<Void> fillAuthorFuture = CompletableFuture.runAsync(() -> {
-            // 补充作者信息
-            fillAuthor(records);
-        });
+		// 补充作者信息
+		fillAuthor(records);
 
-        CompletableFuture<Void> fillCategoryFuture = CompletableFuture.runAsync(() -> {
-            // 补充板块信息
-            fillCategory(records);
-        });
+		// 补充板块信息
+		fillCategory(records);
 
-        CompletableFuture<Void> fillExpansionFuture = CompletableFuture.runAsync(() -> {
-            // 补充点赞信息和收藏信息
-            fillExpansion(records,userId);
-        });
+		// 补充点赞信息和收藏信息
+		fillExpansion(records,userId);
 
+		// 补充标签信息
+		fillTag(records);
 
-        CompletableFuture<Void> fillTagFuture = CompletableFuture.runAsync(() -> {
-            // 补充标签信息
-            fillTag(records);
-        });
-
-        CompletableFuture.allOf(fillAuthorFuture, fillCategoryFuture, fillExpansionFuture, fillTagFuture).join();
 
         return records;
     }

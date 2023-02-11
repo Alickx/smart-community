@@ -1,6 +1,6 @@
 package cn.goroute.smart.post.strategy.thumb;
 
-import cn.goroute.smart.common.constant.CommonConstant;
+import cn.goroute.smart.common.constant.StateConstant;
 import cn.goroute.smart.post.domain.Thumb;
 import cn.goroute.smart.post.mapper.ThumbMapper;
 import cn.goroute.smart.post.service.UserInteractService;
@@ -33,7 +33,7 @@ public abstract class AbstractThumbStrategy implements ThumbStrategy {
 		if (thumbEntity == null) {
 			thumbMapper.insert(thumb);
 		} else {
-			thumb.setDeleted(CommonConstant.NORMAL_STATE);
+			thumb.setDeleted(StateConstant.NORMAL_STATE);
 			thumbMapper.updateById(thumb);
 		}
 	}

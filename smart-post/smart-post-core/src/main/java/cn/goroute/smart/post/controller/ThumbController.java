@@ -2,7 +2,7 @@ package cn.goroute.smart.post.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.common.annoation.LogTime;
-import cn.goroute.smart.common.constant.ErrorCodeEnum;
+import cn.goroute.smart.common.constant.enums.ErrorCodeEnum;
 import cn.goroute.smart.post.domain.Thumb;
 import cn.goroute.smart.post.service.ThumbService;
 import com.hccake.ballcat.common.model.result.R;

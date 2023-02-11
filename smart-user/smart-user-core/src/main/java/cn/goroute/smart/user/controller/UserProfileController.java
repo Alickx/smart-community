@@ -1,5 +1,6 @@
 package cn.goroute.smart.user.controller;
 
+import cn.goroute.smart.common.annoation.LogTime;
 import cn.goroute.smart.user.domain.UserProfile;
 import cn.goroute.smart.user.model.dto.UserProfileDTO;
 import cn.goroute.smart.user.model.vo.UserProfileVO;
@@ -48,6 +49,7 @@ public class UserProfileController {
 	 */
 	@GetMapping("/batch/profile")
 	@Operation(summary = "批量获取用户信息", description = "批量获取用户信息")
+	@LogTime
 	public R<List<UserProfileDTO>> batchGetUserProfile(@RequestParam("userIds") List<Long> userIds) {
 		return userProfileService.batchGetUserProfile(userIds);
 	}

@@ -1,4 +1,4 @@
-package cn.goroute.smart.common.constant;
+package cn.goroute.smart.common.constant.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

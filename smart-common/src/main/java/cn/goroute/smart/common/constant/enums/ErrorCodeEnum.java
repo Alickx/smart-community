@@ -1,4 +1,4 @@
-package cn.goroute.smart.common.constant;
+package cn.goroute.smart.common.constant.enums;
 
 import com.hccake.ballcat.common.model.result.ResultCode;
 import lombok.AllArgsConstructor;

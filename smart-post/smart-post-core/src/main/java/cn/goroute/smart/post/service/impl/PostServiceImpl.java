@@ -1,8 +1,8 @@
 package cn.goroute.smart.post.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
-import cn.goroute.smart.common.constant.CommonConstant;
-import cn.goroute.smart.common.constant.ErrorCodeEnum;
+import cn.goroute.smart.common.constant.StateConstant;
+import cn.goroute.smart.common.constant.enums.ErrorCodeEnum;
 import cn.goroute.smart.common.util.RedisUtil;
 import cn.goroute.smart.post.constant.PostConstant;
 import cn.goroute.smart.post.constant.PostStateEnum;
@@ -93,7 +93,7 @@ public class PostServiceImpl extends ExtendServiceImpl<PostMapper, Post>
 
 		LambdaQueryWrapper<Post> wrapper = new LambdaQueryWrapper<>();
 		wrapper.eq(Post::getId, postId);
-		wrapper.notIn(Post::getDeleted, CommonConstant.DELETE_STATE);
+		wrapper.notIn(Post::getDeleted, StateConstant.DELETE_STATE);
 		Post post = baseMapper.selectOne(wrapper);
 
 		if (post == null) {
