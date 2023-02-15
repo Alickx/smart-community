@@ -1,6 +1,6 @@
 package cn.goroute.smart.post.mapper;
 
-import cn.goroute.smart.post.domain.UserInteract;
+import cn.goroute.smart.post.domain.entity.UserInteractEntity;
 import com.hccake.extend.mybatis.plus.mapper.ExtendMapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -12,11 +12,11 @@ import java.util.List;
 * @createDate 2023-02-10 01:00:04
 * @Entity cn.goroute.smart.post.domain.UserInteract
 */
-public interface UserInteractMapper extends ExtendMapper<UserInteract> {
+public interface UserInteractMapper extends ExtendMapper<UserInteractEntity> {
 
-	UserInteract selectByUserIdAndTypeAndTargetId(@Param("userId") Long userId,@Param("type") Integer type,@Param("targetId") Long targetId);
+	UserInteractEntity selectByUserIdAndTypeAndTargetId(@Param("userId") Long userId, @Param("type") Integer type, @Param("targetId") Long targetId);
 
-	List<UserInteract> batchGetUserPostInteract(@Param("targetIds") List<Long> targetIds,@Param("type") Integer type,@Param("userId") Long userId);
+	List<UserInteractEntity> batchGetUserPostInteract(@Param("targetIds") List<Long> targetIds, @Param("type") Integer type, @Param("userId") Long userId);
 }
 
 

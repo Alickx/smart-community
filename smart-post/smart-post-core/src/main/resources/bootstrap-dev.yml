@@ -31,20 +31,6 @@ rocketmq:
   producer:
     # 发送同一类消息的设置为同一个group，保证唯一
     group: springboot_producer_group
-    # 发送消息失败重试次数，默认2
-    retryTimesWhenSendFailed: 2
-    # 异步消息重试此处，默认2
-    retryTimesWhenSendAsyncFailed: 2
-    # 发送消息超时时间，默认3000
-    sendMessageTimeout: 3000
-    # 消息最大长度，默认1024 * 1024 * 4(默认4M)
-    maxMessageSize: 4096
-    # 压缩消息阈值，默认4k(1024 * 4)
-    compressMessageBodyThreshold: 4096
-    # 是否在内部发送失败时重试另一个broker，默认false
-    retryNextServer: false
-    # 是否启用消息跟踪，默认false
-    enableMsgTrace: false
     # 消息跟踪主题的名称值。如果不进行配置，可以使用默认的跟踪主题名称
     customizedTraceTopic: RMQ_SYS_TRACE_TOPIC
 
@@ -65,10 +51,5 @@ ballcat:
         log-path: /data/applogs/smart-post/jobhandler
         log-retention-days: 30
       access-token: 16ae0070d35b4bffa4cc9fa1e59faa0b
-  log:
-    access:
-      enabled: false
-    operation:
-      enabled: false
   redis:
     key-prefix: 'SMART_POST:'

@@ -1,6 +1,8 @@
 package cn.goroute.smart.common.config;
 
+import cn.goroute.smart.common.serialize.FastJson2Serializer;
 import com.alibaba.fastjson2.support.spring6.data.redis.GenericFastJsonRedisSerializer;
+import com.hccake.ballcat.common.redis.serialize.CacheSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -22,5 +24,10 @@ public class RedisConfig {
         redisTemplate.setDefaultSerializer(fastJsonRedisSerializer);
         return redisTemplate;
     }
+
+	@Bean
+	public CacheSerializer cacheSerializer() {
+		return new FastJson2Serializer();
+	}
 
 }

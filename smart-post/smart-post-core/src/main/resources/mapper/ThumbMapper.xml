@@ -4,8 +4,8 @@
 		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.goroute.smart.post.mapper.ThumbMapper">
 
-    <select id="selectByUserIdAndToIdAndType" resultType="cn.goroute.smart.post.domain.Thumb">
-        SELECT id, user_id, to_id, type, deleted, create_time, update_time
+    <select id="selectByUserIdAndToIdAndType" resultType="cn.goroute.smart.post.domain.entity.ThumbEntity">
+        SELECT *
         FROM thumb
         WHERE user_id = #{userId}
           AND to_id = #{toId}

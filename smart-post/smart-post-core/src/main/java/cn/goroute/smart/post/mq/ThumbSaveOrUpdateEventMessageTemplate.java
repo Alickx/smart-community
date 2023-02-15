@@ -1,7 +1,7 @@
 package cn.goroute.smart.post.mq;
 
 import cn.goroute.smart.common.constant.RocketMqBizConstant;
-import cn.goroute.smart.post.model.dto.ThumbDTO;
+import cn.goroute.smart.post.domain.dto.ThumbDTO;
 import cn.goroute.smart.rocketmq.domain.RocketMqEntityMessage;
 import cn.goroute.smart.rocketmq.template.RocketMqTemplate;
 import com.hccake.ballcat.common.util.JsonUtils;
@@ -17,37 +17,18 @@ import org.springframework.stereotype.Component;
 public class ThumbSaveOrUpdateEventMessageTemplate extends RocketMqTemplate{
 
 	/**
-	 * 构建文章点赞消息模板
-	 * @param userId 用户id
-	 * @param toId 被点赞对象id
-	 * @param type 点赞类型
-	 * @return 点赞消息模板
+	 * 文章点赞
 	 */
-	public void sendPostThumbMessage(Long userId, Long toId, Integer type) {
-		RocketMqEntityMessage message = getRocketMqEntityMessage(userId, toId, type,true);
-		sendAsync(RocketMqBizConstant.Thumb.THUMB_TOPIC, RocketMqBizConstant.Thumb.THUMB_HANDLE_TAG, message);
+	public void sendPostThumbMessage(ThumbDTO thumbDTO,Boolean saveFlag) {
+		RocketMqEntityMessage message = getRocketMqEntityMessage(thumbDTO,saveFlag);
+		sendAsync(RocketMqBizConstant.ThumbMqConstant.THUMB_TOPIC, RocketMqBizConstant.ThumbMqConstant.THUMB_HANDLE_TAG, message);
 	}
 
-	/**
-	 * 构建文章点赞消息模板
-	 * @param userId 用户id
-	 * @param toId 被点赞对象id
-	 * @param type 点赞类型
-	 * @return 点赞消息模板
-	 */
-	public void sendPostCancelThumb(Long userId, Long toId, Integer type) {
-		RocketMqEntityMessage message = getRocketMqEntityMessage(userId, toId, type,false);
-		sendAsync(RocketMqBizConstant.Thumb.THUMB_TOPIC, RocketMqBizConstant.Thumb.THUMB_HANDLE_TAG, message);
-	}
 
 	@NotNull
-	private static RocketMqEntityMessage getRocketMqEntityMessage(Long userId, Long toId, Integer type,Boolean logicFlag) {
+	private static RocketMqEntityMessage getRocketMqEntityMessage(ThumbDTO thumbDTO,Boolean saveFlag) {
 		RocketMqEntityMessage message = new RocketMqEntityMessage();
-		ThumbDTO thumbDTO = new ThumbDTO();
-		thumbDTO.setUserId(userId);
-		thumbDTO.setToId(toId);
-		thumbDTO.setType(type);
-		thumbDTO.setIsSave(logicFlag);
+		thumbDTO.setSaveFlag(saveFlag);
 		message.setRetryTimes(3);
 		message.setSource("点赞信息");
 		message.setMessage(JsonUtils.toJson(thumbDTO));

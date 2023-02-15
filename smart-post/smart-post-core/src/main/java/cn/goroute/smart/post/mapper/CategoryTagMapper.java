@@ -1,6 +1,6 @@
 package cn.goroute.smart.post.mapper;
 
-import cn.goroute.smart.post.domain.CategoryTag;
+import cn.goroute.smart.post.domain.entity.CategoryTagEntity;
 import com.hccake.extend.mybatis.plus.mapper.ExtendMapper;
 
 /**
@@ -9,7 +9,7 @@ import com.hccake.extend.mybatis.plus.mapper.ExtendMapper;
 * @createDate 2022-09-25 16:53:24
 * @Entity cn.goroute.smart.post.domain.CategoryTag
 */
-public interface CategoryTagMapper extends ExtendMapper<CategoryTag> {
+public interface CategoryTagMapper extends ExtendMapper<CategoryTagEntity> {
 
 }
 

@@ -1,5 +1,6 @@
 package cn.goroute.smart.search.service;
 
+import cn.goroute.smart.post.domain.entity.PostEntity;
 import cn.goroute.smart.search.model.dto.PostIndexDTO;
 import cn.goroute.smart.search.model.index.PostIndex;
 import com.hccake.ballcat.common.model.domain.PageParam;
@@ -16,5 +17,5 @@ public interface PostIndexService {
 
 	R<PageResult<PostIndexDTO>> pageByKeyword(PageParam pageParam, String keyword);
 
-	void postSync(PostIndex postIndex);
+	void postSync(PostEntity postEntity);
 }

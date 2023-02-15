@@ -3,14 +3,15 @@ package cn.goroute.smart.post.service.impl;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.common.constant.enums.ErrorCodeEnum;
 import cn.goroute.smart.post.converter.CommentConverter;
-import cn.goroute.smart.post.domain.Comment;
+import cn.goroute.smart.post.domain.dto.CommentDTO;
+import cn.goroute.smart.post.domain.entity.CommentEntity;
 import cn.goroute.smart.post.manager.CommentManagerService;
 import cn.goroute.smart.post.mapper.CommentMapper;
-import cn.goroute.smart.post.model.dto.CommentDTO;
+import cn.goroute.smart.post.domain.vo.CommentVO;
 import cn.goroute.smart.post.mq.CommentEventMessageTemplate;
-import cn.goroute.smart.post.model.qo.CommentQO;
-import cn.goroute.smart.post.model.qo.PostQO;
-import cn.goroute.smart.post.model.vo.CommentVO;
+import cn.goroute.smart.post.domain.qo.CommentQO;
+import cn.goroute.smart.post.domain.qo.PostQO;
+import cn.goroute.smart.post.domain.form.CommentForm;
 import cn.goroute.smart.post.service.CommentService;
 import com.hccake.ballcat.common.core.exception.BusinessException;
 import com.hccake.ballcat.common.model.domain.PageParam;
@@ -32,7 +33,7 @@ import java.util.List;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class CommentServiceImpl extends ExtendServiceImpl<CommentMapper, Comment>
+public class CommentServiceImpl extends ExtendServiceImpl<CommentMapper, CommentEntity>
     implements CommentService{
 
 	private final CommentMapper commentMapper;
@@ -47,11 +48,11 @@ public class CommentServiceImpl extends ExtendServiceImpl<CommentMapper, Comment
 	 * @return 分页结果
 	 */
 	@Override
-	public R<PageResult<CommentDTO>> queryPage(PageParam pageParam, CommentQO commentQO) {
+	public R<PageResult<CommentVO>> queryPage(PageParam pageParam, CommentQO commentQO) {
 
-		PageResult<CommentDTO> commentDTOPageResult = commentMapper.queryPage(pageParam, commentQO);
+		PageResult<CommentVO> commentDTOPageResult = commentMapper.queryPage(pageParam, commentQO);
 
-		List<CommentDTO> records = commentDTOPageResult.getRecords();
+		List<CommentVO> records = commentDTOPageResult.getRecords();
 
 		commentManagerService.fillInfo(records);
 
@@ -63,50 +64,51 @@ public class CommentServiceImpl extends ExtendServiceImpl<CommentMapper, Comment
 	/**
 	 * 保存评论/回复
 	 *
-	 * @param commentVO 评论/回复信息
+	 * @param commentForm 评论/回复信息
 	 * @return 保存结果
 	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public R<Long> commentSave(CommentVO commentVO) {
+	public R<Long> commentSave(CommentForm commentForm) {
 
-		Comment comment = CommentConverter.INSTANCE.voToPo(commentVO);
-		comment.setUserId(StpUtil.getLoginIdAsLong());
-		boolean save = this.save(comment);
+		CommentEntity commentEntity = CommentConverter.INSTANCE.formToPo(commentForm);
+		commentEntity.setUserId(StpUtil.getLoginIdAsLong());
+		boolean save = this.save(commentEntity);
 		if (save) {
-			commentEventMessageTemplate.sendPostCommentMessage(comment);
-			return R.ok(comment.getId());
+			CommentDTO commentDTO = CommentConverter.INSTANCE.poToDto(commentEntity);
+			commentEventMessageTemplate.sendPostCommentMessage(commentDTO);
+			return R.ok(commentEntity.getId());
 		}
-		log.error("保存评论/回复失败，commentVO:[{}]", commentVO);
+		log.error("保存评论/回复失败，commentVO:[{}]", commentForm);
 		throw new BusinessException(ErrorCodeEnum.SYSTEM_ERROR);
 	}
 
 	/**
 	 * 删除评论/回复
 	 *
-	 * @param commentVO 评论/回复信息
+	 * @param commentForm 评论/回复信息
 	 * @return 删除结果
 	 */
 	@Override
-	public R<Boolean> commentDelete(CommentVO commentVO) {
+	public R<Boolean> commentDelete(CommentForm commentForm) {
 
-		Comment comment = this.getById(commentVO.getId());
-		if (comment == null) {
+		CommentEntity commentEntity = this.getById(commentForm.getId());
+		if (commentEntity == null) {
 			throw new BusinessException(ErrorCodeEnum.PARAM_ERROR);
 		}
-		boolean remove = this.removeById(commentVO.getId());
+		boolean remove = this.removeById(commentForm.getId());
 		if (remove) {
 			return R.ok();
 		}
-		log.error("删除评论/回复失败，commentVO:[{}]", commentVO);
+		log.error("删除评论/回复失败，commentVO:[{}]", commentForm);
 		throw new BusinessException(ErrorCodeEnum.SYSTEM_ERROR);
 	}
 
 	@Override
-	public R<List<CommentDTO>> queryMoreReply(CommentQO commentQO) {
-		List<CommentDTO> commentDTOS = commentMapper.queryMoreReply(commentQO);
-		commentManagerService.fillInfo(commentDTOS);
-		return R.ok(commentDTOS);
+	public R<List<CommentVO>> queryMoreReply(CommentQO commentQO) {
+		List<CommentVO> commentVOS = commentMapper.queryMoreReply(commentQO);
+		commentManagerService.fillInfo(commentVOS);
+		return R.ok(commentVOS);
 	}
 
 	/**

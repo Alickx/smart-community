@@ -1,6 +1,6 @@
 package cn.goroute.smart.post.handler.mq;
 
-import cn.goroute.smart.post.domain.Comment;
+import cn.goroute.smart.post.domain.entity.CommentEntity;
 import cn.goroute.smart.post.mapper.PostMapper;
 import cn.goroute.smart.post.service.UserInteractService;
 import lombok.RequiredArgsConstructor;
@@ -23,17 +23,17 @@ public class CommentMqHandler {
 
 	private final UserInteractService userInteractService;
 
-    @EventListener(classes = Comment.class)
+    @EventListener(classes = CommentEntity.class)
 	@Transactional(rollbackFor = Exception.class)
-    public void handle(Comment comment) {
+    public void handle(CommentEntity commentEntity) {
 
-        log.info("评论消息队列监听者监听到消息:[{}]", comment);
+        log.info("评论消息队列监听者监听到消息:[{}]", commentEntity);
 
 		// 更新文章评论数
-		postMapper.incrCommentCount(comment.getPostId());
+		postMapper.incrCommentCount(commentEntity.getPostId());
 
 		// 更新用户文章关系
-		userInteractService.updateUserCommentRelation(comment,true);
+		userInteractService.updateUserCommentRelation(commentEntity,true);
 
     }
 

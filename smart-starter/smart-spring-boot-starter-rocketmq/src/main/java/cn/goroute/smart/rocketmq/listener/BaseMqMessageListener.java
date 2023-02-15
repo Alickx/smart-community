@@ -3,9 +3,12 @@ package cn.goroute.smart.rocketmq.listener;
 import cn.goroute.smart.rocketmq.constant.RocketMqSysConstant;
 import cn.goroute.smart.rocketmq.domain.BaseMqMessage;
 import cn.goroute.smart.rocketmq.template.RocketMqTemplate;
+import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.client.producer.SendStatus;
+import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
+import org.apache.rocketmq.spring.core.RocketMQPushConsumerLifecycleListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -22,7 +25,7 @@ import java.util.Objects;
  * 4、警告通知
  *
  */
-public abstract class BaseMqMessageListener<T extends BaseMqMessage> {
+public abstract class BaseMqMessageListener<T extends BaseMqMessage> implements RocketMQPushConsumerLifecycleListener{
     /**
      * 这里的日志记录器是哪个子类的就会被哪个子类的类进行初始化
      */
@@ -142,4 +145,13 @@ public abstract class BaseMqMessageListener<T extends BaseMqMessage> {
             }
         }
     }
+
+
+	/**
+	 * 默认从最后一条消息开始消费
+	 */
+	@Override
+	public void prepareStart(DefaultMQPushConsumer consumer) {
+		consumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_LAST_OFFSET);
+	}
 }

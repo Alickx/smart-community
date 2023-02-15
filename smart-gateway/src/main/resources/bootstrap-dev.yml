@@ -28,11 +28,11 @@ spring:
           filters:
             - 'RewritePath=/api/v1/postApi,/'
         - id: route_notification
-          uri: 'lb://smart-notification'
+          uri: 'lb://smart-notice'
           predicates:
-            - Path=/api/v1/notificationApi/**
+            - Path=/api/v1/noticeApi/**
           filters:
-            - 'RewritePath=/api/v1/notificationApi,/'
+            - 'RewritePath=/api/v1/noticeApi,/'
         - id: route_thirdpart
           uri: 'lb://smart-thirdpart'
           predicates:
@@ -63,4 +63,12 @@ sa-token:
   activity-timeout: -1
   token-style: simple-uuid
   is-print: false
-
+ballcat:
+  swagger:
+    aggregator:
+      provider-resources: smart-user,smart-auth,smart-post,smart-notice,smart-thirdpart,smart-search
+    documentation-type: oas_30
+    enabled: true
+    title: smart-gateway
+    description: '网关'
+    version: 1.0.0

@@ -1,12 +1,11 @@
 package cn.goroute.smart.post.controller;
 
-import cn.goroute.smart.common.annoation.LogTime;
-import cn.goroute.smart.post.domain.Post;
-import cn.goroute.smart.post.model.dto.PostAbbreviationDTO;
-import cn.goroute.smart.post.model.dto.PostInfoDTO;
-import cn.goroute.smart.post.model.dto.PostViewRankDTO;
-import cn.goroute.smart.post.model.qo.PostQO;
-import cn.goroute.smart.post.model.vo.PostVO;
+import cn.goroute.smart.post.domain.entity.PostEntity;
+import cn.goroute.smart.post.domain.dto.PostAbbreviationDTO;
+import cn.goroute.smart.post.domain.dto.PostInfoDTO;
+import cn.goroute.smart.post.domain.dto.PostViewRankDTO;
+import cn.goroute.smart.post.domain.qo.PostQO;
+import cn.goroute.smart.post.domain.vo.PostVO;
 import cn.goroute.smart.post.service.PostService;
 import com.hccake.ballcat.common.model.domain.PageParam;
 import com.hccake.ballcat.common.model.domain.PageResult;
@@ -17,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -42,8 +40,7 @@ public class PostController {
 	 * @return 查询结果
 	 */
 	@GetMapping("/info/page")
-	@LogTime
-	public R<PageResult<PostAbbreviationDTO>> infoPage(@Validated PageParam pageParam, PostQO postQO, HttpServletRequest request) {
+	public R<PageResult<PostAbbreviationDTO>> infoPage(@Validated PageParam pageParam, PostQO postQO) {
 		return postService.infoPage(pageParam, postQO);
 	}
 
@@ -64,8 +61,8 @@ public class PostController {
 	 * @return 文章保存主键
 	 */
 	@PostMapping("/save")
-	public R<Long> save(@RequestBody @Valid PostVO postVO, HttpServletRequest request) {
-		return postService.savePost(postVO,request);
+	public R<Long> save(@RequestBody @Valid PostVO postVO) {
+		return postService.savePost(postVO);
 	}
 
 	/**
@@ -92,7 +89,7 @@ public class PostController {
 	 */
 	@GetMapping("/get/{postId}")
 	@Operation(summary = "根据文章id获取文章实体类", description = "内部服务间调用")
-	public R<Post> getById(@PathVariable("postId") Long postId) {
+	public R<PostEntity> getById(@PathVariable("postId") Long postId) {
 		return R.ok(postService.getById(postId));
 	}
 }

@@ -44,19 +44,10 @@ public class PostIndexDTO {
 	private String tagName;
 
 	/**
-	 * 文章标签id
-	 */
-	private String tagId;
-
-	/**
 	 * 文章板块id
 	 */
-	private String categoryId;
-
-	/**
-	 * 文章板块名字
-	 */
 	private String categoryName;
+
 
     /**
      * 收藏数量

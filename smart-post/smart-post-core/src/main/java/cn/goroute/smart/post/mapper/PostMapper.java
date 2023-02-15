@@ -1,10 +1,10 @@
 package cn.goroute.smart.post.mapper;
 
-import cn.goroute.smart.common.constant.StateConstant;
+import cn.goroute.smart.common.constant.StatusConstant;
 import cn.goroute.smart.post.converter.PostConverter;
-import cn.goroute.smart.post.domain.Post;
-import cn.goroute.smart.post.model.dto.PostAbbreviationDTO;
-import cn.goroute.smart.post.model.qo.PostQO;
+import cn.goroute.smart.post.domain.entity.PostEntity;
+import cn.goroute.smart.post.domain.dto.PostAbbreviationDTO;
+import cn.goroute.smart.post.domain.qo.PostQO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.hccake.ballcat.common.model.domain.PageParam;
 import com.hccake.ballcat.common.model.domain.PageResult;
@@ -19,7 +19,7 @@ import org.apache.ibatis.annotations.Param;
  * @createDate 2022-09-25 16:53:24
  * @Entity cn.goroute.smart.post.domain.Post
  */
-public interface PostMapper extends ExtendMapper<Post> {
+public interface PostMapper extends ExtendMapper<PostEntity> {
 
 	/**
 	 * 分页查询
@@ -28,12 +28,13 @@ public interface PostMapper extends ExtendMapper<Post> {
 	 * @return PageResult<PostInfoDTO> 分页数据
 	 */
 	default PageResult<PostAbbreviationDTO> queryPage(PageParam pageParam, PostQO postQO) {
-		IPage<Post> page = this.prodPage(pageParam);
-		LambdaQueryWrapperX<Post> wrapperX = WrappersX.lambdaQueryX(Post.class)
-				.eqIfPresent(Post::getCategoryId, postQO.getCategoryId())
-				.eqIfPresent(Post::getAuthorId, postQO.getUserId())
-				.eq(Post::getState, StateConstant.NORMAL_STATE);
-		IPage<Post> postIPage = this.selectPage(page, wrapperX);
+		IPage<PostEntity> page = this.prodPage(pageParam);
+		LambdaQueryWrapperX<PostEntity> wrapperX = WrappersX.lambdaQueryX(PostEntity.class)
+				.eqIfPresent(PostEntity::getCategoryName, postQO.getCategoryName())
+				.eqIfPresent(PostEntity::getTagName, postQO.getTagName())
+				.eqIfPresent(PostEntity::getAuthorId, postQO.getUserId())
+				.eq(PostEntity::getState, StatusConstant.NORMAL_STATUS);
+		IPage<PostEntity> postIPage = this.selectPage(page, wrapperX);
 		IPage<PostAbbreviationDTO> dtoPage = postIPage.convert(PostConverter.INSTANCE::poToAbbreviationDto);
 		return new PageResult<>(dtoPage.getRecords(), dtoPage.getTotal());
 

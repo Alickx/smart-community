@@ -1,7 +1,7 @@
 package cn.goroute.smart.post.converter;
 
-import cn.goroute.smart.post.domain.Category;
-import cn.goroute.smart.post.model.dto.CategoryDTO;
+import cn.goroute.smart.post.domain.entity.CategoryEntity;
+import cn.goroute.smart.post.domain.dto.CategoryDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -20,17 +20,17 @@ public interface CategoryConverter {
 
 	/**
 	 * po 转 dto
-	 * @param category 板块
+	 * @param categoryEntity 板块
 	 * @return 板块dto
 	 */
 	@Mapping(target = "categoryId",source = "id")
-	CategoryDTO poToDTO(Category category);
+	CategoryDTO poToDTO(CategoryEntity categoryEntity);
 
 	/**
 	 * 批量 po 转 dto
-	 * @param category 板块
+	 * @param categoryEntity 板块
 	 * @return 板块dto
 	 */
-	List<CategoryDTO> poToDTO(List<Category> category);
+	List<CategoryDTO> poToDTO(List<CategoryEntity> categoryEntity);
 	
 }

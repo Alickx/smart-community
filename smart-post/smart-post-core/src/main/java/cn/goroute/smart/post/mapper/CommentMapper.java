@@ -1,11 +1,11 @@
 package cn.goroute.smart.post.mapper;
 
-import cn.goroute.smart.common.constant.StateConstant;
+import cn.goroute.smart.common.constant.StatusConstant;
 import cn.goroute.smart.post.converter.CommentConverter;
-import cn.goroute.smart.post.domain.Comment;
-import cn.goroute.smart.post.model.dto.CommentDTO;
-import cn.goroute.smart.post.model.qo.CommentQO;
-import cn.goroute.smart.post.model.qo.PostQO;
+import cn.goroute.smart.post.domain.entity.CommentEntity;
+import cn.goroute.smart.post.domain.vo.CommentVO;
+import cn.goroute.smart.post.domain.qo.CommentQO;
+import cn.goroute.smart.post.domain.qo.PostQO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.hccake.ballcat.common.core.constant.enums.BooleanEnum;
 import com.hccake.ballcat.common.model.domain.PageParam;
@@ -22,31 +22,31 @@ import java.util.List;
 * @createDate 2022-09-25 16:53:24
 * @Entity cn.goroute.smart.post.domain.Comment
 */
-public interface CommentMapper extends ExtendMapper<Comment> {
+public interface CommentMapper extends ExtendMapper<CommentEntity> {
 
-	default PageResult<CommentDTO> queryPage(PageParam pageParam, CommentQO commentQO) {
-		IPage<Comment> page = this.prodPage(pageParam);
-		LambdaQueryWrapperX<Comment> wrapper = new LambdaQueryWrapperX<>(Comment.class);
-		wrapper.eqIfPresent(Comment::getUserId, commentQO.getUserId())
-				.eqIfPresent(Comment::getPostId, commentQO.getPostId())
-				.eqIfPresent(Comment::getType, commentQO.getType())
-				.eqIfPresent(Comment::getState, StateConstant.NORMAL_STATE)
-				.eqIfPresent(Comment::getDeleted, BooleanEnum.FALSE.getValue())
-				.eqIfPresent(Comment::getFirstCommentId, commentQO.getFirstCommentId());
-		IPage<Comment> commentIPage = this.selectPage(page, wrapper);
-		IPage<CommentDTO> convert = commentIPage.convert(CommentConverter.INSTANCE::poToDto);
+	default PageResult<CommentVO> queryPage(PageParam pageParam, CommentQO commentQO) {
+		IPage<CommentEntity> page = this.prodPage(pageParam);
+		LambdaQueryWrapperX<CommentEntity> wrapper = new LambdaQueryWrapperX<>(CommentEntity.class);
+		wrapper.eqIfPresent(CommentEntity::getUserId, commentQO.getUserId())
+				.eqIfPresent(CommentEntity::getPostId, commentQO.getPostId())
+				.eqIfPresent(CommentEntity::getType, commentQO.getType())
+				.eqIfPresent(CommentEntity::getState, StatusConstant.NORMAL_STATUS)
+				.eqIfPresent(CommentEntity::getDeleted, BooleanEnum.FALSE.getValue())
+				.eqIfPresent(CommentEntity::getFirstCommentId, commentQO.getFirstCommentId());
+		IPage<CommentEntity> commentIPage = this.selectPage(page, wrapper);
+		IPage<CommentVO> convert = commentIPage.convert(CommentConverter.INSTANCE::poToVO);
 		return new PageResult<>(convert.getRecords(),convert.getTotal());
 	}
 
-	default PageResult<CommentDTO> queryPageReplyList(PageParam pageParam,Long postId,Long firstCommentId) {
-		IPage<Comment> page = this.prodPage(pageParam);
-		LambdaQueryWrapperX<Comment> wrapper = new LambdaQueryWrapperX<>(Comment.class);
-		wrapper.eqIfPresent(Comment::getPostId, postId)
-				.eqIfPresent(Comment::getFirstCommentId, firstCommentId)
-				.eqIfPresent(Comment::getState, StateConstant.NORMAL_STATE)
-				.eqIfPresent(Comment::getDeleted, BooleanEnum.FALSE.getValue());
-		IPage<Comment> commentIPage = this.selectPage(page, wrapper);
-		IPage<CommentDTO> convert = commentIPage.convert(CommentConverter.INSTANCE::poToDto);
+	default PageResult<CommentVO> queryPageReplyList(PageParam pageParam, Long postId, Long firstCommentId) {
+		IPage<CommentEntity> page = this.prodPage(pageParam);
+		LambdaQueryWrapperX<CommentEntity> wrapper = new LambdaQueryWrapperX<>(CommentEntity.class);
+		wrapper.eqIfPresent(CommentEntity::getPostId, postId)
+				.eqIfPresent(CommentEntity::getFirstCommentId, firstCommentId)
+				.eqIfPresent(CommentEntity::getState, StatusConstant.NORMAL_STATUS)
+				.eqIfPresent(CommentEntity::getDeleted, BooleanEnum.FALSE.getValue());
+		IPage<CommentEntity> commentIPage = this.selectPage(page, wrapper);
+		IPage<CommentVO> convert = commentIPage.convert(CommentConverter.INSTANCE::poToVO);
 		return new PageResult<>(convert.getRecords(),convert.getTotal());
 	}
 
@@ -64,24 +64,24 @@ public interface CommentMapper extends ExtendMapper<Comment> {
 	 */
 	void descThumbNum(@Param("id") Long id,@Param("thumbNum") int thumbNum);
 
-	default List<CommentDTO> queryMoreReply(CommentQO commentQO) {
-		LambdaQueryWrapperX<Comment> wrapper = new LambdaQueryWrapperX<>(Comment.class);
-		wrapper.eqIfPresent(Comment::getPostId, commentQO.getPostId())
-				.eqIfPresent(Comment::getFirstCommentId, commentQO.getFirstCommentId())
-				.eqIfPresent(Comment::getState, StateConstant.NORMAL_STATE)
-				.eqIfPresent(Comment::getDeleted, BooleanEnum.FALSE.getValue());
-		List<Comment> comments = this.selectList(wrapper);
-		return CommentConverter.INSTANCE.poToDto(comments);
+	default List<CommentVO> queryMoreReply(CommentQO commentQO) {
+		LambdaQueryWrapperX<CommentEntity> wrapper = new LambdaQueryWrapperX<>(CommentEntity.class);
+		wrapper.eqIfPresent(CommentEntity::getPostId, commentQO.getPostId())
+				.eqIfPresent(CommentEntity::getFirstCommentId, commentQO.getFirstCommentId())
+				.eqIfPresent(CommentEntity::getState, StatusConstant.NORMAL_STATUS)
+				.eqIfPresent(CommentEntity::getDeleted, BooleanEnum.FALSE.getValue());
+		List<CommentEntity> commentEntities = this.selectList(wrapper);
+		return CommentConverter.INSTANCE.poToDto(commentEntities);
 	}
 
 	default PageResult<Long> queryPostIdsByComment(PageParam pageParam, PostQO postQO) {
-		IPage<Comment> page = this.prodPage(pageParam);
-		LambdaQueryWrapperX<Comment> wrapper = new LambdaQueryWrapperX<>(Comment.class);
-		wrapper.eqIfPresent(Comment::getUserId, postQO.getUserId())
-				.eqIfPresent(Comment::getState, StateConstant.NORMAL_STATE)
-				.groupBy(Comment::getId,Comment::getPostId);
-		IPage<Comment> commentIPage = this.selectPage(page, wrapper);
-		IPage<Long> convert = commentIPage.convert(Comment::getPostId);
+		IPage<CommentEntity> page = this.prodPage(pageParam);
+		LambdaQueryWrapperX<CommentEntity> wrapper = new LambdaQueryWrapperX<>(CommentEntity.class);
+		wrapper.eqIfPresent(CommentEntity::getUserId, postQO.getUserId())
+				.eqIfPresent(CommentEntity::getState, StatusConstant.NORMAL_STATUS)
+				.groupBy(CommentEntity::getId, CommentEntity::getPostId);
+		IPage<CommentEntity> commentIPage = this.selectPage(page, wrapper);
+		IPage<Long> convert = commentIPage.convert(CommentEntity::getPostId);
 		return new PageResult<>(convert.getRecords(),convert.getTotal());
 	}
 }

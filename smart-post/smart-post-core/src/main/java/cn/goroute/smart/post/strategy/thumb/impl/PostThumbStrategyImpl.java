@@ -1,8 +1,13 @@
 package cn.goroute.smart.post.strategy.thumb.impl;
 
-import cn.goroute.smart.post.domain.Thumb;
+import cn.goroute.smart.common.constant.enums.ErrorCodeEnum;
+import cn.goroute.smart.post.converter.ThumbConverter;
+import cn.goroute.smart.post.domain.dto.ThumbDTO;
+import cn.goroute.smart.post.domain.entity.PostEntity;
+import cn.goroute.smart.post.domain.entity.ThumbEntity;
 import cn.goroute.smart.post.mapper.PostMapper;
 import cn.goroute.smart.post.strategy.thumb.AbstractThumbStrategy;
+import com.hccake.ballcat.common.core.exception.BusinessException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,47 +28,73 @@ public class PostThumbStrategyImpl extends AbstractThumbStrategy {
 	/**
 	 * 点赞
 	 *
-	 * @param thumb 点赞信息
+	 * @param thumbEntity 点赞信息
 	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public void saveThumb(Thumb thumb) {
+	public void saveThumb(ThumbEntity thumbEntity) {
 
-		long toId = thumb.getToId();
+		// 保存点赞记录
+		ThumbDTO thumbDTO = saveThumb2DB(thumbEntity);
 
-		// 判断是否已经点赞
-		if (!checkIsThumb(thumb)) {
+		// 更新文章点赞数
+		postMapper.incrThumbNum(thumbEntity.getToId(), 1);
 
-			// 保存点赞记录
-			saveThumb2DB(thumb);
+		// 保存/更新用户关系
+		userInteractService.updateThumbUserRelation(thumbEntity, true);
 
-			// 更新文章点赞数
-			postMapper.incrThumbNum(toId, 1);
-
-			// 保存/更新用户关系
-			userInteractService.updateThumbUserRelation(thumb, true);
+		if (null != thumbDTO) {
+			// 发送事件
+			sendThumbMqEvent(thumbDTO, true);
 		}
+	}
+
+	private ThumbDTO saveThumb2DB(ThumbEntity thumbEntity) {
+
+		Long toId = thumbEntity.getToId();
+
+		PostEntity postEntity = postMapper.selectById(toId);
+
+		if (postEntity == null) {
+			throw new BusinessException(ErrorCodeEnum.PARAM_ERROR);
+		}
+
+		// 是否是新点赞
+		Boolean isNewThumb = saveThumbRecord(thumbEntity);
+
+		if (!isNewThumb) {
+			return null;
+		}
+
+		ThumbDTO thumbDTO = ThumbConverter.INSTANCE.poToDto(thumbEntity);
+		thumbDTO.setPostTitle(postEntity.getTitle());
+		thumbDTO.setPostId(postEntity.getId());
+		thumbDTO.setContent(postEntity.getTitle());
+		thumbDTO.setToUserId(postEntity.getAuthorId());
+
+		return thumbDTO;
+
 	}
 
 
 	/**
 	 * 取消点赞
 	 *
-	 * @param thumb 点赞信息
+	 * @param thumbEntity 点赞信息
 	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public void cancelThumb(Thumb thumb) {
+	public void cancelThumb(ThumbEntity thumbEntity) {
 
-		long toId = thumb.getToId();
+		long toId = thumbEntity.getToId();
 
 		// 逻辑删除记录
-		thumbMapper.deleteById(thumb);
+		thumbMapper.deleteById(thumbEntity);
 
 		// 更新文章点赞数
 		postMapper.descThumbNum(toId,1);
 
 		// 保存/更新用户关系
-		userInteractService.updateThumbUserRelation(thumb, false);
+		userInteractService.updateThumbUserRelation(thumbEntity, false);
 	}
 }

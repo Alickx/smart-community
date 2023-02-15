@@ -29,14 +29,8 @@ public class PostIndex {
 	/**
 	 * 板块id
 	 */
-	@Field(type = FieldType.Long)
-	private Long categoryId;
-
-	/**
-	 * 标签id
-	 */
-	@Field(type = FieldType.Long)
-	private Long tagId;
+	@Field(type = FieldType.Keyword)
+	private String categoryName;
 
 	/**
 	 * 作者id
@@ -50,12 +44,6 @@ public class PostIndex {
 	 */
 	@Field(type = FieldType.Keyword)
 	private String tagName;
-
-	/**
-	 * 文章板块名字
-	 */
-	@Field(type = FieldType.Keyword)
-	private String categoryName;
 
 	/**
 	 * 文章题目
@@ -98,6 +86,12 @@ public class PostIndex {
 	 */
 	@Field(type = FieldType.Integer)
 	private Integer commentCount;
+
+	/**
+	 * 浏览数量
+	 */
+	@Field(type = FieldType.Integer)
+	private Integer viewCount;
 
 	/**
 	 * 0:false = 不公布  1:true = 公布

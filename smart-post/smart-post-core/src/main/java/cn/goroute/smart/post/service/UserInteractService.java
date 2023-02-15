@@ -1,8 +1,8 @@
 package cn.goroute.smart.post.service;
 
-import cn.goroute.smart.post.domain.Comment;
-import cn.goroute.smart.post.domain.Thumb;
-import cn.goroute.smart.post.domain.UserInteract;
+import cn.goroute.smart.post.domain.entity.CommentEntity;
+import cn.goroute.smart.post.domain.entity.ThumbEntity;
+import cn.goroute.smart.post.domain.entity.UserInteractEntity;
 import com.hccake.extend.mybatis.plus.service.ExtendService;
 
 import java.util.List;
@@ -12,12 +12,12 @@ import java.util.List;
 * @description 针对表【user_interact(用户交互表)】的数据库操作Service
 * @createDate 2023-02-10 01:00:04
 */
-public interface UserInteractService extends ExtendService<UserInteract> {
+public interface UserInteractService extends ExtendService<UserInteractEntity> {
 
-	void updateThumbUserRelation(Thumb thumb, Boolean isThumb);
+	void updateThumbUserRelation(ThumbEntity thumbEntity, Boolean isThumb);
 
-	void updateUserCommentRelation(Comment comment,Boolean isComment);
+	void updateUserCommentRelation(CommentEntity commentEntity, Boolean isComment);
 
-	List<UserInteract> batchGetUserPostInteract(List<Long> targetIds,Integer type, Long userId);
+	List<UserInteractEntity> batchGetUserPostInteract(List<Long> targetIds, Integer type, Long userId);
 }
 

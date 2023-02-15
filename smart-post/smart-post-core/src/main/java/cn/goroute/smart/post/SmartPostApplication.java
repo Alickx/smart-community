@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import springfox.documentation.oas.annotations.EnableOpenApi;
 
 /**
@@ -17,6 +18,7 @@ import springfox.documentation.oas.annotations.EnableOpenApi;
 @MapperScan("cn.goroute.smart.*.mapper")
 @EnableFeignClients(basePackages = {"cn.goroute.smart.*.feign"})
 @EnableAsync
+@EnableTransactionManagement
 @EnableOpenApi
 public class SmartPostApplication {
 

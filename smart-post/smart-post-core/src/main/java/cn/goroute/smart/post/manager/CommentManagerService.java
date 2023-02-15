@@ -1,13 +1,13 @@
 package cn.goroute.smart.post.manager;
 
 import cn.dev33.satoken.stp.StpUtil;
-import cn.goroute.smart.post.constant.UserInteractTypeEnum;
-import cn.goroute.smart.post.domain.UserInteract;
+import cn.goroute.smart.post.constant.enums.UserInteractTypeEnum;
+import cn.goroute.smart.post.domain.entity.UserInteractEntity;
 import cn.goroute.smart.post.feign.FeignUserProfileService;
 import cn.goroute.smart.post.mapper.CommentMapper;
 import cn.goroute.smart.post.mapper.ThumbMapper;
-import cn.goroute.smart.post.model.dto.CommentDTO;
-import cn.goroute.smart.post.model.dto.ContentExpansionDTO;
+import cn.goroute.smart.post.domain.vo.CommentVO;
+import cn.goroute.smart.post.domain.dto.ContentExpansionDTO;
 import cn.goroute.smart.post.service.UserInteractService;
 import cn.goroute.smart.user.model.dto.UserProfileDTO;
 import cn.hutool.core.collection.CollUtil;
@@ -41,7 +41,7 @@ public class CommentManagerService {
 	private final UserInteractService userInteractService;
 
 
-	public void fillInfo(List<CommentDTO> records) {
+	public void fillInfo(List<CommentVO> records) {
 
 		// 获取用户信息
 		this.getUserProfile(records);
@@ -54,7 +54,7 @@ public class CommentManagerService {
 
 	}
 
-	private void getPageReplyList(List<CommentDTO> records) {
+	private void getPageReplyList(List<CommentVO> records) {
 
 		PageParam pageParam = new PageParam();
 		pageParam.setPage(1);
@@ -72,10 +72,10 @@ public class CommentManagerService {
 			}
 
 			// 获取二级回复列表
-			PageResult<CommentDTO> commentDTOPageResult = commentMapper
+			PageResult<CommentVO> commentDTOPageResult = commentMapper
 					.queryPageReplyList(pageParam, record.getPostId(), record.getId());
 
-			List<CommentDTO> replyRecords = commentDTOPageResult.getRecords();
+			List<CommentVO> replyRecords = commentDTOPageResult.getRecords();
 
 			// 二级回复查询用户信息
 			this.getUserProfile(replyRecords);
@@ -91,18 +91,18 @@ public class CommentManagerService {
 
 	/**
 	 * 检查是否拥有更多回复
-	 * @param commentDTO 评论dto
+	 * @param commentVO 评论dto
 	 * @return 是否拥有更多回复 true:有 false:没有
 	 */
-	private Boolean checkIsMoreReply(CommentDTO commentDTO) {
-		if (null != commentDTO.getReplyList()) {
-			return commentDTO.getReplyList().getTotal() > commentDTO.getReplyList().getRecords().size();
+	private Boolean checkIsMoreReply(CommentVO commentVO) {
+		if (null != commentVO.getReplyList()) {
+			return commentVO.getReplyList().getTotal() > commentVO.getReplyList().getRecords().size();
 		}
 		return false;
 	}
 
 
-	private void getCommentExpansion(List<CommentDTO> records,Integer type) {
+	private void getCommentExpansion(List<CommentVO> records, Integer type) {
 
 		if (CollUtil.isEmpty(records)) {
 			return;
@@ -114,7 +114,7 @@ public class CommentManagerService {
 
 		if (!login) {
 
-			for (CommentDTO record : records) {
+			for (CommentVO record : records) {
 				ContentExpansionDTO contentExpansionDTO = ContentExpansionDTO.create();
 				record.setExpansion(contentExpansionDTO);
 			}
@@ -122,23 +122,23 @@ public class CommentManagerService {
 			return;
 		}
 
-		List<Long> commentIds = records.stream().map(CommentDTO::getId).toList();
-		List<UserInteract> userInteractList = userInteractService.batchGetUserPostInteract(commentIds, type, userId);
-		Map<Long,UserInteract> userInteractMap = new HashMap<>(userInteractList.size());
+		List<Long> commentIds = records.stream().map(CommentVO::getId).toList();
+		List<UserInteractEntity> userInteractEntityList = userInteractService.batchGetUserPostInteract(commentIds, type, userId);
+		Map<Long, UserInteractEntity> userInteractMap = new HashMap<>(userInteractEntityList.size());
 
-		for (UserInteract userInteract : userInteractList) {
-			userInteractMap.put(userInteract.getTargetId(),userInteract);
+		for (UserInteractEntity userInteractEntity : userInteractEntityList) {
+			userInteractMap.put(userInteractEntity.getTargetId(), userInteractEntity);
 		}
 
 		// 获取文章id集合
-		for (CommentDTO record : records) {
+		for (CommentVO record : records) {
 
 			ContentExpansionDTO contentExpansionDTO = ContentExpansionDTO.create();
 
-			UserInteract userInteract = userInteractMap.get(record.getId());
-			if (userInteract != null) {
+			UserInteractEntity userInteractEntity = userInteractMap.get(record.getId());
+			if (userInteractEntity != null) {
 				// 查询点赞信息
-				contentExpansionDTO.setIsThumb(userInteract.getIsThumb() == BooleanEnum.TRUE.getValue());
+				contentExpansionDTO.setIsThumb(userInteractEntity.getIsThumb() == BooleanEnum.TRUE.getValue());
 				// 判断是否拥有更多回复
 				contentExpansionDTO.setIsMoreReply(this.checkIsMoreReply(record));
 				// 判断是否是作者
@@ -151,18 +151,18 @@ public class CommentManagerService {
 	}
 
 
-	private void getUserProfile(List<CommentDTO> records) {
+	private void getUserProfile(List<CommentVO> records) {
 
 		if (CollUtil.isNotEmpty(records)) {
-			List<Long> userIds = records.stream().map(CommentDTO::getUserId).toList();
+			List<Long> userIds = records.stream().map(CommentVO::getUserId).toList();
 			R<List<UserProfileDTO>> resp = feignUserProfileService.batchGetUserProfile(userIds);
 			if (resp.getCode() == SystemResultCode.SUCCESS.getCode() && resp.getData() != null) {
 				Map<Long, UserProfileDTO> userProfileMap = new HashMap<>();
 				for (UserProfileDTO userProfileDTO : resp.getData()) {
 					userProfileMap.put(userProfileDTO.getUserId(), userProfileDTO);
 				}
-				for (CommentDTO commentDTO : records) {
-					commentDTO.setUserProfile(userProfileMap.get(commentDTO.getUserId()));
+				for (CommentVO commentVO : records) {
+					commentVO.setUserProfile(userProfileMap.get(commentVO.getUserId()));
 				}
 			}
 		}

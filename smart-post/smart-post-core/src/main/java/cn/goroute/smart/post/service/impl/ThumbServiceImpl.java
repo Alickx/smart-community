@@ -1,11 +1,10 @@
 package cn.goroute.smart.post.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
-import cn.goroute.smart.common.util.RedisUtil;
-import cn.goroute.smart.post.domain.Thumb;
+import cn.goroute.smart.post.async.ThumbAsyncService;
+import cn.goroute.smart.post.domain.entity.ThumbEntity;
+import cn.goroute.smart.post.domain.form.ThumbForm;
 import cn.goroute.smart.post.mapper.ThumbMapper;
-import cn.goroute.smart.post.mq.ThumbSaveOrUpdateEventMessageTemplate;
-import cn.goroute.smart.post.service.PostService;
 import cn.goroute.smart.post.service.ThumbService;
 import com.hccake.ballcat.common.model.result.R;
 import com.hccake.extend.mybatis.plus.service.impl.ExtendServiceImpl;
@@ -21,30 +20,23 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class ThumbServiceImpl extends ExtendServiceImpl<ThumbMapper, Thumb>
+public class ThumbServiceImpl extends ExtendServiceImpl<ThumbMapper, ThumbEntity>
 		implements ThumbService {
 
-	private final PostService postService;
-
-
-	private final RedisUtil redisUtil;
-
-	private final ThumbSaveOrUpdateEventMessageTemplate thumbSaveOrUpdateEventMessageTemplate;
+	private final ThumbAsyncService thumbAsyncService;
 
 	/**
 	 * 保存点赞
 	 *
-	 * @param thumb 点赞实体类
+	 * @param thumbForm 点赞请求
 	 * @return 是否成功
 	 */
 	@Override
-	public R<Boolean> saveThumb(Thumb thumb) {
+	public R<Boolean> saveThumb(ThumbForm thumbForm) {
 
-		String userId = StpUtil.getLoginIdAsString();
+		Long userId = StpUtil.getLoginIdAsLong();
 
-		// 发送消息队列
-		thumbSaveOrUpdateEventMessageTemplate
-				.sendPostThumbMessage(Long.valueOf(userId), thumb.getToId(), thumb.getType());
+		thumbAsyncService.thumbHandle(thumbForm,userId,true);
 
 		return R.ok(true);
 
@@ -53,17 +45,15 @@ public class ThumbServiceImpl extends ExtendServiceImpl<ThumbMapper, Thumb>
 	/**
 	 * 取消点赞
 	 *
-	 * @param thumb 点赞实体类
+	 * @param thumbForm 点赞请求
 	 * @return 是否成功
 	 */
 	@Override
-	public R<Boolean> cancelThumb(Thumb thumb) {
+	public R<Boolean> cancelThumb(ThumbForm thumbForm) {
 
-		String userId = StpUtil.getLoginIdAsString();
+		Long userId = StpUtil.getLoginIdAsLong();
 
-		// 发送到消息队列
-		thumbSaveOrUpdateEventMessageTemplate
-				.sendPostCancelThumb(Long.valueOf(userId), thumb.getToId(), thumb.getType());
+		thumbAsyncService.thumbHandle(thumbForm,userId,false);
 
 		return R.ok(true);
 

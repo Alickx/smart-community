@@ -1,9 +1,9 @@
 package cn.goroute.smart.post.mq;
 
 import cn.goroute.smart.common.constant.RocketMqBizConstant;
+import cn.goroute.smart.post.domain.entity.PostEntity;
 import cn.goroute.smart.rocketmq.domain.RocketMqEntityMessage;
 import cn.goroute.smart.rocketmq.template.RocketMqTemplate;
-import cn.goroute.smart.search.model.index.PostIndex;
 import com.hccake.ballcat.common.util.JsonUtils;
 import org.springframework.stereotype.Component;
 
@@ -15,13 +15,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class PostSyncEventMessageTemplate extends RocketMqTemplate {
 
-	public void sendPostMessage(PostIndex postIndex) {
+	public void sendPostMessage(PostEntity postEntity) {
 		RocketMqEntityMessage rocketMqEntityMessage = new RocketMqEntityMessage();
-		rocketMqEntityMessage.setMessage(JsonUtils.toJson(postIndex));
-		rocketMqEntityMessage.setKey(String.valueOf(postIndex.getId()));
+		rocketMqEntityMessage.setMessage(JsonUtils.toJson(postEntity));
+		rocketMqEntityMessage.setKey(String.valueOf(postEntity.getId()));
 		rocketMqEntityMessage.setSource("文章风控事件");
 		rocketMqEntityMessage.setRetryTimes(3);
-		send(RocketMqBizConstant.Post.POST_TOPIC, RocketMqBizConstant.Post.POST_SYNC_SAVE_ES_HANDLE_TAG, rocketMqEntityMessage);
+		send(RocketMqBizConstant.PostMqConstant.POST_TOPIC, RocketMqBizConstant.PostMqConstant.POST_SYNC_SAVE_ES_HANDLE_TAG, rocketMqEntityMessage);
 	}
 
 }

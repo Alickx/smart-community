@@ -1,6 +1,6 @@
 package cn.goroute.smart.post.controller;
 
-import cn.goroute.smart.post.domain.Tag;
+import cn.goroute.smart.post.domain.entity.TagEntity;
 import cn.goroute.smart.post.service.TagService;
 import com.hccake.ballcat.common.model.result.R;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class TagController {
 	private final TagService tagService;
 
 	@GetMapping("/query")
-	public R<Tag> queryTagById(Long id) {
+	public R<TagEntity> queryTagById(Long id) {
 		return R.ok(tagService.getById(id));
 	}
 

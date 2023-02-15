@@ -1,12 +1,12 @@
 package cn.goroute.smart.user.controller;
 
-import cn.goroute.smart.common.annoation.LogTime;
 import cn.goroute.smart.user.domain.UserProfile;
 import cn.goroute.smart.user.model.dto.UserProfileDTO;
 import cn.goroute.smart.user.model.vo.UserProfileVO;
 import cn.goroute.smart.user.service.UserProfileService;
 import com.hccake.ballcat.common.model.result.R;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +22,7 @@ import java.util.List;
 @RequestMapping("/user")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "用户信息", description = "用户信息")
 public class UserProfileController {
 
     private final UserProfileService userProfileService;
@@ -49,7 +50,6 @@ public class UserProfileController {
 	 */
 	@GetMapping("/batch/profile")
 	@Operation(summary = "批量获取用户信息", description = "批量获取用户信息")
-	@LogTime
 	public R<List<UserProfileDTO>> batchGetUserProfile(@RequestParam("userIds") List<Long> userIds) {
 		return userProfileService.batchGetUserProfile(userIds);
 	}

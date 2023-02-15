@@ -1,9 +1,8 @@
 package cn.goroute.smart.post.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
-import cn.goroute.smart.common.annoation.LogTime;
 import cn.goroute.smart.common.constant.enums.ErrorCodeEnum;
-import cn.goroute.smart.post.domain.Thumb;
+import cn.goroute.smart.post.domain.form.ThumbForm;
 import cn.goroute.smart.post.service.ThumbService;
 import com.hccake.ballcat.common.model.result.R;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
 
 /**
  * @Author: 蔡国鹏
@@ -25,21 +26,19 @@ public class ThumbController {
 	private final ThumbService thumbService;
 
 	@PostMapping("/save")
-	@LogTime
-	public R<Boolean> save(@RequestBody Thumb thumb) {
+	public R<Boolean> save(@RequestBody @Valid ThumbForm thumbForm) {
 		if (!StpUtil.isLogin()) {
 			return R.failed(ErrorCodeEnum.LOGIN_EXPIRED);
 		}
-		return thumbService.saveThumb(thumb);
+		return thumbService.saveThumb(thumbForm);
 	}
 
 	@PostMapping("/cancel")
-	@LogTime
-	public R<Boolean> cancel(@RequestBody Thumb thumb) {
+	public R<Boolean> cancel(@RequestBody @Valid ThumbForm thumbForm) {
 		if (!StpUtil.isLogin()) {
 			return R.failed(ErrorCodeEnum.LOGIN_EXPIRED);
 		}
-		return thumbService.cancelThumb(thumb);
+		return thumbService.cancelThumb(thumbForm);
 	}
 
 

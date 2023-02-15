@@ -1,6 +1,6 @@
 package cn.goroute.smart.post.strategy.thumb;
 
-import cn.goroute.smart.post.domain.Thumb;
+import cn.goroute.smart.post.domain.entity.ThumbEntity;
 
 /**
  * @Author: 蔡国鹏
@@ -11,16 +11,16 @@ public interface ThumbStrategy {
 
 	/**
 	 * 点赞
-	 * @param thumb 点赞信息
+	 * @param thumbEntity 点赞信息
 	 * @return 是否点赞成功
 	 */
-	void saveThumb(Thumb thumb);
+	void saveThumb(ThumbEntity thumbEntity);
 
 	/**
 	 * 取消点赞
-	 * @param thumb 点赞信息
+	 * @param thumbEntity 点赞信息
 	 * @return 是否取消点赞成功
 	 */
-	void cancelThumb(Thumb thumb);
+	void cancelThumb(ThumbEntity thumbEntity);
 
 }

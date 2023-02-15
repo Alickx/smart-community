@@ -2,30 +2,24 @@ package cn.goroute.smart.post.manager;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.common.util.RedisUtil;
-import cn.goroute.smart.post.constant.PostConstant;
-import cn.goroute.smart.post.constant.UserInteractTypeEnum;
+import cn.goroute.smart.post.constant.enums.UserInteractTypeEnum;
 import cn.goroute.smart.post.converter.CategoryConverter;
-import cn.goroute.smart.post.converter.PostConverter;
 import cn.goroute.smart.post.converter.TagConverter;
-import cn.goroute.smart.post.domain.Category;
-import cn.goroute.smart.post.domain.Post;
-import cn.goroute.smart.post.domain.Tag;
-import cn.goroute.smart.post.domain.UserInteract;
+import cn.goroute.smart.post.domain.entity.CategoryEntity;
+import cn.goroute.smart.post.domain.entity.PostEntity;
+import cn.goroute.smart.post.domain.entity.TagEntity;
+import cn.goroute.smart.post.domain.entity.UserInteractEntity;
 import cn.goroute.smart.post.feign.FeignUserProfileService;
-import cn.goroute.smart.post.mapper.CategoryMapper;
 import cn.goroute.smart.post.mapper.PostMapper;
-import cn.goroute.smart.post.mapper.TagMapper;
-import cn.goroute.smart.post.model.dto.ContentExpansionDTO;
-import cn.goroute.smart.post.model.dto.PostBaseDTO;
+import cn.goroute.smart.post.domain.dto.ContentExpansionDTO;
+import cn.goroute.smart.post.domain.dto.PostBaseDTO;
 import cn.goroute.smart.post.mq.PostSyncEventMessageTemplate;
 import cn.goroute.smart.post.service.CategoryService;
 import cn.goroute.smart.post.service.TagService;
 import cn.goroute.smart.post.service.UserInteractService;
-import cn.goroute.smart.search.model.index.PostIndex;
 import cn.goroute.smart.user.model.dto.UserProfileDTO;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
-import com.alibaba.fastjson.JSON;
 import com.hccake.ballcat.common.core.constant.enums.BooleanEnum;
 import com.hccake.ballcat.common.model.result.R;
 import com.hccake.ballcat.common.model.result.SystemResultCode;
@@ -50,8 +44,6 @@ import java.util.Map;
 public class PostManagerService {
 
     private final FeignUserProfileService feignUserProfileService;
-    private final CategoryMapper categoryMapper;
-    private final TagMapper tagMapper;
     private final RedisUtil redisUtil;
     private final PostMapper postMapper;
     private final PostSyncEventMessageTemplate postSyncEventMessageTemplate;
@@ -92,26 +84,16 @@ public class PostManagerService {
      */
     private void fillTag(List<? extends PostBaseDTO> records) {
 
-        // 查找缓存
-        String tagList = redisUtil.get(PostConstant.Tag.POST_TAG_KEY);
+		List<TagEntity> tagEntities = tagService.getTagList();
 
-        List<Tag> tags = JSON.parseArray(tagList, Tag.class);
-
-        if (CollUtil.isEmpty(tags)) {
-            // 缓存中没有，从数据库中查找
-            tags = tagMapper.selectList(null);
-            // 放入缓存
-            redisUtil.set(PostConstant.Tag.POST_TAG_KEY, JSON.toJSONString(tags));
-        }
-
-        Map<Long, Tag> tagMap = new HashMap<>(tags.size());
-        tags.forEach(tag -> tagMap.put(tag.getId(), tag));
+		Map<String, TagEntity> tagMap = new HashMap<>(tagEntities.size());
+        tagEntities.forEach(tag -> tagMap.put(tag.getContent(), tag));
 
         records.forEach(record -> {
-            Long tagId = record.getTagId();
-            Tag tag = tagMap.get(tagId);
-            if (tag != null) {
-                record.setTag(TagConverter.INSTANCE.poToDTO(tag));
+			String tagName = record.getTagName();
+			TagEntity tagEntity = tagMap.get(tagName);
+            if (tagEntity != null) {
+                record.setTag(TagConverter.INSTANCE.poToDTO(tagEntity));
             }
         });
 
@@ -152,26 +134,16 @@ public class PostManagerService {
      */
     private void fillCategory(List<? extends PostBaseDTO> records) {
 
-        // 查找缓存
-        String categoryList = redisUtil.get(PostConstant.category.POST_CATEGORY_KEY);
+		List<CategoryEntity> categories = categoryService.getCategoryList();
 
-        List<Category> categories = JSON.parseArray(categoryList, Category.class);
-
-        if (CollUtil.isEmpty(categories)) {
-            // 缓存中没有，从数据库中查找
-            categories = categoryMapper.selectList(null);
-            // 放入缓存
-            redisUtil.set(PostConstant.category.POST_CATEGORY_KEY, JSON.toJSONString(categories));
-        }
-
-        Map<Long, Category> categoryMap = new HashMap<>(categories.size());
-        categories.forEach(category -> categoryMap.put(category.getId(), category));
+		Map<String, CategoryEntity> categoryMap = new HashMap<>(categories.size());
+        categories.forEach(category -> categoryMap.put(category.getName(), category));
 
         records.forEach(record -> {
-            Long categoryId = record.getCategoryId();
-            Category category = categoryMap.get(categoryId);
-            if (category != null) {
-                record.setCategory(CategoryConverter.INSTANCE.poToDTO(category));
+			String categoryName = record.getCategoryName();
+			CategoryEntity categoryEntity = categoryMap.get(categoryName);
+            if (categoryEntity != null) {
+                record.setCategory(CategoryConverter.INSTANCE.poToDTO(categoryEntity));
             }
         });
 
@@ -201,21 +173,21 @@ public class PostManagerService {
 		List<Long> postIds = records.stream().map(PostBaseDTO::getId).toList();
 
 		// 调用用户关系表
-		List<UserInteract> userInteractList = userInteractService.batchGetUserPostInteract(postIds, UserInteractTypeEnum.POST.getCode(), userId);
+		List<UserInteractEntity> userInteractEntityList = userInteractService.batchGetUserPostInteract(postIds, UserInteractTypeEnum.POST.getCode(), userId);
 
-		Map<Long,UserInteract> userInteractMap = new HashMap<>(userInteractList.size());
-		for (UserInteract userInteract : userInteractList) {
-			userInteractMap.put(userInteract.getTargetId(), userInteract);
+		Map<Long, UserInteractEntity> userInteractMap = new HashMap<>(userInteractEntityList.size());
+		for (UserInteractEntity userInteractEntity : userInteractEntityList) {
+			userInteractMap.put(userInteractEntity.getTargetId(), userInteractEntity);
 		}
 
 		for (PostBaseDTO record : records) {
-			UserInteract userInteract = userInteractMap.get(record.getId());
+			UserInteractEntity userInteractEntity = userInteractMap.get(record.getId());
 			ContentExpansionDTO contentExpansionDTO = ContentExpansionDTO.create();
-			if (userInteract != null ) {
+			if (userInteractEntity != null ) {
 				contentExpansionDTO.setIsAuthor(userId.equals(record.getAuthorId()));
-				contentExpansionDTO.setIsThumb(userInteract.getIsThumb() == BooleanEnum.TRUE.getValue());
-				contentExpansionDTO.setIsCollect(userInteract.getIsCollect() == BooleanEnum.TRUE.getValue());
-				contentExpansionDTO.setIsComment(userInteract.getIsComment() == BooleanEnum.TRUE.getValue());
+				contentExpansionDTO.setIsThumb(userInteractEntity.getIsThumb() == BooleanEnum.TRUE.getValue());
+				contentExpansionDTO.setIsCollect(userInteractEntity.getIsCollect() == BooleanEnum.TRUE.getValue());
+				contentExpansionDTO.setIsComment(userInteractEntity.getIsComment() == BooleanEnum.TRUE.getValue());
 				record.setExpansion(contentExpansionDTO);
 			} else {
 				record.setExpansion(contentExpansionDTO);
@@ -227,14 +199,14 @@ public class PostManagerService {
     /**
      * 保存文章到数据库
      *
-     * @param post 文章实体类
+     * @param postEntity 文章实体类
      */
     @Transactional(rollbackFor = Exception.class)
-    public void savePost2Db(Post post) {
+    public void savePost2Db(PostEntity postEntity) {
 
-        post.setSummary(getPostSummary(post.getContent()));
+        postEntity.setSummary(getPostSummary(postEntity.getContent()));
 
-        postMapper.insert(post);
+        postMapper.insert(postEntity);
 
     }
 
@@ -247,20 +219,5 @@ public class PostManagerService {
             }
         }
         return summary;
-    }
-
-    public void sync2Es(Post postEntity) {
-
-        PostIndex postIndex = PostConverter.INSTANCE.poToPostIndex(postEntity);
-
-        Tag tag = tagService.getById(postEntity.getTagId());
-        Category category = categoryService.getById(postEntity.getCategoryId());
-
-        postIndex.setTagName(tag.getContent());
-        postIndex.setCategoryName(category.getName());
-
-
-        postSyncEventMessageTemplate.sendPostMessage(postIndex);
-
     }
 }

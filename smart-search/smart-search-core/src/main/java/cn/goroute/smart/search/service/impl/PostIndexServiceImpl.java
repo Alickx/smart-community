@@ -1,5 +1,7 @@
 package cn.goroute.smart.search.service.impl;
 
+import cn.goroute.smart.post.domain.entity.PostEntity;
+import cn.goroute.smart.search.converter.PostIndexConverter;
 import cn.goroute.smart.search.manager.PostIndexManagerService;
 import cn.goroute.smart.search.mapper.PostIndexMapper;
 import cn.goroute.smart.search.model.dto.PostIndexDTO;
@@ -59,7 +61,13 @@ public class PostIndexServiceImpl implements PostIndexService {
 	}
 
 	@Override
-	public void postSync(PostIndex postIndex) {
+	public void postSync(PostEntity postEntity) {
+
+
+		PostIndex postIndex = PostIndexConverter.INSTANCE.postToPostIndex(postEntity);
+
+		// 不存在则新增
 		postIndexMapper.save(postIndex);
+
 	}
 }

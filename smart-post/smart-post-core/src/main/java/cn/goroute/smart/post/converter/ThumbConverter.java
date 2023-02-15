@@ -1,6 +1,8 @@
 package cn.goroute.smart.post.converter;
 
-import cn.goroute.smart.post.model.dto.ThumbDTO;
+import cn.goroute.smart.post.domain.dto.ThumbDTO;
+import cn.goroute.smart.post.domain.entity.ThumbEntity;
+import cn.goroute.smart.post.domain.form.ThumbForm;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -17,6 +19,11 @@ public interface ThumbConverter {
     /**
      * po 转 dto
      */
-    cn.goroute.smart.post.domain.Thumb dtoToPo(ThumbDTO thumbDTO);
+    ThumbEntity dtoToPo(ThumbDTO thumbDTO);
 
+	ThumbDTO formToDto(ThumbForm thumbForm);
+
+	ThumbEntity formToEntity(ThumbForm thumbForm);
+
+	ThumbDTO poToDto(ThumbEntity thumbEntity);
 }

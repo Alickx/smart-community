@@ -20,8 +20,8 @@ public class SaTokenConfigure implements WebMvcConfigurer {
     public SaServletFilter getSaServletFilter() {
         return new SaServletFilter()
                 .addInclude("/**")
+                .addExclude("/swagger-ui/**","/webjars/**","/v3/**","/doc.html")
                 .setAuth(obj -> {
-                    // 校验 Id-Token 身份凭证     —— 以下两句代码可简化为：SaIdUtil.checkCurrentRequestToken();
                     String token = SaHolder.getRequest().getHeader(SaSameUtil.SAME_TOKEN);
                     SaSameUtil.checkToken(token);
                 })

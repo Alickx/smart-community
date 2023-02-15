@@ -16,7 +16,7 @@ public class SaTokenConfigure {
     public SaReactorFilter getSaReactorFilter() {
         return new SaReactorFilter()
                 // 拦截地址
-                .addExclude("/swagger-ui/**")
+                .addExclude("/swagger-ui/**","/webjars/**","/v3/**","/doc.html")
                 // 异常处理方法：每次setAuth函数出现异常时进入
                 .setError(e -> SaResult.error(e.getMessage()))
                 ;

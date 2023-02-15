@@ -22,6 +22,7 @@ public class SaTokenConfigure implements WebMvcConfigurer {
 	public SaServletFilter getSaServletFilter() {
 		return new SaServletFilter()
 				.addInclude("/**")
+				.addExclude("/swagger-ui/**","/webjars/**","/v3/**","/doc.html")
 				.setAuth(obj -> {
 					String token = SaHolder.getRequest().getHeader(SaSameUtil.SAME_TOKEN);
 					SaSameUtil.checkToken(token);

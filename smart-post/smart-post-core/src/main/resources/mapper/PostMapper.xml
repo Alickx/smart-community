@@ -1,34 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.goroute.smart.post.mapper.PostMapper">
 
-    <resultMap id="BaseResultMap" type="cn.goroute.smart.post.domain.Post">
-            <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="categoryId" column="category_id" jdbcType="BIGINT"/>
-            <result property="authorId" column="author_id" jdbcType="BIGINT"/>
-            <result property="title" column="title" jdbcType="VARCHAR"/>
-            <result property="content" column="content" jdbcType="VARCHAR"/>
-            <result property="state" column="state" jdbcType="TINYINT"/>
-            <result property="collectCount" column="collect_count" jdbcType="INTEGER"/>
-            <result property="thumbCount" column="thumb_count" jdbcType="INTEGER"/>
-            <result property="commentCount" column="comment_count" jdbcType="INTEGER"/>
-            <result property="isPublish" column="is_publish" jdbcType="TINYINT"/>
-            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
-            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="deleted" column="deleted" jdbcType="TINYINT"/>
-    </resultMap>
+	<resultMap id="BaseResultMap" type="cn.goroute.smart.post.domain.entity.PostEntity">
+		<id property="id" column="id" jdbcType="BIGINT"/>
+		<result property="categoryName" column="category_name" jdbcType="VARCHAR"/>
+		<result property="tagName" column="tag_name" jdbcType="VARCHAR"/>
+		<result property="authorId" column="author_id" jdbcType="BIGINT"/>
+		<result property="title" column="title" jdbcType="VARCHAR"/>
+		<result property="content" column="content" jdbcType="VARCHAR"/>
+		<result property="state" column="state" jdbcType="TINYINT"/>
+		<result property="collectCount" column="collect_count" jdbcType="INTEGER"/>
+		<result property="thumbCount" column="thumb_count" jdbcType="INTEGER"/>
+		<result property="commentCount" column="comment_count" jdbcType="INTEGER"/>
+		<result property="isPublish" column="is_publish" jdbcType="TINYINT"/>
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+		<result property="deleted" column="deleted" jdbcType="TINYINT"/>
+	</resultMap>
 
-    <sql id="Base_Column_List">
-        id,category_id,author_id,
-        title,content,state,
-        collect_count,thumb_count,comment_count,
-        is_publish,summary,update_time,
-        create_time,deleted
-    </sql>
-
-    <update id="incrThumbNum">
+	<update id="incrThumbNum">
 		update post
 		set thumb_count = thumb_count + #{thumbNum}
 		where id = #{toId}
@@ -39,7 +32,7 @@
 		set thumb_count = IF(thumb_count > 0, thumb_count - #{thumbNum}, 0)
 		where id = #{toId}
 	</update>
-    <update id="incrCommentCount">
+	<update id="incrCommentCount">
 		update post
 		set comment_count = comment_count + 1
 		where id = #{postId}

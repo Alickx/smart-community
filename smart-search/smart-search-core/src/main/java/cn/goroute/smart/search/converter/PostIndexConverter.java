@@ -1,7 +1,7 @@
 package cn.goroute.smart.search.converter;
 
 
-import cn.goroute.smart.post.domain.Post;
+import cn.goroute.smart.post.domain.entity.PostEntity;
 import cn.goroute.smart.search.model.dto.PostIndexDTO;
 import cn.goroute.smart.search.model.index.PostIndex;
 import org.mapstruct.Mapper;
@@ -23,5 +23,5 @@ public interface PostIndexConverter {
 
 	List<PostIndexDTO> indexToDTO(List<PostIndex> postIndex);
 
-	PostIndex postToPostIndex(Post post);
+	PostIndex postToPostIndex(PostEntity postEntity);
 }

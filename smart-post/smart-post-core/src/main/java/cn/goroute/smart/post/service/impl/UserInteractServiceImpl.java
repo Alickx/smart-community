@@ -1,8 +1,8 @@
 package cn.goroute.smart.post.service.impl;
 
-import cn.goroute.smart.post.domain.Comment;
-import cn.goroute.smart.post.domain.Thumb;
-import cn.goroute.smart.post.domain.UserInteract;
+import cn.goroute.smart.post.domain.entity.CommentEntity;
+import cn.goroute.smart.post.domain.entity.ThumbEntity;
+import cn.goroute.smart.post.domain.entity.UserInteractEntity;
 import cn.goroute.smart.post.mapper.UserInteractMapper;
 import cn.goroute.smart.post.service.UserInteractService;
 import com.hccake.ballcat.common.core.constant.enums.BooleanEnum;
@@ -21,58 +21,58 @@ import java.util.List;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class UserInteractServiceImpl extends ExtendServiceImpl<UserInteractMapper, UserInteract>
+public class UserInteractServiceImpl extends ExtendServiceImpl<UserInteractMapper, UserInteractEntity>
     implements UserInteractService{
 
 	private final UserInteractMapper userInteractMapper;
 
 
 	@Override
-	public void updateThumbUserRelation(Thumb thumb,Boolean isThumb) {
+	public void updateThumbUserRelation(ThumbEntity thumbEntity, Boolean isThumb) {
 
-		UserInteract userInteract = userInteractMapper
-				.selectByUserIdAndTypeAndTargetId(thumb.getUserId(), thumb.getType(), thumb.getToId());
+		UserInteractEntity userInteractEntity = userInteractMapper
+				.selectByUserIdAndTypeAndTargetId(thumbEntity.getUserId(), thumbEntity.getType(), thumbEntity.getToId());
 
-		if (userInteract == null ){
-			userInteract = new UserInteract();
-			userInteract.setUserId(thumb.getUserId());
-			userInteract.setType(thumb.getType());
-			userInteract.setTargetId(thumb.getToId());
-			userInteract.setIsThumb(isThumb ? BooleanEnum.TRUE.getValue() : BooleanEnum.FALSE.getValue());
-			userInteract.setIsComment(BooleanEnum.FALSE.getValue());
-			userInteract.setIsCollect(BooleanEnum.FALSE.getValue());
-			userInteractMapper.insert(userInteract);
+		if (userInteractEntity == null ){
+			userInteractEntity = new UserInteractEntity();
+			userInteractEntity.setUserId(thumbEntity.getUserId());
+			userInteractEntity.setType(thumbEntity.getType());
+			userInteractEntity.setTargetId(thumbEntity.getToId());
+			userInteractEntity.setIsThumb(isThumb ? BooleanEnum.TRUE.getValue() : BooleanEnum.FALSE.getValue());
+			userInteractEntity.setIsComment(BooleanEnum.FALSE.getValue());
+			userInteractEntity.setIsCollect(BooleanEnum.FALSE.getValue());
+			userInteractMapper.insert(userInteractEntity);
 		} else {
-			userInteract.setIsThumb(isThumb ? BooleanEnum.TRUE.getValue() : BooleanEnum.FALSE.getValue());
-			userInteractMapper.updateById(userInteract);
+			userInteractEntity.setIsThumb(isThumb ? BooleanEnum.TRUE.getValue() : BooleanEnum.FALSE.getValue());
+			userInteractMapper.updateById(userInteractEntity);
 		}
 
 	}
 
 	@Override
-	public void updateUserCommentRelation(Comment comment,Boolean isComment) {
+	public void updateUserCommentRelation(CommentEntity commentEntity, Boolean isComment) {
 
-		UserInteract userInteract = userInteractMapper
-				.selectByUserIdAndTypeAndTargetId(comment.getUserId(), comment.getType(), comment.getPostId());
+		UserInteractEntity userInteractEntity = userInteractMapper
+				.selectByUserIdAndTypeAndTargetId(commentEntity.getUserId(), commentEntity.getType(), commentEntity.getPostId());
 
-		if (userInteract == null ){
-			userInteract = new UserInteract();
-			userInteract.setUserId(comment.getUserId());
-			userInteract.setType(comment.getType());
-			userInteract.setTargetId(comment.getPostId());
-			userInteract.setIsThumb(BooleanEnum.FALSE.getValue());
-			userInteract.setIsComment(BooleanEnum.TRUE.getValue());
-			userInteract.setIsCollect(BooleanEnum.FALSE.getValue());
-			userInteractMapper.insert(userInteract);
+		if (userInteractEntity == null ){
+			userInteractEntity = new UserInteractEntity();
+			userInteractEntity.setUserId(commentEntity.getUserId());
+			userInteractEntity.setType(commentEntity.getType());
+			userInteractEntity.setTargetId(commentEntity.getPostId());
+			userInteractEntity.setIsThumb(BooleanEnum.FALSE.getValue());
+			userInteractEntity.setIsComment(BooleanEnum.TRUE.getValue());
+			userInteractEntity.setIsCollect(BooleanEnum.FALSE.getValue());
+			userInteractMapper.insert(userInteractEntity);
 		} else {
-			userInteract.setIsComment(isComment ? BooleanEnum.TRUE.getValue() : BooleanEnum.FALSE.getValue());
-			userInteractMapper.updateById(userInteract);
+			userInteractEntity.setIsComment(isComment ? BooleanEnum.TRUE.getValue() : BooleanEnum.FALSE.getValue());
+			userInteractMapper.updateById(userInteractEntity);
 		}
 
 	}
 
 	@Override
-	public List<UserInteract> batchGetUserPostInteract(List<Long> targetIds,Integer type, Long userId) {
+	public List<UserInteractEntity> batchGetUserPostInteract(List<Long> targetIds, Integer type, Long userId) {
 
 		return userInteractMapper.batchGetUserPostInteract(targetIds,type,userId);
 

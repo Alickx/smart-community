@@ -1,12 +1,16 @@
 package cn.goroute.smart.post.strategy.thumb;
 
-import cn.goroute.smart.common.constant.StateConstant;
-import cn.goroute.smart.post.domain.Thumb;
+import cn.goroute.smart.common.constant.StatusConstant;
+import cn.goroute.smart.post.domain.dto.ThumbDTO;
+import cn.goroute.smart.post.domain.entity.ThumbEntity;
+import cn.goroute.smart.post.mapper.PostMapper;
 import cn.goroute.smart.post.mapper.ThumbMapper;
+import cn.goroute.smart.post.mq.ThumbSaveOrUpdateEventMessageTemplate;
 import cn.goroute.smart.post.service.UserInteractService;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.Objects;
 
 /**
  * @Author: 蔡国鹏
@@ -15,48 +19,58 @@ import javax.annotation.Resource;
  */
 @Component
 public abstract class AbstractThumbStrategy implements ThumbStrategy {
-
+	@Resource
+	protected ThumbSaveOrUpdateEventMessageTemplate thumbSaveOrUpdateEventMessageTemplate;
 	@Resource
 	protected ThumbMapper thumbMapper;
-
 	@Resource
 	protected UserInteractService userInteractService;
+	@Resource
+	protected PostMapper postMapper;
 
 
-	/**
-	 * 更新点赞记录
-	 * @param thumb 点赞信息
-	 */
-	protected void saveThumb2DB(Thumb thumb) {
-
-		Thumb thumbEntity = thumbMapper.selectById(thumb.getId());
-		if (thumbEntity == null) {
-			thumbMapper.insert(thumb);
-		} else {
-			thumb.setDeleted(StateConstant.NORMAL_STATE);
-			thumbMapper.updateById(thumb);
-		}
+	protected void sendThumbMqEvent(ThumbDTO thumbDTO, Boolean saveFlag) {
+		thumbSaveOrUpdateEventMessageTemplate.sendPostThumbMessage(thumbDTO, saveFlag);
 	}
 
+	/**
+	 * 保存点赞记录
+	 * @param thumbEntity 点赞实体
+	 * @return 是否是新点赞 true：是，false：否
+	 */
+	protected Boolean saveThumbRecord(ThumbEntity thumbEntity) {
+
+		ThumbEntity thumb = thumbMapper.selectById(thumbEntity.getId());
+		if (thumb == null) {
+			thumbMapper.insert(thumbEntity);
+			return true;
+		} else {
+			if (Objects.equals(thumb.getDeleted(), StatusConstant.NORMAL_STATUS)) {
+				return false;
+			}
+			thumb.setDeleted(StatusConstant.NORMAL_STATUS);
+			thumbMapper.updateById(thumb);
+			return false;
+		}
+
+	}
 
 	/**
 	 * 检查是否已经点赞
-	 * @param thumb 点赞信息
+	 *
+	 * @param thumbEntity 点赞信息
 	 * @return true：已经点赞，false：未点赞
 	 */
-	protected boolean checkIsThumb(Thumb thumb) {
+	protected boolean checkIsThumb(ThumbEntity thumbEntity) {
 
-		Long userId = thumb.getUserId();
-		Long toId = thumb.getToId();
+		Long userId = thumbEntity.getUserId();
+		Long toId = thumbEntity.getToId();
 
 		// 检查数据库中是否已经点赞
-		Thumb thumbResult = thumbMapper.selectByUserIdAndToIdAndType(userId, toId, thumb.getType());
+		ThumbEntity thumbEntityResult = thumbMapper.selectByUserIdAndToIdAndType(userId, toId, thumbEntity.getType());
 
-		return thumbResult != null;
+		return thumbEntityResult != null;
 
 	}
-
-
-
 
 }

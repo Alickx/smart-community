@@ -43,11 +43,6 @@ ballcat:
         log-path: /data/applogs/smart-user/jobhandler
         log-retention-days: 30
       access-token: 16ae0070d35b4bffa4cc9fa1e59faa0b
-  log:
-    access:
-      enabled: false
-    operation:
-      enabled: false
 
 # 日志配置
 logging:

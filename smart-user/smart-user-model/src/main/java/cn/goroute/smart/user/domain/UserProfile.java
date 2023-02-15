@@ -1,5 +1,7 @@
 package cn.goroute.smart.user.domain;
 
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
@@ -15,12 +17,14 @@ import java.time.LocalDateTime;
  * @TableName user_profile
 */
 @Data
+@TableName(value ="user_profile")
 public class UserProfile implements Serializable {
 
     /**
     * 主键id
     */
     @NotNull(message="[主键id]不能为空")
+    @TableId
     private Long id;
 
     /**

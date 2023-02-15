@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.goroute.smart.post.mapper.CommentMapper">
 
-    <resultMap id="BaseResultMap" type="cn.goroute.smart.post.domain.Comment">
+    <resultMap id="BaseResultMap" type="cn.goroute.smart.post.domain.entity.CommentEntity">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="userId" column="user_id" jdbcType="BIGINT"/>
             <result property="postId" column="post_id" jdbcType="BIGINT"/>
@@ -26,13 +26,13 @@
     </sql>
     <update id="incrThumbNum">
 		update comment
-		set thumb_count = comment.thumb_count + #{thumbNum}
+		set thumb_count = thumb_count + #{thumbNum}
 		where id = #{id}
 	</update>
 
 	<update id="descThumbNum">
 		update comment
-		set thumb_count = IF(comment.thumb_count > 0, comment.thumb_count - #{thumbNum}, 0)
+		set thumb_count = IF(thumb_count > 0, thumb_count - #{thumbNum}, 0)
 		where id = #{id}
 	</update>
 </mapper>

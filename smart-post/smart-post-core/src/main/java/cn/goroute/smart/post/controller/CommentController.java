@@ -1,9 +1,9 @@
 package cn.goroute.smart.post.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
-import cn.goroute.smart.post.model.dto.CommentDTO;
-import cn.goroute.smart.post.model.qo.CommentQO;
-import cn.goroute.smart.post.model.vo.CommentVO;
+import cn.goroute.smart.post.domain.vo.CommentVO;
+import cn.goroute.smart.post.domain.qo.CommentQO;
+import cn.goroute.smart.post.domain.form.CommentForm;
 import cn.goroute.smart.post.service.CommentService;
 import com.hccake.ballcat.common.core.validation.group.UpdateGroup;
 import com.hccake.ballcat.common.model.domain.PageParam;
@@ -35,34 +35,34 @@ public class CommentController {
 	 * @return 分页结果
 	 */
 	@GetMapping("/page")
-	public R<PageResult<CommentDTO>> page(@Validated PageParam pageParam, CommentQO commentQO) {
+	public R<PageResult<CommentVO>> page(@Validated PageParam pageParam, CommentQO commentQO) {
 		return commentService.queryPage(pageParam, commentQO);
 	}
 
 	/**
 	 * 保存评论
-	 * @param commentVO 评论信息
+	 * @param commentForm 评论信息
 	 * @return 保存结果
 	 */
 	@PostMapping("/save")
 	@SaCheckLogin
-	public R<Long> save(@RequestBody @Validated(value = {UpdateGroup.class}) CommentVO commentVO) {
-		return commentService.commentSave(commentVO);
+	public R<Long> save(@RequestBody @Validated(value = {UpdateGroup.class}) CommentForm commentForm) {
+		return commentService.commentSave(commentForm);
 	}
 
 	/**
 	 * 删除评论
-	 * @param commentVO 评论信息
+	 * @param commentForm 评论信息
 	 * @return 删除结果
 	 */
 	@PostMapping("/delete")
 	@SaCheckLogin
-	public R<Boolean> delete(@RequestBody @Validated(value = {UpdateGroup.class}) CommentVO commentVO) {
-		return commentService.commentDelete(commentVO);
+	public R<Boolean> delete(@RequestBody @Validated(value = {UpdateGroup.class}) CommentForm commentForm) {
+		return commentService.commentDelete(commentForm);
 	}
 
 	@GetMapping("/queryMoreReply")
-	public R<List<CommentDTO>> queryMoreReply(CommentQO commentQO) {
+	public R<List<CommentVO>> queryMoreReply(CommentQO commentQO) {
 		return commentService.queryMoreReply(commentQO);
 	}
 

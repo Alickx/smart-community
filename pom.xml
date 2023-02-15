@@ -61,10 +61,9 @@
 		<module>smart-gateway</module>
 		<module>smart-thirdpart</module>
 		<module>smart-search</module>
-		<module>smart-notification</module>
+		<module>smart-notice</module>
 		<module>smart-auth</module>
 		<module>smart-starter</module>
-        <module>smart-risk</module>
     </modules>
 	<packaging>pom</packaging>
 

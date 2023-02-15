@@ -1,7 +1,7 @@
 package cn.goroute.smart.post.converter;
 
-import cn.goroute.smart.post.domain.Tag;
-import cn.goroute.smart.post.model.dto.TagDTO;
+import cn.goroute.smart.post.domain.entity.TagEntity;
+import cn.goroute.smart.post.domain.dto.TagDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -20,17 +20,17 @@ public interface TagConverter {
 
 	/**
 	 * 批量 po 转 dto
-	 * @param tag 标签
+	 * @param tagEntity 标签
 	 * @return 标签dto
 	 */
-	List<TagDTO> poToDTO(List<Tag> tag);
+	List<TagDTO> poToDTO(List<TagEntity> tagEntity);
 
 	/**
 	 * po 转 dto
-	 * @param tag 标签
+	 * @param tagEntity 标签
 	 * @return 标签dto
 	 */
 	@Mapping(target = "tagId", source = "id")
-	TagDTO poToDTO(Tag tag);
+	TagDTO poToDTO(TagEntity tagEntity);
 
 }

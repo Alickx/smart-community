@@ -1,11 +1,16 @@
 package cn.goroute.smart.post.service.impl;
 
-import cn.goroute.smart.post.domain.Tag;
+import cn.goroute.smart.common.util.RedisUtil;
+import cn.goroute.smart.post.constant.PostRedisConstant;
+import cn.goroute.smart.post.domain.entity.TagEntity;
 import cn.goroute.smart.post.mapper.TagMapper;
 import cn.goroute.smart.post.service.TagService;
+import com.hccake.ballcat.common.redis.core.annotation.Cached;
 import com.hccake.extend.mybatis.plus.service.impl.ExtendServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
 * @author Alickx
@@ -14,8 +19,46 @@ import org.springframework.stereotype.Service;
 */
 @Service
 @RequiredArgsConstructor
-public class TagServiceImpl extends ExtendServiceImpl<TagMapper, Tag>
+public class TagServiceImpl extends ExtendServiceImpl<TagMapper, TagEntity>
     implements TagService{
+
+	private final RedisUtil redisUtil;
+
+	@Override
+	public TagEntity queryByName(String tagName) {
+
+		List<TagEntity> tagEntities = this.getTagList();
+
+		for (TagEntity tagEntity : tagEntities) {
+			if (tagEntity.getContent().equals(tagName)) {
+				return tagEntity;
+			}
+		}
+
+		return null;
+	}
+
+	@Override
+	public TagEntity queryById(Long tagId) {
+
+		List<TagEntity> tagEntities = this.getTagList();
+
+		for (TagEntity tagEntity : tagEntities) {
+			if (tagEntity.getId().equals(tagId)) {
+				return tagEntity;
+			}
+		}
+
+		return null;
+
+	}
+
+	@Override
+	@Cached(key = PostRedisConstant.TagKey.POST_TAG_KEY, ttl = 60 * 60 * 24)
+	public List<TagEntity> getTagList() {
+		return this.list();
+	}
+
 
 }
 

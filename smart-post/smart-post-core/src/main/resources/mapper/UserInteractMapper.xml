@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.goroute.smart.post.mapper.UserInteractMapper">
 
-    <resultMap id="BaseResultMap" type="cn.goroute.smart.post.domain.UserInteract">
+    <resultMap id="BaseResultMap" type="cn.goroute.smart.post.domain.entity.UserInteractEntity">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="userId" column="user_id" jdbcType="BIGINT"/>
             <result property="type" column="type" jdbcType="TINYINT"/>
@@ -21,7 +21,7 @@
         target_id,is_thumb,is_comment,
         is_collect,create_time,update_time
     </sql>
-	<select id="selectByUserIdAndTypeAndTargetId" resultType="cn.goroute.smart.post.domain.UserInteract">
+	<select id="selectByUserIdAndTypeAndTargetId" resultType="cn.goroute.smart.post.domain.entity.UserInteractEntity">
 		select
 		<include refid="Base_Column_List"/>
 		from user_interact
@@ -29,7 +29,7 @@
 		and type = #{type}
 		and target_id = #{targetId}
 	</select>
-	<select id="batchGetUserPostInteract" resultType="cn.goroute.smart.post.domain.UserInteract">
+	<select id="batchGetUserPostInteract" resultType="cn.goroute.smart.post.domain.entity.UserInteractEntity">
 		select
 		<include refid="Base_Column_List"/>
 		from user_interact

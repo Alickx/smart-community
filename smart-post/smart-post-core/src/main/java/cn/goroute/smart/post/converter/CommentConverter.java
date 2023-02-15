@@ -1,8 +1,9 @@
 package cn.goroute.smart.post.converter;
 
-import cn.goroute.smart.post.domain.Comment;
-import cn.goroute.smart.post.model.dto.CommentDTO;
-import cn.goroute.smart.post.model.vo.CommentVO;
+import cn.goroute.smart.post.domain.dto.CommentDTO;
+import cn.goroute.smart.post.domain.entity.CommentEntity;
+import cn.goroute.smart.post.domain.form.CommentForm;
+import cn.goroute.smart.post.domain.vo.CommentVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -20,19 +21,16 @@ public interface CommentConverter {
 
 	/**
 	 * PO 转 DTO
-	 * @param comment 评论实体
+	 * @param commentEntity 评论实体
 	 * @return CommentDTO
 	 */
-	CommentDTO poToDto(Comment comment);
-
-	/**
-	 *  VO 转 PO
-	 * @param commentVO 评论视图对象
-	 * @return Comment
-	 */
-	Comment voToPo(CommentVO commentVO);
-
-	List<CommentDTO> poToDto(List<Comment> commentList);
+	CommentDTO poToDto(CommentEntity commentEntity);
 
 
+	List<CommentVO> poToDto(List<CommentEntity> commentEntityList);
+
+	CommentVO poToVO(CommentEntity commentEntity);
+
+
+	CommentEntity formToPo(CommentForm commentForm);
 }

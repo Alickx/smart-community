@@ -1,10 +1,11 @@
 package cn.goroute.smart.search.listener;
 
 import cn.goroute.smart.common.constant.RocketMqBizConstant;
+import cn.goroute.smart.post.domain.entity.PostEntity;
 import cn.goroute.smart.rocketmq.domain.RocketMqEntityMessage;
 import cn.goroute.smart.rocketmq.listener.BaseMqMessageListener;
-import cn.goroute.smart.search.model.index.PostIndex;
 import cn.goroute.smart.search.service.PostIndexService;
+import com.alibaba.fastjson2.JSON;
 import com.hccake.ballcat.common.util.JsonUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,9 +22,9 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @RocketMQMessageListener(
-		topic = RocketMqBizConstant.Post.POST_TOPIC,
-		consumerGroup = RocketMqBizConstant.Post.POST_SYNC_SAVE_ES_HANDLE_GROUP,
-		selectorExpression = RocketMqBizConstant.Post.POST_SYNC_SAVE_ES_HANDLE_TAG,
+		topic = RocketMqBizConstant.PostMqConstant.POST_TOPIC,
+		consumerGroup = RocketMqBizConstant.PostMqConstant.POST_SYNC_SAVE_ES_HANDLE_GROUP,
+		selectorExpression = RocketMqBizConstant.PostMqConstant.POST_SYNC_SAVE_ES_HANDLE_TAG,
 		consumeThreadNumber = 5
 )
 public class PostSyncListener extends BaseMqMessageListener<RocketMqEntityMessage>
@@ -49,8 +50,8 @@ public class PostSyncListener extends BaseMqMessageListener<RocketMqEntityMessag
 	 */
 	@Override
 	protected void handleMessage(RocketMqEntityMessage message) {
-		PostIndex postIndex = JsonUtils.toObj(message.getMessage(), PostIndex.class);
-		postIndexService.postSync(postIndex);
+		PostEntity postEntity = JSON.parseObject(message.getMessage(), PostEntity.class);
+		postIndexService.postSync(postEntity);
 	}
 
 	/**

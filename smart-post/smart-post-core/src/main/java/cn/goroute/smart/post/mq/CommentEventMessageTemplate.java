@@ -1,7 +1,7 @@
 package cn.goroute.smart.post.mq;
 
 import cn.goroute.smart.common.constant.RocketMqBizConstant;
-import cn.goroute.smart.post.domain.Comment;
+import cn.goroute.smart.post.domain.dto.CommentDTO;
 import cn.goroute.smart.rocketmq.domain.RocketMqEntityMessage;
 import cn.goroute.smart.rocketmq.template.RocketMqTemplate;
 import com.hccake.ballcat.common.util.JsonUtils;
@@ -16,15 +16,15 @@ import org.springframework.stereotype.Component;
 public class CommentEventMessageTemplate extends RocketMqTemplate {
 
 
-    public void sendPostCommentMessage(Comment comment) {
+    public void sendPostCommentMessage(CommentDTO commentDTO) {
         RocketMqEntityMessage rocketMqEntityMessage = new RocketMqEntityMessage();
-        rocketMqEntityMessage.setMessage(JsonUtils.toJson(comment));
-        rocketMqEntityMessage.setKey(comment.getId().toString());
+        rocketMqEntityMessage.setMessage(JsonUtils.toJson(commentDTO));
+        rocketMqEntityMessage.setKey(commentDTO.getId().toString());
         rocketMqEntityMessage.setSource("评论信息");
         rocketMqEntityMessage.setRetryTimes(3);
 
-        sendAsync(RocketMqBizConstant.Comment.COMMENT_TOPIC,
-                RocketMqBizConstant.Comment.COMMENT_HANDLE_TAG, rocketMqEntityMessage);
+        sendAsync(RocketMqBizConstant.CommentMqConstant.COMMENT_TOPIC,
+                RocketMqBizConstant.CommentMqConstant.COMMENT_HANDLE_TAG, rocketMqEntityMessage);
     }
 
 }

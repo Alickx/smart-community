@@ -1,11 +1,10 @@
 package cn.goroute.smart.post.converter;
 
-import cn.goroute.smart.post.domain.Post;
-import cn.goroute.smart.post.model.dto.PostAbbreviationDTO;
-import cn.goroute.smart.post.model.dto.PostInfoDTO;
-import cn.goroute.smart.post.model.dto.PostViewRankDTO;
-import cn.goroute.smart.post.model.vo.PostVO;
-import cn.goroute.smart.search.model.index.PostIndex;
+import cn.goroute.smart.post.domain.entity.PostEntity;
+import cn.goroute.smart.post.domain.dto.PostAbbreviationDTO;
+import cn.goroute.smart.post.domain.dto.PostInfoDTO;
+import cn.goroute.smart.post.domain.dto.PostViewRankDTO;
+import cn.goroute.smart.post.domain.vo.PostVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -23,27 +22,26 @@ public interface PostConverter {
 
 	/**
 	 * PO 转 DTO
-	 * @param post 文章
+	 * @param postEntity 文章
 	 * @return PostInfoDTO 文章DTO
 	 */
-	PostInfoDTO poToDto(Post post);
+	PostInfoDTO poToDto(PostEntity postEntity);
 
 	/**
 	 * PO 转 DTO
-	 * @param post 文章
+	 * @param postEntity 文章
 	 * @return PostAbbreviationDTO 文章缩略DTO
 	 */
-	PostAbbreviationDTO poToAbbreviationDto(Post post);
+	PostAbbreviationDTO poToAbbreviationDto(PostEntity postEntity);
 
 	/**
 	 * VO 转 PO
 	 * @param postVO 文章视图对象
 	 * @return Post 实体类
 	 */
-	Post voToPo(PostVO postVO);
+	PostEntity voToPo(PostVO postVO);
 
-	PostIndex poToPostIndex(Post postEntity);
 
-	@Mapping(target = "postId", source = "post.id")
-	PostViewRankDTO poToViewRankDto(Post post);
+	@Mapping(target = "postId", source = "postEntity.id")
+	PostViewRankDTO poToViewRankDto(PostEntity postEntity);
 }
