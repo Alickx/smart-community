@@ -24,7 +24,6 @@ import org.springframework.stereotype.Component;
 @RocketMQMessageListener(
 		topic = RocketMqBizConstant.ThumbMqConstant.THUMB_TOPIC,
 		consumerGroup = RocketMqBizConstant.ThumbMqConstant.THUMB_NOTICE_GROUP,
-		selectorExpression = RocketMqBizConstant.ThumbMqConstant.THUMB_HANDLE_TAG,
 		consumeThreadNumber = 5
 )
 public class PostThumbListener extends BaseMqMessageListener<RocketMqEntityMessage>
@@ -70,7 +69,7 @@ public class PostThumbListener extends BaseMqMessageListener<RocketMqEntityMessa
 	 */
 	@Override
 	protected boolean isRetry() {
-		return true;
+		return false;
 	}
 
 	/**

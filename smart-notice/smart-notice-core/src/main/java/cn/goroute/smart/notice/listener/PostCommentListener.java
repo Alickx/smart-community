@@ -24,7 +24,6 @@ import org.springframework.stereotype.Component;
 @RocketMQMessageListener(
 		topic = RocketMqBizConstant.CommentMqConstant.COMMENT_TOPIC,
 		consumerGroup = RocketMqBizConstant.CommentMqConstant.COMMENT_NOTICE_GROUP,
-		selectorExpression = RocketMqBizConstant.CommentMqConstant.COMMENT_HANDLE_TAG,
 		consumeThreadNumber = 5
 )
 public class PostCommentListener extends BaseMqMessageListener<RocketMqEntityMessage>
@@ -71,7 +70,7 @@ public class PostCommentListener extends BaseMqMessageListener<RocketMqEntityMes
 	 */
 	@Override
 	protected boolean isRetry() {
-		return true;
+		return false;
 	}
 
 	/**

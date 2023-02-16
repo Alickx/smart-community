@@ -24,7 +24,6 @@ import org.springframework.stereotype.Component;
 @RocketMQMessageListener(
 		topic = RocketMqBizConstant.PostMqConstant.POST_TOPIC,
 		consumerGroup = RocketMqBizConstant.PostMqConstant.POST_SYNC_SAVE_ES_HANDLE_GROUP,
-		selectorExpression = RocketMqBizConstant.PostMqConstant.POST_SYNC_SAVE_ES_HANDLE_TAG,
 		consumeThreadNumber = 5
 )
 public class PostSyncListener extends BaseMqMessageListener<RocketMqEntityMessage>

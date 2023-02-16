@@ -8,6 +8,8 @@ import cn.goroute.smart.user.manager.UserProfileManager;
 import cn.goroute.smart.user.mapper.UserProfileMapper;
 import cn.goroute.smart.user.model.vo.UserProfileVO;
 import cn.goroute.smart.user.service.UserProfileService;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.convert.Convert;
 import com.hccake.ballcat.common.model.result.R;
 import com.hccake.extend.mybatis.plus.service.impl.ExtendServiceImpl;
@@ -74,6 +76,10 @@ public class UserProfileServiceImpl extends ExtendServiceImpl<UserProfileMapper,
 	 */
 	@Override
 	public R<List<UserProfileDTO>> batchGetUserProfile(List<Long> userIds) {
+
+		if (CollUtil.isEmpty(userIds)) {
+			return R.ok(ListUtil.empty());
+		}
 
 		List<UserProfile> userProfiles = userProfileManager.batchGetUserProfile(userIds);
 

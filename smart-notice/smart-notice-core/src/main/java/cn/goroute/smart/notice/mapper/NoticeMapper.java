@@ -1,8 +1,8 @@
 package cn.goroute.smart.notice.mapper;
 
 import cn.goroute.smart.notice.domain.dto.NoticeCountVO;
+import cn.goroute.smart.notice.domain.dto.NoticeMessageDTO;
 import cn.goroute.smart.notice.domain.entity.NoticeEntity;
-import cn.goroute.smart.notice.domain.vo.NoticeMessageVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -24,9 +24,9 @@ public interface NoticeMapper extends BaseMapper<NoticeEntity> {
 	 * @param receiverId 接受者用户id
 	 * @param msgType 消息类型
 	 * @param targetId 消息对象id
-	 * @return 通知实体类
+	 * @return 数量 0不存在 1存在
 	 */
-	NoticeEntity queryNoticeIsExist(@Param("senderId") Long senderId
+	Integer queryNoticeIsExist(@Param("senderId") Long senderId
 			, @Param("receiverId") Long receiverId, @Param("msgType") Integer msgType, @Param("targetId") Long targetId);
 
 
@@ -39,7 +39,9 @@ public interface NoticeMapper extends BaseMapper<NoticeEntity> {
 	List<NoticeCountVO> queryNoticeCount(@Param("receiverId") Long receiverId, @Param("status") Integer status);
 
 
-	IPage<NoticeMessageVO> pageNotice(@Param("receiverId") long receiverId, @Param("msgType") Integer msgType, Page<NoticeMessageVO> page);
+	IPage<NoticeMessageDTO> pageNotice(@Param("receiverId") long receiverId, @Param("msgType") Integer msgType, Page<NoticeMessageDTO> page);
+
+	void updateNoticeStatus(@Param("ids") List<Long> ids, @Param("status") Integer status);
 }
 
 

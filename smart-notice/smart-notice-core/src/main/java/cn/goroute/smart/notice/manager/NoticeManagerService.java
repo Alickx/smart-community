@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * @author: Alickx
  * @Date: 2023/02/14 16:00:27
@@ -36,4 +38,8 @@ public class NoticeManagerService {
 		noticeMapper.insert(noticeEntity);
 	}
 
+	@Transactional(rollbackFor = Exception.class)
+	public void updateNoticeStatus(List<Long> ids, Integer deleteStatus) {
+		noticeMapper.updateNoticeStatus(ids, deleteStatus);
+	}
 }

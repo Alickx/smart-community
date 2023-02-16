@@ -21,7 +21,7 @@ public class ThumbSaveOrUpdateEventMessageTemplate extends RocketMqTemplate{
 	 */
 	public void sendPostThumbMessage(ThumbDTO thumbDTO,Boolean saveFlag) {
 		RocketMqEntityMessage message = getRocketMqEntityMessage(thumbDTO,saveFlag);
-		sendAsync(RocketMqBizConstant.ThumbMqConstant.THUMB_TOPIC, RocketMqBizConstant.ThumbMqConstant.THUMB_HANDLE_TAG, message);
+		sendAsync(RocketMqBizConstant.ThumbMqConstant.THUMB_TOPIC, message);
 	}
 
 

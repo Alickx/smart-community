@@ -23,8 +23,7 @@ public class CommentEventMessageTemplate extends RocketMqTemplate {
         rocketMqEntityMessage.setSource("评论信息");
         rocketMqEntityMessage.setRetryTimes(3);
 
-        sendAsync(RocketMqBizConstant.CommentMqConstant.COMMENT_TOPIC,
-                RocketMqBizConstant.CommentMqConstant.COMMENT_HANDLE_TAG, rocketMqEntityMessage);
+        sendAsync(RocketMqBizConstant.CommentMqConstant.COMMENT_TOPIC, rocketMqEntityMessage);
     }
 
 }

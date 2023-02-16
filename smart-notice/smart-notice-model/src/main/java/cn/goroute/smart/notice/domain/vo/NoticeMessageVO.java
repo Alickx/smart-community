@@ -1,5 +1,6 @@
 package cn.goroute.smart.notice.domain.vo;
 
+import cn.goroute.smart.user.model.dto.UserProfileDTO;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -37,5 +38,11 @@ public class NoticeMessageVO {
 
 	@Parameter(description = "通知状态 0未读 1已读")
 	private Integer status;
+
+	@Parameter(description = "发送者信息")
+	private UserProfileDTO sender;
+
+	@Parameter(description = "通知来源类型,源类型 0 = 文章 1 = 评论")
+	private Integer sourceType;
 
 }

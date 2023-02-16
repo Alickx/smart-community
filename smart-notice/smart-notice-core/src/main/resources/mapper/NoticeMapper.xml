@@ -20,21 +20,16 @@
         msg_info_id,status,create_time,
         update_time
 	</sql>
-	<select id="queryNoticeIsExist" resultType="cn.goroute.smart.notice.domain.entity.NoticeEntity">
-		SELECT t_notice.id,
-			   t_notice.sender_id,
-			   t_notice.receiver_id,
-			   t_notice.msg_info_id,
-			   t_notice.status,
-			   t_notice.create_time,
-			   t_notice.update_time,
-			   t_notice_message_info.id,
-			   t_notice_message_info.target_id,
-			   t_notice_message_info.title,
-			   t_notice_message_info.content,
-			   t_notice_message_info.msg_type,
-			   t_notice_message_info.create_time,
-			   t_notice_message_info.update_time
+	<update id="updateNoticeStatus">
+        UPDATE t_notice
+        SET status = #{status}
+        WHERE id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+	<select id="queryNoticeIsExist" resultType="integer">
+		SELECT count(*)
 		FROM t_notice
 				 INNER JOIN t_notice_message_info ON t_notice.msg_info_id = t_notice_message_info.id
 		WHERE sender_id = #{senderId}
@@ -52,9 +47,9 @@
 		GROUP BY msg_type;
 	</select>
 
-    <select id="pageNotice" resultType="cn.goroute.smart.notice.domain.vo.NoticeMessageVO">
+    <select id="pageNotice" resultType="cn.goroute.smart.notice.domain.dto.NoticeMessageDTO">
 		SELECT t_notice.id,
-			   t_notice_message_info.title,
+		       t_notice.sender_id,
 			   t_notice_message_info.content,
 			   t_notice_message_info.post_id,
 			   t_notice_message_info.post_title,
@@ -65,6 +60,6 @@
 				 JOIN t_notice_message_info ON t_notice.msg_info_id = t_notice_message_info.id
 		WHERE t_notice.receiver_id = #{receiverId}
 		  AND t_notice_message_info.msg_type = #{msgType}
-		order by status;
+		order by status
 	</select>
 </mapper>

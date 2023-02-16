@@ -5,13 +5,15 @@ import cn.goroute.smart.common.constant.enums.ErrorCodeEnum;
 import cn.goroute.smart.post.converter.CommentConverter;
 import cn.goroute.smart.post.domain.dto.CommentDTO;
 import cn.goroute.smart.post.domain.entity.CommentEntity;
-import cn.goroute.smart.post.manager.CommentManagerService;
-import cn.goroute.smart.post.mapper.CommentMapper;
-import cn.goroute.smart.post.domain.vo.CommentVO;
-import cn.goroute.smart.post.mq.CommentEventMessageTemplate;
+import cn.goroute.smart.post.domain.entity.PostEntity;
+import cn.goroute.smart.post.domain.form.CommentForm;
 import cn.goroute.smart.post.domain.qo.CommentQO;
 import cn.goroute.smart.post.domain.qo.PostQO;
-import cn.goroute.smart.post.domain.form.CommentForm;
+import cn.goroute.smart.post.domain.vo.CommentVO;
+import cn.goroute.smart.post.manager.CommentManagerService;
+import cn.goroute.smart.post.mapper.CommentMapper;
+import cn.goroute.smart.post.mapper.PostMapper;
+import cn.goroute.smart.post.mq.CommentEventMessageTemplate;
 import cn.goroute.smart.post.service.CommentService;
 import com.hccake.ballcat.common.core.exception.BusinessException;
 import com.hccake.ballcat.common.model.domain.PageParam;
@@ -39,6 +41,7 @@ public class CommentServiceImpl extends ExtendServiceImpl<CommentMapper, Comment
 	private final CommentMapper commentMapper;
 	private final CommentManagerService commentManagerService;
 	private final CommentEventMessageTemplate commentEventMessageTemplate;
+	private final PostMapper postMapper;
 
 	/**
 	 * 分页查询
@@ -73,14 +76,22 @@ public class CommentServiceImpl extends ExtendServiceImpl<CommentMapper, Comment
 
 		CommentEntity commentEntity = CommentConverter.INSTANCE.formToPo(commentForm);
 		commentEntity.setUserId(StpUtil.getLoginIdAsLong());
-		boolean save = this.save(commentEntity);
-		if (save) {
-			CommentDTO commentDTO = CommentConverter.INSTANCE.poToDto(commentEntity);
-			commentEventMessageTemplate.sendPostCommentMessage(commentDTO);
-			return R.ok(commentEntity.getId());
+
+		Long postId = commentEntity.getPostId();
+		PostEntity postEntity = postMapper.selectById(postId);
+
+		if (null == postEntity) {
+			return R.failed(ErrorCodeEnum.PARAM_ERROR);
 		}
-		log.error("保存评论/回复失败，commentVO:[{}]", commentForm);
-		throw new BusinessException(ErrorCodeEnum.SYSTEM_ERROR);
+
+		commentManagerService.saveCommentHandle(commentEntity);
+
+		// 发送通知
+		CommentDTO commentDTO = CommentConverter.INSTANCE.poToDto(commentEntity);
+		commentDTO.setPostTitle(postEntity.getTitle());
+		commentEventMessageTemplate.sendPostCommentMessage(commentDTO);
+
+		return R.ok(commentEntity.getId());
 	}
 
 	/**

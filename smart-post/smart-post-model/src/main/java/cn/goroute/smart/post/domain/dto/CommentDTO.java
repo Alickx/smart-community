@@ -37,6 +37,12 @@ public class CommentDTO {
 	private Long postId;
 
 	/**
+	 * 文章标题
+	 */
+	@Parameter(description = "文章标题")
+	private String postTitle;
+
+	/**
 	 * 接收方id
 	 */
 	@Parameter(description = "接收方id")
