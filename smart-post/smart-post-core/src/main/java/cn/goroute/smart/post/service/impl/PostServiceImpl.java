@@ -1,6 +1,7 @@
 package cn.goroute.smart.post.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.goroute.smart.common.constant.StatusConstant;
 import cn.goroute.smart.common.constant.enums.ErrorCodeEnum;
 import cn.goroute.smart.common.util.RedisUtil;
 import cn.goroute.smart.post.async.PostAsyncService;
@@ -18,6 +19,7 @@ import cn.goroute.smart.post.domain.qo.PostQO;
 import cn.goroute.smart.post.domain.vo.PostVO;
 import cn.goroute.smart.post.manager.PostManagerService;
 import cn.goroute.smart.post.mapper.PostMapper;
+import cn.goroute.smart.post.mq.PostSyncEventMessageTemplate;
 import cn.goroute.smart.post.service.CategoryService;
 import cn.goroute.smart.post.service.CommentService;
 import cn.goroute.smart.post.service.PostService;
@@ -59,6 +61,8 @@ public class PostServiceImpl extends ExtendServiceImpl<PostMapper, PostEntity>
 	private final TagService tagService;
 	private final CategoryService categoryService;
 	private final PostAsyncService postAsyncService;
+	private final PostMapper postMapper;
+	private final PostSyncEventMessageTemplate postSyncEventMessageTemplate;
 
 
 	/**
@@ -245,6 +249,26 @@ public class PostServiceImpl extends ExtendServiceImpl<PostMapper, PostEntity>
 
 		return R.ok(result);
 
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public R<Boolean> deletePost(Long postId) {
+
+		long userId = StpUtil.getLoginIdAsLong();
+
+		PostEntity postEntity = postMapper.selectById(postId);
+
+		if (postEntity.getAuthorId() != userId) {
+			return R.failed(ErrorCodeEnum.NO_PERMISSION);
+		}
+
+		postMapper.deleteById(postId);
+		postEntity.setDeleted(StatusConstant.DELETE_STATUS);
+
+		postSyncEventMessageTemplate.sendPostMessage(postEntity);
+
+		return R.ok(true);
 	}
 }
 

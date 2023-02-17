@@ -41,6 +41,7 @@ public enum ErrorCodeEnum implements ResultCode {
     PARAM_ERROR(1100, "参数错误"),
     UNKNOWN_ERROR(1101, "未知错误"),
     SYSTEM_ERROR(1102, "系统错误"),
+	NO_PERMISSION(1103, "无权限"),
     ;
 
     private int code;

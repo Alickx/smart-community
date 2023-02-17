@@ -1,6 +1,5 @@
 package cn.goroute.smart.post.controller;
 
-import cn.goroute.smart.post.domain.entity.PostEntity;
 import cn.goroute.smart.post.domain.dto.PostAbbreviationDTO;
 import cn.goroute.smart.post.domain.dto.PostInfoDTO;
 import cn.goroute.smart.post.domain.dto.PostViewRankDTO;
@@ -10,7 +9,6 @@ import cn.goroute.smart.post.service.PostService;
 import com.hccake.ballcat.common.model.domain.PageParam;
 import com.hccake.ballcat.common.model.domain.PageResult;
 import com.hccake.ballcat.common.model.result.R;
-import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -65,6 +63,12 @@ public class PostController {
 		return postService.savePost(postVO);
 	}
 
+
+	@PostMapping("/delete/{postId}")
+	public R<Boolean> delete(@PathVariable("postId") Long postId) {
+		return postService.deletePost(postId);
+	}
+
 	/**
 	 * 查询用户回复过的文章
 	 * @param pageParam 分页参数
@@ -79,17 +83,5 @@ public class PostController {
 	@GetMapping("/query/todayViewRank")
 	public R<List<PostViewRankDTO>> queryTodayViewRank() {
 		return postService.queryTodayViewRank();
-	}
-
-
-	/**
-	 * 内部服务间调用 - 根据id查询文章
-	 * @param postId 文章id
-	 * @return 文章实体类
-	 */
-	@GetMapping("/get/{postId}")
-	@Operation(summary = "根据文章id获取文章实体类", description = "内部服务间调用")
-	public R<PostEntity> getById(@PathVariable("postId") Long postId) {
-		return R.ok(postService.getById(postId));
 	}
 }

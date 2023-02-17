@@ -52,4 +52,6 @@ public interface PostService extends ExtendService<PostEntity> {
 
 
     R<List<PostViewRankDTO>> queryTodayViewRank();
+
+    R<Boolean> deletePost(Long postId);
 }

@@ -1,5 +1,6 @@
 package cn.goroute.smart.search.service.impl;
 
+import cn.goroute.smart.common.constant.StatusConstant;
 import cn.goroute.smart.post.domain.entity.PostEntity;
 import cn.goroute.smart.search.converter.PostIndexConverter;
 import cn.goroute.smart.search.manager.PostIndexManagerService;
@@ -44,7 +45,7 @@ public class PostIndexServiceImpl implements PostIndexService {
 	public R<PageResult<PostIndexDTO>> pageByKeyword(PageParam pageParam, String keyword) {
 
 		SearchPage<PostIndex> searchPage = postIndexMapper.
-				findByDescriptiveContentOrderByCreateTimeDesc(keyword, PageRequest.of((int) pageParam.getPage() - 1,
+				findByDescriptiveContentAndDeletedOrderByCreateTimeDesc(keyword, StatusConstant.NORMAL_STATUS, PageRequest.of((int) pageParam.getPage() - 1,
 						(int) pageParam.getSize()));
 
 		List<SearchHit<PostIndex>> searchHitList = searchPage.getContent();
