@@ -28,11 +28,6 @@
 			<artifactId>smart-common</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
-		<!--        定时任务-->
-		<dependency>
-			<groupId>com.hccake</groupId>
-			<artifactId>ballcat-spring-boot-starter-job</artifactId>
-		</dependency>
 		<!--        druid连接池 -->
 		<dependency>
 			<groupId>com.alibaba</groupId>
@@ -43,15 +38,6 @@
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<scope>runtime</scope>
-		</dependency>
-		<!--        mybatis-plus-->
-		<dependency>
-			<groupId>com.hccake</groupId>
-			<artifactId>ballcat-extend-mybatis-plus</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.baomidou</groupId>
-			<artifactId>mybatis-plus-boot-starter</artifactId>
 		</dependency>
 		<!--		rocketmq-->
 		<dependency>

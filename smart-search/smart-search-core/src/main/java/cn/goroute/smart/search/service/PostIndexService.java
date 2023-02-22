@@ -1,11 +1,11 @@
 package cn.goroute.smart.search.service;
 
+import cn.goroute.smart.common.domain.PageParam;
+import cn.goroute.smart.common.domain.PageResult;
+import cn.goroute.smart.common.modules.result.R;
 import cn.goroute.smart.post.domain.entity.PostEntity;
 import cn.goroute.smart.search.model.dto.PostIndexDTO;
 import cn.goroute.smart.search.model.index.PostIndex;
-import com.hccake.ballcat.common.model.domain.PageParam;
-import com.hccake.ballcat.common.model.domain.PageResult;
-import com.hccake.ballcat.common.model.result.R;
 
 /**
  * @Author: Alickx

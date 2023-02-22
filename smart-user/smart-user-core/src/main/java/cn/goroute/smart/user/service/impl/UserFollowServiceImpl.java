@@ -3,7 +3,7 @@ package cn.goroute.smart.user.service.impl;
 import cn.goroute.smart.user.mapper.UserFollowMapper;
 import cn.goroute.smart.user.service.UserFollowService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import cn.goroute.smart.user.domain.UserFollow;
+import cn.goroute.smart.user.domain.entity.UserFollowEntity;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 * @createDate 2022-09-17 19:30:44
 */
 @Service
-public class UserFollowServiceImpl extends ServiceImpl<UserFollowMapper, UserFollow>
+public class UserFollowServiceImpl extends ServiceImpl<UserFollowMapper, UserFollowEntity>
     implements UserFollowService {
 
 }

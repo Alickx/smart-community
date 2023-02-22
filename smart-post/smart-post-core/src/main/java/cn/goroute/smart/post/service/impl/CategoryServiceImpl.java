@@ -1,7 +1,8 @@
 package cn.goroute.smart.post.service.impl;
 
+import cn.goroute.smart.common.domain.SelectData;
+import cn.goroute.smart.common.modules.result.R;
 import cn.goroute.smart.common.util.RedisUtil;
-import cn.goroute.smart.post.constant.PostRedisConstant;
 import cn.goroute.smart.post.domain.entity.CategoryEntity;
 import cn.goroute.smart.post.domain.entity.CategoryTagEntity;
 import cn.goroute.smart.post.domain.entity.TagEntity;
@@ -14,10 +15,7 @@ import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.hccake.ballcat.common.model.domain.SelectData;
-import com.hccake.ballcat.common.model.result.R;
-import com.hccake.ballcat.common.redis.core.annotation.Cached;
-import com.hccake.extend.mybatis.plus.service.impl.ExtendServiceImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +29,7 @@ import java.util.stream.Collectors;
 */
 @Service
 @RequiredArgsConstructor
-public class CategoryServiceImpl extends ExtendServiceImpl<CategoryMapper, CategoryEntity>
+public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, CategoryEntity>
     implements CategoryService{
 
 	private final TagService tagService;
@@ -45,7 +43,7 @@ public class CategoryServiceImpl extends ExtendServiceImpl<CategoryMapper, Categ
 	 * @return 板块下拉数据及其标签数据
 	 */
 	@Override
-	@Cached(key = "CATEGORY:SELECT_DATA", ttl = 60 * 60 * 24)
+//	@Cached(key = "CATEGORY:SELECT_DATA", ttl = 60 * 60 * 24)
 	public R<List<SelectData<List<SelectData<TagEntity>>>>> getSelectData() {
 
 		List<CategoryEntity> list = this.list();
@@ -110,7 +108,7 @@ public class CategoryServiceImpl extends ExtendServiceImpl<CategoryMapper, Categ
 	}
 
 	@Override
-	@Cached(key = PostRedisConstant.CategoryKey.POST_CATEGORY_KEY, ttl = 60 * 60 * 24)
+//	@Cached(key = PostRedisConstant.CategoryKey.POST_CATEGORY_KEY, ttl = 60 * 60 * 24)
 	public List<CategoryEntity> getCategoryList() {
 		return this.list();
 	}

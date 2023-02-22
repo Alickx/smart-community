@@ -1,14 +1,13 @@
 package cn.goroute.smart.post.service;
 
+import cn.goroute.smart.common.domain.PageParam;
+import cn.goroute.smart.common.domain.PageResult;
+import cn.goroute.smart.common.modules.result.R;
 import cn.goroute.smart.post.domain.entity.CommentEntity;
-import cn.goroute.smart.post.domain.vo.CommentVO;
-import cn.goroute.smart.post.domain.qo.CommentQO;
-import cn.goroute.smart.post.domain.qo.PostQO;
 import cn.goroute.smart.post.domain.form.CommentForm;
-import com.hccake.ballcat.common.model.domain.PageParam;
-import com.hccake.ballcat.common.model.domain.PageResult;
-import com.hccake.ballcat.common.model.result.R;
-import com.hccake.extend.mybatis.plus.service.ExtendService;
+import cn.goroute.smart.post.domain.qo.CommentQO;
+import cn.goroute.smart.post.domain.vo.CommentVO;
+import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
 
@@ -17,7 +16,7 @@ import java.util.List;
 * @description 针对表【comment(文章回复表)】的数据库操作Service
 * @createDate 2022-09-25 16:53:24
 */
-public interface CommentService extends ExtendService<CommentEntity> {
+public interface CommentService extends IService<CommentEntity> {
 
 	/**
 	 * 分页查询
@@ -43,5 +42,5 @@ public interface CommentService extends ExtendService<CommentEntity> {
 
 	R<List<CommentVO>> queryMoreReply(CommentQO commentQO);
 
-	PageResult<Long> queryPostIdsByComment(PageParam pageParam, PostQO postQO);
+	PageResult<Long> queryPostIdsByComment(PageParam pageParam, Long userId);
 }

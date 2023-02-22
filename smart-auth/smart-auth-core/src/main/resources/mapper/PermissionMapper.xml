@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.goroute.smart.auth.mapper.PermissionMapper">
+<mapper namespace="cn.goroute.smart.auth.module.login.mapper.PermissionMapper">
 
-    <resultMap id="BaseResultMap" type="cn.goroute.smart.auth.domain.Permission">
+    <resultMap id="BaseResultMap" type="cn.goroute.smart.auth.domain.entity.PermissionEntity">
             <result property="id" column="id" jdbcType="BIGINT"/>
             <result property="permissionName" column="permission_name" jdbcType="VARCHAR"/>
             <result property="url" column="url" jdbcType="VARCHAR"/>

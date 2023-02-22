@@ -1,12 +1,20 @@
 server:
-  port: 12000
+  port: 15000
 
 spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
   profiles:
     active: dev
   application:
     name: smart-user
 
+sa-token:
+  token-name: 'Authorization'
+  timeout: 2592000
+  token-style: simple-uuid
+  is-print: false
 
 # mybatis-plus相关配置
 mybatis-plus:

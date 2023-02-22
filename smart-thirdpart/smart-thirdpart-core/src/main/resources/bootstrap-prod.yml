@@ -1,0 +1,10 @@
+spring.application.name=smart-post
+spring.cloud.nacos.config.server-addr=localhost:8848
+
+spring.cloud.nacos.config.namespace=da462cb3-db89-4f7e-a041-e1910d038c78
+
+
+spring.cloud.nacos.config.extension-configs[0].data-id=prod.yml
+spring.cloud.nacos.config.extension-configs[0].group=prod
+spring.cloud.nacos.config.extension-configs[0].refresh=true
+

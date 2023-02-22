@@ -1,23 +1,28 @@
 package cn.goroute.smart.post.manager;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.goroute.smart.common.constant.StatusConstant;
+import cn.goroute.smart.common.constant.enums.BooleanEnum;
+import cn.goroute.smart.common.domain.PageParam;
+import cn.goroute.smart.common.domain.PageResult;
+import cn.goroute.smart.common.modules.result.R;
+import cn.goroute.smart.common.modules.result.SystemResultCode;
+import cn.goroute.smart.common.util.PageUtil;
 import cn.goroute.smart.post.constant.enums.UserInteractTypeEnum;
+import cn.goroute.smart.post.converter.CommentConverter;
 import cn.goroute.smart.post.domain.dto.ContentExpansionDTO;
 import cn.goroute.smart.post.domain.entity.CommentEntity;
 import cn.goroute.smart.post.domain.entity.UserInteractEntity;
+import cn.goroute.smart.post.domain.qo.CommentQO;
 import cn.goroute.smart.post.domain.vo.CommentVO;
 import cn.goroute.smart.post.feign.FeignUserProfileService;
 import cn.goroute.smart.post.mapper.CommentMapper;
 import cn.goroute.smart.post.mapper.PostMapper;
 import cn.goroute.smart.post.service.UserInteractService;
-import cn.goroute.smart.user.model.dto.UserProfileDTO;
+import cn.goroute.smart.user.domain.vo.UserProfileVO;
 import cn.hutool.core.collection.CollUtil;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.google.common.collect.Lists;
-import com.hccake.ballcat.common.core.constant.enums.BooleanEnum;
-import com.hccake.ballcat.common.model.domain.PageParam;
-import com.hccake.ballcat.common.model.domain.PageResult;
-import com.hccake.ballcat.common.model.result.R;
-import com.hccake.ballcat.common.model.result.SystemResultCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -74,10 +79,18 @@ public class CommentManagerService {
             }
 
             // 获取二级回复列表
-            PageResult<CommentVO> commentDTOPageResult = commentMapper
-                    .queryPageReplyList(pageParam, record.getPostId(), record.getId());
 
-            List<CommentVO> replyRecords = commentDTOPageResult.getRecords();
+            IPage<CommentEntity> prodPage = PageUtil.prodPage(pageParam);
+
+            CommentQO commentQO = new CommentQO();
+            commentQO.setPostId(record.getPostId());
+            commentQO.setFirstCommentId(record.getId());
+            IPage<CommentEntity> commentEntityPage = commentMapper
+                    .queryPage(prodPage, commentQO, StatusConstant.NORMAL_STATUS, StatusConstant.NORMAL_STATUS);
+
+            IPage<CommentVO> commentVOIPage = commentEntityPage.convert(CommentConverter.INSTANCE::poToVO);
+
+            List<CommentVO> replyRecords = commentVOIPage.getRecords();
 
             // 二级回复查询用户信息
             this.getUserProfile(replyRecords);
@@ -86,6 +99,7 @@ public class CommentManagerService {
             this.getCommentExpansion(replyRecords, UserInteractTypeEnum.REPLY.getCode());
 
             // 填充
+            PageResult<CommentVO> commentDTOPageResult = new PageResult<>(replyRecords, commentVOIPage.getTotal());
             record.setReplyList(commentDTOPageResult);
         });
 
@@ -141,7 +155,7 @@ public class CommentManagerService {
             UserInteractEntity userInteractEntity = userInteractMap.get(record.getId());
             if (userInteractEntity != null) {
                 // 查询点赞信息
-                contentExpansionDTO.setIsThumb(userInteractEntity.getIsThumb() == BooleanEnum.TRUE.getValue());
+                contentExpansionDTO.setIsThumb(userInteractEntity.getIsThumb().equals(BooleanEnum.TRUE.intValue()));
                 // 判断是否拥有更多回复
                 contentExpansionDTO.setIsMoreReply(this.checkIsMoreReply(record));
                 // 判断是否是作者
@@ -158,11 +172,13 @@ public class CommentManagerService {
 
         if (CollUtil.isNotEmpty(records)) {
             List<Long> userIds = records.stream().map(CommentVO::getUserId).toList();
-            R<List<UserProfileDTO>> resp = feignUserProfileService.batchGetUserProfile(userIds);
+            R<List<UserProfileVO>> resp = feignUserProfileService.batchGetUserProfile(userIds);
             if (resp.getCode() == SystemResultCode.SUCCESS.getCode() && resp.getData() != null) {
-                Map<Long, UserProfileDTO> userProfileMap = new HashMap<>();
-                for (UserProfileDTO userProfileDTO : resp.getData()) {
-                    userProfileMap.put(userProfileDTO.getUserId(), userProfileDTO);
+
+                Map<Long, UserProfileVO> userProfileMap = new HashMap<>();
+
+                for (UserProfileVO userProfileVO : resp.getData()) {
+                    userProfileMap.put(userProfileVO.getUserId(), userProfileVO);
                 }
                 for (CommentVO commentVO : records) {
                     commentVO.setUserProfile(userProfileMap.get(commentVO.getUserId()));

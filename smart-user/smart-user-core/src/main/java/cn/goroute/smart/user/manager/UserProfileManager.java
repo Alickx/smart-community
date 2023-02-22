@@ -2,16 +2,15 @@ package cn.goroute.smart.user.manager;
 
 import cn.goroute.smart.common.util.RedisUtil;
 import cn.goroute.smart.user.constant.RedisConstant;
-import cn.goroute.smart.user.domain.UserProfile;
+import cn.goroute.smart.user.domain.entity.UserProfileEntity;
 import cn.goroute.smart.user.mapper.UserProfileMapper;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.hccake.ballcat.common.util.JsonUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,34 +35,30 @@ public class UserProfileManager {
 	 */
 	private final int USER_PROFILE_EXPIRE_TIME = 60 * 60 * 24 * 7;
 
-	@Transactional(rollbackFor = Exception.class)
-	public void initUserProfile(UserProfile userProfile) {
-		userProfileMapper.insert(userProfile);
-	}
 
-	public UserProfile getUserProfile(Long userId) {
+	public UserProfileEntity getUserProfile(Long userId) {
 
 		String userProfileKey = RedisConstant.USER_PROFILE + ":" + userId;
 
 		String userProfileJson = redisUtil.get(userProfileKey);
 
 		if (StrUtil.isNotBlank(userProfileJson)) {
-			return JsonUtils.toObj(userProfileJson, UserProfile.class);
+			return JSON.parseObject(userProfileJson, UserProfileEntity.class);
 		}
 
-		UserProfile userProfile = userProfileMapper
-				.selectOne(new LambdaQueryWrapper<UserProfile>().eq(UserProfile::getUserId, userId));
+		UserProfileEntity userProfileEntity = userProfileMapper
+				.selectOne(new LambdaQueryWrapper<UserProfileEntity>().eq(UserProfileEntity::getUserId, userId));
 
-		if (null != userProfile) {
-			redisUtil.setEx(userProfileKey, JsonUtils.toJson(userProfile), USER_PROFILE_EXPIRE_TIME, TimeUnit.SECONDS);
+		if (null != userProfileEntity) {
+			redisUtil.setEx(userProfileKey, JSON.toJSONString(userProfileEntity), USER_PROFILE_EXPIRE_TIME, TimeUnit.SECONDS);
 		}
 
-		return userProfile;
+		return userProfileEntity;
 	}
 
-	public List<UserProfile> batchGetUserProfile(List<Long> userIds) {
+	public List<UserProfileEntity> batchGetUserProfile(List<Long> userIds) {
 
-		List<UserProfile> ret = new ArrayList<>(userIds.size());
+		List<UserProfileEntity> ret = new ArrayList<>(userIds.size());
 
 		List<Long> unCachedUserIds = new ArrayList<>();
 		for (Long userId : userIds) {
@@ -74,7 +69,7 @@ public class UserProfileManager {
 
 			// 如果缓存中存在用户资料，则直接添加进返回列表
 			if (StrUtil.isNotBlank(userProfileJson)) {
-				ret.add(JsonUtils.toObj(userProfileJson, UserProfile.class));
+				ret.add(JSON.parseObject(userProfileJson, UserProfileEntity.class));
 			} else {
 				unCachedUserIds.add(userId);
 			}
@@ -82,16 +77,16 @@ public class UserProfileManager {
 
 		// 从数据库中查询未缓存的用户资料
 		if (CollUtil.isNotEmpty(unCachedUserIds)) {
-			List<UserProfile> userProfiles = userProfileMapper
-					.selectList(new LambdaQueryWrapper<UserProfile>().in(UserProfile::getUserId, unCachedUserIds));
+			List<UserProfileEntity> userProfileEntities = userProfileMapper
+					.selectList(new LambdaQueryWrapper<UserProfileEntity>().in(UserProfileEntity::getUserId, unCachedUserIds));
 
-			for (UserProfile userProfile : userProfiles) {
-				String userProfileKey = RedisConstant.USER_PROFILE + ":" + userProfile.getUserId();
-				redisUtil.setEx(userProfileKey, JsonUtils.toJson(userProfile), USER_PROFILE_EXPIRE_TIME,
+			for (UserProfileEntity userProfileEntity : userProfileEntities) {
+				String userProfileKey = RedisConstant.USER_PROFILE + ":" + userProfileEntity.getUserId();
+				redisUtil.setEx(userProfileKey, JSON.toJSONString(userProfileEntity), USER_PROFILE_EXPIRE_TIME,
 						TimeUnit.SECONDS);
 			}
 
-			ret.addAll(userProfiles);
+			ret.addAll(userProfileEntities);
 		}
 
 		return ret;

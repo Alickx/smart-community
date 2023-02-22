@@ -1,7 +1,7 @@
 package cn.goroute.smart.post.mapper;
 
 import cn.goroute.smart.post.domain.entity.ThumbEntity;
-import com.hccake.extend.mybatis.plus.mapper.ExtendMapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Param;
  * @createDate 2022-09-25 16:53:24
  * @Entity cn.goroute.smart.post.domain.Thumb
  */
-public interface ThumbMapper extends ExtendMapper<ThumbEntity> {
+public interface ThumbMapper extends BaseMapper<ThumbEntity> {
 
     /**
      * 通过用户id和目标id查找是否存在点赞记录

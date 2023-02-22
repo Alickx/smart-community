@@ -1,9 +1,9 @@
 package cn.goroute.smart.auth.feign;
 
+import cn.goroute.smart.auth.domain.dto.AuthUserDTO;
 import cn.goroute.smart.common.config.FeignConfig;
-import cn.goroute.smart.user.model.dto.UserProfileDTO;
-import com.hccake.ballcat.common.model.result.R;
-import io.swagger.v3.oas.annotations.Operation;
+import cn.goroute.smart.common.modules.result.R;
+import cn.goroute.smart.user.domain.vo.UserProfileVO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,16 +26,16 @@ public interface FeignUserProfileService {
 	 * @return
 	 */
 	@GetMapping(value = "/user/profile")
-	R<UserProfileDTO> getUserProfile(@RequestParam("userId") Long userId);
+	R<UserProfileVO> getUserProfile(@RequestParam("userId") Long userId);
 
 	/**
 	 * 初始化用户信息
 	 *
-	 * @param userProfileDto 用户信息
+	 * @param authUserDTO 用户信息
 	 * @return 是否成功
 	 */
 	@PostMapping("/user/profile/init")
-	R<Boolean> initUserProfile(@RequestBody UserProfileDTO userProfileDto);
+	R<Boolean> initUserProfile(@RequestBody AuthUserDTO authUserDTO);
 
 	/**
 	 * 批量获取用户信息
@@ -44,7 +44,6 @@ public interface FeignUserProfileService {
 	 * @return 用户信息列表
 	 */
 	@GetMapping("/user/batch/profile")
-	@Operation(summary = "批量获取用户信息", description = "批量获取用户信息")
-	R<List<UserProfileDTO>> batchGetUserProfile(@RequestParam("userIds") List<Long> userIds);
+	R<List<UserProfileVO>> batchGetUserProfile(@RequestParam("userIds") List<Long> userIds);
 
 }

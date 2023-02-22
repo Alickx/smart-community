@@ -1,10 +1,10 @@
 package cn.goroute.smart.search.controller;
 
+import cn.goroute.smart.common.domain.PageParam;
+import cn.goroute.smart.common.domain.PageResult;
+import cn.goroute.smart.common.modules.result.R;
 import cn.goroute.smart.search.model.dto.PostIndexDTO;
 import cn.goroute.smart.search.service.PostIndexService;
-import com.hccake.ballcat.common.model.domain.PageParam;
-import com.hccake.ballcat.common.model.domain.PageResult;
-import com.hccake.ballcat.common.model.result.R;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

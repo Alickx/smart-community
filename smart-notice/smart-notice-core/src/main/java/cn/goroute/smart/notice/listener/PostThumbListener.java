@@ -6,7 +6,7 @@ import cn.goroute.smart.post.domain.dto.ThumbDTO;
 import cn.goroute.smart.post.domain.entity.ThumbEntity;
 import cn.goroute.smart.rocketmq.domain.RocketMqEntityMessage;
 import cn.goroute.smart.rocketmq.listener.BaseMqMessageListener;
-import com.hccake.ballcat.common.util.JsonUtils;
+import com.alibaba.fastjson2.JSON;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
@@ -48,7 +48,7 @@ public class PostThumbListener extends BaseMqMessageListener<RocketMqEntityMessa
 	@Override
 	protected void handleMessage(RocketMqEntityMessage message) {
 		// 创建通知
-		ThumbDTO thumbDTO = JsonUtils.toObj(message.getMessage(), ThumbDTO.class);
+		ThumbDTO thumbDTO = JSON.parseObject(message.getMessage(), ThumbDTO.class);
 		noticeService.saveThumbNotice(thumbDTO);
 	}
 
@@ -59,7 +59,7 @@ public class PostThumbListener extends BaseMqMessageListener<RocketMqEntityMessa
 	 */
 	@Override
 	protected void overMaxRetryTimesMessage(RocketMqEntityMessage message) {
-		log.error("帖子评论监听超过重试次数,消息内容:[{}]", JsonUtils.toObj(message.getMessage(), ThumbEntity.class).toString());
+		log.error("帖子评论监听超过重试次数,消息内容:[{}]", JSON.parseObject(message.getMessage(), ThumbEntity.class).toString());
 	}
 
 	/**

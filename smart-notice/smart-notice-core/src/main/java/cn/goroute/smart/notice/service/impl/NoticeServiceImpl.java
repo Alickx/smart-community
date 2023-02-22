@@ -2,6 +2,9 @@ package cn.goroute.smart.notice.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.common.constant.StatusConstant;
+import cn.goroute.smart.common.domain.PageParam;
+import cn.goroute.smart.common.domain.PageResult;
+import cn.goroute.smart.common.modules.result.R;
 import cn.goroute.smart.notice.constant.enums.MsgTypeEnum;
 import cn.goroute.smart.notice.constant.enums.SourceTypeEnum;
 import cn.goroute.smart.notice.converter.NoticeMessageConverter;
@@ -16,13 +19,10 @@ import cn.goroute.smart.notice.mapper.NoticeMapper;
 import cn.goroute.smart.notice.service.NoticeService;
 import cn.goroute.smart.post.domain.dto.CommentDTO;
 import cn.goroute.smart.post.domain.dto.ThumbDTO;
-import cn.goroute.smart.user.model.dto.UserProfileDTO;
+import cn.goroute.smart.user.domain.vo.UserProfileVO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.hccake.ballcat.common.model.domain.PageParam;
-import com.hccake.ballcat.common.model.domain.PageResult;
-import com.hccake.ballcat.common.model.result.R;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -51,11 +51,11 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, NoticeEntity>
     public void saveThumbNotice(ThumbDTO thumbDTO) {
 
         // 查询该点赞通知是否已经存在
-        Integer count = noticeMapper.
-                queryNoticeIsExist(thumbDTO.getUserId(), thumbDTO.getToUserId(),
-                        MsgTypeEnum.THUMB.getCode(), thumbDTO.getId());
+		NoticeEntity noticeEntity = noticeMapper.
+				queryNoticeIsExist(thumbDTO.getUserId(), thumbDTO.getToUserId(),
+						MsgTypeEnum.THUMB.getCode(), thumbDTO.getId());
 
-        if (count == 0) {
+		if (null == noticeEntity) {
 
             // 判断是否是自己给自己点赞
             if (thumbDTO.getUserId().equals(thumbDTO.getToUserId())) {
@@ -81,11 +81,11 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, NoticeEntity>
     public void saveCommentNotice(CommentDTO commentDTO) {
 
         // 查询该评论通知是否已经存在
-        Integer count = noticeMapper.
-                queryNoticeIsExist(commentDTO.getUserId(), commentDTO.getToUserId(),
-                        MsgTypeEnum.COMMENT.getCode(), commentDTO.getId());
+		NoticeEntity noticeEntity = noticeMapper.
+				queryNoticeIsExist(commentDTO.getUserId(), commentDTO.getToUserId(),
+						MsgTypeEnum.COMMENT.getCode(), commentDTO.getId());
 
-        if (count == 0) {
+		if (null == noticeEntity) {
 
             // 判断是否是自己给自己评论
             if (commentDTO.getUserId().equals(commentDTO.getToUserId())) {
@@ -133,20 +133,20 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, NoticeEntity>
         // 如果集合不为空则查询用户信息
         List<Long> senderIds = records.stream().map(NoticeMessageDTO::getSenderId).distinct().toList();
 
-        R<List<UserProfileDTO>> batchResult = feignUserProfileService.batchGetUserProfile(senderIds);
+        R<List<UserProfileVO>> batchResult = feignUserProfileService.batchGetUserProfile(senderIds);
 
-        List<UserProfileDTO> userProfileDTOS = batchResult.getData();
+        List<UserProfileVO> userProfileVOS = batchResult.getData();
 
         // 将用户信息转换为map
-        Map<Long, UserProfileDTO> userProfileMap = userProfileDTOS
+        Map<Long, UserProfileVO> userProfileMap = userProfileVOS
                 .stream()
-                .collect(Collectors.toMap(UserProfileDTO::getUserId, Function.identity()));
+                .collect(Collectors.toMap(UserProfileVO::getUserId, Function.identity()));
 
 
         // 构造返回结果
         List<NoticeMessageVO> result = records.stream().map(record -> {
             NoticeMessageVO noticeMessageVO = NoticeMessageConverter.INSTANCE.dtoToVO(record);
-            UserProfileDTO sender = userProfileMap.get(record.getSenderId());
+            UserProfileVO sender = userProfileMap.get(record.getSenderId());
             if (sender != null) {
                 noticeMessageVO.setSender(sender);
             }

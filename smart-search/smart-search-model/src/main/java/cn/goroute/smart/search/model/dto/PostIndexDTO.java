@@ -1,6 +1,6 @@
 package cn.goroute.smart.search.model.dto;
 
-import cn.goroute.smart.user.model.dto.UserProfileDTO;
+import cn.goroute.smart.user.domain.vo.UserProfileVO;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -26,7 +26,7 @@ public class PostIndexDTO {
     /**
      * 作者信息
      */
-    private UserProfileDTO author;
+    private UserProfileVO author;
 
     /**
      * 文章题目

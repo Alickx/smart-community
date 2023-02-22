@@ -6,7 +6,7 @@ import cn.goroute.smart.post.domain.dto.CommentDTO;
 import cn.goroute.smart.post.domain.entity.CommentEntity;
 import cn.goroute.smart.rocketmq.domain.RocketMqEntityMessage;
 import cn.goroute.smart.rocketmq.listener.BaseMqMessageListener;
-import com.hccake.ballcat.common.util.JsonUtils;
+import com.alibaba.fastjson2.JSON;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
@@ -49,7 +49,7 @@ public class PostCommentListener extends BaseMqMessageListener<RocketMqEntityMes
 	 */
 	@Override
 	protected void handleMessage(RocketMqEntityMessage message) {
-		CommentDTO commentDTO = JsonUtils.toObj(message.getMessage(), CommentDTO.class);
+		CommentDTO commentDTO = JSON.parseObject(message.getMessage(), CommentDTO.class);
 		noticeService.saveCommentNotice(commentDTO);
 	}
 
@@ -60,7 +60,7 @@ public class PostCommentListener extends BaseMqMessageListener<RocketMqEntityMes
 	 */
 	@Override
 	protected void overMaxRetryTimesMessage(RocketMqEntityMessage message) {
-		log.error("文章评论监听超过重试次数,消息内容:[{}]", JsonUtils.toObj(message.getMessage(), CommentEntity.class).toString());
+		log.error("文章评论监听超过重试次数,消息内容:[{}]", JSON.parseObject(message.getMessage(), CommentEntity.class).toString());
 	}
 
 	/**

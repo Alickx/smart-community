@@ -14,16 +14,6 @@
     <description>智慧社区公共模块</description>
 
     <dependencies>
-        <!--        swagger3-->
-        <dependency>
-            <groupId>com.hccake</groupId>
-            <artifactId>ballcat-spring-boot-starter-swagger</artifactId>
-        </dependency>
-        <!--       common core-->
-        <dependency>
-            <groupId>com.hccake</groupId>
-            <artifactId>ballcat-common-core</artifactId>
-        </dependency>
         <!--        satoken 依赖-->
         <dependency>
             <groupId>cn.dev33</groupId>
@@ -47,44 +37,10 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-loadbalancer</artifactId>
         </dependency>
-        <!--        异常,SQL防注入封装-->
-        <dependency>
-            <groupId>com.hccake</groupId>
-            <artifactId>ballcat-spring-boot-starter-web</artifactId>
-        </dependency>
-        <!--        幂等组件-->
-        <dependency>
-            <groupId>com.hccake</groupId>
-            <artifactId>ballcat-common-idempotent</artifactId>
-        </dependency>
-        <!--        redis组件-->
-        <dependency>
-            <groupId>com.hccake</groupId>
-            <artifactId>ballcat-common-redis</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.hccake</groupId>
-            <artifactId>ballcat-spring-boot-starter-redis</artifactId>
-        </dependency>
-        <!--        基础工具类-->
-        <dependency>
-            <groupId>com.hccake</groupId>
-            <artifactId>ballcat-common-util</artifactId>
-        </dependency>
-        <!--        基础公用模型-->
-        <dependency>
-            <groupId>com.hccake</groupId>
-            <artifactId>ballcat-common-model</artifactId>
-        </dependency>
         <!--        openfeign依赖-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
-        </dependency>
-        <!--		guava-->
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
         </dependency>
         <!--		fastjson2-->
         <dependency>
@@ -95,11 +51,26 @@
             <groupId>com.alibaba.fastjson2</groupId>
             <artifactId>fastjson2</artifactId>
         </dependency>
-		<!--			阿里巴巴 ttl-->
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>transmittable-thread-local</artifactId>
-		</dependency>
+        <!--			阿里巴巴 ttl-->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>transmittable-thread-local</artifactId>
+        </dependency>
+        <!--        校验工具-->
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+        </dependency>
+        <!--        hutool-->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+        </dependency>
+        <!--        mybatis-plus-->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+        </dependency>
     </dependencies>
 
     <properties>

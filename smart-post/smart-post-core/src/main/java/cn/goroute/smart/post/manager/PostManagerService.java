@@ -1,31 +1,28 @@
 package cn.goroute.smart.post.manager;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.goroute.smart.common.constant.enums.BooleanEnum;
+import cn.goroute.smart.common.modules.result.R;
+import cn.goroute.smart.common.modules.result.SystemResultCode;
 import cn.goroute.smart.common.util.RedisUtil;
 import cn.goroute.smart.post.constant.enums.UserInteractTypeEnum;
 import cn.goroute.smart.post.converter.CategoryConverter;
 import cn.goroute.smart.post.converter.TagConverter;
+import cn.goroute.smart.post.domain.dto.ContentExpansionDTO;
 import cn.goroute.smart.post.domain.entity.CategoryEntity;
 import cn.goroute.smart.post.domain.entity.PostEntity;
 import cn.goroute.smart.post.domain.entity.TagEntity;
 import cn.goroute.smart.post.domain.entity.UserInteractEntity;
+import cn.goroute.smart.post.domain.vo.PostBaseVO;
 import cn.goroute.smart.post.feign.FeignUserProfileService;
 import cn.goroute.smart.post.mapper.PostMapper;
-import cn.goroute.smart.post.domain.dto.ContentExpansionDTO;
-import cn.goroute.smart.post.domain.dto.PostBaseDTO;
-import cn.goroute.smart.post.mq.PostSyncEventMessageTemplate;
 import cn.goroute.smart.post.service.CategoryService;
 import cn.goroute.smart.post.service.TagService;
 import cn.goroute.smart.post.service.UserInteractService;
-import cn.goroute.smart.user.model.dto.UserProfileDTO;
+import cn.goroute.smart.user.domain.vo.UserProfileVO;
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
-import com.hccake.ballcat.common.core.constant.enums.BooleanEnum;
-import com.hccake.ballcat.common.model.result.R;
-import com.hccake.ballcat.common.model.result.SystemResultCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jsoup.Jsoup;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,7 +43,6 @@ public class PostManagerService {
     private final FeignUserProfileService feignUserProfileService;
     private final RedisUtil redisUtil;
     private final PostMapper postMapper;
-    private final PostSyncEventMessageTemplate postSyncEventMessageTemplate;
     private final TagService tagService;
     private final CategoryService categoryService;
 	private final UserInteractService userInteractService;
@@ -57,7 +53,7 @@ public class PostManagerService {
      * @param records 文章列表
      * @return 补充后的文章列表
      */
-    public List<? extends PostBaseDTO> fillInfo(List<? extends PostBaseDTO> records) {
+    public List<? extends PostBaseVO> fillInfo(List<? extends PostBaseVO> records) {
 
         Long userId = StpUtil.isLogin() ? StpUtil.getLoginIdAsLong() : null;
 
@@ -82,7 +78,7 @@ public class PostManagerService {
      *
      * @param records 文章列表
      */
-    private void fillTag(List<? extends PostBaseDTO> records) {
+    private void fillTag(List<? extends PostBaseVO> records) {
 
 		List<TagEntity> tagEntities = tagService.getTagList();
 
@@ -105,10 +101,10 @@ public class PostManagerService {
      *
      * @param records 文章列表
      */
-    private void fillAuthor(List<? extends PostBaseDTO> records) {
+    private void fillAuthor(List<? extends PostBaseVO> records) {
         if (CollUtil.isNotEmpty(records)) {
-            List<Long> userIds = records.stream().map(PostBaseDTO::getAuthorId).distinct().toList();
-            R<List<UserProfileDTO>> resp;
+            List<Long> userIds = records.stream().map(PostBaseVO::getAuthorId).distinct().toList();
+            R<List<UserProfileVO>> resp;
             try {
                 resp = feignUserProfileService.batchGetUserProfile(userIds);
             } catch (Exception e) {
@@ -116,12 +112,12 @@ public class PostManagerService {
                 return;
             }
             if (resp.getCode() == SystemResultCode.SUCCESS.getCode() && resp.getData() != null) {
-                Map<Long, UserProfileDTO> userProfileMap = new HashMap<>();
-                for (UserProfileDTO userProfileDTO : resp.getData()) {
-                    userProfileMap.put(userProfileDTO.getUserId(), userProfileDTO);
+                Map<Long, UserProfileVO> userProfileMap = new HashMap<>();
+                for (UserProfileVO userProfileVO : resp.getData()) {
+                    userProfileMap.put(userProfileVO.getUserId(), userProfileVO);
                 }
-                for (PostBaseDTO postBaseDTO : records) {
-                    postBaseDTO.setAuthor(userProfileMap.get(postBaseDTO.getAuthorId()));
+                for (PostBaseVO postBaseVO : records) {
+                    postBaseVO.setAuthor(userProfileMap.get(postBaseVO.getAuthorId()));
                 }
             }
         }
@@ -132,7 +128,7 @@ public class PostManagerService {
      *
      * @param records 文章列表
      */
-    private void fillCategory(List<? extends PostBaseDTO> records) {
+    private void fillCategory(List<? extends PostBaseVO> records) {
 
 		List<CategoryEntity> categories = categoryService.getCategoryList();
 
@@ -154,7 +150,7 @@ public class PostManagerService {
      *
      * @param records 文章列表
      */
-    private void fillExpansion(List<? extends PostBaseDTO> records,Long userId) {
+    private void fillExpansion(List<? extends PostBaseVO> records, Long userId) {
 
 		if (CollUtil.isEmpty(records)) {
 			return;
@@ -162,7 +158,7 @@ public class PostManagerService {
 
 		if (null == userId) {
 			// 查询的用户为游客
-			for (PostBaseDTO record : records) {
+			for (PostBaseVO record : records) {
 				ContentExpansionDTO contentExpansionDTO = ContentExpansionDTO.create();
 				record.setExpansion(contentExpansionDTO);
 			}
@@ -170,7 +166,7 @@ public class PostManagerService {
 		}
 
 
-		List<Long> postIds = records.stream().map(PostBaseDTO::getId).toList();
+		List<Long> postIds = records.stream().map(PostBaseVO::getId).toList();
 
 		// 调用用户关系表
 		List<UserInteractEntity> userInteractEntityList = userInteractService.batchGetUserPostInteract(postIds, UserInteractTypeEnum.POST.getCode(), userId);
@@ -180,14 +176,14 @@ public class PostManagerService {
 			userInteractMap.put(userInteractEntity.getTargetId(), userInteractEntity);
 		}
 
-		for (PostBaseDTO record : records) {
+		for (PostBaseVO record : records) {
 			UserInteractEntity userInteractEntity = userInteractMap.get(record.getId());
 			ContentExpansionDTO contentExpansionDTO = ContentExpansionDTO.create();
 			if (userInteractEntity != null ) {
 				contentExpansionDTO.setIsAuthor(userId.equals(record.getAuthorId()));
-				contentExpansionDTO.setIsThumb(userInteractEntity.getIsThumb() == BooleanEnum.TRUE.getValue());
-				contentExpansionDTO.setIsCollect(userInteractEntity.getIsCollect() == BooleanEnum.TRUE.getValue());
-				contentExpansionDTO.setIsComment(userInteractEntity.getIsComment() == BooleanEnum.TRUE.getValue());
+				contentExpansionDTO.setIsThumb(userInteractEntity.getIsThumb().equals(BooleanEnum.TRUE.intValue()));
+				contentExpansionDTO.setIsCollect(userInteractEntity.getIsCollect().equals(BooleanEnum.TRUE.intValue()));
+				contentExpansionDTO.setIsComment(userInteractEntity.getIsComment().equals(BooleanEnum.TRUE.intValue()));
 				record.setExpansion(contentExpansionDTO);
 			} else {
 				record.setExpansion(contentExpansionDTO);
@@ -211,13 +207,7 @@ public class PostManagerService {
     }
 
     private String getPostSummary(String content) {
-        String summary = "";
-        if (StrUtil.isNotBlank(content)) {
-            summary = Jsoup.parse(content).text();
-            if (summary.length() > 100) {
-                summary = summary.substring(0, 100) + "...";
-            }
-        }
-        return summary;
+        // todo markdown转文本
+        return content;
     }
 }

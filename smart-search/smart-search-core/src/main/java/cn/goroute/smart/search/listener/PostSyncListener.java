@@ -6,7 +6,6 @@ import cn.goroute.smart.rocketmq.domain.RocketMqEntityMessage;
 import cn.goroute.smart.rocketmq.listener.BaseMqMessageListener;
 import cn.goroute.smart.search.service.PostIndexService;
 import com.alibaba.fastjson2.JSON;
-import com.hccake.ballcat.common.util.JsonUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
@@ -60,7 +59,7 @@ public class PostSyncListener extends BaseMqMessageListener<RocketMqEntityMessag
 	 */
 	@Override
 	protected void overMaxRetryTimesMessage(RocketMqEntityMessage message) {
-		log.error("文章同步事件监听者超过最大重试次数，消息内容：[{}]", JsonUtils.toJson(message));
+		log.error("文章同步事件监听者超过最大重试次数，消息内容：[{}]", JSON.toJSONString(message));
 	}
 
 	/**

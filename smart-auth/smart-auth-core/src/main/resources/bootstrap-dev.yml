@@ -1,48 +1,42 @@
-server:
-  port: 17000
 spring:
-  application:
-    name: smart-auth
-  mvc:
-    pathmatch:
-      matching-strategy: ANT_PATH_MATCHER
   cloud:
     nacos:
       discovery:
-        server-addr: 124.223.80.135:8848
+        server-addr: localhost:8848
+
+  #  redis数据库
   redis:
     database: 0
     host: 124.223.80.135
     port: 6379
-    timeout: 10s
-    lettuce:
-      pool:
-        max-active: 200
-        max-wait: -1ms
-        max-idle: 10
-        min-idle: 0
     password: ak87715700
+
+  #    mysql数据库
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://124.223.80.135:3306/smart_auth?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
-    username: smart
-    password: smart
-sa-token:
-  token-name: 'Authorization'
-  timeout: 2592000
-  activity-timeout: -1
-  token-style: simple-uuid
-  is-print: false
+    url: jdbc:mysql://localhost:3306/smart_auth?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
 
-ballcat:
-  redis:
-    key-prefix: 'SMART_AUTH:'
-  swagger:
-    documentation-type: oas_30
+jwt:
+  # 令牌秘钥
+  secretKey: asHiFHrqqEYLomK8JXsG23Wl22aLsuXb
+
+
+rocketmq:
+  # 多个NameServer，host:port;host:port，RocketMQProperties
+  name-server: 124.223.80.135:9876
+  producer:
+    # 发送同一类消息的设置为同一个group，保证唯一
+    group: springboot_producer_group
+    # 消息跟踪主题的名称值。如果不进行配置，可以使用默认的跟踪主题名称
+    customizedTraceTopic: RMQ_SYS_TRACE_TOPIC
+
+#tianai验证码
+captcha:
+  # 如果项目中使用到了redis，滑块验证码会自动把验证码数据存到redis中， 这里配置redis的key的前缀,默认是captcha:slider
+  prefix: CAPTCHA
+  secondary:
     enabled: true
-  log:
-    access:
-      enabled: false
-    operation:
-      enabled: false
+

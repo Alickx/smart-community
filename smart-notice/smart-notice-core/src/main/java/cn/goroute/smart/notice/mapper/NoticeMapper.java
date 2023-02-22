@@ -26,7 +26,7 @@ public interface NoticeMapper extends BaseMapper<NoticeEntity> {
 	 * @param targetId 消息对象id
 	 * @return 数量 0不存在 1存在
 	 */
-	Integer queryNoticeIsExist(@Param("senderId") Long senderId
+	NoticeEntity queryNoticeIsExist(@Param("senderId") Long senderId
 			, @Param("receiverId") Long receiverId, @Param("msgType") Integer msgType, @Param("targetId") Long targetId);
 
 

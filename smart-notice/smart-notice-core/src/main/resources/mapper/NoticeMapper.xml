@@ -28,14 +28,15 @@
             #{id}
         </foreach>
     </update>
-	<select id="queryNoticeIsExist" resultType="integer">
-		SELECT count(*)
+	<select id="queryNoticeIsExist" resultType="cn.goroute.smart.notice.domain.entity.NoticeEntity">
+		SELECT *
 		FROM t_notice
 				 INNER JOIN t_notice_message_info ON t_notice.msg_info_id = t_notice_message_info.id
 		WHERE sender_id = #{senderId}
 		  AND receiver_id = #{receiverId}
 		  AND target_id = #{targetId}
-		  AND msg_type = #{msgType};
+		  AND msg_type = #{msgType}
+		LIMIT 1;
 	</select>
 
 	<select id="queryNoticeCount" resultType="cn.goroute.smart.notice.domain.dto.NoticeCountVO">

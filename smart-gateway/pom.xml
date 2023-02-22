@@ -57,20 +57,9 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-pool2</artifactId>
         </dependency>
-        <!--        公共模型-->
         <dependency>
-            <groupId>com.hccake</groupId>
-            <artifactId>ballcat-common-model</artifactId>
-        </dependency>
-        <!--        redis组件-->
-        <dependency>
-            <groupId>com.hccake</groupId>
-            <artifactId>ballcat-common-redis</artifactId>
-        </dependency>
-        <!--        swagger3文档-->
-        <dependency>
-            <groupId>com.hccake</groupId>
-            <artifactId>ballcat-spring-boot-starter-swagger</artifactId>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
         </dependency>
     </dependencies>
 

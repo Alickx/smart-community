@@ -1,7 +1,7 @@
 package cn.goroute.smart.post.converter;
 
 import cn.goroute.smart.post.domain.entity.TagEntity;
-import cn.goroute.smart.post.domain.dto.TagDTO;
+import cn.goroute.smart.post.domain.vo.TagVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -23,7 +23,7 @@ public interface TagConverter {
 	 * @param tagEntity 标签
 	 * @return 标签dto
 	 */
-	List<TagDTO> poToDTO(List<TagEntity> tagEntity);
+	List<TagVO> poToDTO(List<TagEntity> tagEntity);
 
 	/**
 	 * po 转 dto
@@ -31,6 +31,6 @@ public interface TagConverter {
 	 * @return 标签dto
 	 */
 	@Mapping(target = "tagId", source = "id")
-	TagDTO poToDTO(TagEntity tagEntity);
+	TagVO poToDTO(TagEntity tagEntity);
 
 }

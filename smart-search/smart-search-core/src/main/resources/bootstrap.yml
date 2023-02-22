@@ -1,3 +1,18 @@
 spring:
   profiles:
     active: dev
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+  application:
+    name: smart-search
+
+server:
+  port: 13000
+
+sa-token:
+  token-name: 'Authorization'
+  timeout: 2592000
+  token-style: simple-uuid
+  is-print: false
+

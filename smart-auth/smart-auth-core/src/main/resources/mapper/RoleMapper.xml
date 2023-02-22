@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.goroute.smart.auth.mapper.RoleMapper">
+<mapper namespace="cn.goroute.smart.auth.module.login.mapper.RoleMapper">
 
-    <resultMap id="BaseResultMap" type="cn.goroute.smart.auth.domain.Role">
+    <resultMap id="BaseResultMap" type="cn.goroute.smart.auth.domain.entity.RoleEntity">
             <result property="id" column="id" jdbcType="BIGINT"/>
             <result property="roleName" column="role_name" jdbcType="VARCHAR"/>
             <result property="description" column="description" jdbcType="VARCHAR"/>

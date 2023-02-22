@@ -48,10 +48,11 @@
 		<rocketmq.version>2.2.2</rocketmq.version>
 		<org.mapstruct.version>1.5.2.Final</org.mapstruct.version>
 		<lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
-		<guava.version>31.1-jre</guava.version>
 		<dynamic-tp.version>1.0.8</dynamic-tp.version>
 		<fastjson2.version>2.0.23</fastjson2.version>
 		<transmittable-thread-local.version>2.14.2</transmittable-thread-local.version>
+		<tianai-captcha.version>1.3.3</tianai-captcha.version>
+		<jjwt.version>0.11.5</jjwt.version>
 	</properties>
 
 	<modules>
@@ -64,7 +65,7 @@
 		<module>smart-notice</module>
 		<module>smart-auth</module>
 		<module>smart-starter</module>
-    </modules>
+	</modules>
 	<packaging>pom</packaging>
 
 	<dependencyManagement>
@@ -170,12 +171,6 @@
 				<artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
 				<version>${spring.cloud.alibaba.version}</version>
 			</dependency>
-			<!--            限流-->
-			<dependency>
-				<groupId>com.alibaba.cloud</groupId>
-				<artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
-				<version>${spring.cloud.alibaba.version}</version>
-			</dependency>
 			<!--            rocketMq消息队列-->
 			<dependency>
 				<groupId>org.apache.rocketmq</groupId>
@@ -186,89 +181,13 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-starter-data-redis</artifactId>
 			</dependency>
-			<!--			Guava工具类-->
-			<dependency>
-				<groupId>com.google.guava</groupId>
-				<artifactId>guava</artifactId>
-				<version>${guava.version}</version>
-			</dependency>
 			<!--			离线IP地址定位库-->
 			<dependency>
 				<groupId>com.hccake</groupId>
 				<artifactId>ballcat-spring-boot-starter-ip2region</artifactId>
 				<version>${ballcat.version}</version>
 			</dependency>
-			<!--            通用工具-->
-			<dependency>
-				<groupId>com.hccake</groupId>
-				<artifactId>ballcat-spring-boot-starter-mail</artifactId>
-				<version>${ballcat.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.hccake</groupId>
-				<artifactId>ballcat-spring-boot-starter-oss</artifactId>
-				<version>${ballcat.version}</version>
-			</dependency>
-			<!--            redis封装魔块-->
-			<dependency>
-				<groupId>com.hccake</groupId>
-				<artifactId>ballcat-spring-boot-starter-redis</artifactId>
-				<version>${ballcat.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.hccake</groupId>
-				<artifactId>ballcat-common-redis</artifactId>
-				<version>${ballcat.version}</version>
-			</dependency>
-			<!--            封装web-->
-			<dependency>
-				<groupId>com.hccake</groupId>
-				<artifactId>ballcat-spring-boot-starter-web</artifactId>
-				<version>${ballcat.version}</version>
-			</dependency>
-			<!--            公有核心模块-->
-			<dependency>
-				<groupId>com.hccake</groupId>
-				<artifactId>ballcat-common-core</artifactId>
-				<version>${ballcat.version}</version>
-			</dependency>
-			<!--            幂等工具模块-->
-			<dependency>
-				<groupId>com.hccake</groupId>
-				<artifactId>ballcat-common-idempotent</artifactId>
-				<version>${ballcat.version}</version>
-			</dependency>
-			<!--            公有工具类-->
-			<dependency>
-				<groupId>com.hccake</groupId>
-				<artifactId>ballcat-common-util</artifactId>
-				<version>${ballcat.version}</version>
-			</dependency>
-			<!--            公有模型模块-->
-			<dependency>
-				<groupId>com.hccake</groupId>
-				<artifactId>ballcat-common-model</artifactId>
-				<version>${ballcat.version}</version>
-			</dependency>
-			<!--            定时任务调度工具-->
-			<dependency>
-				<groupId>com.hccake</groupId>
-				<artifactId>ballcat-spring-boot-starter-job</artifactId>
-				<version>${ballcat.version}</version>
-			</dependency>
-			<!--            拓展MybatisPlus-->
-			<dependency>
-				<groupId>com.hccake</groupId>
-				<artifactId>ballcat-extend-mybatis-plus</artifactId>
-				<version>${ballcat.version}</version>
-			</dependency>
-			<!--            swagger拓展模块-->
-			<dependency>
-				<groupId>com.hccake</groupId>
-				<artifactId>ballcat-spring-boot-starter-swagger</artifactId>
-				<version>${ballcat.version}</version>
-			</dependency>
-<!--			fastjson2-->
+			<!--			fastjson2-->
 			<dependency>
 				<groupId>com.alibaba.fastjson2</groupId>
 				<artifactId>fastjson2-extension-spring6</artifactId>
@@ -284,6 +203,36 @@
 				<groupId>com.alibaba</groupId>
 				<artifactId>transmittable-thread-local</artifactId>
 				<version>${transmittable-thread-local.version}</version>
+			</dependency>
+			<!-- tianai 图形验证码 -->
+			<dependency>
+				<groupId>cloud.tianai.captcha</groupId>
+				<artifactId>tianai-captcha-springboot-starter</artifactId>
+				<version>${tianai-captcha.version}</version>
+			</dependency>
+			<!--			hutool-->
+			<dependency>
+				<groupId>cn.hutool</groupId>
+				<artifactId>hutool-all</artifactId>
+				<version>${hutool.version}</version>
+			</dependency>
+			<!--			jwt 工具-->
+			<dependency>
+				<groupId>io.jsonwebtoken</groupId>
+				<artifactId>jjwt-api</artifactId>
+				<version>${jjwt.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.jsonwebtoken</groupId>
+				<artifactId>jjwt-impl</artifactId>
+				<version>${jjwt.version}</version>
+				<scope>runtime</scope>
+			</dependency>
+			<dependency>
+				<groupId>io.jsonwebtoken</groupId>
+				<artifactId>jjwt-jackson</artifactId> <!-- or jjwt-gson if Gson is preferred -->
+				<version>${jjwt.version}</version>
+				<scope>runtime</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

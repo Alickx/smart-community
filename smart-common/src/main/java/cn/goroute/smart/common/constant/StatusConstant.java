@@ -13,7 +13,7 @@ public class StatusConstant {
 	public static final Integer NORMAL_STATUS = 0;
 
 	/**
-	 * 通用不正常标识
+	 * 通用删除标识
 	 */
 	public static final Integer DELETE_STATUS = 1;
 

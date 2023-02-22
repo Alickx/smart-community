@@ -4,26 +4,6 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.goroute.smart.post.mapper.CommentMapper">
 
-    <resultMap id="BaseResultMap" type="cn.goroute.smart.post.domain.entity.CommentEntity">
-            <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="userId" column="user_id" jdbcType="BIGINT"/>
-            <result property="postId" column="post_id" jdbcType="BIGINT"/>
-            <result property="toUserId" column="to_user_id" jdbcType="BIGINT"/>
-            <result property="content" column="content" jdbcType="VARCHAR"/>
-            <result property="state" column="state" jdbcType="TINYINT"/>
-            <result property="type" column="type" jdbcType="TINYINT"/>
-            <result property="firstCommentId" column="first_comment_id" jdbcType="BIGINT"/>
-            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
-            <result property="deleted" column="deleted" jdbcType="TINYINT"/>
-    </resultMap>
-
-    <sql id="Base_Column_List">
-        id,user_id,post_id,
-        to_user_id,content,state,
-        type,first_comment_id,create_time,
-        update_time,deleted
-    </sql>
     <update id="incrThumbNum">
 		update comment
 		set thumb_count = thumb_count + #{thumbNum}
@@ -35,4 +15,61 @@
 		set thumb_count = IF(thumb_count > 0, thumb_count - #{thumbNum}, 0)
 		where id = #{id}
 	</update>
+    <select id="queryPage" resultType="cn.goroute.smart.post.domain.entity.CommentEntity">
+
+        select * from comment
+        <where>
+            <if test="commentQO.postId != null">
+                post_id = #{commentQO.postId}
+            </if>
+            <if test="commentQO.userId != null">
+                and user_id = #{commentQO.userId}
+            </if>
+            <if test="commentQO.type != null">
+                and type = #{commentQO.type}
+            </if>
+            <if test="commentQO.firstCommentId != null">
+                and first_comment_id = #{commentQO.firstCommentId}
+            </if>
+            <if test="status != null">
+                and state = #{status}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryPostIdsByComment" resultType="cn.goroute.smart.post.domain.entity.CommentEntity">
+        select * from comment
+        <where>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="status != null">
+                and state = #{status}
+            </if>
+            and deleted = #{deleted}
+        </where>
+        group by post_id
+    </select>
+
+    <select id="queryMoreReply" resultType="cn.goroute.smart.post.domain.entity.CommentEntity">
+        select * from comment
+        <where>
+            <if test="commentQO.postId != null">
+                post_id = #{commentQO.postId}
+            </if>
+            <if test="commentQO.userId != null">
+                and user_id = #{commentQO.userId}
+            </if>
+            <if test="commentQO.type != null">
+                and type = #{commentQO.type}
+            </if>
+            <if test="commentQO.firstCommentId != null">
+                and first_comment_id = #{commentQO.firstCommentId}
+            </if>
+            <if test="state != null">
+                and state = #{status}
+            </if>
+            and deleted = #{deleted}
+        </where>
+    </select>
 </mapper>

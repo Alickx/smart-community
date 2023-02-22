@@ -1,6 +1,6 @@
 package cn.goroute.smart.common.config;
 
-import cn.goroute.smart.common.mdc.TraceIdFilter;
+import cn.goroute.smart.common.modules.trace.TraceIdFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

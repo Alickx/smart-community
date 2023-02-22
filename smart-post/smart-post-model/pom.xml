@@ -25,11 +25,6 @@
 			<artifactId>smart-spring-boot-starter-rocketmq</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
-		<!--		公有工具模块-->
-		<dependency>
-			<groupId>com.hccake</groupId>
-			<artifactId>ballcat-common-util</artifactId>
-		</dependency>
 		<!--		项目公有模块-->
 		<dependency>
 			<groupId>cn.goroute.smart</groupId>

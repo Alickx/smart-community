@@ -1,15 +1,15 @@
 package cn.goroute.smart.post.service;
 
-import cn.goroute.smart.post.domain.entity.PostEntity;
-import cn.goroute.smart.post.domain.dto.PostAbbreviationDTO;
-import cn.goroute.smart.post.domain.dto.PostInfoDTO;
+import cn.goroute.smart.common.domain.PageParam;
+import cn.goroute.smart.common.domain.PageResult;
+import cn.goroute.smart.common.modules.result.R;
 import cn.goroute.smart.post.domain.dto.PostViewRankDTO;
+import cn.goroute.smart.post.domain.entity.PostEntity;
 import cn.goroute.smart.post.domain.qo.PostQO;
+import cn.goroute.smart.post.domain.vo.PostAbbreviationVO;
+import cn.goroute.smart.post.domain.vo.PostInfoVO;
 import cn.goroute.smart.post.domain.vo.PostVO;
-import com.hccake.ballcat.common.model.domain.PageParam;
-import com.hccake.ballcat.common.model.domain.PageResult;
-import com.hccake.ballcat.common.model.result.R;
-import com.hccake.extend.mybatis.plus.service.ExtendService;
+import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ import java.util.List;
 * @description 针对表【post(文章表)】的数据库操作Service
 * @createDate 2022-09-25 16:53:24
 */
-public interface PostService extends ExtendService<PostEntity> {
+public interface PostService extends IService<PostEntity> {
 
 	/**
 	 * 文章详情 - 分页查询
@@ -26,14 +26,14 @@ public interface PostService extends ExtendService<PostEntity> {
 	 * @param postQO 查询参数对象
 	 * @return 查询结果
 	 */
-	R<PageResult<PostAbbreviationDTO>> infoPage(PageParam pageParam, PostQO postQO);
+	R<PageResult<PostAbbreviationVO>> infoPage(PageParam pageParam, PostQO postQO);
 
 	/**
 	 * 根据文章Id查询文章详情
 	 * @param postId 文章Id
 	 * @return 文章详情
 	 */
-	R<PostInfoDTO> info(Long postId);
+	R<PostInfoVO> info(Long postId);
 
 	/**
 	 * 保存文章
@@ -48,7 +48,7 @@ public interface PostService extends ExtendService<PostEntity> {
 	 * @param postQO 查询参数对象
 	 * @return 查询结果
 	 */
-	R<PageResult<PostAbbreviationDTO>> queryByComment(PageParam pageParam, PostQO postQO);
+	R<PageResult<PostAbbreviationVO>> queryByComment(PageParam pageParam, PostQO postQO);
 
 
     R<List<PostViewRankDTO>> queryTodayViewRank();

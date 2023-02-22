@@ -1,14 +1,14 @@
 package cn.goroute.smart.post.controller;
 
-import cn.goroute.smart.post.domain.dto.PostAbbreviationDTO;
-import cn.goroute.smart.post.domain.dto.PostInfoDTO;
+import cn.goroute.smart.common.domain.PageParam;
+import cn.goroute.smart.common.domain.PageResult;
+import cn.goroute.smart.common.modules.result.R;
 import cn.goroute.smart.post.domain.dto.PostViewRankDTO;
 import cn.goroute.smart.post.domain.qo.PostQO;
+import cn.goroute.smart.post.domain.vo.PostAbbreviationVO;
+import cn.goroute.smart.post.domain.vo.PostInfoVO;
 import cn.goroute.smart.post.domain.vo.PostVO;
 import cn.goroute.smart.post.service.PostService;
-import com.hccake.ballcat.common.model.domain.PageParam;
-import com.hccake.ballcat.common.model.domain.PageResult;
-import com.hccake.ballcat.common.model.result.R;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -38,7 +38,7 @@ public class PostController {
 	 * @return 查询结果
 	 */
 	@GetMapping("/info/page")
-	public R<PageResult<PostAbbreviationDTO>> infoPage(@Validated PageParam pageParam, PostQO postQO) {
+	public R<PageResult<PostAbbreviationVO>> infoPage(@Validated PageParam pageParam, PostQO postQO) {
 		return postService.infoPage(pageParam, postQO);
 	}
 
@@ -49,7 +49,7 @@ public class PostController {
 	 * @return 查询结果
 	 */
 	@GetMapping("/info/{postId}")
-	public R<PostInfoDTO> info(@PathVariable("postId") Long postId) {
+	public R<PostInfoVO> info(@PathVariable("postId") Long postId) {
 		return postService.info(postId);
 	}
 
@@ -76,7 +76,7 @@ public class PostController {
 	 * @return 查询结果
 	 */
 	@GetMapping("/query/comment")
-	public R<PageResult<PostAbbreviationDTO>> queryByComment(@Validated PageParam pageParam, PostQO postQO) {
+	public R<PageResult<PostAbbreviationVO>> queryByComment(@Validated PageParam pageParam, PostQO postQO) {
 		return postService.queryByComment(pageParam, postQO);
 	}
 

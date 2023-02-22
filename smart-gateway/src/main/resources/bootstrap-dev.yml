@@ -6,7 +6,7 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: 124.223.80.135:8848
+        server-addr: localhost:8848
     gateway:
       routes:
         - id: route_member
@@ -49,26 +49,11 @@ spring:
     database: 0
     host: 124.223.80.135
     port: 6379
-    timeout: 10s
-    lettuce:
-      pool:
-        max-active: 200
-        max-wait: -1ms
-        max-idle: 10
-        min-idle: 0
     password: ak87715700
+
 sa-token:
   token-name: 'Authorization'
   timeout: 2592000
   activity-timeout: -1
   token-style: simple-uuid
   is-print: false
-ballcat:
-  swagger:
-    aggregator:
-      provider-resources: smart-user,smart-auth,smart-post,smart-notice,smart-thirdpart,smart-search
-    documentation-type: oas_30
-    enabled: true
-    title: smart-gateway
-    description: '网关'
-    version: 1.0.0

@@ -2,7 +2,7 @@ package cn.goroute.smart.post.controller;
 
 import cn.goroute.smart.post.domain.entity.TagEntity;
 import cn.goroute.smart.post.service.TagService;
-import com.hccake.ballcat.common.model.result.R;
+import cn.goroute.smart.common.modules.result.R;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

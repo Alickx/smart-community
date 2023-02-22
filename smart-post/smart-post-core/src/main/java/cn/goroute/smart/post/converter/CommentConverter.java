@@ -31,6 +31,8 @@ public interface CommentConverter {
 
 	CommentVO poToVO(CommentEntity commentEntity);
 
+	List<CommentVO> poToVO(List<CommentEntity> commentEntityList);
+
 
 	CommentEntity formToPo(CommentForm commentForm);
 }

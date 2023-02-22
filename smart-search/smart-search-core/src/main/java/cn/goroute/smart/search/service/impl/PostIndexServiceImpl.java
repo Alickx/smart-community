@@ -1,6 +1,9 @@
 package cn.goroute.smart.search.service.impl;
 
 import cn.goroute.smart.common.constant.StatusConstant;
+import cn.goroute.smart.common.domain.PageParam;
+import cn.goroute.smart.common.domain.PageResult;
+import cn.goroute.smart.common.modules.result.R;
 import cn.goroute.smart.post.domain.entity.PostEntity;
 import cn.goroute.smart.search.converter.PostIndexConverter;
 import cn.goroute.smart.search.manager.PostIndexManagerService;
@@ -8,9 +11,6 @@ import cn.goroute.smart.search.mapper.PostIndexMapper;
 import cn.goroute.smart.search.model.dto.PostIndexDTO;
 import cn.goroute.smart.search.model.index.PostIndex;
 import cn.goroute.smart.search.service.PostIndexService;
-import com.hccake.ballcat.common.model.domain.PageParam;
-import com.hccake.ballcat.common.model.domain.PageResult;
-import com.hccake.ballcat.common.model.result.R;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;

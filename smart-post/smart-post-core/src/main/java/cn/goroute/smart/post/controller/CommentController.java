@@ -1,18 +1,18 @@
 package cn.goroute.smart.post.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
-import cn.goroute.smart.post.domain.vo.CommentVO;
-import cn.goroute.smart.post.domain.qo.CommentQO;
+import cn.goroute.smart.common.domain.PageParam;
+import cn.goroute.smart.common.domain.PageResult;
+import cn.goroute.smart.common.modules.result.R;
 import cn.goroute.smart.post.domain.form.CommentForm;
+import cn.goroute.smart.post.domain.qo.CommentQO;
+import cn.goroute.smart.post.domain.vo.CommentVO;
 import cn.goroute.smart.post.service.CommentService;
-import com.hccake.ballcat.common.core.validation.group.UpdateGroup;
-import com.hccake.ballcat.common.model.domain.PageParam;
-import com.hccake.ballcat.common.model.domain.PageResult;
-import com.hccake.ballcat.common.model.result.R;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -46,7 +46,7 @@ public class CommentController {
 	 */
 	@PostMapping("/save")
 	@SaCheckLogin
-	public R<Long> save(@RequestBody @Validated(value = {UpdateGroup.class}) CommentForm commentForm) {
+	public R<Long> save(@RequestBody @Valid CommentForm commentForm) {
 		return commentService.commentSave(commentForm);
 	}
 
@@ -57,7 +57,7 @@ public class CommentController {
 	 */
 	@PostMapping("/delete")
 	@SaCheckLogin
-	public R<Boolean> delete(@RequestBody @Validated(value = {UpdateGroup.class}) CommentForm commentForm) {
+	public R<Boolean> delete(@RequestBody @Valid CommentForm commentForm) {
 		return commentService.commentDelete(commentForm);
 	}
 

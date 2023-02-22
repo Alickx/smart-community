@@ -30,12 +30,27 @@ public class RocketMqBizConstant {
 
     }
 
+    /**
+     * 文章
+     */
     public static class PostMqConstant {
 
         public static final String POST_TOPIC = "post_topic";
 
         // 文章同步到ES
         public static final String POST_SYNC_SAVE_ES_HANDLE_GROUP = "post_sync_save_es_handle_group";
+
+    }
+
+    /**
+     * 认证
+     */
+    public static class AuthMqConstant {
+
+        public static final String AUTH_TOPIC = "auth_topic";
+
+        // 用户注册
+        public static final String USER_REGISTER_GROUP = "user_register_group";
 
     }
 

@@ -1,32 +1,36 @@
 package cn.goroute.smart.user.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
-import cn.goroute.smart.user.model.dto.UserProfileDTO;
+import cn.goroute.smart.auth.domain.dto.AuthUserDTO;
+import cn.goroute.smart.common.modules.result.R;
+import cn.goroute.smart.user.constant.enums.UserStatusEnum;
 import cn.goroute.smart.user.converter.UserProfileConverter;
-import cn.goroute.smart.user.domain.UserProfile;
+import cn.goroute.smart.user.domain.entity.UserProfileEntity;
+import cn.goroute.smart.user.domain.vo.UserProfileVO;
 import cn.goroute.smart.user.manager.UserProfileManager;
 import cn.goroute.smart.user.mapper.UserProfileMapper;
-import cn.goroute.smart.user.model.vo.UserProfileVO;
 import cn.goroute.smart.user.service.UserProfileService;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.ListUtil;
-import cn.hutool.core.convert.Convert;
-import com.hccake.ballcat.common.model.result.R;
-import com.hccake.extend.mybatis.plus.service.impl.ExtendServiceImpl;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 /**
-* @author caiguopeng
-* @description 针对表【user_profile(用户信息表)】的数据库操作Service实现
-* @createDate 2022-09-17 19:30:44
-*/
+ * @author caiguopeng
+ * @description 针对表【user_profile(用户信息表)】的数据库操作Service实现
+ * @createDate 2022-09-17 19:30:44
+ */
 @Service
 @RequiredArgsConstructor
-public class UserProfileServiceImpl extends ExtendServiceImpl<UserProfileMapper, UserProfile>
-    implements UserProfileService{
+@Slf4j
+public class UserProfileServiceImpl extends ServiceImpl<UserProfileMapper, UserProfileEntity>
+        implements UserProfileService {
 
     private final UserProfileMapper userProfileMapper;
 
@@ -34,78 +38,76 @@ public class UserProfileServiceImpl extends ExtendServiceImpl<UserProfileMapper,
 
     /**
      * 获取用户信息
+     *
      * @return 用户信息
      */
     @Override
-    public R<UserProfileDTO> getUserProfile(Long userId) {
+    public R<UserProfileVO> getUserProfile(Long userId) {
 
         if (userId == null) {
             userId = StpUtil.getLoginIdAsLong();
         }
 
-        UserProfile userProfile = userProfileManager.getUserProfile(userId);
-		UserProfileDTO userProfileDto = UserProfileConverter.INSTANCE
-				.poToDto(userProfile);
+        UserProfileEntity userProfileEntity = userProfileManager.getUserProfile(userId);
+        UserProfileVO userProfileVO = UserProfileConverter.INSTANCE
+                .poToVo(userProfileEntity);
 
-        return R.ok(userProfileDto);
+        return R.ok(userProfileVO);
     }
 
     /**
      * 初始化用户信息
      *
-     * @param userProfileDto 用户信息
+     * @param authUserDTO 用户信息
      * @return 是否成功
      */
     @Override
-    public R<Boolean> initUserProfile(UserProfileDTO userProfileDto) {
+	@Transactional(rollbackFor = Exception.class)
+    public R<Boolean> initUserProfile(AuthUserDTO authUserDTO) {
 
-        UserProfile userProfile = Convert
-                .convert(UserProfile.class, userProfileDto);
-		//TODO 完善初始化用户信息
-        userProfile.setAvatar("https://img.llwstu.com/img/202208212352490.png");
-        userProfile.setNickName("用户" + StpUtil.getLoginIdAsLong());
-        userProfileManager.initUserProfile(userProfile);
-        return R.ok();
-    }
-
-	/**
-	 * 批量获取用户信息
-	 *
-	 * @param userIds 用户id集合
-	 * @return 用户信息集合
-	 */
-	@Override
-	public R<List<UserProfileDTO>> batchGetUserProfile(List<Long> userIds) {
-
-		if (CollUtil.isEmpty(userIds)) {
-			return R.ok(ListUtil.empty());
-		}
-
-		List<UserProfile> userProfiles = userProfileManager.batchGetUserProfile(userIds);
-
-		List<UserProfileDTO> result = UserProfileConverter.INSTANCE.poToDto(userProfiles);
-
-		return R.ok(result);
-
-	}
-
-	/**
-	 * 更新用户信息
-	 *
-	 * @param userProfileVO 用户信息vo
-	 * @return 是否成功
-	 */
-	@Override
-	public R<Boolean> updateUserProfile(UserProfileVO userProfileVO) {
-
-		//TODO 更新用户信息风控校验
-
-		UserProfile userProfile = UserProfileConverter.INSTANCE.voToPo(userProfileVO);
-
-		userProfileMapper.updateByUserId(userProfile, StpUtil.getLoginIdAsLong());
+        UserProfileEntity userProfileEntity = UserProfileConverter.INSTANCE.authUserDTOToPo(authUserDTO);
+        userProfileEntity.setAvatar("https://songtiancloud-1300061766.cos.ap-guangzhou.myqcloud.com/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20220414145043.jpg");
+		userProfileMapper.insert(userProfileEntity);
 
 		return R.ok(true);
-	}
+    }
+
+    /**
+     * 批量获取用户信息
+     *
+     * @param userIds 用户id集合
+     * @return 用户信息集合
+     */
+    @Override
+    public R<List<UserProfileVO>> batchGetUserProfile(List<Long> userIds) {
+
+        if (CollUtil.isEmpty(userIds)) {
+            return R.ok(ListUtil.empty());
+        }
+
+        List<UserProfileEntity> userProfileEntities = userProfileManager.batchGetUserProfile(userIds);
+
+        List<UserProfileVO> userProfileVOS = UserProfileConverter.INSTANCE.poToVo(userProfileEntities);
+
+        return R.ok(userProfileVOS);
+
+    }
+
+    /**
+     * 更新用户信息
+     *
+     * @param userProfileVO 用户信息vo
+     * @return 是否成功
+     */
+    @Override
+    public R<Boolean> updateUserProfile(UserProfileVO userProfileVO) {
+        UserProfileEntity userProfileEntity = UserProfileConverter.INSTANCE.voToPo(userProfileVO);
+
+        int update = userProfileMapper.update(userProfileEntity,
+                new LambdaUpdateWrapper<UserProfileEntity>().eq(UserProfileEntity::getUserId, StpUtil.getLoginIdAsLong()));
+
+        return R.ok(update > 0);
+    }
 
 
 }

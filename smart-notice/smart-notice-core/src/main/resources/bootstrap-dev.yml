@@ -1,31 +1,21 @@
 spring:
-  mvc:
-    pathmatch:
-      matching-strategy: ANT_PATH_MATCHER
-  application:
-    name: smart-notice
   cloud:
     nacos:
       discovery:
-        server-addr: 124.223.80.135:8848
+        server-addr: localhost:8848
+
   redis:
     database: 0
     host: 124.223.80.135
     port: 6379
     password: ak87715700
+
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://124.223.80.135:3306/smart_notice?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
-    username: smart
-    password: smart
-
-sa-token:
-  token-name: 'Authorization'
-  timeout: 2592000
-  activity-timeout: -1
-  token-style: simple-uuid
-  is-print: false
+    url: jdbc:mysql://localhost:3306/smart_notice?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
 
 rocketmq:
   # 多个NameServer，host:port;host:port，RocketMQProperties

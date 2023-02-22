@@ -1,7 +1,7 @@
 package cn.goroute.smart.post.mapper;
 
 import cn.goroute.smart.post.domain.entity.UserInteractEntity;
-import com.hccake.extend.mybatis.plus.mapper.ExtendMapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
 * @createDate 2023-02-10 01:00:04
 * @Entity cn.goroute.smart.post.domain.UserInteract
 */
-public interface UserInteractMapper extends ExtendMapper<UserInteractEntity> {
+public interface UserInteractMapper extends BaseMapper<UserInteractEntity> {
 
 	UserInteractEntity selectByUserIdAndTypeAndTargetId(@Param("userId") Long userId, @Param("type") Integer type, @Param("targetId") Long targetId);
 

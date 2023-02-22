@@ -1,10 +1,10 @@
 package cn.goroute.smart.user.service;
 
-import cn.goroute.smart.user.model.dto.UserProfileDTO;
-import cn.goroute.smart.user.domain.UserProfile;
-import cn.goroute.smart.user.model.vo.UserProfileVO;
-import com.hccake.ballcat.common.model.result.R;
-import com.hccake.extend.mybatis.plus.service.ExtendService;
+import cn.goroute.smart.auth.domain.dto.AuthUserDTO;
+import cn.goroute.smart.user.domain.entity.UserProfileEntity;
+import cn.goroute.smart.user.domain.vo.UserProfileVO;
+import com.baomidou.mybatisplus.extension.service.IService;
+import cn.goroute.smart.common.modules.result.R;
 
 import java.util.List;
 
@@ -13,28 +13,28 @@ import java.util.List;
 * @description 针对表【user_profile(用户信息表)】的数据库操作Service
 * @createDate 2022-09-17 19:30:44
 */
-public interface UserProfileService extends ExtendService<UserProfile> {
+public interface UserProfileService extends IService<UserProfileEntity> {
 
     /**
      * 获取用户信息
      * @param userId 用户id
      * @return 用户信息
      */
-    R<UserProfileDTO> getUserProfile(Long userId);
+    R<UserProfileVO> getUserProfile(Long userId);
 
     /**
      * 初始化用户信息
-     * @param userProfileDto 用户信息
+     * @param authUserDTO 用户信息
      * @return 是否成功
      */
-    R<Boolean> initUserProfile(UserProfileDTO userProfileDto);
+    R<Boolean> initUserProfile(AuthUserDTO authUserDTO);
 
 	/**
 	 * 批量获取用户信息
 	 * @param userIds 用户id集合
 	 * @return 用户信息集合
 	 */
-    R<List<UserProfileDTO>> batchGetUserProfile(List<Long> userIds);
+    R<List<UserProfileVO>> batchGetUserProfile(List<Long> userIds);
 
 	/**
 	 * 更新用户信息

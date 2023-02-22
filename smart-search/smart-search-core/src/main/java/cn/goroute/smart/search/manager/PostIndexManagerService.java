@@ -1,13 +1,13 @@
 package cn.goroute.smart.search.manager;
 
+import cn.goroute.smart.common.domain.PageResult;
+import cn.goroute.smart.common.modules.result.R;
 import cn.goroute.smart.search.converter.PostIndexConverter;
 import cn.goroute.smart.search.feign.FeignUserService;
 import cn.goroute.smart.search.model.dto.PostIndexDTO;
 import cn.goroute.smart.search.model.index.PostIndex;
-import cn.goroute.smart.user.model.dto.UserProfileDTO;
+import cn.goroute.smart.user.domain.vo.UserProfileVO;
 import cn.hutool.core.collection.CollUtil;
-import com.hccake.ballcat.common.model.domain.PageResult;
-import com.hccake.ballcat.common.model.result.R;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cglib.beans.BeanMap;
@@ -75,7 +75,7 @@ public class PostIndexManagerService {
 
         List<Long> authorIds = postIndexList.stream().map(PostIndex::getAuthorId).toList();
 
-        R<List<UserProfileDTO>> userProfileList = feignUserService.batchGetUserProfile(authorIds);
+        R<List<UserProfileVO>> userProfileList = feignUserService.batchGetUserProfile(authorIds);
 
         if (userProfileList.getCode() != 200) {
             log.error("获取用户信息失败");
@@ -86,9 +86,9 @@ public class PostIndexManagerService {
         if (CollUtil.isNotEmpty(userProfileList.getData())) {
 
 			// 用hashmap存储获取到的用户信息，方便后面填充
-            Map<Long, UserProfileDTO> userProfileMap = new HashMap<>();
-            for (UserProfileDTO userProfileDTO : userProfileList.getData()) {
-                userProfileMap.put(userProfileDTO.getUserId(), userProfileDTO);
+            Map<Long, UserProfileVO> userProfileMap = new HashMap<>();
+            for (UserProfileVO userProfileVO : userProfileList.getData()) {
+                userProfileMap.put(userProfileVO.getUserId(), userProfileVO);
             }
 
             List<PostIndexDTO> postIndexDTOList = new ArrayList<>();

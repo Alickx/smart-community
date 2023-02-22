@@ -4,7 +4,7 @@ import cn.goroute.smart.common.constant.RocketMqBizConstant;
 import cn.goroute.smart.post.domain.entity.PostEntity;
 import cn.goroute.smart.rocketmq.domain.RocketMqEntityMessage;
 import cn.goroute.smart.rocketmq.template.RocketMqTemplate;
-import com.hccake.ballcat.common.util.JsonUtils;
+import com.alibaba.fastjson2.JSON;
 import org.springframework.stereotype.Component;
 
 /**
@@ -17,7 +17,7 @@ public class PostSyncEventMessageTemplate extends RocketMqTemplate {
 
 	public void sendPostMessage(PostEntity postEntity) {
 		RocketMqEntityMessage rocketMqEntityMessage = new RocketMqEntityMessage();
-		rocketMqEntityMessage.setMessage(JsonUtils.toJson(postEntity));
+		rocketMqEntityMessage.setMessage(JSON.toJSONString(postEntity));
 		rocketMqEntityMessage.setKey(String.valueOf(postEntity.getId()));
 		rocketMqEntityMessage.setSource("文章风控事件");
 		rocketMqEntityMessage.setRetryTimes(3);

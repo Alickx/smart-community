@@ -1,14 +1,14 @@
 package cn.goroute.smart.notice.service;
 
+import cn.goroute.smart.common.domain.PageParam;
+import cn.goroute.smart.common.domain.PageResult;
+import cn.goroute.smart.common.modules.result.R;
 import cn.goroute.smart.notice.domain.dto.NoticeCountVO;
 import cn.goroute.smart.notice.domain.entity.NoticeEntity;
 import cn.goroute.smart.notice.domain.vo.NoticeMessageVO;
 import cn.goroute.smart.post.domain.dto.CommentDTO;
 import cn.goroute.smart.post.domain.dto.ThumbDTO;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.hccake.ballcat.common.model.domain.PageParam;
-import com.hccake.ballcat.common.model.domain.PageResult;
-import com.hccake.ballcat.common.model.result.R;
 
 import java.util.List;
 

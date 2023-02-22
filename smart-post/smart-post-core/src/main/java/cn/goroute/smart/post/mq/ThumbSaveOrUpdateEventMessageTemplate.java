@@ -4,7 +4,7 @@ import cn.goroute.smart.common.constant.RocketMqBizConstant;
 import cn.goroute.smart.post.domain.dto.ThumbDTO;
 import cn.goroute.smart.rocketmq.domain.RocketMqEntityMessage;
 import cn.goroute.smart.rocketmq.template.RocketMqTemplate;
-import com.hccake.ballcat.common.util.JsonUtils;
+import com.alibaba.fastjson2.JSON;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +31,7 @@ public class ThumbSaveOrUpdateEventMessageTemplate extends RocketMqTemplate{
 		thumbDTO.setSaveFlag(saveFlag);
 		message.setRetryTimes(3);
 		message.setSource("点赞信息");
-		message.setMessage(JsonUtils.toJson(thumbDTO));
+		message.setMessage(JSON.toJSONString(thumbDTO));
 		return message;
 	}
 

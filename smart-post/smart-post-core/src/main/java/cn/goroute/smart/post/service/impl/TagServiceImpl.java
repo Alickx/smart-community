@@ -1,12 +1,10 @@
 package cn.goroute.smart.post.service.impl;
 
 import cn.goroute.smart.common.util.RedisUtil;
-import cn.goroute.smart.post.constant.PostRedisConstant;
 import cn.goroute.smart.post.domain.entity.TagEntity;
 import cn.goroute.smart.post.mapper.TagMapper;
 import cn.goroute.smart.post.service.TagService;
-import com.hccake.ballcat.common.redis.core.annotation.Cached;
-import com.hccake.extend.mybatis.plus.service.impl.ExtendServiceImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +17,7 @@ import java.util.List;
 */
 @Service
 @RequiredArgsConstructor
-public class TagServiceImpl extends ExtendServiceImpl<TagMapper, TagEntity>
+public class TagServiceImpl extends ServiceImpl<TagMapper, TagEntity>
     implements TagService{
 
 	private final RedisUtil redisUtil;
@@ -54,7 +52,7 @@ public class TagServiceImpl extends ExtendServiceImpl<TagMapper, TagEntity>
 	}
 
 	@Override
-	@Cached(key = PostRedisConstant.TagKey.POST_TAG_KEY, ttl = 60 * 60 * 24)
+//	@Cached(key = PostRedisConstant.TagKey.POST_TAG_KEY, ttl = 60 * 60 * 24)
 	public List<TagEntity> getTagList() {
 		return this.list();
 	}

@@ -1,13 +1,13 @@
 package cn.goroute.smart.post.strategy.thumb.impl;
 
 import cn.goroute.smart.common.constant.enums.ErrorCodeEnum;
+import cn.goroute.smart.common.exception.BusinessException;
 import cn.goroute.smart.post.converter.ThumbConverter;
 import cn.goroute.smart.post.domain.dto.ThumbDTO;
 import cn.goroute.smart.post.domain.entity.PostEntity;
 import cn.goroute.smart.post.domain.entity.ThumbEntity;
 import cn.goroute.smart.post.mapper.PostMapper;
 import cn.goroute.smart.post.strategy.thumb.AbstractThumbStrategy;
-import com.hccake.ballcat.common.core.exception.BusinessException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 

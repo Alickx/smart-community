@@ -1,9 +1,11 @@
 package cn.goroute.smart.user.converter;
 
-import cn.goroute.smart.user.model.dto.UserProfileDTO;
-import cn.goroute.smart.user.domain.UserProfile;
-import cn.goroute.smart.user.model.vo.UserProfileVO;
+import cn.goroute.smart.auth.domain.dto.AuthUserDTO;
+import cn.goroute.smart.user.domain.entity.UserProfileEntity;
+import cn.goroute.smart.user.domain.dto.UserProfileDTO;
+import cn.goroute.smart.user.domain.vo.UserProfileVO;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
@@ -20,19 +22,32 @@ public interface UserProfileConverter {
 
 	/**
 	 * PO 转 DTO
-	 * @param userProfile 用户信息
+	 * @param userProfileEntity 用户信息
 	 * @return UserProfileDTO 用户信息DTO
 	 */
-	UserProfileDTO poToDto(UserProfile userProfile);
+	UserProfileDTO poToDto(UserProfileEntity userProfileEntity);
 
 
 	/**
 	 * 批量 PO 转 DTO
-	 * @param userProfile 用户信息
+	 * @param userProfileEntity 用户信息
 	 * @return List<UserProfileDTO> 用户信息DTO
 	 */
-	List<UserProfileDTO> poToDto(List<UserProfile> userProfile);
+	List<UserProfileDTO> poToDto(List<UserProfileEntity> userProfileEntity);
 
-	UserProfile voToPo(UserProfileVO userProfileVO);
+	UserProfileVO poToVo(UserProfileEntity userProfileEntity);
+
+	List<UserProfileVO> poToVo(List<UserProfileEntity> userProfileEntity);
+
+	UserProfileEntity dtoToPo(UserProfileDTO userProfileDTO);
+
+
+	@Mapping(target = "userId", source = "id")
+	@Mapping(target = "nickName", source = "userName")
+	@Mapping(target = "email", source = "userEmail")
+	UserProfileEntity authUserDTOToPo(AuthUserDTO authUserDTO);
+
+
+	UserProfileEntity voToPo(UserProfileVO userProfileVO);
 
 }

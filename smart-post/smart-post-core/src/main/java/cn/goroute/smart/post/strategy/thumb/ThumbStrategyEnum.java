@@ -1,6 +1,6 @@
 package cn.goroute.smart.post.strategy.thumb;
 
-import com.hccake.ballcat.common.util.SpringUtils;
+import cn.goroute.smart.common.util.SpringUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -37,7 +37,7 @@ public enum ThumbStrategyEnum {
 	public static ThumbStrategy getStrategyByType(Integer type) {
 		for (ThumbStrategyEnum value : ThumbStrategyEnum.values()) {
 			if (value.getType().equals(type)) {
-				return SpringUtils.getBean(value.getBeanName(), ThumbStrategy.class);
+				return SpringUtil.getBean(value.getBeanName(), ThumbStrategy.class);
 			}
 		}
 		return null;

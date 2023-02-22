@@ -1,12 +1,12 @@
 package cn.goroute.smart.post.service.impl;
 
+import cn.goroute.smart.common.constant.enums.BooleanEnum;
 import cn.goroute.smart.post.domain.entity.CommentEntity;
 import cn.goroute.smart.post.domain.entity.ThumbEntity;
 import cn.goroute.smart.post.domain.entity.UserInteractEntity;
 import cn.goroute.smart.post.mapper.UserInteractMapper;
 import cn.goroute.smart.post.service.UserInteractService;
-import com.hccake.ballcat.common.core.constant.enums.BooleanEnum;
-import com.hccake.extend.mybatis.plus.service.impl.ExtendServiceImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ import java.util.List;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class UserInteractServiceImpl extends ExtendServiceImpl<UserInteractMapper, UserInteractEntity>
+public class UserInteractServiceImpl extends ServiceImpl<UserInteractMapper, UserInteractEntity>
     implements UserInteractService{
 
 	private final UserInteractMapper userInteractMapper;
@@ -38,12 +38,12 @@ public class UserInteractServiceImpl extends ExtendServiceImpl<UserInteractMappe
 			userInteractEntity.setUserId(thumbEntity.getUserId());
 			userInteractEntity.setType(thumbEntity.getType());
 			userInteractEntity.setTargetId(thumbEntity.getToId());
-			userInteractEntity.setIsThumb(isThumb ? BooleanEnum.TRUE.getValue() : BooleanEnum.FALSE.getValue());
-			userInteractEntity.setIsComment(BooleanEnum.FALSE.getValue());
-			userInteractEntity.setIsCollect(BooleanEnum.FALSE.getValue());
+			userInteractEntity.setIsThumb(isThumb ? BooleanEnum.TRUE.intValue() : BooleanEnum.FALSE.intValue());
+			userInteractEntity.setIsComment(BooleanEnum.FALSE.intValue());
+			userInteractEntity.setIsCollect(BooleanEnum.FALSE.intValue());
 			userInteractMapper.insert(userInteractEntity);
 		} else {
-			userInteractEntity.setIsThumb(isThumb ? BooleanEnum.TRUE.getValue() : BooleanEnum.FALSE.getValue());
+			userInteractEntity.setIsThumb(isThumb ? BooleanEnum.TRUE.intValue() : BooleanEnum.FALSE.intValue());
 			userInteractMapper.updateById(userInteractEntity);
 		}
 
@@ -60,12 +60,12 @@ public class UserInteractServiceImpl extends ExtendServiceImpl<UserInteractMappe
 			userInteractEntity.setUserId(commentEntity.getUserId());
 			userInteractEntity.setType(commentEntity.getType());
 			userInteractEntity.setTargetId(commentEntity.getPostId());
-			userInteractEntity.setIsThumb(BooleanEnum.FALSE.getValue());
-			userInteractEntity.setIsComment(BooleanEnum.TRUE.getValue());
-			userInteractEntity.setIsCollect(BooleanEnum.FALSE.getValue());
+			userInteractEntity.setIsThumb(BooleanEnum.FALSE.intValue());
+			userInteractEntity.setIsComment(BooleanEnum.TRUE.intValue());
+			userInteractEntity.setIsCollect(BooleanEnum.FALSE.intValue());
 			userInteractMapper.insert(userInteractEntity);
 		} else {
-			userInteractEntity.setIsComment(isComment ? BooleanEnum.TRUE.getValue() : BooleanEnum.FALSE.getValue());
+			userInteractEntity.setIsComment(isComment ? BooleanEnum.TRUE.intValue() : BooleanEnum.FALSE.intValue());
 			userInteractMapper.updateById(userInteractEntity);
 		}
 

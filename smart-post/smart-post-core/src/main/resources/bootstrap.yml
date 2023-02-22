@@ -3,9 +3,18 @@ spring:
     active: dev
   application:
     name: smart-post
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
 
 server:
-  port: 18000
+  port: 12000
+
+sa-token:
+  token-name: 'Authorization'
+  timeout: 2592000
+  token-style: simple-uuid
+  is-print: false
 
 # mybatis-plus相关配置
 mybatis-plus:

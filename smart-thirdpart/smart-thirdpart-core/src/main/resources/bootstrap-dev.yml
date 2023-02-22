@@ -1,0 +1,48 @@
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+
+  redis:
+    database: 0
+    host: 124.223.80.135
+    port: 6379
+    password: ak87715700
+
+  mail:
+    host: smtp.qq.com
+    username: 89991829@qq.com
+    password: ewvvblcrcbklbidb
+    default-encoding: UTF-8
+    port:
+    properties:
+        from: 89991829@qq.com
+        mail:
+            smtp:
+              socketFactory:
+                class: javax.net.ssl.SSLSocketFactory
+              port: 465
+            auth: true
+            starttls:
+                enable: true
+                required: true
+            ssl:
+                enable: true
+                trust: smtp.qq.com
+
+rocketmq:
+  # 多个NameServer，host:port;host:port，RocketMQProperties
+  name-server: 124.223.80.135:9876
+  producer:
+    # 发送同一类消息的设置为同一个group，保证唯一
+    group: springboot_producer_group
+    # 消息跟踪主题的名称值。如果不进行配置，可以使用默认的跟踪主题名称
+    customizedTraceTopic: RMQ_SYS_TRACE_TOPIC
+
+# 日志配置
+logging:
+  config: classpath:logback-spring.xml
+  level:
+    org.apache.rocketmq: error
+    RocketmqClient: error

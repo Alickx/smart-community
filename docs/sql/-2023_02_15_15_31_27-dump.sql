@@ -1112,13 +1112,13 @@ LOCK TABLES `permissions` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `roles`
+-- Table structure for table `roleEntities`
 --
 
-DROP TABLE IF EXISTS `roles`;
+DROP TABLE IF EXISTS `roleEntities`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `roles` (
+CREATE TABLE `roleEntities` (
   `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `role` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   UNIQUE KEY `idx_user_role` (`username`,`role`) USING BTREE
@@ -1126,13 +1126,13 @@ CREATE TABLE `roles` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `roles`
+-- Dumping data for table `roleEntities`
 --
 
-LOCK TABLES `roles` WRITE;
-/*!40000 ALTER TABLE `roles` DISABLE KEYS */;
-INSERT INTO `roles` VALUES ('nacos','ROLE_ADMIN');
-/*!40000 ALTER TABLE `roles` ENABLE KEYS */;
+LOCK TABLES `roleEntities` WRITE;
+/*!40000 ALTER TABLE `roleEntities` DISABLE KEYS */;
+INSERT INTO `roleEntities` VALUES ('nacos','ROLE_ADMIN');
+/*!40000 ALTER TABLE `roleEntities` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --

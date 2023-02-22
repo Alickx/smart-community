@@ -14,7 +14,7 @@
 	</modules>
 	<artifactId>smart-post</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>smart-postEntity</name>
+	<name>smart-post</name>
 	<description>文章服务模块</description>
 	<properties>
 		<java.version>17</java.version>

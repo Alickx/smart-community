@@ -1,8 +1,8 @@
 package cn.goroute.smart.post.converter;
 
 import cn.goroute.smart.post.domain.entity.PostEntity;
-import cn.goroute.smart.post.domain.dto.PostAbbreviationDTO;
-import cn.goroute.smart.post.domain.dto.PostInfoDTO;
+import cn.goroute.smart.post.domain.vo.PostAbbreviationVO;
+import cn.goroute.smart.post.domain.vo.PostInfoVO;
 import cn.goroute.smart.post.domain.dto.PostViewRankDTO;
 import cn.goroute.smart.post.domain.vo.PostVO;
 import org.mapstruct.Mapper;
@@ -25,14 +25,14 @@ public interface PostConverter {
 	 * @param postEntity 文章
 	 * @return PostInfoDTO 文章DTO
 	 */
-	PostInfoDTO poToDto(PostEntity postEntity);
+	PostInfoVO poToDto(PostEntity postEntity);
 
 	/**
 	 * PO 转 DTO
 	 * @param postEntity 文章
 	 * @return PostAbbreviationDTO 文章缩略DTO
 	 */
-	PostAbbreviationDTO poToAbbreviationDto(PostEntity postEntity);
+	PostAbbreviationVO poToAbbreviationDto(PostEntity postEntity);
 
 	/**
 	 * VO 转 PO

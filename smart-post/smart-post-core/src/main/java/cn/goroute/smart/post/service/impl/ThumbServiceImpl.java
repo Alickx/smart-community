@@ -1,13 +1,13 @@
 package cn.goroute.smart.post.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.goroute.smart.common.modules.result.R;
 import cn.goroute.smart.post.async.ThumbAsyncService;
 import cn.goroute.smart.post.domain.entity.ThumbEntity;
 import cn.goroute.smart.post.domain.form.ThumbForm;
 import cn.goroute.smart.post.mapper.ThumbMapper;
 import cn.goroute.smart.post.service.ThumbService;
-import com.hccake.ballcat.common.model.result.R;
-import com.hccake.extend.mybatis.plus.service.impl.ExtendServiceImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class ThumbServiceImpl extends ExtendServiceImpl<ThumbMapper, ThumbEntity>
+public class ThumbServiceImpl extends ServiceImpl<ThumbMapper, ThumbEntity>
 		implements ThumbService {
 
 	private final ThumbAsyncService thumbAsyncService;
