@@ -71,6 +71,21 @@
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
         </dependency>
+		<!--			日志-->
+		<dependency>
+			<groupId>com.yomahub</groupId>
+			<artifactId>tlog-feign-spring-boot-starter</artifactId>
+			<version>${tlog.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.yomahub</groupId>
+			<artifactId>tlog-web-spring-boot-starter</artifactId>
+			<version>${tlog.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-log4j2</artifactId>
+		</dependency>
     </dependencies>
 
     <properties>

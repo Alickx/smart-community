@@ -20,4 +20,8 @@ spring:
 
 # 日志配置
 logging:
-  config: classpath:logback-spring.xml
+  config: classpath:log4j2.xml
+
+
+tlog:
+  enable-invoke-time-print: true

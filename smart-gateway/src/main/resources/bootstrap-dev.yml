@@ -1,12 +1,5 @@
-server:
-  port: 8601
 spring:
-  application:
-    name: smart-gateway
   cloud:
-    nacos:
-      discovery:
-        server-addr: localhost:8848
     gateway:
       routes:
         - id: route_member
@@ -51,9 +44,6 @@ spring:
     port: 6379
     password: ak87715700
 
-sa-token:
-  token-name: 'Authorization'
-  timeout: 2592000
-  activity-timeout: -1
-  token-style: simple-uuid
-  is-print: false
+# 日志配置
+logging:
+  config: classpath:log4j2.xml

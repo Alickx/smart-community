@@ -33,7 +33,6 @@
 		<lombok.version>1.18.24</lombok.version>
 		<hutool.version>5.8.5</hutool.version>
 		<logstash.version>6.6</logstash.version>
-		<logback.version>1.2.10</logback.version>
 		<elasticsearch.version>7.16.3</elasticsearch.version>
 		<aliyun.oss.version>3.15.1</aliyun.oss.version>
 		<docker.maven.version>1.2.2</docker.maven.version>
@@ -53,6 +52,7 @@
 		<transmittable-thread-local.version>2.14.2</transmittable-thread-local.version>
 		<tianai-captcha.version>1.3.3</tianai-captcha.version>
 		<jjwt.version>0.11.5</jjwt.version>
+		<tlog.version>1.5.0</tlog.version>
 	</properties>
 
 	<modules>
@@ -70,6 +70,18 @@
 
 	<dependencyManagement>
 		<dependencies>
+			<!--			springboot web-->
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-web</artifactId>
+				<version>${spring.boot.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-starter-logging</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
 			<!--  Spring Cloud Alibaba 依赖  -->
 			<dependency>
 				<groupId>com.alibaba.cloud</groupId>
@@ -91,18 +103,6 @@
 				<groupId>com.alibaba</groupId>
 				<artifactId>druid-spring-boot-starter</artifactId>
 				<version>${druid.version}</version>
-			</dependency>
-			<!--        logstash日志收集-->
-			<dependency>
-				<groupId>net.logstash.logback</groupId>
-				<artifactId>logstash-logback-encoder</artifactId>
-				<version>${logstash.version}</version>
-			</dependency>
-			<!--        logback日志记录框架-->
-			<dependency>
-				<groupId>ch.qos.logback</groupId>
-				<artifactId>logback-core</artifactId>
-				<version>${logback.version}</version>
 			</dependency>
 			<!--        aop-->
 			<dependency>
@@ -234,6 +234,22 @@
 				<version>${jjwt.version}</version>
 				<scope>runtime</scope>
 			</dependency>
+			<!--			日志-->
+			<dependency>
+				<groupId>com.yomahub</groupId>
+				<artifactId>tlog-feign-spring-boot-starter</artifactId>
+				<version>${tlog.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.yomahub</groupId>
+				<artifactId>tlog-gateway-spring-boot-starter</artifactId>
+				<version>${tlog.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.yomahub</groupId>
+				<artifactId>tlog-web-spring-boot-starter</artifactId>
+				<version>${tlog.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -249,6 +265,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-logging</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>

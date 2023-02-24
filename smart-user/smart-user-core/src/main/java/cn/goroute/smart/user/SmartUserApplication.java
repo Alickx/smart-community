@@ -13,7 +13,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @SpringBootApplication(scanBasePackages = {"cn.goroute.smart"})
 @EnableDiscoveryClient
 @EnableFeignClients
-@MapperScan("cn.goroute.smart.*.mapper")
+@MapperScan("cn.goroute.smart.*.modules.*.mapper")
 @EnableAsync
 public class SmartUserApplication {
 

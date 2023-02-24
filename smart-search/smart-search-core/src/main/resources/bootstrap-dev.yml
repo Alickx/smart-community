@@ -26,3 +26,10 @@ rocketmq:
         group: springboot_producer_group
         # 消息跟踪主题的名称值。如果不进行配置，可以使用默认的跟踪主题名称
         customizedTraceTopic: RMQ_SYS_TRACE_TOPIC
+
+# 日志配置
+logging:
+  config: classpath:log4j2.xml
+
+tlog:
+  enable-invoke-time-print: true

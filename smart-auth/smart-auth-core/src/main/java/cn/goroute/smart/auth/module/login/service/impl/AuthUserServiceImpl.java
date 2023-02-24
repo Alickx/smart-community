@@ -23,7 +23,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.BCrypt;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 /**
@@ -33,7 +33,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @RequiredArgsConstructor
-@Slf4j
+@Log4j2
 public class AuthUserServiceImpl extends ServiceImpl<AuthUserMapper, AuthUserEntity>
         implements AuthUserService {
 
@@ -53,6 +53,8 @@ public class AuthUserServiceImpl extends ServiceImpl<AuthUserMapper, AuthUserEnt
      */
     @Override
     public R<CustomUserDetailsVO> login(UserLoginForm userLoginForm) {
+
+        log.info("用户登录，登录信息：{}", userLoginForm);
 
         AuthUserEntity authUserEntity;
 

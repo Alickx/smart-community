@@ -1,3 +1,19 @@
 spring:
   profiles:
     active: dev
+  application:
+    name: smart-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+
+server:
+  port: 8601
+
+sa-token:
+  token-name: 'Authorization'
+  timeout: 2592000
+  activity-timeout: -1
+  token-style: simple-uuid
+  is-print: false

@@ -40,3 +40,12 @@ captcha:
   secondary:
     enabled: true
 
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+logging:
+  config: classpath:log4j2.xml
+
+tlog:
+  enable-invoke-time-print: true

@@ -28,7 +28,8 @@ rocketmq:
 
 # 日志配置
 logging:
-  config: classpath:logback-spring.xml
-  level:
-    org.apache.rocketmq: error
-    RocketmqClient: error
+  config: classpath:log4j2.xml
+
+tlog:
+  enable-invoke-time-print: true
+
