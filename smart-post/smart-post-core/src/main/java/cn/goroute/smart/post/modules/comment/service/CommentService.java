@@ -40,7 +40,25 @@ public interface CommentService extends IService<CommentEntity> {
 	 */
 	R<Boolean> commentDelete(CommentForm commentForm);
 
+	/**
+	 * 查询更多回复
+	 * @param commentQO 查询参数
+	 * @return 查询结果
+	 */
 	R<List<CommentVO>> queryMoreReply(CommentQO commentQO);
 
+	/**
+	 * 通过用户评论查询其文章id
+	 * @param pageParam 分页参数
+	 * @param userId 用户id
+	 * @return
+	 */
 	PageResult<Long> queryPostIdsByComment(PageParam pageParam, Long userId);
+
+	/**
+	 * 通过文章id查询评论数
+	 * @param postId 文章id
+	 * @return 评论数
+	 */
+	Long queryCommentNumByPostId(Long postId);
 }

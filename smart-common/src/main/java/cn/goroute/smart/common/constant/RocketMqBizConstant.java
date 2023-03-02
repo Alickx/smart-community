@@ -40,6 +40,8 @@ public class RocketMqBizConstant {
         // 文章同步到ES
         public static final String POST_SYNC_SAVE_ES_HANDLE_GROUP = "post_sync_save_es_handle_group";
 
+		// 文章发布事件
+		public static final String POST_PUBLISH_EVENT_GROUP = "post_publish_event_group";
     }
 
     /**

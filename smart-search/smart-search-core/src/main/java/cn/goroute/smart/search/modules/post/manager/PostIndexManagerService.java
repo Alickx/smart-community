@@ -1,8 +1,8 @@
-package cn.goroute.smart.search.manager;
+package cn.goroute.smart.search.modules.post.manager;
 
 import cn.goroute.smart.common.domain.PageResult;
 import cn.goroute.smart.common.modules.result.R;
-import cn.goroute.smart.search.converter.PostIndexConverter;
+import cn.goroute.smart.search.modules.post.converter.PostIndexConverter;
 import cn.goroute.smart.search.feign.FeignUserService;
 import cn.goroute.smart.search.model.dto.PostIndexDTO;
 import cn.goroute.smart.search.model.index.PostIndex;

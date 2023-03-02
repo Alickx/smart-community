@@ -1,9 +1,9 @@
-package cn.goroute.smart.notice.modules.notice.listener;
+package cn.goroute.smart.notice.modules.notice.mq.listener;
 
 import cn.goroute.smart.common.constant.RocketMqBizConstant;
 import cn.goroute.smart.notice.modules.notice.service.NoticeService;
-import cn.goroute.smart.post.domain.dto.ThumbDTO;
-import cn.goroute.smart.post.domain.entity.ThumbEntity;
+import cn.goroute.smart.post.domain.dto.CommentDTO;
+import cn.goroute.smart.post.domain.entity.CommentEntity;
 import cn.goroute.smart.rocketmq.domain.RocketMqEntityMessage;
 import cn.goroute.smart.rocketmq.listener.BaseMqMessageListener;
 import com.alibaba.fastjson2.JSON;
@@ -14,20 +14,22 @@ import org.apache.rocketmq.spring.core.RocketMQListener;
 import org.springframework.stereotype.Component;
 
 /**
- * @Author: 蔡国鹏
- * @Date: 2022/10/22/16:00
- * @Description: 点赞业务监听者
+ * @Author: Alickx
+ * @Date: 2023/01/07/10:56
+ * @Description: 评论监听器
  */
 @RequiredArgsConstructor
 @Component
 @Slf4j
 @RocketMQMessageListener(
-		topic = RocketMqBizConstant.ThumbMqConstant.THUMB_TOPIC,
-		consumerGroup = RocketMqBizConstant.ThumbMqConstant.THUMB_NOTICE_GROUP,
+		topic = RocketMqBizConstant.CommentMqConstant.COMMENT_TOPIC,
+		consumerGroup = RocketMqBizConstant.CommentMqConstant.COMMENT_NOTICE_GROUP,
 		consumeThreadNumber = 5
 )
-public class PostThumbListener extends BaseMqMessageListener<RocketMqEntityMessage>
-		implements RocketMQListener<RocketMqEntityMessage>{
+public class PostCommentListener extends BaseMqMessageListener<RocketMqEntityMessage>
+		implements RocketMQListener<RocketMqEntityMessage> {
+
+
 	private final NoticeService noticeService;
 
 	/**
@@ -37,7 +39,7 @@ public class PostThumbListener extends BaseMqMessageListener<RocketMqEntityMessa
 	 */
 	@Override
 	protected String consumerName() {
-		return "点赞业务监听者";
+		return "文章评论监听器";
 	}
 
 	/**
@@ -47,9 +49,8 @@ public class PostThumbListener extends BaseMqMessageListener<RocketMqEntityMessa
 	 */
 	@Override
 	protected void handleMessage(RocketMqEntityMessage message) {
-		// 创建通知
-		ThumbDTO thumbDTO = JSON.parseObject(message.getMessage(), ThumbDTO.class);
-		noticeService.saveThumbNotice(thumbDTO);
+		CommentDTO commentDTO = JSON.parseObject(message.getMessage(), CommentDTO.class);
+		noticeService.saveCommentNotice(commentDTO);
 	}
 
 	/**
@@ -59,7 +60,7 @@ public class PostThumbListener extends BaseMqMessageListener<RocketMqEntityMessa
 	 */
 	@Override
 	protected void overMaxRetryTimesMessage(RocketMqEntityMessage message) {
-		log.error("帖子评论监听超过重试次数,消息内容:[{}]", JSON.parseObject(message.getMessage(), ThumbEntity.class).toString());
+		log.error("文章评论监听超过重试次数,消息内容:[{}]", JSON.parseObject(message.getMessage(), CommentEntity.class).toString());
 	}
 
 	/**

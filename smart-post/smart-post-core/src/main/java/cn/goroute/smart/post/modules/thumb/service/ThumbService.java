@@ -25,4 +25,11 @@ public interface ThumbService extends IService<ThumbEntity> {
 	 * @return 是否成功
 	 */
 	R<Boolean> cancelThumb(ThumbForm thumbForm);
+
+	/**
+	 * 根据文章id查询点赞数
+	 * @param postId 文章id
+	 * @return
+	 */
+	Long queryPostThumbCountByPostId(Long postId);
 }

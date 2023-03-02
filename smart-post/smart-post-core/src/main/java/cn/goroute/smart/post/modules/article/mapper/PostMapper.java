@@ -43,6 +43,10 @@ public interface PostMapper extends BaseMapper<PostEntity> {
     void descThumbNum(@Param("toId") long toId, @Param("thumbNum") int thumbNum);
 
     void incrCommentCount(@Param("postId") Long postId);
+
+    void updateCommentCount(@Param("postId") String postId, @Param("commentCount") int commentCount);
+
+	void updateThumbCount(@Param("postId") String postId, @Param("thumbCount") int thumbCount);
 }
 
 

@@ -41,129 +41,131 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, NoticeEntity>
-        implements NoticeService {
+	implements NoticeService {
 
-    private final NoticeMapper noticeMapper;
-    private final NoticeManagerService noticeManagerService;
-    private final FeignUserProfileService feignUserProfileService;
+	private final NoticeMapper noticeMapper;
+	private final NoticeManagerService noticeManagerService;
+	private final FeignUserProfileService feignUserProfileService;
 
-    @Override
-    public void saveThumbNotice(ThumbDTO thumbDTO) {
+	@Override
+	public void saveThumbNotice(ThumbDTO thumbDTO) {
 
-        // 查询该点赞通知是否已经存在
+		// 查询该点赞通知是否已经存在
 		NoticeEntity noticeEntity = noticeMapper.
-				queryNoticeIsExist(thumbDTO.getUserId(), thumbDTO.getToUserId(),
-						MsgTypeEnum.THUMB.getCode(), thumbDTO.getId());
+			queryNoticeIsExist(thumbDTO.getUserId(), thumbDTO.getToUserId(),
+				MsgTypeEnum.THUMB.getCode(), thumbDTO.getId());
 
 		if (null == noticeEntity) {
 
-            // 判断是否是自己给自己点赞
-            if (thumbDTO.getUserId().equals(thumbDTO.getToUserId())) {
-                return;
-            }
+			// 判断是否是自己给自己点赞
+			if (thumbDTO.getUserId().equals(thumbDTO.getToUserId())) {
+				return;
+			}
 
-            // 创建通知
-            NoticeMessageInfoEntity noticeMessageInfoEntity = new NoticeMessageInfoEntity();
-            noticeMessageInfoEntity.setTargetId(thumbDTO.getId());
-            noticeMessageInfoEntity.setPostId(thumbDTO.getPostId());
-            noticeMessageInfoEntity.setPostTitle(thumbDTO.getPostTitle());
-            noticeMessageInfoEntity.setSourceType(thumbDTO.getType());
-            noticeMessageInfoEntity.setContent(thumbDTO.getContent());
-            noticeMessageInfoEntity.setMsgType(MsgTypeEnum.THUMB.getCode());
+			// 创建通知
+			NoticeMessageInfoEntity noticeMessageInfoEntity = new NoticeMessageInfoEntity();
+			noticeMessageInfoEntity.setTargetId(thumbDTO.getId());
+			noticeMessageInfoEntity.setPostId(thumbDTO.getPostId());
+			noticeMessageInfoEntity.setPostTitle(thumbDTO.getPostTitle());
+			noticeMessageInfoEntity.setSourceType(thumbDTO.getType());
+			noticeMessageInfoEntity.setContent(thumbDTO.getContent());
+			noticeMessageInfoEntity.setMsgType(MsgTypeEnum.THUMB.getCode());
 
-            noticeManagerService.saveNoticeMessage(noticeMessageInfoEntity, thumbDTO.getUserId(), thumbDTO.getToUserId());
-        }
+			noticeManagerService.saveNoticeMessage(noticeMessageInfoEntity, thumbDTO.getUserId(), thumbDTO.getToUserId());
+		}
 
 
-    }
+	}
 
-    @Override
-    public void saveCommentNotice(CommentDTO commentDTO) {
+	@Override
+	public void saveCommentNotice(CommentDTO commentDTO) {
 
-        // 查询该评论通知是否已经存在
+		// 查询该评论通知是否已经存在
 		NoticeEntity noticeEntity = noticeMapper.
-				queryNoticeIsExist(commentDTO.getUserId(), commentDTO.getToUserId(),
-						MsgTypeEnum.COMMENT.getCode(), commentDTO.getId());
+			queryNoticeIsExist(commentDTO.getUserId(), commentDTO.getToUserId(),
+				MsgTypeEnum.COMMENT.getCode(), commentDTO.getId());
 
 		if (null == noticeEntity) {
 
-            // 判断是否是自己给自己评论
-            if (commentDTO.getUserId().equals(commentDTO.getToUserId())) {
-                return;
-            }
+			// 判断是否是自己给自己评论
+			if (commentDTO.getUserId().equals(commentDTO.getToUserId())) {
+				return;
+			}
 
-            // 创建通知
-            NoticeMessageInfoEntity noticeMessageInfoEntity = new NoticeMessageInfoEntity();
-            ;
-            noticeMessageInfoEntity.setTargetId(commentDTO.getId());
-            noticeMessageInfoEntity.setPostId(commentDTO.getPostId());
-            noticeMessageInfoEntity.setPostTitle(commentDTO.getPostTitle());
-            noticeMessageInfoEntity.setSourceType(SourceTypeEnum.COMMENT.getCode());
-            noticeMessageInfoEntity.setContent(commentDTO.getContent());
-            noticeMessageInfoEntity.setMsgType(MsgTypeEnum.COMMENT.getCode());
+			// 创建通知
+			NoticeMessageInfoEntity noticeMessageInfoEntity = new NoticeMessageInfoEntity();
+			;
+			noticeMessageInfoEntity.setTargetId(commentDTO.getId());
+			noticeMessageInfoEntity.setPostId(commentDTO.getPostId());
+			noticeMessageInfoEntity.setPostTitle(commentDTO.getPostTitle());
+			noticeMessageInfoEntity.setSourceType(SourceTypeEnum.COMMENT.getCode());
+			noticeMessageInfoEntity.setContent(commentDTO.getContent());
+			noticeMessageInfoEntity.setMsgType(MsgTypeEnum.COMMENT.getCode());
 
-            noticeManagerService.saveNoticeMessage(noticeMessageInfoEntity, commentDTO.getUserId(), commentDTO.getToUserId());
-        }
+			noticeManagerService.saveNoticeMessage(noticeMessageInfoEntity, commentDTO.getUserId(), commentDTO.getToUserId());
+		}
 
-    }
+	}
 
-    @Override
-    public R<List<NoticeCountVO>> queryNoticeCount() {
+	@Override
+	public R<List<NoticeCountVO>> queryNoticeCount() {
 
-        long userId = StpUtil.getLoginIdAsLong();
+		long userId = StpUtil.getLoginIdAsLong();
 
-        List<NoticeCountVO> noticeCountVOS = noticeMapper.queryNoticeCount(userId, StatusConstant.NORMAL_STATUS);
+		List<NoticeCountVO> noticeCountVOS = noticeMapper.queryNoticeCount(userId, StatusConstant.NORMAL_STATUS);
 
-        return R.ok(noticeCountVOS);
-    }
-
-
-    @Override
-    public R<PageResult<NoticeMessageVO>> pageNotice(Integer type, PageParam pageParam) {
-
-        long userId = StpUtil.getLoginIdAsLong();
-        ;
-
-        Page<NoticeMessageDTO> page = new Page<>(pageParam.getPage(), pageParam.getSize());
-
-        IPage<NoticeMessageDTO> pageRecord = noticeMapper.pageNotice(userId, type, page);
-
-        List<NoticeMessageDTO> records = pageRecord.getRecords();
-
-        // 如果集合不为空则查询用户信息
-        List<Long> senderIds = records.stream().map(NoticeMessageDTO::getSenderId).distinct().toList();
-
-        R<List<UserProfileVO>> batchResult = feignUserProfileService.batchGetUserProfile(senderIds);
-
-        List<UserProfileVO> userProfileVOS = batchResult.getData();
-
-        // 将用户信息转换为map
-        Map<Long, UserProfileVO> userProfileMap = userProfileVOS
-                .stream()
-                .collect(Collectors.toMap(UserProfileVO::getUserId, Function.identity()));
+		return R.ok(noticeCountVOS);
+	}
 
 
-        // 构造返回结果
-        List<NoticeMessageVO> result = records.stream().map(record -> {
-            NoticeMessageVO noticeMessageVO = NoticeMessageConverter.INSTANCE.dtoToVO(record);
-            UserProfileVO sender = userProfileMap.get(record.getSenderId());
-            if (sender != null) {
-                noticeMessageVO.setSender(sender);
-            }
-            return noticeMessageVO;
-        }).toList();
+	@Override
+	public R<PageResult<NoticeMessageVO>> pageNotice(Integer type, PageParam pageParam) {
 
-        // 获取未读消息的id
-        List<Long> ids = records.stream().filter(record -> record.getStatus().equals(StatusConstant.NORMAL_STATUS)).map(NoticeMessageDTO::getId).toList();
+		long userId = StpUtil.getLoginIdAsLong();
+		;
 
-        // 将未读消息设置为已读
-        if (!ids.isEmpty()) {
-            noticeManagerService.updateNoticeStatus(ids, StatusConstant.DELETE_STATUS);
-        }
+		Page<NoticeMessageDTO> page = new Page<>(pageParam.getPage(), pageParam.getSize());
 
-        return R.ok(new PageResult<>(result, pageRecord.getTotal()));
+		IPage<NoticeMessageDTO> pageRecord = noticeMapper.pageNotice(userId, type, page);
 
-    }
+		List<NoticeMessageDTO> records = pageRecord.getRecords();
+
+		// 如果集合不为空则查询用户信息
+		List<Long> senderIds = records.stream().map(NoticeMessageDTO::getSenderId).distinct().toList();
+
+		R<List<UserProfileVO>> batchResult = feignUserProfileService.batchGetUserProfile(senderIds);
+
+		List<UserProfileVO> userProfileVOS = batchResult.getData();
+
+		// 将用户信息转换为map
+		Map<Long, UserProfileVO> userProfileMap = userProfileVOS
+			.stream()
+			.collect(Collectors.toMap(UserProfileVO::getUserId, Function.identity()));
+
+
+		// 构造返回结果
+		List<NoticeMessageVO> result = records.stream().map(record -> {
+			NoticeMessageVO noticeMessageVO = NoticeMessageConverter.INSTANCE.dtoToVO(record);
+			UserProfileVO sender = userProfileMap.get(record.getSenderId());
+			if (sender != null) {
+				noticeMessageVO.setSender(sender);
+			}
+			return noticeMessageVO;
+		}).toList();
+
+		// 获取未读消息的id
+		List<Long> ids = records.stream()
+			.filter(record -> record.getStatus().equals(StatusConstant.NORMAL_STATUS))
+			.map(NoticeMessageDTO::getId).toList();
+
+		// 将未读消息设置为已读
+		if (!ids.isEmpty()) {
+			noticeManagerService.updateNoticeStatus(ids, StatusConstant.DELETE_STATUS);
+		}
+
+		return R.ok(new PageResult<>(result, pageRecord.getTotal()));
+
+	}
 }
 
 

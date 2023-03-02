@@ -1,4 +1,4 @@
-package cn.goroute.smart.search.mapper;
+package cn.goroute.smart.search.modules.post.mapper;
 
 import cn.goroute.smart.search.model.index.PostIndex;
 import org.springframework.data.domain.Pageable;

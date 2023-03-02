@@ -8,6 +8,8 @@ import cn.goroute.smart.common.domain.PageResult;
 import cn.goroute.smart.common.exception.BusinessException;
 import cn.goroute.smart.common.modules.result.R;
 import cn.goroute.smart.common.util.PageUtil;
+import cn.goroute.smart.common.util.RedisUtil;
+import cn.goroute.smart.post.constant.PostRedisConstant;
 import cn.goroute.smart.post.domain.dto.CommentDTO;
 import cn.goroute.smart.post.domain.entity.CommentEntity;
 import cn.goroute.smart.post.domain.entity.PostEntity;
@@ -20,10 +22,12 @@ import cn.goroute.smart.post.modules.comment.manager.CommentManagerService;
 import cn.goroute.smart.post.modules.comment.mapper.CommentMapper;
 import cn.goroute.smart.post.modules.comment.mq.CommentEventMessageTemplate;
 import cn.goroute.smart.post.modules.comment.service.CommentService;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,8 +48,10 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, CommentEntity
     private final CommentManagerService commentManagerService;
     private final CommentEventMessageTemplate commentEventMessageTemplate;
     private final PostMapper postMapper;
+	@Autowired
+	private RedisUtil redisUtil;
 
-    /**
+	/**
      * 分页查询
      *
      * @param pageParam 分页参数
@@ -115,6 +121,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, CommentEntity
         }
         boolean remove = this.removeById(commentForm.getId());
         if (remove) {
+			redisUtil.hIncrBy(PostRedisConstant.PostKey.POST_COMMENT_COUNT_KEY, commentEntity.getPostId().toString(), -1L);
             return R.ok();
         }
         log.error("删除评论/回复失败，commentVO:[{}]", commentForm);
@@ -150,6 +157,29 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, CommentEntity
 
         return new PageResult<>(pageResult.getRecords(), pageResult.getTotal());
     }
+
+	/**
+	 * 通过文章id查询评论数
+	 * @param postId 文章id
+	 * @return 评论数
+	 */
+	@Override
+	public Long queryCommentNumByPostId(Long postId) {
+
+		// 从缓存中获取
+		String value = (String) redisUtil
+			.hGet(PostRedisConstant.PostKey.POST_COMMENT_COUNT_KEY, postId.toString());
+
+		if (StrUtil.isNotBlank(value)) {
+			return Long.valueOf(value);
+		}
+
+		// 缓存中没有，从数据库中获取
+		// TODO 宽表查询
+
+		return 0L;
+
+	}
 
 }
 

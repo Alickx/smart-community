@@ -3,6 +3,9 @@ package cn.goroute.smart.user.modules.profile.service.impl;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.auth.domain.dto.AuthUserDTO;
 import cn.goroute.smart.common.modules.result.R;
+import cn.goroute.smart.common.util.RedisUtil;
+import cn.goroute.smart.post.domain.dto.PostPublicEventDTO;
+import cn.goroute.smart.user.constant.RedisConstant;
 import cn.goroute.smart.user.modules.profile.converter.UserProfileConverter;
 import cn.goroute.smart.user.domain.entity.UserProfileEntity;
 import cn.goroute.smart.user.domain.vo.UserProfileVO;
@@ -34,8 +37,9 @@ public class UserProfileServiceImpl extends ServiceImpl<UserProfileMapper, UserP
     private final UserProfileMapper userProfileMapper;
 
     private final UserProfileManager userProfileManager;
+	private final RedisUtil redisUtil;
 
-    /**
+	/**
      * 获取用户信息
      *
      * @return 用户信息
@@ -107,6 +111,19 @@ public class UserProfileServiceImpl extends ServiceImpl<UserProfileMapper, UserP
 
         return R.ok(update > 0);
     }
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public void postPublicEventHandle(PostPublicEventDTO postPublicEventDTO) {
+
+		// 更新用户发帖数
+		userProfileMapper.updateIncrArticleNum(postPublicEventDTO.getUserId());
+
+		// 删除用户缓存
+		String userProfileKey = RedisConstant.USER_PROFILE + ":" + postPublicEventDTO.getUserId();
+		redisUtil.delete(userProfileKey);
+
+	}
 
 
 }

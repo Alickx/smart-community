@@ -2,11 +2,14 @@ package cn.goroute.smart.post.modules.thumb.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.common.modules.result.R;
+import cn.goroute.smart.common.util.RedisUtil;
+import cn.goroute.smart.post.constant.PostRedisConstant;
 import cn.goroute.smart.post.modules.thumb.async.ThumbAsyncService;
 import cn.goroute.smart.post.domain.entity.ThumbEntity;
 import cn.goroute.smart.post.domain.form.ThumbForm;
 import cn.goroute.smart.post.modules.thumb.mapper.ThumbMapper;
 import cn.goroute.smart.post.modules.thumb.service.ThumbService;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +27,7 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbMapper, ThumbEntity>
 		implements ThumbService {
 
 	private final ThumbAsyncService thumbAsyncService;
+	private final RedisUtil redisUtil;
 
 	/**
 	 * 保存点赞
@@ -56,6 +60,25 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbMapper, ThumbEntity>
 		thumbAsyncService.thumbHandle(thumbForm,userId,false);
 
 		return R.ok(true);
+
+	}
+
+	@Override
+	public Long queryPostThumbCountByPostId(Long postId) {
+
+		// 从缓存中获取
+		String value = (String) redisUtil
+			.hGet(PostRedisConstant.PostKey.POST_THUMB_COUNT_KEY, postId.toString());
+
+		if (StrUtil.isNotBlank(value)) {
+			return Long.valueOf(value);
+		}
+
+		// 缓存中没有，从数据库中获取
+		// TODO 宽表查询
+
+		return 0L;
+
 
 	}
 

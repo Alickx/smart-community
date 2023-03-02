@@ -18,6 +18,16 @@ public class PostRedisConstant {
 		// 24小时文章阅读数排行榜缓存key
 		public static String POST_VIEW_COUNT_RANK_KEY = "POST:READ:COUNT:RANK";
 
+		// 文章点赞数缓存key
+		public static String POST_THUMB_COUNT_KEY = "POST:THUMB:COUNT";
+
+		// 文章评论数缓存key
+		public static String POST_COMMENT_COUNT_KEY = "POST:COMMENT:COUNT";
+
+		// 文章收藏数缓存key
+		public static String POST_COLLECT_COUNT_KEY = "POST:COLLECT:COUNT";
+
+
 		public static String getTodayPostViewCountKey() {
 			return POST_VIEW_COUNT_KEY + ":" + DateUtil.today();
 		}

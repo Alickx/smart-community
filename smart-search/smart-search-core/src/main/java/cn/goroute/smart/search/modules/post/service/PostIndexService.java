@@ -1,4 +1,4 @@
-package cn.goroute.smart.search.service;
+package cn.goroute.smart.search.modules.post.service;
 
 import cn.goroute.smart.common.domain.PageParam;
 import cn.goroute.smart.common.domain.PageResult;

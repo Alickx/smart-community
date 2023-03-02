@@ -2,15 +2,19 @@ package cn.goroute.smart.post.modules.thumb.strategy.thumb.impl;
 
 import cn.goroute.smart.common.constant.enums.ErrorCodeEnum;
 import cn.goroute.smart.common.exception.BusinessException;
+import cn.goroute.smart.common.util.RedisUtil;
+import cn.goroute.smart.post.constant.PostRedisConstant;
 import cn.goroute.smart.post.modules.thumb.converter.ThumbConverter;
 import cn.goroute.smart.post.domain.dto.ThumbDTO;
 import cn.goroute.smart.post.domain.entity.PostEntity;
 import cn.goroute.smart.post.domain.entity.ThumbEntity;
 import cn.goroute.smart.post.modules.article.mapper.PostMapper;
 import cn.goroute.smart.post.modules.thumb.strategy.thumb.AbstractThumbStrategy;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 /**
@@ -24,6 +28,8 @@ public class PostThumbStrategyImpl extends AbstractThumbStrategy {
 
 	@Resource
 	private PostMapper postMapper;
+	@Autowired
+	private RedisUtil redisUtil;
 
 	/**
 	 * 点赞
@@ -37,8 +43,8 @@ public class PostThumbStrategyImpl extends AbstractThumbStrategy {
 		// 保存点赞记录
 		ThumbDTO thumbDTO = saveThumb2DB(thumbEntity);
 
-		// 更新文章点赞数
-		postMapper.incrThumbNum(thumbEntity.getToId(), 1);
+		// 更新文章点赞数缓存
+		redisUtil.hIncrBy(PostRedisConstant.PostKey.POST_THUMB_COUNT_KEY, thumbEntity.getToId().toString(), 1);
 
 		// 保存/更新用户关系
 		userInteractService.updateThumbUserRelation(thumbEntity, true);
@@ -91,8 +97,8 @@ public class PostThumbStrategyImpl extends AbstractThumbStrategy {
 		// 逻辑删除记录
 		thumbMapper.deleteById(thumbEntity);
 
-		// 更新文章点赞数
-		postMapper.descThumbNum(toId,1);
+		// 更新文章点赞数缓存
+		redisUtil.hIncrBy(PostRedisConstant.PostKey.POST_THUMB_COUNT_KEY, toId, -1);
 
 		// 保存/更新用户关系
 		userInteractService.updateThumbUserRelation(thumbEntity, false);

@@ -24,6 +24,7 @@ import cn.goroute.smart.post.domain.vo.PostInfoVO;
 import cn.goroute.smart.post.domain.vo.PostVO;
 import cn.goroute.smart.post.modules.article.manager.PostManagerService;
 import cn.goroute.smart.post.modules.article.mapper.PostMapper;
+import cn.goroute.smart.post.modules.article.mq.PostPublicEventMessage;
 import cn.goroute.smart.post.modules.article.mq.PostSyncEventMessageTemplate;
 import cn.goroute.smart.post.modules.article.service.CategoryService;
 import cn.goroute.smart.post.modules.comment.service.CommentService;
@@ -38,6 +39,7 @@ import com.hccake.ballcat.starter.ip2region.core.IpInfo;
 import com.hccake.ballcat.starter.ip2region.searcher.Ip2regionSearcher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,9 +67,11 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, PostEntity>
     private final PostAsyncService postAsyncService;
     private final PostMapper postMapper;
     private final PostSyncEventMessageTemplate postSyncEventMessageTemplate;
+	@Autowired
+	private PostPublicEventMessage postPublicEventMessage;
 
 
-    /**
+	/**
      * 文章详情 - 分页查询
      *
      * @param pageParam 分页参数
@@ -147,23 +151,23 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, PostEntity>
 
         // todo 进行优化
         // 缓存文章阅读数和排行榜
-        if (isLogin && !authorId.equals(StpUtil.getLoginIdAsLong())) {
-            handleViewCountAndRank(postId);
-        }
+//        if (isLogin && !authorId.equals(StpUtil.getLoginIdAsLong())) {
+//            handleViewCountAndRank(postId);
+//        }
 
         return R.ok((PostInfoVO) postBaseDTOS.get(0));
     }
 
-    private void handleViewCountAndRank(Long postId) {
-        // 判断是否已经阅读过
-        if (!redisUtil.sIsMember(PostRedisConstant.PostKey.POST_VIEW_COUNT_KEY + postId, StpUtil.getLoginIdAsString())) {
-            // 增加文章阅读数
-            redisUtil.sAdd(PostRedisConstant.PostKey.POST_VIEW_COUNT_KEY + postId, StpUtil.getLoginIdAsString());
-
-            // 添加进今日的排行榜中
-            redisUtil.zIncrementScore(PostRedisConstant.PostKey.getTodayPostViewCountKey(), String.valueOf(postId), 1);
-        }
-    }
+//    private void handleViewCountAndRank(Long postId) {
+//        // 判断是否已经阅读过
+//        if (!redisUtil.sIsMember(PostRedisConstant.PostKey.POST_VIEW_COUNT_KEY + postId, StpUtil.getLoginIdAsString())) {
+//            // 增加文章阅读数
+//            redisUtil.sAdd(PostRedisConstant.PostKey.POST_VIEW_COUNT_KEY + postId, StpUtil.getLoginIdAsString());
+//
+//            // 添加进今日的排行榜中
+//            redisUtil.zIncrementScore(PostRedisConstant.PostKey.getTodayPostViewCountKey(), String.valueOf(postId), 1);
+//        }
+//    }
 
     /**
      * 保存文章
@@ -185,6 +189,9 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, PostEntity>
         postEntity.setState(PostStateEnum.NORMAL.getCode());
 
         postManagerService.savePost2Db(postEntity);
+
+		// 发送用户发布文章事件
+		postPublicEventMessage.sendEvent(postEntity.getId(), postEntity.getAuthorId());
 
         postAsyncService.getAndSendPostIndexEvent(postEntity.getId());
 

@@ -1,4 +1,4 @@
-package cn.goroute.smart.search.converter;
+package cn.goroute.smart.search.modules.post.converter;
 
 
 import cn.goroute.smart.post.domain.entity.PostEntity;

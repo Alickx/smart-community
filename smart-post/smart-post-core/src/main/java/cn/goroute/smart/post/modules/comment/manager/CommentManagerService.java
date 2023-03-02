@@ -8,6 +8,8 @@ import cn.goroute.smart.common.domain.PageResult;
 import cn.goroute.smart.common.modules.result.R;
 import cn.goroute.smart.common.modules.result.SystemResultCode;
 import cn.goroute.smart.common.util.PageUtil;
+import cn.goroute.smart.common.util.RedisUtil;
+import cn.goroute.smart.post.constant.PostRedisConstant;
 import cn.goroute.smart.post.constant.enums.UserInteractTypeEnum;
 import cn.goroute.smart.post.domain.dto.ContentExpansionDTO;
 import cn.goroute.smart.post.domain.entity.CommentEntity;
@@ -25,6 +27,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,9 +49,11 @@ public class CommentManagerService {
     private final CommentMapper commentMapper;
     private final UserInteractService userInteractService;
     private final PostMapper postMapper;
+	@Autowired
+	private RedisUtil redisUtil;
 
 
-    public void fillInfo(List<CommentVO> records) {
+	public void fillInfo(List<CommentVO> records) {
 
         // 获取用户信息
         this.getUserProfile(records);
@@ -194,8 +199,8 @@ public class CommentManagerService {
         // 保存评论
         commentMapper.insert(commentEntity);
 
-        // 更新文章评论数
-        postMapper.incrCommentCount(commentEntity.getPostId());
+        // 更新文章评论数缓存
+		redisUtil.hIncrBy(PostRedisConstant.PostKey.POST_COMMENT_COUNT_KEY, commentEntity.getPostId().toString(), 1);
 
         // 更新用户文章关系
         userInteractService.updateUserCommentRelation(commentEntity, true);

@@ -1,10 +1,10 @@
-package cn.goroute.smart.search.listener;
+package cn.goroute.smart.search.modules.post.listener;
 
 import cn.goroute.smart.common.constant.RocketMqBizConstant;
 import cn.goroute.smart.post.domain.entity.PostEntity;
 import cn.goroute.smart.rocketmq.domain.RocketMqEntityMessage;
 import cn.goroute.smart.rocketmq.listener.BaseMqMessageListener;
-import cn.goroute.smart.search.service.PostIndexService;
+import cn.goroute.smart.search.modules.post.service.PostIndexService;
 import com.alibaba.fastjson2.JSON;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

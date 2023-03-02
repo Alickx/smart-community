@@ -1,6 +1,7 @@
 package cn.goroute.smart.user.modules.profile.service;
 
 import cn.goroute.smart.auth.domain.dto.AuthUserDTO;
+import cn.goroute.smart.post.domain.dto.PostPublicEventDTO;
 import cn.goroute.smart.user.domain.entity.UserProfileEntity;
 import cn.goroute.smart.user.domain.vo.UserProfileVO;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -42,4 +43,9 @@ public interface UserProfileService extends IService<UserProfileEntity> {
 	 * @return 是否成功
 	 */
 	R<Boolean> updateUserProfile(UserProfileVO userProfileVO);
+
+	/**
+	 * 用户发布文章后的处理
+	 */
+	void postPublicEventHandle(PostPublicEventDTO postPublicEventDTO);
 }

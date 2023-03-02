@@ -38,8 +38,18 @@
 		set comment_count = comment_count + 1
 		where id = #{postId}
 	</update>
+    <update id="updateCommentCount">
+		update post
+		set comment_count = #{commentCount}
+		where id = #{postId}
+	</update>
+	<update id="updateThumbCount">
+		update post
+		set thumb_count = #{thumbCount}
+		where id = #{postId}
+	</update>
 
-    <select id="queryPage" resultType="cn.goroute.smart.post.domain.entity.PostEntity">
+	<select id="queryPage" resultType="cn.goroute.smart.post.domain.entity.PostEntity">
         select * from post
         <where>
             <if test="postQO.categoryName != null and postQO.categoryName != ''">
