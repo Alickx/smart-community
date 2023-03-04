@@ -60,26 +60,6 @@ public class PostEntity implements Serializable {
     private Integer state;
 
     /**
-     * 收藏数量
-     */
-    private Integer collectCount;
-
-    /**
-     * 点赞数量
-     */
-    private Integer thumbCount;
-
-    /**
-     * 评论数量
-     */
-    private Integer commentCount;
-
-	/**
-	 * 浏览数量
-	 */
-	private Integer viewCount;
-
-    /**
      * 0:false = 不公布  1:true = 公布
      */
     private Boolean isPublish;

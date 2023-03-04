@@ -22,16 +22,17 @@ import java.util.List;
 @Slf4j
 public class UserProfileController {
 
-    private final UserProfileService userProfileService;
+	private final UserProfileService userProfileService;
 
-    /**
-     * 获取用户信息
-     * @return 用户信息
-     */
-    @GetMapping("/profile")
-    public R<UserProfileVO> getUserProfile(@RequestParam("userId") Long userId) {
-        return userProfileService.getUserProfile(userId);
-    }
+	/**
+	 * 获取用户信息
+	 *
+	 * @return 用户信息
+	 */
+	@GetMapping("/profile")
+	public R<UserProfileVO> getUserProfile(@RequestParam(value = "userId", required = false) Long userId) {
+		return userProfileService.getUserProfile(userId);
+	}
 
 	@PostMapping("/update/profile")
 	public R<Boolean> updateUserProfile(@RequestBody UserProfileVO userProfileVO) {
@@ -40,6 +41,7 @@ public class UserProfileController {
 
 	/**
 	 * 批量获取用户信息
+	 *
 	 * @param userIds 用户id列表
 	 * @return 用户信息列表
 	 */
@@ -49,18 +51,20 @@ public class UserProfileController {
 	}
 
 
-    /**
-     * 初始化用户信息
-     * @param authUserDTO 用户信息
-     * @return 是否成功
-     */
-    @PostMapping("/profile/init")
-    public R<Boolean> initUserProfile(@RequestBody AuthUserDTO authUserDTO){
-        return userProfileService.initUserProfile(authUserDTO);
-    }
+	/**
+	 * 初始化用户信息
+	 *
+	 * @param authUserDTO 用户信息
+	 * @return 是否成功
+	 */
+	@PostMapping("/profile/init")
+	public R<Boolean> initUserProfile(@RequestBody AuthUserDTO authUserDTO) {
+		return userProfileService.initUserProfile(authUserDTO);
+	}
 
 	/**
 	 * 根据用户id查询用户信息 - 微服务间调用
+	 *
 	 * @param userId 用户id
 	 * @return 用户信息
 	 */

@@ -27,6 +27,9 @@ public class PostRedisConstant {
 		// 文章收藏数缓存key
 		public static String POST_COLLECT_COUNT_KEY = "POST:COLLECT:COUNT";
 
+		// 文章拓展信息key
+		public static String POST_EXPAND_INFO_KEY = "POST:EXPAND:INFO";
+
 
 		public static String getTodayPostViewCountKey() {
 			return POST_VIEW_COUNT_KEY + ":" + DateUtil.today();

@@ -17,6 +17,14 @@ spring:
     username: root
     password: root
 
+rocketmq:
+  # 多个NameServer，host:port;host:port，RocketMQProperties
+  name-server: 124.223.80.135:9876
+  producer:
+    # 发送同一类消息的设置为同一个group，保证唯一
+    group: springboot_producer_group
+    # 消息跟踪主题的名称值。如果不进行配置，可以使用默认的跟踪主题名称
+    customizedTraceTopic: RMQ_SYS_TRACE_TOPIC
 
 # 日志配置
 logging:

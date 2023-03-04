@@ -9,6 +9,7 @@ import cn.goroute.smart.common.modules.result.R;
 import cn.goroute.smart.common.util.PageUtil;
 import cn.goroute.smart.common.util.RedisUtil;
 import cn.goroute.smart.common.util.WebUtil;
+import cn.goroute.smart.post.domain.PostExpandInfoEntity;
 import cn.goroute.smart.post.modules.article.async.PostAsyncService;
 import cn.goroute.smart.post.constant.PostRedisConstant;
 import cn.goroute.smart.post.constant.enums.PostStateEnum;
@@ -27,6 +28,7 @@ import cn.goroute.smart.post.modules.article.mapper.PostMapper;
 import cn.goroute.smart.post.modules.article.mq.PostPublicEventMessage;
 import cn.goroute.smart.post.modules.article.mq.PostSyncEventMessageTemplate;
 import cn.goroute.smart.post.modules.article.service.CategoryService;
+import cn.goroute.smart.post.modules.article.service.PostExpandInfoEntityService;
 import cn.goroute.smart.post.modules.comment.service.CommentService;
 import cn.goroute.smart.post.modules.article.service.PostService;
 import cn.goroute.smart.post.modules.article.service.TagService;
@@ -67,6 +69,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, PostEntity>
     private final PostAsyncService postAsyncService;
     private final PostMapper postMapper;
     private final PostSyncEventMessageTemplate postSyncEventMessageTemplate;
+	private final PostExpandInfoEntityService postExpandInfoEntityService;
 	@Autowired
 	private PostPublicEventMessage postPublicEventMessage;
 
@@ -188,11 +191,16 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, PostEntity>
 
         postEntity.setState(PostStateEnum.NORMAL.getCode());
 
+		// 保存文章信息
         postManagerService.savePost2Db(postEntity);
+
+		// 保存到文章拓展表
+		postExpandInfoEntityService.save(PostExpandInfoEntity.builder().postId(postEntity.getId()).build());
 
 		// 发送用户发布文章事件
 		postPublicEventMessage.sendEvent(postEntity.getId(), postEntity.getAuthorId());
 
+		// 同步到搜索服务
         postAsyncService.getAndSendPostIndexEvent(postEntity.getId());
 
         return R.ok(postEntity.getId());
@@ -285,7 +293,9 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, PostEntity>
             return R.failed(ErrorCodeEnum.NO_PERMISSION);
         }
 
+        // 逻辑删除文章
         postMapper.deleteById(postId);
+
         postEntity.setDeleted(StatusConstant.DELETE_STATUS);
 
         postSyncEventMessageTemplate.sendPostMessage(postEntity);

@@ -65,8 +65,12 @@
 			<groupId>com.xuxueli</groupId>
 			<artifactId>xxl-job-core</artifactId>
 		</dependency>
+		<!--			markdown转html-->
+		<dependency>
+			<groupId>com.vladsch.flexmark</groupId>
+			<artifactId>flexmark-all</artifactId>
+		</dependency>
 	</dependencies>
-
 
 	<build>
 		<plugins>
