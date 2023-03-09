@@ -6,14 +6,17 @@ import cn.goroute.smart.post.domain.PostExpandInfoEntity;
 import cn.goroute.smart.post.modules.article.converter.PostExpandInfoConverter;
 import cn.goroute.smart.post.modules.article.mapper.PostExpandInfoEntityMapper;
 import cn.goroute.smart.post.modules.article.service.PostExpandInfoEntityService;
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.hash.BeanUtilsHashMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Alickx
@@ -23,47 +26,59 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Service
 public class PostExpandInfoEntityServiceImpl extends ServiceImpl<PostExpandInfoEntityMapper, PostExpandInfoEntity>
-	implements PostExpandInfoEntityService {
+        implements PostExpandInfoEntityService {
 
-	private final RedisUtil redisUtil;
+    private final RedisUtil redisUtil;
 
-	/**
-	 * 查询文章拓展信息
-	 *
-	 * @param postIds 文章id
-	 * @return 文章拓展信息
-	 */
-	@Override
-	public List<PostExpandInfoEntity> batchPostExpandInfo(List<Long> postIds) {
+    /**
+     * 查询文章拓展信息
+     *
+     * @param postIds 文章id
+     * @return 文章拓展信息
+     */
+    @Override
+    public List<PostExpandInfoEntity> batchPostExpandInfo(List<Long> postIds) {
 
-		List<PostExpandInfoEntity> result = Lists.newArrayList();
-		// 缓存中没有的，批量到数据库查询
-		List<Long> dbQueryPostIds = Lists.newArrayList();
+        List<PostExpandInfoEntity> result = Lists.newArrayList();
+        // 缓存中没有的，批量到数据库查询
+        List<Long> dbQueryPostIds = Lists.newArrayList();
 
-		for (Long postId : postIds) {
+        for (Long postId : postIds) {
 
-			String redisKey = PostRedisConstant.PostKey.POST_EXPAND_INFO_KEY + ":" + postId;
-			Map<Object, Object> postExpandInfoMap = redisUtil.hGetAll(redisKey);
+            String redisKey = PostRedisConstant.PostKey.POST_EXPAND_INFO_KEY + ":" + postId;
+            Map<String, String> postExpandInfoMap = redisUtil.hGetAll(redisKey);
 
-			if (postExpandInfoMap.isEmpty()) {
-				dbQueryPostIds.add(postId);
-				continue;
-			}
+            if (postExpandInfoMap.isEmpty()) {
+                dbQueryPostIds.add(postId);
+                continue;
+            }
 
-			PostExpandInfoEntity postExpandInfoEntity = PostExpandInfoConverter.INSTANCE.mapToVo(postExpandInfoMap);
-			result.add(postExpandInfoEntity);
-		}
+            PostExpandInfoEntity postExpandInfoEntity = PostExpandInfoConverter.INSTANCE.mapToVo(postExpandInfoMap);
+            result.add(postExpandInfoEntity);
+        }
 
-		// 查询数据库
-		LambdaQueryWrapper<PostExpandInfoEntity> queryWrapper = new LambdaQueryWrapper<>();
-		queryWrapper.in(PostExpandInfoEntity::getPostId, dbQueryPostIds);
+        // 如果部分数据在缓存中没有，则批量查询数据库
+        if (CollUtil.isNotEmpty(dbQueryPostIds)) {
+            LambdaQueryWrapper<PostExpandInfoEntity> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.in(PostExpandInfoEntity::getPostId, dbQueryPostIds);
 
-		List<PostExpandInfoEntity> postExpandInfoEntities = this.list(queryWrapper);
+            List<PostExpandInfoEntity> postExpandInfoEntities = this.list(queryWrapper);
 
-		result.addAll(postExpandInfoEntities);
+            // 如果数据库中有数据，则放入缓存
+            if (CollUtil.isNotEmpty(postExpandInfoEntities)) {
+                for (PostExpandInfoEntity postExpandInfoEntity : postExpandInfoEntities) {
+                    String redisKey = PostRedisConstant.PostKey.POST_EXPAND_INFO_KEY + ":" + postExpandInfoEntity.getPostId();
+                    // 将对象转换成map
+                    BeanUtilsHashMapper<PostExpandInfoEntity> map = new BeanUtilsHashMapper<>(PostExpandInfoEntity.class);
+                    redisUtil.hPutAll(redisKey, map.toHash(postExpandInfoEntity));
+                    redisUtil.expire(redisKey, 6, TimeUnit.HOURS);
+                    result.add(postExpandInfoEntity);
+                }
+            }
+        }
 
-		return result;
-	}
+        return result;
+    }
 }
 
 

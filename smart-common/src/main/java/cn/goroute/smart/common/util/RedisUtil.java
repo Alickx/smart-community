@@ -367,8 +367,11 @@ public class RedisUtil {
 	 * @param key
 	 * @return
 	 */
-	public Map<Object, Object> hGetAll(String key) {
-		return redisTemplate.opsForHash().entries(key);
+	public Map<String, String> hGetAll(String key) {
+		Map<Object, Object> entries = redisTemplate.opsForHash().entries(key);
+		Map<String, String> map = new HashMap<>(entries.size());
+		entries.forEach((k, v) -> map.put(k.toString(), v.toString()));
+		return map;
 	}
 
 	/**

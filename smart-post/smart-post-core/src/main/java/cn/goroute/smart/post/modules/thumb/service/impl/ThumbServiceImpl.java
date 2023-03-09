@@ -63,26 +63,6 @@ public class ThumbServiceImpl extends ServiceImpl<ThumbMapper, ThumbEntity>
 
 	}
 
-	@Override
-	public Long queryPostThumbCountByPostId(Long postId) {
-
-		// 从缓存中获取
-		String value = (String) redisUtil
-			.hGet(PostRedisConstant.PostKey.POST_THUMB_COUNT_KEY, postId.toString());
-
-		if (StrUtil.isNotBlank(value)) {
-			return Long.valueOf(value);
-		}
-
-		// 缓存中没有，从数据库中获取
-		// TODO 宽表查询
-
-		return 0L;
-
-
-	}
-
-
 }
 
 

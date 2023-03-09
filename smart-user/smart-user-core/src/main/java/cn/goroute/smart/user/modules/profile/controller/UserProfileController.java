@@ -47,7 +47,7 @@ public class UserProfileController {
 	 */
 	@GetMapping("/batch/profile")
 	public R<List<UserProfileVO>> batchGetUserProfile(@RequestParam("userIds") List<Long> userIds) {
-		return userProfileService.batchGetUserProfile(userIds);
+		return R.ok(userProfileService.batchGetUserProfile(userIds));
 	}
 
 

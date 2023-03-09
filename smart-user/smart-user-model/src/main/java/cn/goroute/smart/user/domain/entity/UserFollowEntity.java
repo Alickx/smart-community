@@ -1,8 +1,10 @@
 package cn.goroute.smart.user.domain.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Builder;
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -11,31 +13,35 @@ import java.time.LocalDateTime;
 * @TableName user_follow
 */
 @Data
+@Builder
+@TableName(value ="user_follow")
 public class UserFollowEntity implements Serializable {
 
     /**
     * 主键id
     */
-    @NotNull(message="[主键id]不能为空")
+    @TableId
     private Long id;
     /**
     * 用户id
     */
-    @NotNull(message="[用户id]不能为空")
     private Long userId;
     /**
     * 关注目标的用户id
     */
-    @NotNull(message="[关注目标的用户id]不能为空")
     private Long toUserId;
+
     /**
-    * 
+     * 关注时间
+     */
+    private LocalDateTime followTime;
+
+    /**
+    *  创建时间
     */
-    @NotNull(message="[]不能为空")
     private LocalDateTime createTime;
     /**
-    * 
+    * 更新时间
     */
-    @NotNull(message="[]不能为空")
     private LocalDateTime updateTime;
 }

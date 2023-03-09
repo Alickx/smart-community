@@ -17,25 +17,28 @@
 	</update>
     <select id="queryPage" resultType="cn.goroute.smart.post.domain.entity.CommentEntity">
 
-        select * from comment
-        <where>
-            <if test="commentQO.postId != null">
-                post_id = #{commentQO.postId}
-            </if>
-            <if test="commentQO.userId != null">
-                and user_id = #{commentQO.userId}
-            </if>
-            <if test="commentQO.type != null">
-                and type = #{commentQO.type}
-            </if>
-            <if test="commentQO.firstCommentId != null">
-                and first_comment_id = #{commentQO.firstCommentId}
-            </if>
-            <if test="status != null">
-                and state = #{status}
-            </if>
-        </where>
-    </select>
+		select * from comment
+		<where>
+			<if test="commentQO.postId != null">
+				post_id = #{commentQO.postId}
+			</if>
+			<if test="commentQO.userId != null">
+				and user_id = #{commentQO.userId}
+			</if>
+			<if test="commentQO.type != null">
+				and type = #{commentQO.type}
+			</if>
+			<if test="commentQO.firstCommentId != null">
+				and first_comment_id = #{commentQO.firstCommentId}
+			</if>
+			<if test="status != null">
+				and state = #{status}
+			</if>
+			<if test="commentQO.deleted != null">
+				and deleted = #{commentQO.deleted}
+			</if>
+		</where>
+	</select>
 
     <select id="queryPostIdsByComment" resultType="cn.goroute.smart.post.domain.entity.CommentEntity">
         select * from comment
@@ -46,30 +49,34 @@
             <if test="status != null">
                 and state = #{status}
             </if>
-            and deleted = #{deleted}
+           <if test="deleted != null">
+				and deleted = #{deleted}
+			</if>
         </where>
         group by post_id
     </select>
 
     <select id="queryMoreReply" resultType="cn.goroute.smart.post.domain.entity.CommentEntity">
-        select * from comment
-        <where>
-            <if test="commentQO.postId != null">
-                post_id = #{commentQO.postId}
-            </if>
-            <if test="commentQO.userId != null">
-                and user_id = #{commentQO.userId}
-            </if>
-            <if test="commentQO.type != null">
-                and type = #{commentQO.type}
-            </if>
-            <if test="commentQO.firstCommentId != null">
-                and first_comment_id = #{commentQO.firstCommentId}
-            </if>
-            <if test="state != null">
-                and state = #{status}
-            </if>
-            and deleted = #{deleted}
-        </where>
-    </select>
+		select * from comment
+		<where>
+			<if test="commentQO.postId != null">
+				post_id = #{commentQO.postId}
+			</if>
+			<if test="commentQO.userId != null">
+				and user_id = #{commentQO.userId}
+			</if>
+			<if test="commentQO.type != null">
+				and type = #{commentQO.type}
+			</if>
+			<if test="commentQO.firstCommentId != null">
+				and first_comment_id = #{commentQO.firstCommentId}
+			</if>
+			<if test="state != null">
+				and state = #{status}
+			</if>
+			<if test="deleted != null">
+				and deleted = #{deleted}
+			</if>
+		</where>
+	</select>
 </mapper>

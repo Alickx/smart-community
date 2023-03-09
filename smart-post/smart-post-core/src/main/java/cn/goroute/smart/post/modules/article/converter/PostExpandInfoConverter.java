@@ -16,6 +16,5 @@ public interface PostExpandInfoConverter {
 
 	PostExpandInfoConverter INSTANCE = Mappers.getMapper(PostExpandInfoConverter.class);
 
-	PostExpandInfoEntity mapToVo(Map<Object,Object> map);
-
+	PostExpandInfoEntity mapToVo(Map<String,String> map);
 }

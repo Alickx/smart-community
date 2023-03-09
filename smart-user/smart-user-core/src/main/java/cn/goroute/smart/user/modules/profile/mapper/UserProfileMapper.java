@@ -2,6 +2,7 @@ package cn.goroute.smart.user.modules.profile.mapper;
 
 import cn.goroute.smart.user.domain.entity.UserProfileEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * @author caiguopeng
@@ -11,7 +12,11 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface UserProfileMapper extends BaseMapper<UserProfileEntity> {
 
-    void updateIncrArticleNum(Long userId);
+    void updateIncrArticleNum(@Param("userId") Long userId);
+
+    void updateIncrFansNum(@Param("toUserId") Long toUserId);
+
+    void updateDecrFansNum(@Param("toUserId") Long toUserId);
 }
 
 

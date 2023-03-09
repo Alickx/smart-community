@@ -1,7 +1,11 @@
 package cn.goroute.smart.user.modules.follow.service;
 
 import cn.goroute.smart.user.domain.entity.UserFollowEntity;
+import cn.goroute.smart.user.domain.form.UserSaveFollowForm;
+import cn.goroute.smart.user.domain.vo.UserFollowVO;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
 * @author caiguopeng
@@ -10,4 +14,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface UserFollowService extends IService<UserFollowEntity> {
 
+    Boolean saveFollow(UserSaveFollowForm userSaveFollowForm);
+
+    List<UserFollowVO> queryUserFollow(Long userId);
+
+    Boolean queryIsFollow(Long toUserId);
 }

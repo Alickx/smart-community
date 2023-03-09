@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Builder;
 import lombok.Data;
+import lombok.experimental.FieldNameConstants;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 @TableName(value ="t_post_expand_info")
 @Data
 @Builder
+@FieldNameConstants
 public class PostExpandInfoEntity implements Serializable {
     /**
      * 主键id

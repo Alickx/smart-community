@@ -11,6 +11,7 @@ import cn.goroute.smart.common.util.PageUtil;
 import cn.goroute.smart.common.util.RedisUtil;
 import cn.goroute.smart.post.constant.PostRedisConstant;
 import cn.goroute.smart.post.constant.enums.UserInteractTypeEnum;
+import cn.goroute.smart.post.domain.PostExpandInfoEntity;
 import cn.goroute.smart.post.domain.dto.ContentExpansionDTO;
 import cn.goroute.smart.post.domain.entity.CommentEntity;
 import cn.goroute.smart.post.domain.entity.UserInteractEntity;
@@ -196,11 +197,17 @@ public class CommentManagerService {
     @Transactional(rollbackFor = Exception.class)
     public void saveCommentHandle(CommentEntity commentEntity) {
 
-        // 保存评论
+		Long postId = commentEntity.getPostId();
+
+		// 保存评论
         commentMapper.insert(commentEntity);
 
         // 更新文章评论数缓存
-		redisUtil.hIncrBy(PostRedisConstant.PostKey.POST_COMMENT_COUNT_KEY, commentEntity.getPostId().toString(), 1);
+		String redisKey = PostRedisConstant.PostKey.POST_EXPAND_INFO_KEY + ":" + postId;
+		redisUtil.hIncrBy(redisKey, PostExpandInfoEntity.Fields.commentCount, 1);
+
+		// 添加进待更新列表
+		redisUtil.sAdd(PostRedisConstant.PostKey.POST_EXPAND_INFO_UPDATE_LIST_KEY, String.valueOf(postId));
 
         // 更新用户文章关系
         userInteractService.updateUserCommentRelation(commentEntity, true);

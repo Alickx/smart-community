@@ -54,11 +54,4 @@ public interface CommentService extends IService<CommentEntity> {
 	 * @return
 	 */
 	PageResult<Long> queryPostIdsByComment(PageParam pageParam, Long userId);
-
-	/**
-	 * 通过文章id查询评论数
-	 * @param postId 文章id
-	 * @return 评论数
-	 */
-	Long queryCommentNumByPostId(Long postId);
 }

@@ -9,4 +9,14 @@
 		set article_num = article_num + 1
 		where user_id = #{userId}
 	</update>
+	<update id="updateIncrFansNum">
+		update user_profile
+		set fan_num = fan_num + 1
+		where user_id = #{userId}
+	</update>
+	<update id="updateDecrFansNum">
+		update user_profile
+		set fan_num = fan_num - 1
+		where user_id = #{userId}
+	</update>
 </mapper>

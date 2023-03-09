@@ -1,7 +1,7 @@
 package cn.goroute.smart.user.modules.profile.manager;
 
 import cn.goroute.smart.common.util.RedisUtil;
-import cn.goroute.smart.user.constant.RedisConstant;
+import cn.goroute.smart.user.constant.UserRedisConstant;
 import cn.goroute.smart.user.domain.entity.UserProfileEntity;
 import cn.goroute.smart.user.modules.profile.mapper.UserProfileMapper;
 import cn.hutool.core.collection.CollUtil;
@@ -38,7 +38,7 @@ public class UserProfileManager {
 
 	public UserProfileEntity getUserProfile(Long userId) {
 
-		String userProfileKey = RedisConstant.USER_PROFILE + ":" + userId;
+		String userProfileKey = UserRedisConstant.USER_PROFILE + ":" + userId;
 
 		String userProfileJson = redisUtil.get(userProfileKey);
 
@@ -63,7 +63,7 @@ public class UserProfileManager {
 		List<Long> unCachedUserIds = new ArrayList<>();
 		for (Long userId : userIds) {
 
-			String userProfileKey = RedisConstant.USER_PROFILE + ":" + userId;
+			String userProfileKey = UserRedisConstant.USER_PROFILE + ":" + userId;
 
 			String userProfileJson = redisUtil.get(userProfileKey);
 
@@ -81,7 +81,7 @@ public class UserProfileManager {
 					.selectList(new LambdaQueryWrapper<UserProfileEntity>().in(UserProfileEntity::getUserId, unCachedUserIds));
 
 			for (UserProfileEntity userProfileEntity : userProfileEntities) {
-				String userProfileKey = RedisConstant.USER_PROFILE + ":" + userProfileEntity.getUserId();
+				String userProfileKey = UserRedisConstant.USER_PROFILE + ":" + userProfileEntity.getUserId();
 				redisUtil.setEx(userProfileKey, JSON.toJSONString(userProfileEntity), USER_PROFILE_EXPIRE_TIME,
 						TimeUnit.SECONDS);
 			}

@@ -18,18 +18,11 @@ public class PostRedisConstant {
 		// 24小时文章阅读数排行榜缓存key
 		public static String POST_VIEW_COUNT_RANK_KEY = "POST:READ:COUNT:RANK";
 
-		// 文章点赞数缓存key
-		public static String POST_THUMB_COUNT_KEY = "POST:THUMB:COUNT";
-
-		// 文章评论数缓存key
-		public static String POST_COMMENT_COUNT_KEY = "POST:COMMENT:COUNT";
-
-		// 文章收藏数缓存key
-		public static String POST_COLLECT_COUNT_KEY = "POST:COLLECT:COUNT";
-
 		// 文章拓展信息key
 		public static String POST_EXPAND_INFO_KEY = "POST:EXPAND:INFO";
 
+		// 文章拓展信息待更新Set列表key
+		public static String POST_EXPAND_INFO_UPDATE_LIST_KEY = "POST:EXPAND:INFO:UPDATE:LIST";
 
 		public static String getTodayPostViewCountKey() {
 			return POST_VIEW_COUNT_KEY + ":" + DateUtil.today();

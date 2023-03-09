@@ -5,10 +5,11 @@ import cn.goroute.smart.auth.domain.dto.AuthUserDTO;
 import cn.goroute.smart.common.modules.result.R;
 import cn.goroute.smart.common.util.RedisUtil;
 import cn.goroute.smart.post.domain.dto.PostPublicEventDTO;
-import cn.goroute.smart.user.constant.RedisConstant;
-import cn.goroute.smart.user.modules.profile.converter.UserProfileConverter;
+import cn.goroute.smart.user.constant.UserRedisConstant;
+import cn.goroute.smart.user.domain.entity.UserFollowEntity;
 import cn.goroute.smart.user.domain.entity.UserProfileEntity;
 import cn.goroute.smart.user.domain.vo.UserProfileVO;
+import cn.goroute.smart.user.modules.profile.converter.UserProfileConverter;
 import cn.goroute.smart.user.modules.profile.manager.UserProfileManager;
 import cn.goroute.smart.user.modules.profile.mapper.UserProfileMapper;
 import cn.goroute.smart.user.modules.profile.service.UserProfileService;
@@ -82,17 +83,15 @@ public class UserProfileServiceImpl extends ServiceImpl<UserProfileMapper, UserP
      * @return 用户信息集合
      */
     @Override
-    public R<List<UserProfileVO>> batchGetUserProfile(List<Long> userIds) {
+    public List<UserProfileVO> batchGetUserProfile(List<Long> userIds) {
 
         if (CollUtil.isEmpty(userIds)) {
-            return R.ok(ListUtil.empty());
+            return ListUtil.empty();
         }
 
         List<UserProfileEntity> userProfileEntities = userProfileManager.batchGetUserProfile(userIds);
 
-        List<UserProfileVO> userProfileVOS = UserProfileConverter.INSTANCE.poToVo(userProfileEntities);
-
-        return R.ok(userProfileVOS);
+        return UserProfileConverter.INSTANCE.poToVo(userProfileEntities);
 
     }
 
@@ -120,10 +119,35 @@ public class UserProfileServiceImpl extends ServiceImpl<UserProfileMapper, UserP
 		userProfileMapper.updateIncrArticleNum(postPublicEventDTO.getUserId());
 
 		// 删除用户缓存
-		String userProfileKey = RedisConstant.USER_PROFILE + ":" + postPublicEventDTO.getUserId();
+		String userProfileKey = UserRedisConstant.USER_PROFILE + ":" + postPublicEventDTO.getUserId();
 		redisUtil.delete(userProfileKey);
 
 	}
+
+    /**
+     * 关注事件处理
+     * @param entity 关注信息
+     * @param isSave 是否保存关注 true:保存 false:取消关注
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void followHandler(UserFollowEntity entity, boolean isSave) {
+
+        if (isSave) {
+            // 增加用户粉丝数 DB
+            userProfileMapper.updateIncrFansNum(entity.getToUserId());
+            // 删除db缓存
+            String userProfileKey = UserRedisConstant.USER_PROFILE + ":" + entity.getToUserId();
+            redisUtil.delete(userProfileKey);
+        } else {
+            // 减少用户粉丝数 DB
+            userProfileMapper.updateDecrFansNum(entity.getToUserId());
+            // 删除db缓存
+            String userProfileKey = UserRedisConstant.USER_PROFILE + ":" + entity.getToUserId();
+            redisUtil.delete(userProfileKey);
+        }
+
+    }
 
 
 }
