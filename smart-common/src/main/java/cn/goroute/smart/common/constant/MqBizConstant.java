@@ -5,7 +5,7 @@ package cn.goroute.smart.common.constant;
  * @Date: 2022/10/22/16:04
  * @Description: 消息队列业务常量
  */
-public class RocketMqBizConstant {
+public class MqBizConstant {
 
     /**
      * 点赞
@@ -55,6 +55,16 @@ public class RocketMqBizConstant {
         public static final String USER_REGISTER_GROUP = "user_register_group";
 
     }
+
+	public static class UserMqConstant {
+
+		public static final String USER_TOPIC = "user_topic";
+
+		// 用户关注
+		public static final String USER_FOLLOW_GROUP = "user_follow_group";
+		public static final String USER_FOLLOW_TAG = "user_follow_tag";
+
+	}
 
 
 }

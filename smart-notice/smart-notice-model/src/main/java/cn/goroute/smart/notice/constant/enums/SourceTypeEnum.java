@@ -16,7 +16,17 @@ public enum SourceTypeEnum {
 	/**
 	 * 事件源类型 - 评论
 	 */
-	COMMENT(1, "评论");
+	COMMENT(1, "评论"),
+
+	/**
+	 * 事件源类型 - 其他
+	 */
+	OTHER(2, "其他"),
+
+
+
+
+	;
 
 	private final Integer code;
 

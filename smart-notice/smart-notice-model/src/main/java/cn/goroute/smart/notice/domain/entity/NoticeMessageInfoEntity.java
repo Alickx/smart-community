@@ -48,7 +48,7 @@ public class NoticeMessageInfoEntity implements Serializable {
     private Integer msgType;
 
 	/**
-	 * 源类型 0 = 文章 1 = 评论
+	 * 源类型 0 = 文章 1 = 评论 2 = 其他
 	 */
 	private Integer sourceType;
 

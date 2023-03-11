@@ -8,6 +8,7 @@ import cn.goroute.smart.notice.domain.entity.NoticeEntity;
 import cn.goroute.smart.notice.domain.vo.NoticeMessageVO;
 import cn.goroute.smart.post.domain.dto.CommentDTO;
 import cn.goroute.smart.post.domain.dto.ThumbDTO;
+import cn.goroute.smart.user.domain.dto.UserFollowEventDTO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -22,6 +23,8 @@ public interface NoticeService extends IService<NoticeEntity> {
 	void saveThumbNotice(ThumbDTO thumbDTO);
 
 	void saveCommentNotice(CommentDTO commentDTO);
+
+	void saveUserFollowNotice(UserFollowEventDTO userFollowEventDTO);
 
 	R<List<NoticeCountVO>> queryNoticeCount();
 

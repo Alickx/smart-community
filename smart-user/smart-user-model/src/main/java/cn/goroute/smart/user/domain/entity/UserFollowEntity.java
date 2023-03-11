@@ -1,6 +1,7 @@
 package cn.goroute.smart.user.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Builder;
 import lombok.Data;
@@ -35,6 +36,12 @@ public class UserFollowEntity implements Serializable {
      * 关注时间
      */
     private LocalDateTime followTime;
+
+    /**
+     * 逻辑删除
+     */
+    @TableLogic
+    private Integer deleted;
 
     /**
     *  创建时间

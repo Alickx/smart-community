@@ -9,6 +9,7 @@ import cn.goroute.smart.user.domain.vo.UserFollowVO;
 import cn.goroute.smart.user.domain.vo.UserProfileVO;
 import cn.goroute.smart.user.modules.follow.manager.UserFollowManagerService;
 import cn.goroute.smart.user.modules.follow.mapper.UserFollowMapper;
+import cn.goroute.smart.user.modules.follow.mq.UserFollowEventTemplate;
 import cn.goroute.smart.user.modules.follow.service.UserFollowService;
 import cn.goroute.smart.user.modules.profile.service.UserProfileService;
 import cn.hutool.core.collection.CollUtil;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -43,8 +45,9 @@ public class UserFollowServiceImpl extends ServiceImpl<UserFollowMapper, UserFol
     private final UserFollowManagerService userFollowManagerService;
     private final UserProfileService userProfileService;
     private final UserFollowMapper userFollowMapper;
+	private final UserFollowEventTemplate userFollowEventTemplate;
 
-    @Override
+	@Override
     public Boolean saveFollow(UserSaveFollowForm userSaveFollowForm) {
 
         long userId = StpUtil.getLoginIdAsLong();
@@ -144,6 +147,10 @@ public class UserFollowServiceImpl extends ServiceImpl<UserFollowMapper, UserFol
         // 更新缓存
         redisUtil.zAdd(redisKey, userSaveFollowForm.getToUserId().toString(),
                 userSaveFollowForm.getFollowTime().toEpochSecond(ZoneOffset.of("+8")));
+        redisUtil.expire(redisKey, 1, TimeUnit.DAYS);
+
+		// 发送事件
+		userFollowEventTemplate.sendUserFollowEvent(entity);
 
         return true;
     }

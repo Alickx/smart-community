@@ -1,6 +1,6 @@
-package cn.goroute.smart.notice.modules.notice.mq.listener;
+package cn.goroute.smart.notice.modules.notice.mq.listener.post;
 
-import cn.goroute.smart.common.constant.RocketMqBizConstant;
+import cn.goroute.smart.common.constant.MqBizConstant;
 import cn.goroute.smart.notice.modules.notice.service.NoticeService;
 import cn.goroute.smart.post.domain.dto.CommentDTO;
 import cn.goroute.smart.post.domain.entity.CommentEntity;
@@ -22,8 +22,8 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 @RocketMQMessageListener(
-		topic = RocketMqBizConstant.CommentMqConstant.COMMENT_TOPIC,
-		consumerGroup = RocketMqBizConstant.CommentMqConstant.COMMENT_NOTICE_GROUP,
+		topic = MqBizConstant.CommentMqConstant.COMMENT_TOPIC,
+		consumerGroup = MqBizConstant.CommentMqConstant.COMMENT_NOTICE_GROUP,
 		consumeThreadNumber = 5
 )
 public class PostCommentListener extends BaseMqMessageListener<RocketMqEntityMessage>

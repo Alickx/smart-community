@@ -1,6 +1,6 @@
 package cn.goroute.smart.post.modules.thumb.mq;
 
-import cn.goroute.smart.common.constant.RocketMqBizConstant;
+import cn.goroute.smart.common.constant.MqBizConstant;
 import cn.goroute.smart.post.domain.dto.ThumbDTO;
 import cn.goroute.smart.rocketmq.domain.RocketMqEntityMessage;
 import cn.goroute.smart.rocketmq.template.RocketMqTemplate;
@@ -21,7 +21,7 @@ public class ThumbSaveOrUpdateEventMessageTemplate extends RocketMqTemplate{
 	 */
 	public void sendPostThumbMessage(ThumbDTO thumbDTO,Boolean saveFlag) {
 		RocketMqEntityMessage message = getRocketMqEntityMessage(thumbDTO,saveFlag);
-		sendAsync(RocketMqBizConstant.ThumbMqConstant.THUMB_TOPIC, message);
+		sendAsync(MqBizConstant.ThumbMqConstant.THUMB_TOPIC, message);
 	}
 
 

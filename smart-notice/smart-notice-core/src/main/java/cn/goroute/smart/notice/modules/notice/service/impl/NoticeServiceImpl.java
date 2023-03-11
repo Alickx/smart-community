@@ -19,6 +19,7 @@ import cn.goroute.smart.notice.modules.notice.mapper.NoticeMapper;
 import cn.goroute.smart.notice.modules.notice.service.NoticeService;
 import cn.goroute.smart.post.domain.dto.CommentDTO;
 import cn.goroute.smart.post.domain.dto.ThumbDTO;
+import cn.goroute.smart.user.domain.dto.UserFollowEventDTO;
 import cn.goroute.smart.user.domain.vo.UserProfileVO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -103,6 +104,32 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, NoticeEntity>
 			noticeMessageInfoEntity.setMsgType(MsgTypeEnum.COMMENT.getCode());
 
 			noticeManagerService.saveNoticeMessage(noticeMessageInfoEntity, commentDTO.getUserId(), commentDTO.getToUserId());
+		}
+
+	}
+
+	@Override
+	public void saveUserFollowNotice(UserFollowEventDTO userFollowEventDTO) {
+
+		// 查询该关注通知是否已经存在
+		NoticeEntity noticeEntity = noticeMapper.
+			queryNoticeIsExist(userFollowEventDTO.getUserId(), userFollowEventDTO.getToUserId(),
+				MsgTypeEnum.FOLLOW.getCode(), userFollowEventDTO.getId());
+
+		if (null == noticeEntity) {
+
+			// 判断是否是自己关注自己
+			if (userFollowEventDTO.getUserId().equals(userFollowEventDTO.getToUserId())) {
+				return;
+			}
+
+			// 创建通知
+			NoticeMessageInfoEntity noticeMessageInfoEntity = new NoticeMessageInfoEntity();
+			noticeMessageInfoEntity.setTargetId(userFollowEventDTO.getId());
+			noticeMessageInfoEntity.setSourceType(SourceTypeEnum.OTHER.getCode());
+			noticeMessageInfoEntity.setMsgType(MsgTypeEnum.FOLLOW.getCode());
+
+			noticeManagerService.saveNoticeMessage(noticeMessageInfoEntity, userFollowEventDTO.getUserId(), userFollowEventDTO.getToUserId());
 		}
 
 	}

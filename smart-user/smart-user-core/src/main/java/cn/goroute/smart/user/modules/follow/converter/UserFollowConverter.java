@@ -1,5 +1,6 @@
 package cn.goroute.smart.user.modules.follow.converter;
 
+import cn.goroute.smart.user.domain.dto.UserFollowEventDTO;
 import cn.goroute.smart.user.domain.entity.UserFollowEntity;
 import cn.goroute.smart.user.domain.vo.UserFollowVO;
 import org.mapstruct.Mapper;
@@ -15,8 +16,10 @@ import java.util.List;
 @Mapper
 public interface UserFollowConverter {
 
-    UserFollowConverter INSTANCE = Mappers.getMapper(UserFollowConverter.class);
+	UserFollowConverter INSTANCE = Mappers.getMapper(UserFollowConverter.class);
 
     List<UserFollowVO> poToVo(List<UserFollowEntity> userFollowEntityList);
+
+	UserFollowEventDTO poToDto(UserFollowEntity userFollowEntity);
 
 }

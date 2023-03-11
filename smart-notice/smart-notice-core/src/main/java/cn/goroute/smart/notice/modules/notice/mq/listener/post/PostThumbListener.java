@@ -1,6 +1,6 @@
-package cn.goroute.smart.notice.modules.notice.mq.listener;
+package cn.goroute.smart.notice.modules.notice.mq.listener.post;
 
-import cn.goroute.smart.common.constant.RocketMqBizConstant;
+import cn.goroute.smart.common.constant.MqBizConstant;
 import cn.goroute.smart.notice.modules.notice.service.NoticeService;
 import cn.goroute.smart.post.domain.dto.ThumbDTO;
 import cn.goroute.smart.post.domain.entity.ThumbEntity;
@@ -22,8 +22,8 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 @RocketMQMessageListener(
-		topic = RocketMqBizConstant.ThumbMqConstant.THUMB_TOPIC,
-		consumerGroup = RocketMqBizConstant.ThumbMqConstant.THUMB_NOTICE_GROUP,
+		topic = MqBizConstant.ThumbMqConstant.THUMB_TOPIC,
+		consumerGroup = MqBizConstant.ThumbMqConstant.THUMB_NOTICE_GROUP,
 		consumeThreadNumber = 5
 )
 public class PostThumbListener extends BaseMqMessageListener<RocketMqEntityMessage>

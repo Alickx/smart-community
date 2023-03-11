@@ -17,6 +17,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.ListUtil;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -136,12 +137,16 @@ public class UserProfileServiceImpl extends ServiceImpl<UserProfileMapper, UserP
         if (isSave) {
             // 增加用户粉丝数 DB
             userProfileMapper.updateIncrFansNum(entity.getToUserId());
+            userProfileMapper.updateIncrFollowNum(entity.getUserId());
             // 删除db缓存
-            String userProfileKey = UserRedisConstant.USER_PROFILE + ":" + entity.getToUserId();
-            redisUtil.delete(userProfileKey);
+            String userIdKey = UserRedisConstant.USER_PROFILE + ":" + entity.getToUserId();
+            String toUserKey = UserRedisConstant.USER_PROFILE + ":" + entity.getUserId();
+            redisUtil.delete(Lists.newArrayList(userIdKey, toUserKey));
         } else {
             // 减少用户粉丝数 DB
             userProfileMapper.updateDecrFansNum(entity.getToUserId());
+            // 减少用户关注数 DB
+            userProfileMapper.updateDecrFollowNum(entity.getUserId());
             // 删除db缓存
             String userProfileKey = UserRedisConstant.USER_PROFILE + ":" + entity.getToUserId();
             redisUtil.delete(userProfileKey);

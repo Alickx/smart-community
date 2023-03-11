@@ -1,10 +1,10 @@
-package cn.goroute.smart.search.modules.post.listener;
+package cn.goroute.smart.notice.modules.notice.mq.listener.user;
 
 import cn.goroute.smart.common.constant.MqBizConstant;
-import cn.goroute.smart.post.domain.entity.PostEntity;
+import cn.goroute.smart.notice.modules.notice.service.NoticeService;
 import cn.goroute.smart.rocketmq.domain.RocketMqEntityMessage;
 import cn.goroute.smart.rocketmq.listener.BaseMqMessageListener;
-import cn.goroute.smart.search.modules.post.service.PostIndexService;
+import cn.goroute.smart.user.domain.dto.UserFollowEventDTO;
 import com.alibaba.fastjson2.JSON;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,22 +14,22 @@ import org.springframework.stereotype.Component;
 
 /**
  * @Author: Alickx
- * @Date: 2023/01/31/12:20
- * @Description:
+ * @Date: 2023/03/11/10:20
+ * @Description: 用户关注事件监听者
  */
-@Slf4j
-@Component
 @RequiredArgsConstructor
+@Component
+@Slf4j
 @RocketMQMessageListener(
-		topic = MqBizConstant.PostMqConstant.POST_TOPIC,
-		consumerGroup = MqBizConstant.PostMqConstant.POST_SYNC_SAVE_ES_HANDLE_GROUP,
-		consumeThreadNumber = 5
+	topic = MqBizConstant.UserMqConstant.USER_TOPIC,
+	consumerGroup = MqBizConstant.UserMqConstant.USER_FOLLOW_GROUP,
+	selectorExpression = MqBizConstant.UserMqConstant.USER_FOLLOW_TAG,
+	consumeThreadNumber = 5
 )
-public class PostSyncListener extends BaseMqMessageListener<RocketMqEntityMessage>
-		implements RocketMQListener<RocketMqEntityMessage> {
+public class UserFollowEventListener extends BaseMqMessageListener<RocketMqEntityMessage>
+	implements RocketMQListener<RocketMqEntityMessage> {
 
-
-	private final PostIndexService postIndexService;
+	private final NoticeService noticeService;
 
 	/**
 	 * 消息者名称
@@ -38,18 +38,18 @@ public class PostSyncListener extends BaseMqMessageListener<RocketMqEntityMessag
 	 */
 	@Override
 	protected String consumerName() {
-		return "文章同步事件监听者";
+		return "用户关注消费者";
 	}
 
 	/**
 	 * 消息处理
 	 *
 	 * @param message 待处理消息
+	 * @throws Exception 消费异常
 	 */
 	@Override
-	protected void handleMessage(RocketMqEntityMessage message) {
-		PostEntity postEntity = JSON.parseObject(message.getMessage(), PostEntity.class);
-		postIndexService.postSync(postEntity);
+	protected void handleMessage(RocketMqEntityMessage message) throws Exception {
+		noticeService.saveUserFollowNotice(JSON.parseObject(message.getMessage(), UserFollowEventDTO.class));
 	}
 
 	/**
@@ -59,7 +59,7 @@ public class PostSyncListener extends BaseMqMessageListener<RocketMqEntityMessag
 	 */
 	@Override
 	protected void overMaxRetryTimesMessage(RocketMqEntityMessage message) {
-		log.error("文章同步事件监听者超过最大重试次数，消息内容：[{}]", JSON.toJSONString(message));
+		// 入库
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class PostSyncListener extends BaseMqMessageListener<RocketMqEntityMessag
 	 */
 	@Override
 	protected boolean isRetry() {
-		return true;
+		return false;
 	}
 
 	/**
@@ -79,7 +79,7 @@ public class PostSyncListener extends BaseMqMessageListener<RocketMqEntityMessag
 	 */
 	@Override
 	protected boolean isThrowException() {
-		return true;
+		return false;
 	}
 
 	@Override

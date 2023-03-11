@@ -2,7 +2,7 @@ package cn.goroute.smart.auth.module.login.mq;
 
 import cn.goroute.smart.auth.domain.dto.UserRegisterInfoDTO;
 import cn.goroute.smart.auth.module.login.util.JwtUtil;
-import cn.goroute.smart.common.constant.RocketMqBizConstant;
+import cn.goroute.smart.common.constant.MqBizConstant;
 import cn.goroute.smart.rocketmq.domain.RocketMqEntityMessage;
 import cn.goroute.smart.rocketmq.template.RocketMqTemplate;
 import com.alibaba.fastjson.JSON;
@@ -32,7 +32,7 @@ public class RegisterMessageTemplate extends RocketMqTemplate {
         rocketMqEntityMessage.setMessage(JSON.toJSONString(registerInfo));
         rocketMqEntityMessage.setKey(userEmail);
         rocketMqEntityMessage.setSource("注册激活邮件");
-        sendAsync(RocketMqBizConstant.AuthMqConstant.AUTH_TOPIC, rocketMqEntityMessage);
+        sendAsync(MqBizConstant.AuthMqConstant.AUTH_TOPIC, rocketMqEntityMessage);
     }
 
     private String getToken(String userName,String userEmail) {

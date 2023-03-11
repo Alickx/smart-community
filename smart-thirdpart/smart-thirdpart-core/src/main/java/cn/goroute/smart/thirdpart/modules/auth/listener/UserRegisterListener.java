@@ -1,7 +1,7 @@
 package cn.goroute.smart.thirdpart.modules.auth.listener;
 
 import cn.goroute.smart.auth.domain.dto.UserRegisterInfoDTO;
-import cn.goroute.smart.common.constant.RocketMqBizConstant;
+import cn.goroute.smart.common.constant.MqBizConstant;
 import cn.goroute.smart.rocketmq.domain.RocketMqEntityMessage;
 import cn.goroute.smart.rocketmq.listener.BaseMqMessageListener;
 import cn.goroute.smart.thirdpart.modules.auth.service.AuthThirdpartService;
@@ -18,8 +18,8 @@ import org.springframework.stereotype.Component;
  */
 @RequiredArgsConstructor
 @RocketMQMessageListener(
-        topic = RocketMqBizConstant.AuthMqConstant.AUTH_TOPIC,
-        consumerGroup = RocketMqBizConstant.AuthMqConstant.USER_REGISTER_GROUP
+        topic = MqBizConstant.AuthMqConstant.AUTH_TOPIC,
+        consumerGroup = MqBizConstant.AuthMqConstant.USER_REGISTER_GROUP
 )
 @Component
 public class UserRegisterListener extends BaseMqMessageListener<RocketMqEntityMessage>

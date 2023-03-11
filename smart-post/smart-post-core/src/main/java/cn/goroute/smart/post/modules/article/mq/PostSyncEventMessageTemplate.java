@@ -1,6 +1,6 @@
 package cn.goroute.smart.post.modules.article.mq;
 
-import cn.goroute.smart.common.constant.RocketMqBizConstant;
+import cn.goroute.smart.common.constant.MqBizConstant;
 import cn.goroute.smart.post.domain.entity.PostEntity;
 import cn.goroute.smart.rocketmq.domain.RocketMqEntityMessage;
 import cn.goroute.smart.rocketmq.template.RocketMqTemplate;
@@ -21,7 +21,7 @@ public class PostSyncEventMessageTemplate extends RocketMqTemplate {
 		rocketMqEntityMessage.setKey(String.valueOf(postEntity.getId()));
 		rocketMqEntityMessage.setSource("文章风控事件");
 		rocketMqEntityMessage.setRetryTimes(3);
-		send(RocketMqBizConstant.PostMqConstant.POST_TOPIC, rocketMqEntityMessage);
+		send(MqBizConstant.PostMqConstant.POST_TOPIC, rocketMqEntityMessage);
 	}
 
 }

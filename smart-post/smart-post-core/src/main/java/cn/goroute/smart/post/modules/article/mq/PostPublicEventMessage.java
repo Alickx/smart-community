@@ -1,6 +1,6 @@
 package cn.goroute.smart.post.modules.article.mq;
 
-import cn.goroute.smart.common.constant.RocketMqBizConstant;
+import cn.goroute.smart.common.constant.MqBizConstant;
 import cn.goroute.smart.post.domain.dto.PostPublicEventDTO;
 import cn.goroute.smart.rocketmq.domain.RocketMqEntityMessage;
 import cn.goroute.smart.rocketmq.template.RocketMqTemplate;
@@ -18,7 +18,7 @@ public class PostPublicEventMessage extends RocketMqTemplate {
 		rocketMqEntityMessage.setMessage(JSON.toJSONString(postPublicEventDTO));
 		rocketMqEntityMessage.setKey(String.valueOf(userId));
 		rocketMqEntityMessage.setSource("文章发布事件");
-		sendAsync(RocketMqBizConstant.PostMqConstant.POST_PUBLISH_EVENT_GROUP, rocketMqEntityMessage);
+		sendAsync(MqBizConstant.PostMqConstant.POST_PUBLISH_EVENT_GROUP, rocketMqEntityMessage);
 	}
 
 }

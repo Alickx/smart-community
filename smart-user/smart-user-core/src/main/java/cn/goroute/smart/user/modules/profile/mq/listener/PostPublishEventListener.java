@@ -1,6 +1,6 @@
 package cn.goroute.smart.user.modules.profile.mq.listener;
 
-import cn.goroute.smart.common.constant.RocketMqBizConstant;
+import cn.goroute.smart.common.constant.MqBizConstant;
 import cn.goroute.smart.post.domain.dto.PostPublicEventDTO;
 import cn.goroute.smart.rocketmq.domain.RocketMqEntityMessage;
 import cn.goroute.smart.rocketmq.listener.BaseMqMessageListener;
@@ -16,8 +16,8 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 @RocketMQMessageListener(
-	topic = RocketMqBizConstant.PostMqConstant.POST_TOPIC,
-	consumerGroup = RocketMqBizConstant.PostMqConstant.POST_PUBLISH_EVENT_GROUP,
+	topic = MqBizConstant.PostMqConstant.POST_TOPIC,
+	consumerGroup = MqBizConstant.PostMqConstant.POST_PUBLISH_EVENT_GROUP,
 	consumeThreadNumber = 5
 )
 public class PostPublishEventListener extends BaseMqMessageListener<RocketMqEntityMessage>

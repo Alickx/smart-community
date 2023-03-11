@@ -17,6 +17,10 @@ public interface UserProfileMapper extends BaseMapper<UserProfileEntity> {
     void updateIncrFansNum(@Param("toUserId") Long toUserId);
 
     void updateDecrFansNum(@Param("toUserId") Long toUserId);
+
+    void updateIncrFollowNum(@Param("userId") Long userId);
+
+    void updateDecrFollowNum(@Param("userId") Long userId);
 }
 
 

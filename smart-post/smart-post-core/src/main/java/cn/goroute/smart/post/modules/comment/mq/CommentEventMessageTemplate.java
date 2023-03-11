@@ -1,6 +1,6 @@
 package cn.goroute.smart.post.modules.comment.mq;
 
-import cn.goroute.smart.common.constant.RocketMqBizConstant;
+import cn.goroute.smart.common.constant.MqBizConstant;
 import cn.goroute.smart.post.domain.dto.CommentDTO;
 import cn.goroute.smart.rocketmq.domain.RocketMqEntityMessage;
 import cn.goroute.smart.rocketmq.template.RocketMqTemplate;
@@ -23,7 +23,7 @@ public class CommentEventMessageTemplate extends RocketMqTemplate {
         rocketMqEntityMessage.setSource("评论信息");
         rocketMqEntityMessage.setRetryTimes(3);
 
-        sendAsync(RocketMqBizConstant.CommentMqConstant.COMMENT_TOPIC, rocketMqEntityMessage);
+        sendAsync(MqBizConstant.CommentMqConstant.COMMENT_TOPIC, rocketMqEntityMessage);
     }
 
 }
