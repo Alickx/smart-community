@@ -9,11 +9,9 @@ import cn.goroute.smart.common.modules.result.R;
 import cn.goroute.smart.common.util.PageUtil;
 import cn.goroute.smart.common.util.RedisUtil;
 import cn.goroute.smart.common.util.WebUtil;
-import cn.goroute.smart.post.domain.PostExpandInfoEntity;
-import cn.goroute.smart.post.modules.article.async.PostAsyncService;
 import cn.goroute.smart.post.constant.PostRedisConstant;
 import cn.goroute.smart.post.constant.enums.PostStateEnum;
-import cn.goroute.smart.post.modules.article.converter.PostConverter;
+import cn.goroute.smart.post.domain.PostExpandInfoEntity;
 import cn.goroute.smart.post.domain.dto.PostViewRankDTO;
 import cn.goroute.smart.post.domain.entity.CategoryEntity;
 import cn.goroute.smart.post.domain.entity.PostEntity;
@@ -23,15 +21,17 @@ import cn.goroute.smart.post.domain.vo.PostAbbreviationVO;
 import cn.goroute.smart.post.domain.vo.PostBaseVO;
 import cn.goroute.smart.post.domain.vo.PostInfoVO;
 import cn.goroute.smart.post.domain.vo.PostVO;
+import cn.goroute.smart.post.modules.article.async.PostAsyncService;
+import cn.goroute.smart.post.modules.article.converter.PostConverter;
 import cn.goroute.smart.post.modules.article.manager.PostManagerService;
 import cn.goroute.smart.post.modules.article.mapper.PostMapper;
 import cn.goroute.smart.post.modules.article.mq.PostPublicEventMessage;
 import cn.goroute.smart.post.modules.article.mq.PostSyncEventMessageTemplate;
 import cn.goroute.smart.post.modules.article.service.CategoryService;
 import cn.goroute.smart.post.modules.article.service.PostExpandInfoEntityService;
-import cn.goroute.smart.post.modules.comment.service.CommentService;
 import cn.goroute.smart.post.modules.article.service.PostService;
 import cn.goroute.smart.post.modules.article.service.TagService;
+import cn.goroute.smart.post.modules.comment.service.CommentService;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -140,6 +140,11 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, PostEntity>
                     return R.failed(ErrorCodeEnum.POST_HAS_RISK);
                 }
             }
+
+			// 添加进文章访问缓存中，使用set存储
+			String redisKey = PostRedisConstant.PostKey.POST_READ_KEY + postId;
+			redisUtil.sAdd(redisKey, String.valueOf(loginIdAsLong));
+
         }
 
         PostInfoVO postInfoDTO = PostConverter.INSTANCE.poToDto(postEntity);
@@ -152,25 +157,9 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, PostEntity>
         List<? extends PostBaseVO> postBaseDTOS =
                 postManagerService.fillInfo(Lists.asList(postInfoDTO, new PostInfoVO[0]));
 
-        // todo 进行优化
-        // 缓存文章阅读数和排行榜
-//        if (isLogin && !authorId.equals(StpUtil.getLoginIdAsLong())) {
-//            handleViewCountAndRank(postId);
-//        }
 
         return R.ok((PostInfoVO) postBaseDTOS.get(0));
     }
-
-//    private void handleViewCountAndRank(Long postId) {
-//        // 判断是否已经阅读过
-//        if (!redisUtil.sIsMember(PostRedisConstant.PostKey.POST_VIEW_COUNT_KEY + postId, StpUtil.getLoginIdAsString())) {
-//            // 增加文章阅读数
-//            redisUtil.sAdd(PostRedisConstant.PostKey.POST_VIEW_COUNT_KEY + postId, StpUtil.getLoginIdAsString());
-//
-//            // 添加进今日的排行榜中
-//            redisUtil.zIncrementScore(PostRedisConstant.PostKey.getTodayPostViewCountKey(), String.valueOf(postId), 1);
-//        }
-//    }
 
     /**
      * 保存文章
@@ -302,6 +291,44 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, PostEntity>
 
         return R.ok(true);
     }
+
+	/**
+	 * 批量查询文章简略信息
+	 * @param postIds 文章Id集合
+	 * @return 文章简略信息集合
+	 */
+	@Override
+	public List<PostAbbreviationVO> batchInfo(List<Long> postIds) {
+
+		List<PostEntity> postEntities = this.listByIds(postIds);
+
+		if (CollUtil.isEmpty(postEntities)) {
+			return new ArrayList<>();
+		}
+
+		List<PostAbbreviationVO> postAbbreviationVOS = postEntities.stream()
+				.map(PostConverter.INSTANCE::poToAbbreviationDto)
+				.toList();
+
+		postManagerService.fillInfo(postAbbreviationVOS);
+
+		return postAbbreviationVOS;
+	}
+
+	/**
+	 * 判断文章是否存在
+	 *
+	 * @param postId 文章Id
+	 * @return 是否存在 true:存在 false:不存在
+	 */
+	@Override
+	public Boolean queryIsExist(Long postId) {
+
+		PostEntity postEntity = postMapper.selectById(postId);
+
+		return postEntity != null;
+
+	}
 }
 
 

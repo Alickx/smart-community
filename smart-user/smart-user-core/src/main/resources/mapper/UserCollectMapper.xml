@@ -16,4 +16,9 @@
         id,user_id,post_id,
         create_time,update_time
     </sql>
+	<select id="queryPage" resultType="cn.goroute.smart.user.domain.entity.UserCollectEntity">
+		select *
+		from user_collect
+		where deleted = 0
+	</select>
 </mapper>

@@ -2,6 +2,7 @@ package cn.goroute.smart.user.modules.collect.mapper;
 
 import cn.goroute.smart.user.domain.entity.UserCollectEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 
 /**
 * @author caiguopeng
@@ -11,6 +12,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface UserCollectMapper extends BaseMapper<UserCollectEntity> {
 
+	IPage<UserCollectEntity> queryPage(IPage<UserCollectEntity> prodPage);
 }
 
 

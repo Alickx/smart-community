@@ -54,6 +54,16 @@ public class PostController {
 	}
 
 	/**
+	 * 批量查询文章缩略信息
+	 * @param postIds 文章id集合
+	 * @return 查询结果
+	 */
+	@GetMapping("/batch/info")
+	public R<List<PostAbbreviationVO>> batchInfo(@RequestParam("postIds") List<Long> postIds) {
+		return R.ok(postService.batchInfo(postIds));
+	}
+
+	/**
 	 * 保存文章
 	 * @param postVO 文章信息
 	 * @return 文章保存主键
@@ -84,4 +94,16 @@ public class PostController {
 	public R<List<PostViewRankDTO>> queryTodayViewRank() {
 		return postService.queryTodayViewRank();
 	}
+
+	/**
+	 * 查询文章是否存在
+	 * @param postId 文章id
+	 * @return 查询结果
+	 */
+	@GetMapping("/query/isExist")
+	public R<Boolean> queryIsExist(@RequestParam("postId") Long postId) {
+		return R.ok(postService.queryIsExist(postId));
+	}
+
+
 }

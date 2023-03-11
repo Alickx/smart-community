@@ -1,4 +1,4 @@
-package cn.goroute.smart.search.modules.post.listener;
+package cn.goroute.smart.search.modules.post.mq.listener;
 
 import cn.goroute.smart.common.constant.MqBizConstant;
 import cn.goroute.smart.post.domain.entity.PostEntity;

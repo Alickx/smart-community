@@ -54,4 +54,18 @@ public interface PostService extends IService<PostEntity> {
     R<List<PostViewRankDTO>> queryTodayViewRank();
 
     R<Boolean> deletePost(Long postId);
+
+	/**
+	 * 批量查询文章简略信息
+	 * @param postIds 文章Id集合
+	 * @return 文章简略信息集合
+	 */
+	List<PostAbbreviationVO> batchInfo(List<Long> postIds);
+
+	/**
+	 * 判断文章是否存在
+	 * @param postId 文章Id
+	 * @return 是否存在 true:存在 false:不存在
+	 */
+	Boolean queryIsExist(Long postId);
 }
