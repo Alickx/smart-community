@@ -64,6 +64,11 @@ public class MqBizConstant {
 		public static final String USER_FOLLOW_GROUP = "user_follow_group";
 		public static final String USER_FOLLOW_TAG = "user_follow_tag";
 
+		// 用户收藏
+		public static final String USER_COLLECT_GROUP = "user_collect_group";
+		public static final String USER_COLLECT_TAG = "user_collect_tag";
+
+
 	}
 
 

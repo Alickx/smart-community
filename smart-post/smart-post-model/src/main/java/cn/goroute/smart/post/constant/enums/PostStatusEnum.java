@@ -5,24 +5,19 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum UserInteractTypeEnum {
+public enum PostStatusEnum {
+
+	NORMAL(0, "正常"),
+
+	AUDIT(1, "审核中"),
+
+	AUDIT_FAIL(2, "审核不通过"),
 
 
-	/**
-	 * 文章
-	 */
-	POST(0, "文章"),
-	/**
-	 * 评论
-	 */
-	COMMENT(1, "评论"),
-	/**
-	 * 回复
-	 */
-	REPLY(2, "回复");
+	;
+
 
 	private final Integer code;
 
 	private final String desc;
-
 }

@@ -10,8 +10,8 @@ import cn.goroute.smart.common.modules.result.SystemResultCode;
 import cn.goroute.smart.common.util.PageUtil;
 import cn.goroute.smart.common.util.RedisUtil;
 import cn.goroute.smart.post.constant.PostRedisConstant;
-import cn.goroute.smart.post.constant.enums.UserInteractTypeEnum;
-import cn.goroute.smart.post.domain.PostExpandInfoEntity;
+import cn.goroute.smart.post.constant.enums.PostItemTypeEnum;
+import cn.goroute.smart.post.domain.ExpandInfoEntity;
 import cn.goroute.smart.post.domain.dto.ContentExpansionDTO;
 import cn.goroute.smart.post.domain.entity.CommentEntity;
 import cn.goroute.smart.post.domain.entity.UserInteractEntity;
@@ -63,7 +63,7 @@ public class CommentManagerService {
         this.getPageReplyList(records);
 
         // 获取拓展信息
-        this.getCommentExpansion(records, UserInteractTypeEnum.COMMENT.getCode());
+        this.getCommentExpansion(records, PostItemTypeEnum.COMMENT.getCode());
 
     }
 
@@ -92,7 +92,7 @@ public class CommentManagerService {
             commentQO.setPostId(record.getPostId());
             commentQO.setFirstCommentId(record.getId());
             IPage<CommentEntity> commentEntityPage = commentMapper
-                    .queryPage(prodPage, commentQO, StatusConstant.NORMAL_STATUS, StatusConstant.NORMAL_STATUS);
+                    .queryPage(prodPage, commentQO, StatusConstant.NORMAL_STATUS);
 
             IPage<CommentVO> commentVOIPage = commentEntityPage.convert(CommentConverter.INSTANCE::poToVO);
 
@@ -102,7 +102,7 @@ public class CommentManagerService {
             this.getUserProfile(replyRecords);
 
             // 二级回复查询拓展信息
-            this.getCommentExpansion(replyRecords, UserInteractTypeEnum.REPLY.getCode());
+            this.getCommentExpansion(replyRecords, PostItemTypeEnum.REPLY.getCode());
 
             // 填充
             PageResult<CommentVO> commentDTOPageResult = new PageResult<>(replyRecords, commentVOIPage.getTotal());
@@ -203,8 +203,8 @@ public class CommentManagerService {
         commentMapper.insert(commentEntity);
 
         // 更新文章评论数缓存
-		String redisKey = PostRedisConstant.PostKey.POST_EXPAND_INFO_KEY + ":" + postId;
-		redisUtil.hIncrBy(redisKey, PostExpandInfoEntity.Fields.commentCount, 1);
+		String redisKey = PostRedisConstant.PostKey.EXPAND_INFO_KEY + PostItemTypeEnum.POST.getName() + ":" + postId;
+        redisUtil.hIncrBy(redisKey, ExpandInfoEntity.Fields.commentCount, 1);
 
 		// 添加进待更新列表
 		redisUtil.sAdd(PostRedisConstant.PostKey.POST_EXPAND_INFO_UPDATE_LIST_KEY, String.valueOf(postId));

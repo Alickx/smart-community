@@ -3,12 +3,12 @@ package cn.goroute.smart.post.modules.article.service;
 import cn.goroute.smart.common.domain.PageParam;
 import cn.goroute.smart.common.domain.PageResult;
 import cn.goroute.smart.common.modules.result.R;
-import cn.goroute.smart.post.domain.dto.PostViewRankDTO;
 import cn.goroute.smart.post.domain.entity.PostEntity;
 import cn.goroute.smart.post.domain.qo.PostQO;
 import cn.goroute.smart.post.domain.vo.PostAbbreviationVO;
 import cn.goroute.smart.post.domain.vo.PostInfoVO;
 import cn.goroute.smart.post.domain.vo.PostVO;
+import cn.goroute.smart.user.domain.dto.UserCollectEventDTO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -50,9 +50,6 @@ public interface PostService extends IService<PostEntity> {
 	 */
 	R<PageResult<PostAbbreviationVO>> queryByComment(PageParam pageParam, PostQO postQO);
 
-
-    R<List<PostViewRankDTO>> queryTodayViewRank();
-
     R<Boolean> deletePost(Long postId);
 
 	/**
@@ -68,4 +65,10 @@ public interface PostService extends IService<PostEntity> {
 	 * @return 是否存在 true:存在 false:不存在
 	 */
 	Boolean queryIsExist(Long postId);
+
+	/**
+	 * 文章收藏处理
+	 * @param userCollectEventDTO
+	 */
+    void collectPostHandle(UserCollectEventDTO userCollectEventDTO);
 }

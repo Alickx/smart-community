@@ -1,0 +1,31 @@
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+  #  redis数据库
+  redis:
+    database: 0
+    host: 124.223.80.135
+    port: 6379
+    password: ak87715700
+
+  #    mysql数据库
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/smart_admin?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+
+ballcat:
+  oss:
+    endpoint: http://oss-cn-shanghai.aliyuncs.com
+    access-key: your key here
+    access-secret: your secret here
+    bucket: your-bucket-here
+
+springdoc:
+  swagger-ui:
+    urls:
+      - { name: 'admin', url: '/v3/api-docs' }
+      - { name: 'api', url: 'http://ballcat-api/v3/api-docs' }

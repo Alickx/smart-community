@@ -2,8 +2,9 @@ package cn.goroute.smart.post.modules.article.job;
 
 import cn.goroute.smart.common.util.RedisUtil;
 import cn.goroute.smart.post.constant.PostRedisConstant;
-import cn.goroute.smart.post.domain.PostExpandInfoEntity;
-import cn.goroute.smart.post.modules.article.service.PostExpandInfoEntityService;
+import cn.goroute.smart.post.constant.enums.PostItemTypeEnum;
+import cn.goroute.smart.post.domain.ExpandInfoEntity;
+import cn.goroute.smart.post.modules.article.service.ExpandInfoService;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.xxl.job.core.biz.model.ReturnT;
@@ -21,7 +22,7 @@ public class PostExpandInfoSyncJob {
 
 	private final RedisUtil redisUtil;
 
-	private final PostExpandInfoEntityService postExpandInfoEntityService;
+	private final ExpandInfoService expandInfoService;
 
 	@XxlJob("postExpandInfoSyncJob")
 	public ReturnT<String> execute() {
@@ -34,7 +35,7 @@ public class PostExpandInfoSyncJob {
 
 		for (String postId : postIds) {
 
-			String redisKey = PostRedisConstant.PostKey.POST_EXPAND_INFO_KEY + ":" + postId;
+			String redisKey = PostRedisConstant.PostKey.EXPAND_INFO_KEY + PostItemTypeEnum.POST.getName() + ":" + postId;
 			Map<String, String> map = redisUtil.hGetAll(redisKey);
 
 			if (map.isEmpty()) {
@@ -44,17 +45,17 @@ public class PostExpandInfoSyncJob {
 			}
 
 			// 更新数据库
-			PostExpandInfoEntity entity = PostExpandInfoEntity.builder()
-				.postId(Long.parseLong(postId))
-				.commentCount(Integer.parseInt(map.get(PostExpandInfoEntity.Fields.commentCount)))
-				.thumbCount(Integer.parseInt(map.get(PostExpandInfoEntity.Fields.thumbCount)))
-				.collectCount(Integer.parseInt(map.get(PostExpandInfoEntity.Fields.collectCount)))
-				.viewCount(Integer.parseInt(map.get(PostExpandInfoEntity.Fields.viewCount)))
+			ExpandInfoEntity entity = ExpandInfoEntity.builder()
+				.targetId(Long.parseLong(postId))
+				.commentCount(Integer.parseInt(map.get(ExpandInfoEntity.Fields.commentCount)))
+				.thumbCount(Integer.parseInt(map.get(ExpandInfoEntity.Fields.thumbCount)))
+				.collectCount(Integer.parseInt(map.get(ExpandInfoEntity.Fields.collectCount)))
+				.viewCount(Integer.parseInt(map.get(ExpandInfoEntity.Fields.viewCount)))
 				.build();
 
-			LambdaUpdateWrapper<PostExpandInfoEntity> updateWrapper = new LambdaUpdateWrapper<>();
-			updateWrapper.eq(PostExpandInfoEntity::getPostId, entity.getPostId());
-			postExpandInfoEntityService.update(entity,updateWrapper);
+			LambdaUpdateWrapper<ExpandInfoEntity> updateWrapper = new LambdaUpdateWrapper<>();
+			updateWrapper.eq(ExpandInfoEntity::getTargetId, entity.getTargetId());
+			expandInfoService.update(entity,updateWrapper);
 		}
 
 		// 清空缓存

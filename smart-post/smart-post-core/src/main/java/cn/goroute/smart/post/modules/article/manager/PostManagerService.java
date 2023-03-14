@@ -5,8 +5,8 @@ import cn.goroute.smart.common.constant.enums.BooleanEnum;
 import cn.goroute.smart.common.modules.result.R;
 import cn.goroute.smart.common.modules.result.SystemResultCode;
 import cn.goroute.smart.common.util.RedisUtil;
-import cn.goroute.smart.post.constant.enums.UserInteractTypeEnum;
-import cn.goroute.smart.post.domain.PostExpandInfoEntity;
+import cn.goroute.smart.post.constant.enums.PostItemTypeEnum;
+import cn.goroute.smart.post.domain.ExpandInfoEntity;
 import cn.goroute.smart.post.domain.dto.ContentExpansionDTO;
 import cn.goroute.smart.post.domain.entity.CategoryEntity;
 import cn.goroute.smart.post.domain.entity.PostEntity;
@@ -18,7 +18,7 @@ import cn.goroute.smart.post.modules.article.converter.CategoryConverter;
 import cn.goroute.smart.post.modules.article.converter.TagConverter;
 import cn.goroute.smart.post.modules.article.mapper.PostMapper;
 import cn.goroute.smart.post.modules.article.service.CategoryService;
-import cn.goroute.smart.post.modules.article.service.PostExpandInfoEntityService;
+import cn.goroute.smart.post.modules.article.service.ExpandInfoService;
 import cn.goroute.smart.post.modules.article.service.TagService;
 import cn.goroute.smart.post.modules.article.service.UserInteractService;
 import cn.goroute.smart.post.util.MarkdownUtil;
@@ -51,7 +51,7 @@ public class PostManagerService {
     private final TagService tagService;
     private final CategoryService categoryService;
     private final UserInteractService userInteractService;
-    private final PostExpandInfoEntityService postExpandInfoEntityService;
+    private final ExpandInfoService expandInfoService;
 
     /**
      * 补充文章作者，板块和标签信息
@@ -82,21 +82,21 @@ public class PostManagerService {
 
         // 批量查询文章拓展信息，点赞量，收藏量，浏览量，评论量
         List<Long> postIds = records.stream().map(PostBaseVO::getId).toList();
-        List<PostExpandInfoEntity> postExpandInfoEntities = postExpandInfoEntityService.batchPostExpandInfo(postIds);
+        List<ExpandInfoEntity> postExpandInfoEntities = expandInfoService.batchExpandInfo(postIds, PostItemTypeEnum.POST.getCode());
 
         // Map 以 postId为key，PostExpandInfoEntity为value
-        Map<Long, PostExpandInfoEntity> postExpandInfoEntityMap = postExpandInfoEntities
+        Map<Long, ExpandInfoEntity> postExpandInfoEntityMap = postExpandInfoEntities
                 .stream()
-                .collect(Collectors.toMap(PostExpandInfoEntity::getPostId, Function.identity()));
+                .collect(Collectors.toMap(ExpandInfoEntity::getTargetId, Function.identity()));
 
         // 遍历填充
         for (PostBaseVO record : records) {
-            PostExpandInfoEntity postExpandInfoEntity = postExpandInfoEntityMap.get(record.getId());
-            if (postExpandInfoEntity != null) {
-                record.setThumbCount(postExpandInfoEntity.getThumbCount());
-                record.setCollectCount(postExpandInfoEntity.getCollectCount());
-                record.setCommentCount(postExpandInfoEntity.getCommentCount());
-                record.setViewCount(postExpandInfoEntity.getViewCount());
+            ExpandInfoEntity expandInfoEntity = postExpandInfoEntityMap.get(record.getId());
+            if (expandInfoEntity != null) {
+                record.setThumbCount(expandInfoEntity.getThumbCount());
+                record.setCollectCount(expandInfoEntity.getCollectCount());
+                record.setCommentCount(expandInfoEntity.getCommentCount());
+                record.setViewCount(expandInfoEntity.getViewCount());
             } else {
                 record.setThumbCount(0);
                 record.setCollectCount(0);
@@ -202,7 +202,7 @@ public class PostManagerService {
         List<Long> postIds = records.stream().map(PostBaseVO::getId).toList();
 
         // 调用用户关系表
-        List<UserInteractEntity> userInteractEntityList = userInteractService.batchGetUserPostInteract(postIds, UserInteractTypeEnum.POST.getCode(), userId);
+        List<UserInteractEntity> userInteractEntityList = userInteractService.batchGetUserPostInteract(postIds, PostItemTypeEnum.POST.getCode(), userId);
 
         Map<Long, UserInteractEntity> userInteractMap = new HashMap<>(userInteractEntityList.size());
         for (UserInteractEntity userInteractEntity : userInteractEntityList) {

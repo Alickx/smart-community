@@ -2,6 +2,9 @@ package cn.goroute.smart.post.modules.thumb.strategy.thumb.impl;
 
 import cn.goroute.smart.common.constant.enums.ErrorCodeEnum;
 import cn.goroute.smart.common.exception.BusinessException;
+import cn.goroute.smart.post.constant.PostRedisConstant;
+import cn.goroute.smart.post.constant.enums.PostItemTypeEnum;
+import cn.goroute.smart.post.domain.ExpandInfoEntity;
 import cn.goroute.smart.post.modules.thumb.converter.ThumbConverter;
 import cn.goroute.smart.post.domain.dto.ThumbDTO;
 import cn.goroute.smart.post.domain.entity.CommentEntity;
@@ -37,8 +40,12 @@ public class ReplyThumbStrategy extends AbstractThumbStrategy {
 		// 保存或更新点赞记录
 		ThumbDTO thumbDTO = saveThumb2DB(thumbEntity);
 
-		// 更新点赞数
-		commentMapper.incrThumbNum(thumbEntity.getToId(), 1);
+		// 更新文章点赞数缓存
+		String redisKey = PostRedisConstant.PostKey.EXPAND_INFO_KEY + PostItemTypeEnum.REPLY.getName() + ":" + thumbEntity.getToId();
+		redisUtil.hIncrBy(redisKey, ExpandInfoEntity.Fields.thumbCount, 1);
+
+		// 加入到更新列表
+		redisUtil.sAdd(PostRedisConstant.PostKey.REPLY_EXPAND_INFO_UPDATE_LIST_KEY, String.valueOf(thumbEntity.getToId()));
 
 		// 保存/更新用户关系
 		userInteractService.updateThumbUserRelation(thumbEntity, true);

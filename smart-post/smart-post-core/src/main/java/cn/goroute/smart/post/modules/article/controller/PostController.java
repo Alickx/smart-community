@@ -3,7 +3,6 @@ package cn.goroute.smart.post.modules.article.controller;
 import cn.goroute.smart.common.domain.PageParam;
 import cn.goroute.smart.common.domain.PageResult;
 import cn.goroute.smart.common.modules.result.R;
-import cn.goroute.smart.post.domain.dto.PostViewRankDTO;
 import cn.goroute.smart.post.domain.qo.PostQO;
 import cn.goroute.smart.post.domain.vo.PostAbbreviationVO;
 import cn.goroute.smart.post.domain.vo.PostInfoVO;
@@ -90,10 +89,10 @@ public class PostController {
 		return postService.queryByComment(pageParam, postQO);
 	}
 
-	@GetMapping("/query/todayViewRank")
-	public R<List<PostViewRankDTO>> queryTodayViewRank() {
-		return postService.queryTodayViewRank();
-	}
+//	@GetMapping("/query/todayViewRank")
+//	public R<List<PostViewRankDTO>> queryTodayViewRank() {
+//		return postService.queryTodayViewRank();
+//	}
 
 	/**
 	 * 查询文章是否存在

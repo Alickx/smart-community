@@ -22,11 +22,11 @@ public interface FeignPostService {
 	 * @param postIds 文章id集合
 	 * @return 查询结果
 	 */
-	@GetMapping("/batch/info")
+	@GetMapping("/post/batch/info")
 	R<List<PostAbbreviationVO>> batchInfo(@RequestParam("postIds") List<Long> postIds);
 
 
-	@GetMapping("/query/isExist")
+	@GetMapping("/post/query/isExist")
 	R<Boolean> queryIsExist(@RequestParam("postId") Long postId);
 
 }

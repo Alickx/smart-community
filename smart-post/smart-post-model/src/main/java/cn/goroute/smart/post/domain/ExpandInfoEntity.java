@@ -11,14 +11,14 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 文章拓展信息
- * @TableName t_post_expand_info
+ * 拓展信息
+ * @TableName expand_info
  */
-@TableName(value ="t_post_expand_info")
+@TableName(value ="expand_info")
 @Data
 @Builder
 @FieldNameConstants
-public class PostExpandInfoEntity implements Serializable {
+public class ExpandInfoEntity implements Serializable {
     /**
      * 主键id
      */
@@ -26,9 +26,15 @@ public class PostExpandInfoEntity implements Serializable {
     private Long id;
 
     /**
-     * 文章id
+     * 目标id
      */
-    private Long postId;
+    private Long targetId;
+
+	/**
+	 * 类型
+	 * see {@link cn.goroute.smart.post.constant.enums.PostItemTypeEnum}
+	 */
+	private Integer type;
 
     /**
      * 点赞量

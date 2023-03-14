@@ -2,16 +2,15 @@ package cn.goroute.smart.post.modules.thumb.strategy.thumb.impl;
 
 import cn.goroute.smart.common.constant.enums.ErrorCodeEnum;
 import cn.goroute.smart.common.exception.BusinessException;
-import cn.goroute.smart.common.util.RedisUtil;
 import cn.goroute.smart.post.constant.PostRedisConstant;
-import cn.goroute.smart.post.domain.PostExpandInfoEntity;
+import cn.goroute.smart.post.constant.enums.PostItemTypeEnum;
+import cn.goroute.smart.post.domain.ExpandInfoEntity;
 import cn.goroute.smart.post.domain.dto.ThumbDTO;
 import cn.goroute.smart.post.domain.entity.PostEntity;
 import cn.goroute.smart.post.domain.entity.ThumbEntity;
 import cn.goroute.smart.post.modules.article.mapper.PostMapper;
 import cn.goroute.smart.post.modules.thumb.converter.ThumbConverter;
 import cn.goroute.smart.post.modules.thumb.strategy.thumb.AbstractThumbStrategy;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,8 +27,6 @@ public class PostThumbStrategyImpl extends AbstractThumbStrategy {
 
 	@Resource
 	private PostMapper postMapper;
-	@Autowired
-	private RedisUtil redisUtil;
 
 	/**
 	 * 点赞
@@ -44,8 +41,8 @@ public class PostThumbStrategyImpl extends AbstractThumbStrategy {
 		ThumbDTO thumbDTO = saveThumb2DB(thumbEntity);
 
 		// 更新文章点赞数缓存
-		String redisKey = PostRedisConstant.PostKey.POST_EXPAND_INFO_KEY + ":" + thumbEntity.getToId();
-		redisUtil.hIncrBy(redisKey, PostExpandInfoEntity.Fields.thumbCount, 1);
+		String redisKey = PostRedisConstant.PostKey.EXPAND_INFO_KEY + PostItemTypeEnum.POST.getName() + ":" + thumbEntity.getToId();
+		redisUtil.hIncrBy(redisKey, ExpandInfoEntity.Fields.thumbCount, 1);
 
 		// 加入到更新列表
 		redisUtil.sAdd(PostRedisConstant.PostKey.POST_EXPAND_INFO_UPDATE_LIST_KEY, String.valueOf(thumbEntity.getToId()));
@@ -102,8 +99,8 @@ public class PostThumbStrategyImpl extends AbstractThumbStrategy {
 		thumbMapper.deleteById(thumbEntity);
 
 		// 更新文章点赞数缓存
-		String redisKey = PostRedisConstant.PostKey.POST_EXPAND_INFO_KEY + ":" + toId;
-		redisUtil.hIncrBy(redisKey, PostExpandInfoEntity.Fields.thumbCount, -1);
+		String redisKey = PostRedisConstant.PostKey.EXPAND_INFO_KEY + toId;
+		redisUtil.hIncrBy(redisKey, ExpandInfoEntity.Fields.thumbCount, -1);
 
 		// 添加进待更新列表
 		redisUtil.sAdd(PostRedisConstant.PostKey.POST_EXPAND_INFO_UPDATE_LIST_KEY, String.valueOf(toId));

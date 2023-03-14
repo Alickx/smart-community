@@ -34,9 +34,7 @@
 			<if test="status != null">
 				and state = #{status}
 			</if>
-			<if test="commentQO.deleted != null">
-				and deleted = #{commentQO.deleted}
-			</if>
+			and deleted = 0
 		</where>
 	</select>
 
@@ -49,9 +47,7 @@
             <if test="status != null">
                 and state = #{status}
             </if>
-           <if test="deleted != null">
-				and deleted = #{deleted}
-			</if>
+			and deleted = 0
         </where>
         group by post_id
     </select>
@@ -74,9 +70,7 @@
 			<if test="state != null">
 				and state = #{status}
 			</if>
-			<if test="deleted != null">
-				and deleted = #{deleted}
-			</if>
+			and deleted = 0
 		</where>
 	</select>
 </mapper>

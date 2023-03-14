@@ -1,0 +1,89 @@
+server:
+  port: 18000
+
+spring:
+  application:
+    name: @artifactId@
+  profiles:
+    active: @profiles.active@  # 当前激活配置，默认dev
+  messages:
+    # basename 中的 . 和 / 都可以用来表示文件层级，默认的 basename 是 messages
+    # 必须注册此 basename, 否则 security 错误信息将一直都是英文
+    basename: 'ballcat-*, org.springframework.security.messages'
+
+# 天爱图形验证码
+captcha:
+  secondary:
+    enabled: true
+
+# mybatis-plus相关配置
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*Mapper.xml
+  global-config:
+    banner: false
+    db-config:
+      id-type: auto
+      insert-strategy: not_empty
+      update-strategy: not_empty
+      logic-delete-value: "NOW()" # 逻辑已删除值(使用当前时间标识)
+      logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
+
+
+# BallCat 相关配置
+ballcat:
+  security:
+    # 前端传输密码的 AES 加密密钥
+    password-secret-key: 'JOxioX3DDRgkmnyyeZltxJmcWkApIsrg'
+    oauth2:
+      authorizationserver:
+        # 登陆验证码是否开启
+        login-captcha-enabled: false
+      resourceserver:
+        ## 忽略鉴权的 url 列表
+        ignore-urls:
+          - /public/**
+          - /actuator/**
+          - /doc.html
+          - /v2/api-docs/**
+          - /v3/api-docs/**
+          - /swagger-resources/**
+          - /swagger-ui/**
+          - /webjars/**
+          - /bycdao-ui/**
+          - /favicon.ico
+          - /captcha/**
+  # 项目 redis 缓存的 key 前缀
+  redis:
+    key-prefix: 'SMART-ADMIN:'
+  openapi:
+    info:
+      title: Smart-Community-Admin Docs
+      description: 智慧社区后台管理服务Api文档
+      version: ${project.version}
+    components:
+      security-schemes:
+        apiKey:
+          type: APIKEY
+          in: HEADER
+          name: 'api-key'
+        oauth2:
+          type: OAUTH2
+          flows:
+            password:
+              token-url: /oauth/token
+
+springdoc:
+  swagger-ui:
+    oauth:
+      client-id: test
+      client-secret: test
+    display-request-duration: true
+    disable-swagger-default-url: true
+    persist-authorization: true
+
+
+
+
+
+
+

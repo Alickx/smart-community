@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/collect")
+@RequestMapping("/user/collect")
 public class UserCollectController {
 
 	private final UserCollectService userCollectService;
@@ -38,7 +38,7 @@ public class UserCollectController {
 		return R.ok(userCollectService.deleteUserCollect(postId));
 	}
 
-	@GetMapping("/isExist")
+	@GetMapping("/queryIsExist")
 	public R<Boolean> isExist(Long postId) {
 		return R.ok(userCollectService.isExist(postId));
 	}

@@ -1,6 +1,7 @@
 package cn.goroute.smart.post.modules.thumb.strategy.thumb;
 
 import cn.goroute.smart.common.constant.StatusConstant;
+import cn.goroute.smart.common.util.RedisUtil;
 import cn.goroute.smart.post.domain.dto.ThumbDTO;
 import cn.goroute.smart.post.domain.entity.ThumbEntity;
 import cn.goroute.smart.post.modules.article.mapper.PostMapper;
@@ -27,6 +28,9 @@ public abstract class AbstractThumbStrategy implements ThumbStrategy {
 	protected UserInteractService userInteractService;
 	@Resource
 	protected PostMapper postMapper;
+
+	@Resource
+	protected RedisUtil redisUtil;
 
 
 	protected void sendThumbMqEvent(ThumbDTO thumbDTO, Boolean saveFlag) {

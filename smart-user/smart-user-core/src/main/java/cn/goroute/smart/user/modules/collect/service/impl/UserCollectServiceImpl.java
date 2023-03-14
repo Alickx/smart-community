@@ -1,6 +1,7 @@
 package cn.goroute.smart.user.modules.collect.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.goroute.smart.common.constant.enums.BooleanEnum;
 import cn.goroute.smart.common.constant.enums.ErrorCodeEnum;
 import cn.goroute.smart.common.domain.PageParam;
 import cn.goroute.smart.common.domain.PageResult;
@@ -12,6 +13,7 @@ import cn.goroute.smart.post.domain.vo.PostAbbreviationVO;
 import cn.goroute.smart.user.domain.entity.UserCollectEntity;
 import cn.goroute.smart.user.feign.FeignPostService;
 import cn.goroute.smart.user.modules.collect.mapper.UserCollectMapper;
+import cn.goroute.smart.user.modules.collect.mq.event.UserCollectPostEventTemplate;
 import cn.goroute.smart.user.modules.collect.service.UserCollectService;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -35,6 +37,7 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
 	private final UserCollectMapper userCollectMapper;
 
 	private final FeignPostService feignPostService;
+	private final UserCollectPostEventTemplate userCollectPostEventTemplate;
 
 	/**
 	 * 分页查询用户收藏
@@ -106,10 +109,14 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
 			UserCollectEntity collectEntity = new UserCollectEntity();
 			collectEntity.setUserId(userId);
 			collectEntity.setPostId(postId);
-			return userCollectMapper.insert(collectEntity) > 0;
-		} else {
-			return false;
+			int insetResult = userCollectMapper.insert(collectEntity);
+			if (insetResult > 0) {
+				// 发送事件
+				userCollectPostEventTemplate.sendEvent(postId, userId, BooleanEnum.TRUE.intValue());
+				return true;
+			}
 		}
+		return false;
 
 	}
 
@@ -134,7 +141,13 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
 			return true;
 		}
 
-		return userCollectMapper.deleteById(userCollectEntity.getId()) > 0;
+		int removeResult = userCollectMapper.deleteById(userCollectEntity.getId());
+		if (removeResult > 0) {
+			// 发送事件
+			userCollectPostEventTemplate.sendEvent(postId, userId, BooleanEnum.FALSE.intValue());
+			return true;
+		}
+		return false;
 
 	}
 

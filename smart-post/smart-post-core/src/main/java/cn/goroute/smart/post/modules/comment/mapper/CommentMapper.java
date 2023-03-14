@@ -18,13 +18,11 @@ public interface CommentMapper extends BaseMapper<CommentEntity> {
 
     IPage<CommentEntity> queryPage(@Param("page") IPage<CommentEntity> page,
                                    @Param("commentQO") CommentQO commentQO,
-                                   @Param("status") Integer status,
-                                   @Param("deleted") Integer deleted);
+                                   @Param("status") Integer status);
 
 
     List<CommentEntity> queryMoreReply(@Param("commentQO") CommentQO commentQO,
-                                       @Param("status") Integer status,
-                                       @Param("deleted") Integer deleted);
+                                       @Param("status") Integer status);
 
     /**
      * 递增点赞数
@@ -44,8 +42,7 @@ public interface CommentMapper extends BaseMapper<CommentEntity> {
 
     IPage<CommentEntity> queryPostIdsByComment(@Param("page") IPage<Long> page,
                                                @Param("userId") Long userId,
-                                               @Param("status") Integer status,
-                                               @Param("status") Integer deleted);
+                                               @Param("status") Integer status);
 }
 
 

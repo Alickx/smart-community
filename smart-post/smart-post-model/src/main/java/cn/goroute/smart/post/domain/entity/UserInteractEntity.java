@@ -1,5 +1,6 @@
 package cn.goroute.smart.post.domain.entity;
 
+import cn.goroute.smart.post.constant.enums.PostItemTypeEnum;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -28,6 +29,7 @@ public class UserInteractEntity implements Serializable {
 
     /**
      * 类型 0 = 文章 1 = comment 2 = reply
+	 * @see PostItemTypeEnum
      */
     private Integer type;
 

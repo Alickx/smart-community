@@ -1,5 +1,6 @@
 package cn.goroute.smart.user.domain.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 * @TableName user_collect
 */
 @Data
+@TableName(value ="user_collect")
 public class UserCollectEntity implements Serializable {
 
     /**

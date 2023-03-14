@@ -2,7 +2,7 @@ package cn.goroute.smart.post.modules.article.async;
 
 import cn.goroute.smart.post.domain.entity.PostEntity;
 import cn.goroute.smart.post.modules.article.mapper.PostMapper;
-import cn.goroute.smart.post.modules.article.mq.PostSyncEventMessageTemplate;
+import cn.goroute.smart.post.modules.article.mq.event.PostSyncEventMessageTemplate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;

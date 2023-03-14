@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.hccake</groupId>
+		<artifactId>smart-admin</artifactId>
+		<version>1.0.3</version>
+	</parent>
+
+	<artifactId>smart-admin-core</artifactId>
+
+	<properties>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<knife4j.version>3.0.3</knife4j.version>
+		<tianai-captcha.version>1.3.3</tianai-captcha.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.hccake</groupId>
+			<artifactId>ballcat-admin-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.hccake</groupId>
+			<artifactId>ballcat-admin-websocket</artifactId>
+		</dependency>
+
+		<!--mysql驱动-->
+		<dependency>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
+		</dependency>
+
+		<!-- openapi 扩展处理 -->
+		<dependency>
+			<groupId>com.hccake</groupId>
+			<artifactId>ballcat-extend-openapi</artifactId>
+		</dependency>
+		<!-- springdoc swagger-ui -->
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-ui</artifactId>
+		</dependency>
+		<!-- swagger 增强版 ui -->
+		<dependency>
+			<groupId>com.github.xiaoymin</groupId>
+			<artifactId>knife4j-springdoc-ui</artifactId>
+			<version>${knife4j.version}</version>
+		</dependency>
+
+		<!--        nacos-->
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+		</dependency>
+		<!--            loadbalancer-->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-loadbalancer</artifactId>
+		</dependency>
+		<!--        openfeign依赖-->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-openfeign</artifactId>
+		</dependency>
+
+		<!-- tianai 图形验证码 -->
+		<dependency>
+			<groupId>cloud.tianai.captcha</groupId>
+			<artifactId>tianai-captcha-springboot-starter</artifactId>
+			<version>${tianai-captcha.version}</version>
+		</dependency>
+
+		<!-- API, java.xml.bind module -->
+		<!-- add it when jdk11 -->
+		<dependency>
+			<groupId>jakarta.xml.bind</groupId>
+			<artifactId>jakarta.xml.bind-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jaxb</groupId>
+			<artifactId>jaxb-runtime</artifactId>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<!--重要 如果不设置resource 会导致application.yaml中的@@找不到pom文件中的配置-->
+		<resources>
+			<resource>
+				<filtering>true</filtering>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>**/*.yml</include>
+					<include>**/*.yaml</include>
+				</includes>
+			</resource>
+			<resource>
+				<filtering>false</filtering>
+				<directory>src/main/resources</directory>
+				<excludes>
+					<exclude>**/*.yml</exclude>
+					<exclude>**/*.yaml</exclude>
+				</excludes>
+			</resource>
+		</resources>
+	</build>
+
+</project>

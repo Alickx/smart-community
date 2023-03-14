@@ -1,6 +1,6 @@
 package cn.goroute.smart.post.modules.article.converter;
 
-import cn.goroute.smart.post.domain.PostExpandInfoEntity;
+import cn.goroute.smart.post.domain.ExpandInfoEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -16,5 +16,5 @@ public interface PostExpandInfoConverter {
 
 	PostExpandInfoConverter INSTANCE = Mappers.getMapper(PostExpandInfoConverter.class);
 
-	PostExpandInfoEntity mapToVo(Map<String,String> map);
+	ExpandInfoEntity mapToVo(Map<String,String> map);
 }

@@ -1,4 +1,4 @@
-package cn.goroute.smart.post.modules.article.mq;
+package cn.goroute.smart.post.modules.article.mq.event;
 
 import cn.goroute.smart.common.constant.MqBizConstant;
 import cn.goroute.smart.post.domain.entity.PostEntity;

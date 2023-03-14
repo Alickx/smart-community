@@ -19,5 +19,13 @@ public interface UserInteractService extends IService<UserInteractEntity> {
 	void updateUserCommentRelation(CommentEntity commentEntity, Boolean isComment);
 
 	List<UserInteractEntity> batchGetUserPostInteract(List<Long> targetIds, Integer type, Long userId);
+
+	/**
+	 * 更新用户收藏文章
+	 * @param userId 用户id
+	 * @param postId 文章id
+	 * @param booleanValue 是否收藏 true:收藏 false:取消收藏
+	 */
+	void updateUserCollectPost(Long userId, Long postId, Boolean booleanValue);
 }
 

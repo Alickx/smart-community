@@ -10,7 +10,7 @@ import cn.goroute.smart.common.modules.result.R;
 import cn.goroute.smart.common.util.PageUtil;
 import cn.goroute.smart.common.util.RedisUtil;
 import cn.goroute.smart.post.constant.PostRedisConstant;
-import cn.goroute.smart.post.domain.PostExpandInfoEntity;
+import cn.goroute.smart.post.domain.ExpandInfoEntity;
 import cn.goroute.smart.post.domain.dto.CommentDTO;
 import cn.goroute.smart.post.domain.entity.CommentEntity;
 import cn.goroute.smart.post.domain.entity.PostEntity;
@@ -63,7 +63,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, CommentEntity
 
 		IPage<CommentEntity> prodPage = PageUtil.prodPage(pageParam);
 
-		IPage<CommentEntity> commentEntityIPage = commentMapper.queryPage(prodPage, commentQO, StatusConstant.NORMAL_STATUS, StatusConstant.NORMAL_STATUS);
+		IPage<CommentEntity> commentEntityIPage = commentMapper.queryPage(prodPage, commentQO, StatusConstant.NORMAL_STATUS);
 
 		IPage<CommentVO> commentVOIPage = commentEntityIPage.convert(CommentConverter.INSTANCE::poToVO);
 
@@ -123,8 +123,8 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, CommentEntity
 		boolean remove = this.removeById(commentForm.getId());
 		if (remove) {
 			// 减少评论数
-			String redisKey = PostRedisConstant.PostKey.POST_EXPAND_INFO_KEY + ":" + commentEntity.getPostId();
-			redisUtil.hIncrBy(redisKey, PostExpandInfoEntity.Fields.commentCount, -1);
+			String redisKey = PostRedisConstant.PostKey.EXPAND_INFO_KEY + commentEntity.getPostId();
+			redisUtil.hIncrBy(redisKey, ExpandInfoEntity.Fields.commentCount, -1);
 			// 加入到更新列表
 			redisUtil.sAdd(PostRedisConstant.PostKey.POST_EXPAND_INFO_UPDATE_LIST_KEY, String.valueOf(commentEntity.getPostId()));
 			// 更新用户关系表
@@ -137,7 +137,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, CommentEntity
 
 	@Override
 	public R<List<CommentVO>> queryMoreReply(CommentQO commentQO) {
-		List<CommentEntity> commentEntities = commentMapper.queryMoreReply(commentQO, StatusConstant.NORMAL_STATUS, StatusConstant.NORMAL_STATUS);
+		List<CommentEntity> commentEntities = commentMapper.queryMoreReply(commentQO, StatusConstant.NORMAL_STATUS);
 
 		List<CommentVO> commentVOS = CommentConverter.INSTANCE.poToVO(commentEntities);
 
@@ -158,7 +158,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, CommentEntity
 
 		IPage<Long> prodPage = PageUtil.prodPage(pageParam);
 
-		IPage<CommentEntity> commentEntityIPage = baseMapper.queryPostIdsByComment(prodPage, userId, StatusConstant.NORMAL_STATUS, StatusConstant.NORMAL_STATUS);
+		IPage<CommentEntity> commentEntityIPage = baseMapper.queryPostIdsByComment(prodPage, userId, StatusConstant.NORMAL_STATUS);
 
 		IPage<Long> pageResult = commentEntityIPage.convert(CommentEntity::getPostId);
 
