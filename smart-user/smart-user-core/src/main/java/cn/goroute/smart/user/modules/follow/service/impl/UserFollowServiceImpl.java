@@ -1,6 +1,9 @@
 package cn.goroute.smart.user.modules.follow.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.goroute.smart.common.domain.PageParam;
+import cn.goroute.smart.common.domain.PageResult;
+import cn.goroute.smart.common.util.PageUtil;
 import cn.goroute.smart.common.util.RedisUtil;
 import cn.goroute.smart.user.constant.UserRedisConstant;
 import cn.goroute.smart.user.domain.entity.UserFollowEntity;
@@ -15,6 +18,7 @@ import cn.goroute.smart.user.modules.profile.service.UserProfileService;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.LocalDateTimeUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
@@ -23,10 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZoneOffset;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -45,9 +46,9 @@ public class UserFollowServiceImpl extends ServiceImpl<UserFollowMapper, UserFol
     private final UserFollowManagerService userFollowManagerService;
     private final UserProfileService userProfileService;
     private final UserFollowMapper userFollowMapper;
-	private final UserFollowEventTemplate userFollowEventTemplate;
+    private final UserFollowEventTemplate userFollowEventTemplate;
 
-	@Override
+    @Override
     public Boolean saveFollow(UserSaveFollowForm userSaveFollowForm) {
 
         long userId = StpUtil.getLoginIdAsLong();
@@ -71,11 +72,12 @@ public class UserFollowServiceImpl extends ServiceImpl<UserFollowMapper, UserFol
 
     /**
      * 取消关注
+     *
      * @param userSaveFollowForm 关注表单
-     * @param userId 用户id
+     * @param userId             用户id
      * @return 是否取消关注成功 true:成功 false:失败
      */
-	@Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public Boolean cancelFollow(UserSaveFollowForm userSaveFollowForm, long userId) {
         String redisKey = UserRedisConstant.USER_FOLLOW + ":" + userId;
 
@@ -83,8 +85,8 @@ public class UserFollowServiceImpl extends ServiceImpl<UserFollowMapper, UserFol
         if (followTime == null) {
             // cache不存在则更新DB
             LambdaQueryWrapper<UserFollowEntity> wrapper = new LambdaQueryWrapper<>();
-			wrapper.eq(UserFollowEntity::getUserId, userId);
-			wrapper.eq(UserFollowEntity::getToUserId, userSaveFollowForm.getToUserId());
+            wrapper.eq(UserFollowEntity::getUserId, userId);
+            wrapper.eq(UserFollowEntity::getToUserId, userSaveFollowForm.getToUserId());
             return this.remove(wrapper);
         }
 
@@ -109,8 +111,9 @@ public class UserFollowServiceImpl extends ServiceImpl<UserFollowMapper, UserFol
 
     /**
      * 保存关注
+     *
      * @param userSaveFollowForm 关注表单
-     * @param userId 用户id
+     * @param userId             用户id
      * @return 是否关注成功 true:成功 false:失败
      */
     public Boolean saveFollow(UserSaveFollowForm userSaveFollowForm, long userId) {
@@ -149,8 +152,8 @@ public class UserFollowServiceImpl extends ServiceImpl<UserFollowMapper, UserFol
                 userSaveFollowForm.getFollowTime().toEpochSecond(ZoneOffset.of("+8")));
         redisUtil.expire(redisKey, 1, TimeUnit.DAYS);
 
-		// 发送事件
-		userFollowEventTemplate.sendUserFollowEvent(entity);
+        // 发送事件
+        userFollowEventTemplate.sendUserFollowEvent(entity);
 
         return true;
     }
@@ -162,13 +165,17 @@ public class UserFollowServiceImpl extends ServiceImpl<UserFollowMapper, UserFol
      * @return 用户关注列表
      */
     @Override
-    public List<UserFollowVO> queryUserFollow(Long userId) {
+    public PageResult<UserFollowVO> queryUserFollow(PageParam pageParam, Long userId) {
 
         // 采用穿透缓存的方式查询
         String redisKey = UserRedisConstant.USER_FOLLOW + ":" + userId;
 
         // 获取zSet中的value和score
-        Set<ZSetOperations.TypedTuple<String>> typedTuples = redisUtil.zRangeWithScores(redisKey, 0, -1);
+        long start = (pageParam.getPage() - 1) * pageParam.getSize();
+        long end = (pageParam.getPage()) * pageParam.getSize();
+        Set<ZSetOperations.TypedTuple<String>> typedTuples = redisUtil.zRangeWithScores(redisKey, start, end);
+        Long total = redisUtil.zSize(redisKey);
+
         List<String> userIds = typedTuples
                 .stream()
                 .map(ZSetOperations.TypedTuple::getValue)
@@ -176,16 +183,47 @@ public class UserFollowServiceImpl extends ServiceImpl<UserFollowMapper, UserFol
 
         if (CollUtil.isEmpty(userIds)) {
             // 缓存中没有数据，查询DB
+            IPage<UserFollowEntity> prodPage = PageUtil.prodPage(pageParam);
+
             LambdaQueryWrapper<UserFollowEntity> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(UserFollowEntity::getUserId, userId);
-            List<UserFollowEntity> userFollowEntities = this.list(queryWrapper);
+            queryWrapper.orderByDesc(UserFollowEntity::getFollowTime);
+
+            IPage<UserFollowEntity> selectPage = this.baseMapper.selectPage(prodPage, queryWrapper);
+            List<UserFollowEntity> userFollowEntities = selectPage.getRecords();
 
             if (CollUtil.isNotEmpty(userFollowEntities)) {
                 // 将数据放入缓存
                 userFollowManagerService.putUserFollowToRedis(userFollowEntities, userId);
             }
+
+
+            List<Long> ids = userFollowEntities.stream().map(UserFollowEntity::getToUserId).toList();
+            List<UserProfileVO> userProfileVOS = userProfileService.batchGetUserProfile(ids);
+
+            // 以用户id为key，用户信息为value,构建map
+            Map<Long, UserProfileVO> userProfileVOMap = userProfileVOS
+                    .stream()
+                    .collect(Collectors.toMap(UserProfileVO::getUserId, Function.identity()));
+
+            List<UserFollowVO> list = new ArrayList<>();
+            // 遍历关注列表，将用户信息填充进去
+            for (UserFollowEntity userFollowEntity : userFollowEntities) {
+                UserProfileVO userProfileVO = userProfileVOMap.get(userFollowEntity.getToUserId());
+                if (userProfileVO == null) {
+                    continue;
+                }
+                UserProfileVO vo = userProfileVOMap.get(userFollowEntity.getToUserId());
+                UserFollowVO userFollowVO = UserFollowVO.builder()
+                        .userProfile(vo)
+                        .followTime(userFollowEntity.getFollowTime())
+                        .build();
+                list.add(userFollowVO);
+            }
+
+
             // 包装返回
-            return userFollowManagerService.fillUserProfile(userFollowEntities);
+            return new PageResult<>(list, selectPage.getTotal());
         }
 
         // 缓存中有数据
@@ -205,7 +243,7 @@ public class UserFollowServiceImpl extends ServiceImpl<UserFollowMapper, UserFol
             UserProfileVO userProfileVO = userProfileVOMap.get(Long.parseLong(id));
             if (null != userProfileVO) {
                 typedTuples.stream()
-                        // 过滤出当前用户的关
+                        // 过滤出当前用户
                         .filter(typedTuple -> Objects.equals(typedTuple.getValue(), id))
                         .findFirst()
                         .ifPresent(typedTuple -> {
@@ -218,7 +256,7 @@ public class UserFollowServiceImpl extends ServiceImpl<UserFollowMapper, UserFol
             }
         }
 
-        return result;
+        return new PageResult<>(result, total);
 
     }
 
@@ -262,6 +300,50 @@ public class UserFollowServiceImpl extends ServiceImpl<UserFollowMapper, UserFol
 
         // 如果缓存中没有该用户的关注数据，且数据库中也没有，则直接返回false
         return false;
+
+    }
+
+    @Override
+    public PageResult<UserFollowVO> queryFansByPage(PageParam pageParam, Long userId) {
+
+        // 查询数据库
+        IPage<UserFollowEntity> prodPage = PageUtil.prodPage(pageParam);
+
+        LambdaQueryWrapper<UserFollowEntity> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(UserFollowEntity::getToUserId, userId);
+        queryWrapper.orderByDesc(UserFollowEntity::getFollowTime);
+
+        IPage<UserFollowEntity> selectPage = this.baseMapper.selectPage(prodPage, queryWrapper);
+
+        List<UserFollowEntity> userFollowEntities = selectPage.getRecords();
+
+        if (CollUtil.isEmpty(userFollowEntities)) {
+            return new PageResult<>(Lists.newArrayList(), 0L);
+        }
+
+        List<Long> ids = userFollowEntities.stream().map(UserFollowEntity::getUserId).toList();
+        List<UserProfileVO> userProfileVOS = userProfileService.batchGetUserProfile(ids);
+
+        // 以用户id为key，用户信息为value,构建map
+        Map<Long, UserProfileVO> userProfileVOMap = userProfileVOS
+                .stream()
+                .collect(Collectors.toMap(UserProfileVO::getUserId, Function.identity()));
+
+        List<UserFollowVO> list = new ArrayList<>();
+        // 遍历关注列表，将用户信息填充进去
+        for (UserFollowEntity userFollowEntity : userFollowEntities) {
+            UserProfileVO userProfileVO = userProfileVOMap.get(userFollowEntity.getUserId());
+            if (userProfileVO == null) {
+                continue;
+            }
+            UserFollowVO userFollowVO = UserFollowVO.builder()
+                    .userProfile(userProfileVO)
+                    .followTime(userFollowEntity.getFollowTime())
+                    .build();
+            list.add(userFollowVO);
+        }
+
+        return new PageResult<>(list, selectPage.getTotal());
 
     }
 }

@@ -67,7 +67,6 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, PostEntity>
 	private final PostAsyncService postAsyncService;
 	private final PostMapper postMapper;
 	private final PostSyncEventMessageTemplate postSyncEventMessageTemplate;
-	private final ExpandInfoService expandInfoService;
 	private final PostPublicEventMessage postPublicEventMessage;
 	private final UserInteractService userInteractService;
 
@@ -172,21 +171,16 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, PostEntity>
 		PostEntity postEntity = PostConverter.INSTANCE.voToPo(postVO);
 		postEntity.setAuthorId(StpUtil.getLoginIdAsLong());
 		String ipAddr = ServletUtil.getClientIP(WebUtil.getRequest());
-		postEntity.setIp(ipAddr.equals("0:0:0:0:0:0:0:1") ? "127.0.0.1" : ipAddr);
+		postEntity.setIp("0:0:0:0:0:0:0:1".equals(ipAddr) ? "127.0.0.1" : ipAddr);
 
-		if (checkParams(postVO)) return R.failed(ErrorCodeEnum.PARAM_ERROR);
+		if (checkParams(postVO)) {
+			return R.failed(ErrorCodeEnum.PARAM_ERROR);
+		}
 
 		postEntity.setState(PostStatusEnum.NORMAL.getCode());
 
 		// 保存文章信息
 		postManagerService.savePost2Db(postEntity);
-
-		// 保存到文章拓展表
-		expandInfoService.save(ExpandInfoEntity.builder()
-				.targetId(postEntity.getId())
-				.type(PostItemTypeEnum.POST.getCode())
-				.build()
-		);
 
 		// 发送用户发布文章事件
 		postPublicEventMessage.sendEvent(postEntity.getId(), postEntity.getAuthorId());

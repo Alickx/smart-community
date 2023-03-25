@@ -12,40 +12,26 @@
 		<result property="title" column="title" jdbcType="VARCHAR"/>
 		<result property="content" column="content" jdbcType="VARCHAR"/>
 		<result property="state" column="state" jdbcType="TINYINT"/>
-		<result property="collectCount" column="collect_count" jdbcType="INTEGER"/>
-		<result property="thumbCount" column="thumb_count" jdbcType="INTEGER"/>
-		<result property="commentCount" column="comment_count" jdbcType="INTEGER"/>
 		<result property="isPublish" column="is_publish" jdbcType="TINYINT"/>
 		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
 		<result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
 		<result property="deleted" column="deleted" jdbcType="TINYINT"/>
 	</resultMap>
-
-	<update id="incrThumbNum">
+    <update id="incrThumbCount">
 		update post
 		set thumb_count = thumb_count + #{thumbNum}
-		where id = #{toId}
-	</update>
-
-	<update id="descThumbNum">
-		update post
-		set thumb_count = IF(thumb_count > 0, thumb_count - #{thumbNum}, 0)
-		where id = #{toId}
+		where id = #{postId}
 	</update>
 
 	<update id="incrCommentCount">
 		update post
-		set comment_count = comment_count + 1
+		set comment_count = comment_count + #{commentNum}
 		where id = #{postId}
 	</update>
-    <update id="updateCommentCount">
+
+	<update id="incrCollectCount">
 		update post
-		set comment_count = #{commentCount}
-		where id = #{postId}
-	</update>
-	<update id="updateThumbCount">
-		update post
-		set thumb_count = #{thumbCount}
+		set collect_count = collect_count + #{collectNum}
 		where id = #{postId}
 	</update>
 

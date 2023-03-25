@@ -2,7 +2,7 @@ package cn.goroute.smart.auth.module.login.manager;
 
 import cn.goroute.smart.auth.domain.dto.AuthUserDTO;
 import cn.goroute.smart.auth.domain.entity.AuthUserEntity;
-import cn.goroute.smart.auth.feign.FeignUserProfileService;
+import cn.goroute.smart.auth.feign.FeignUserService;
 import cn.goroute.smart.auth.module.login.converter.AuthUserConverter;
 import cn.goroute.smart.auth.module.login.mapper.AuthUserMapper;
 import cn.goroute.smart.common.constant.enums.ErrorCodeEnum;
@@ -26,7 +26,7 @@ public class AuthUserManagerService {
 
     private final AuthUserMapper authUserMapper;
 
-    private final FeignUserProfileService feignUserProfileService;
+    private final FeignUserService feignUserService;
 
 
 
@@ -39,7 +39,7 @@ public class AuthUserManagerService {
 
         AuthUserDTO authUserDTO = AuthUserConverter.INSTANCE.entityToDTO(authUserEntity);
 
-        R<Boolean> result = feignUserProfileService.initUserProfile(authUserDTO);
+        R<Boolean> result = feignUserService.initUserProfile(authUserDTO);
         if (result.getCode() != 200 || !result.getData()) {
             throw new BusinessException(ErrorCodeEnum.SYSTEM_ERROR);
         }

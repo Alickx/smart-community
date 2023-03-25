@@ -125,8 +125,10 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, CommentEntity
 			// 减少评论数
 			String redisKey = PostRedisConstant.PostKey.EXPAND_INFO_KEY + commentEntity.getPostId();
 			redisUtil.hIncrBy(redisKey, ExpandInfoEntity.Fields.commentCount, -1);
-			// 加入到更新列表
-			redisUtil.sAdd(PostRedisConstant.PostKey.POST_EXPAND_INFO_UPDATE_LIST_KEY, String.valueOf(commentEntity.getPostId()));
+
+			// 修改数据库
+			postMapper.incrCommentCount(commentEntity.getPostId(), -1);
+
 			// 更新用户关系表
 			userInteractService.updateUserCommentRelation(commentEntity, false);
 			return R.ok();
@@ -158,11 +160,9 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, CommentEntity
 
 		IPage<Long> prodPage = PageUtil.prodPage(pageParam);
 
-		IPage<CommentEntity> commentEntityIPage = baseMapper.queryPostIdsByComment(prodPage, userId, StatusConstant.NORMAL_STATUS);
+		IPage<Long> postIds = baseMapper.queryPostIdsByComment(prodPage, userId, StatusConstant.NORMAL_STATUS);
 
-		IPage<Long> pageResult = commentEntityIPage.convert(CommentEntity::getPostId);
-
-		return new PageResult<>(pageResult.getRecords(), pageResult.getTotal());
+		return new PageResult<>(postIds.getRecords(), postIds.getTotal());
 	}
 
 }

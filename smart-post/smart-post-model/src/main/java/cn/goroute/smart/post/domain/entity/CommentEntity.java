@@ -48,7 +48,7 @@ public class CommentEntity implements Serializable {
     /**
      * 状态 0 = 正常显示 1 = 隐藏
      */
-    private Integer state;
+    private Integer status;
 
     /**
      * 回复类型 0 = 一级评论 1 = 评论中回复

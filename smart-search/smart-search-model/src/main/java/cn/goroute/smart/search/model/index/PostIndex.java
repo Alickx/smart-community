@@ -70,30 +70,6 @@ public class PostIndex {
 	private Integer state;
 
 	/**
-	 * 收藏数量
-	 */
-	@Field(type = FieldType.Integer)
-	private Integer collectCount;
-
-	/**
-	 * 点赞数量
-	 */
-	@Field(type = FieldType.Integer)
-	private Integer thumbCount;
-
-	/**
-	 * 评论数量
-	 */
-	@Field(type = FieldType.Integer)
-	private Integer commentCount;
-
-	/**
-	 * 浏览数量
-	 */
-	@Field(type = FieldType.Integer)
-	private Integer viewCount;
-
-	/**
 	 * 0:false = 不公布  1:true = 公布
 	 */
 	@Field(type = FieldType.Boolean)

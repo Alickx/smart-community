@@ -14,15 +14,15 @@ public enum PostItemTypeEnum {
 	/**
 	 * 文章
 	 */
-	POST(0, "文章", "post"),
+	POST(0, "文章", "POST"),
 	/**
 	 * 评论
 	 */
-	COMMENT(1, "评论", "comment"),
+	COMMENT(1, "评论", "COMMENT"),
 	/**
 	 * 回复
 	 */
-	REPLY(2, "回复", "reply"),
+	REPLY(2, "回复", "REPLY"),
 
 
 

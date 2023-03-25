@@ -12,15 +12,9 @@ import org.apache.ibatis.annotations.Param;
  */
 public interface UserProfileMapper extends BaseMapper<UserProfileEntity> {
 
-    void updateIncrArticleNum(@Param("userId") Long userId);
-
-    void updateIncrFansNum(@Param("toUserId") Long toUserId);
-
-    void updateDecrFansNum(@Param("toUserId") Long toUserId);
-
-    void updateIncrFollowNum(@Param("userId") Long userId);
-
-    void updateDecrFollowNum(@Param("userId") Long userId);
+    void updateArticleNum(@Param("userId") Long userId, @Param("num") Integer num);
+    void updateFansNum(@Param("userId") Long userId, @Param("num") Integer num);
+    void updateFollowNum(@Param("userId") Long userId, @Param("num") Integer num);
 }
 
 

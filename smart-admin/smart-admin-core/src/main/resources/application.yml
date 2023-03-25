@@ -72,6 +72,9 @@ ballcat:
             password:
               token-url: /oauth/token
 
+logging:
+  config: classpath:log4j2.xml
+
 springdoc:
   swagger-ui:
     oauth:

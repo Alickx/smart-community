@@ -1,6 +1,8 @@
 package cn.goroute.smart.user.modules.follow.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
+import cn.goroute.smart.common.domain.PageParam;
+import cn.goroute.smart.common.domain.PageResult;
 import cn.goroute.smart.common.modules.result.R;
 import cn.goroute.smart.user.domain.form.UserSaveFollowForm;
 import cn.goroute.smart.user.domain.vo.UserFollowVO;
@@ -9,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 /**
  * @Author: Alickx
@@ -40,8 +41,8 @@ public class UserFollowController {
 	 * @return 用户关注列表
 	 */
 	@GetMapping("/queryUserFollow")
-	public R<List<UserFollowVO>> queryUserFollow(@RequestParam("userId") Long userId) {
-		return R.ok(userFollowService.queryUserFollow(userId));
+	public R<PageResult<UserFollowVO>> queryUserFollow(PageParam pageParam, Long userId) {
+		return R.ok(userFollowService.queryUserFollow(pageParam,userId));
 	}
 
 	/**
@@ -53,6 +54,11 @@ public class UserFollowController {
 	@SaCheckLogin
 	public R<Boolean> queryIsFollow(@RequestParam("toUserId") Long toUserId) {
 		return R.ok(userFollowService.queryIsFollow(toUserId));
+	}
+
+	@GetMapping("/queryFollowerByPage")
+	public R<PageResult<UserFollowVO>> queryFollowerByPage(PageParam pageParam, Long userId) {
+		return R.ok(userFollowService.queryFansByPage(pageParam,userId));
 	}
 
 

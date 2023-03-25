@@ -25,22 +25,21 @@ public interface CommentMapper extends BaseMapper<CommentEntity> {
                                        @Param("status") Integer status);
 
     /**
-     * 递增点赞数
+     * 递增或递减点赞数
      *
      * @param id       主键id
      * @param thumbNum 点赞数
      */
     void incrThumbNum(@Param("id") Long id, @Param("thumbNum") int thumbNum);
 
-    /**
-     * 递减点赞数
-     *
-     * @param id       主键id
-     * @param thumbNum 点赞数
-     */
-    void descThumbNum(@Param("id") Long id, @Param("thumbNum") int thumbNum);
-
-    IPage<CommentEntity> queryPostIdsByComment(@Param("page") IPage<Long> page,
+	/**
+	 * 获取该用户评论的文章id
+	 * @param page 分页
+	 * @param userId 用户id
+	 * @param status 状态
+	 * @return
+	 */
+    IPage<Long> queryPostIdsByComment(@Param("page") IPage<Long> page,
                                                @Param("userId") Long userId,
                                                @Param("status") Integer status);
 }

@@ -78,7 +78,4 @@ public class AuthController {
         return authUserService.activate(token);
     }
 
-
-
-
 }

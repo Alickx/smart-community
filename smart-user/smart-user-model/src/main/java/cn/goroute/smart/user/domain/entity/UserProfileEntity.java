@@ -81,7 +81,7 @@ public class UserProfileEntity implements Serializable {
     /**
      * 用户状态 0 = 正常 1 = 禁用
      */
-    private Integer state;
+    private Integer status;
 
     /**
      * 上一次登录的时间

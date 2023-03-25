@@ -2,12 +2,18 @@ package cn.goroute.smart.user.modules.profile.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.goroute.smart.auth.domain.dto.AuthUserDTO;
+import cn.goroute.smart.auth.domain.entity.AuthUserEntity;
+import cn.goroute.smart.common.domain.PageParam;
+import cn.goroute.smart.common.domain.PageResult;
 import cn.goroute.smart.common.modules.result.R;
+import cn.goroute.smart.common.util.PageUtil;
 import cn.goroute.smart.common.util.RedisUtil;
 import cn.goroute.smart.post.domain.dto.PostPublicEventDTO;
 import cn.goroute.smart.user.constant.UserRedisConstant;
 import cn.goroute.smart.user.domain.entity.UserFollowEntity;
 import cn.goroute.smart.user.domain.entity.UserProfileEntity;
+import cn.goroute.smart.user.domain.form.UserProfileQueryForm;
+import cn.goroute.smart.user.domain.form.UserProfileUploadForm;
 import cn.goroute.smart.user.domain.vo.UserProfileVO;
 import cn.goroute.smart.user.modules.profile.converter.UserProfileConverter;
 import cn.goroute.smart.user.modules.profile.manager.UserProfileManager;
@@ -15,7 +21,9 @@ import cn.goroute.smart.user.modules.profile.mapper.UserProfileMapper;
 import cn.goroute.smart.user.modules.profile.service.UserProfileService;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.ListUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
@@ -99,15 +107,24 @@ public class UserProfileServiceImpl extends ServiceImpl<UserProfileMapper, UserP
     /**
      * 更新用户信息
      *
-     * @param userProfileVO 用户信息vo
+     * @param userProfileUploadForm 用户信息
      * @return 是否成功
      */
     @Override
-    public R<Boolean> updateUserProfile(UserProfileVO userProfileVO) {
-        UserProfileEntity userProfileEntity = UserProfileConverter.INSTANCE.voToPo(userProfileVO);
+    public R<Boolean> updateUserProfile(UserProfileUploadForm userProfileUploadForm) {
+
+		long userId = StpUtil.getLoginIdAsLong();
+		UserProfileEntity userProfileEntity = UserProfileConverter.INSTANCE.formToPo(userProfileUploadForm);
+		userProfileEntity.setUserId(userId);
 
         int update = userProfileMapper.update(userProfileEntity,
-                new LambdaUpdateWrapper<UserProfileEntity>().eq(UserProfileEntity::getUserId, StpUtil.getLoginIdAsLong()));
+                new LambdaUpdateWrapper<UserProfileEntity>().eq(UserProfileEntity::getUserId, userId));
+
+		if (update > 0) {
+			// 删除用户缓存
+			String userProfileKey = UserRedisConstant.USER_PROFILE + ":" + userId;
+			redisUtil.delete(userProfileKey);
+		}
 
         return R.ok(update > 0);
     }
@@ -117,7 +134,7 @@ public class UserProfileServiceImpl extends ServiceImpl<UserProfileMapper, UserP
 	public void postPublicEventHandle(PostPublicEventDTO postPublicEventDTO) {
 
 		// 更新用户发帖数
-		userProfileMapper.updateIncrArticleNum(postPublicEventDTO.getUserId());
+		userProfileMapper.updateArticleNum(postPublicEventDTO.getUserId(),1);
 
 		// 删除用户缓存
 		String userProfileKey = UserRedisConstant.USER_PROFILE + ":" + postPublicEventDTO.getUserId();
@@ -136,17 +153,17 @@ public class UserProfileServiceImpl extends ServiceImpl<UserProfileMapper, UserP
 
         if (isSave) {
             // 增加用户粉丝数 DB
-            userProfileMapper.updateIncrFansNum(entity.getToUserId());
-            userProfileMapper.updateIncrFollowNum(entity.getUserId());
+            userProfileMapper.updateFansNum(entity.getToUserId(),1);
+            userProfileMapper.updateFollowNum(entity.getUserId(),1);
             // 删除db缓存
             String userIdKey = UserRedisConstant.USER_PROFILE + ":" + entity.getToUserId();
             String toUserKey = UserRedisConstant.USER_PROFILE + ":" + entity.getUserId();
             redisUtil.delete(Lists.newArrayList(userIdKey, toUserKey));
         } else {
             // 减少用户粉丝数 DB
-            userProfileMapper.updateDecrFansNum(entity.getToUserId());
+            userProfileMapper.updateFollowNum(entity.getToUserId(),-1);
             // 减少用户关注数 DB
-            userProfileMapper.updateDecrFollowNum(entity.getUserId());
+            userProfileMapper.updateFollowNum(entity.getUserId(),-1);
             // 删除db缓存
             String userProfileKey = UserRedisConstant.USER_PROFILE + ":" + entity.getToUserId();
             redisUtil.delete(userProfileKey);
@@ -154,6 +171,16 @@ public class UserProfileServiceImpl extends ServiceImpl<UserProfileMapper, UserP
 
     }
 
+	@Override
+	public PageResult<UserProfileEntity> pageQuery(PageParam pageParam, UserProfileQueryForm form) {
+
+		IPage<UserProfileEntity> prodPage = PageUtil.prodPage(pageParam);
+		LambdaQueryWrapper<UserProfileEntity> wrapper = new LambdaQueryWrapper<>();
+		wrapper.eq(UserProfileEntity::getUserId,form.getUserId());
+		wrapper.like(UserProfileEntity::getNickName,form.getNickName());
+		IPage<UserProfileEntity> selectPage = this.baseMapper.selectPage(prodPage, wrapper);
+		return PageUtil.prodPageResult(selectPage);
+	}
 
 }
 

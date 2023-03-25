@@ -44,8 +44,8 @@ public class PostThumbStrategyImpl extends AbstractThumbStrategy {
 		String redisKey = PostRedisConstant.PostKey.EXPAND_INFO_KEY + PostItemTypeEnum.POST.getName() + ":" + thumbEntity.getToId();
 		redisUtil.hIncrBy(redisKey, ExpandInfoEntity.Fields.thumbCount, 1);
 
-		// 加入到更新列表
-		redisUtil.sAdd(PostRedisConstant.PostKey.POST_EXPAND_INFO_UPDATE_LIST_KEY, String.valueOf(thumbEntity.getToId()));
+		// 修改数据库
+		postMapper.incrThumbCount(thumbEntity.getToId(), 1);
 
 		// 保存/更新用户关系
 		userInteractService.updateThumbUserRelation(thumbEntity, true);
@@ -102,8 +102,8 @@ public class PostThumbStrategyImpl extends AbstractThumbStrategy {
 		String redisKey = PostRedisConstant.PostKey.EXPAND_INFO_KEY + toId;
 		redisUtil.hIncrBy(redisKey, ExpandInfoEntity.Fields.thumbCount, -1);
 
-		// 添加进待更新列表
-		redisUtil.sAdd(PostRedisConstant.PostKey.POST_EXPAND_INFO_UPDATE_LIST_KEY, String.valueOf(toId));
+		// 修改数据库
+		postMapper.incrThumbCount(thumbEntity.getToId(), -1);
 
 		// 保存/更新用户关系
 		userInteractService.updateThumbUserRelation(thumbEntity, false);

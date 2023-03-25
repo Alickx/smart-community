@@ -17,7 +17,7 @@ import cn.goroute.smart.post.domain.entity.CommentEntity;
 import cn.goroute.smart.post.domain.entity.UserInteractEntity;
 import cn.goroute.smart.post.domain.qo.CommentQO;
 import cn.goroute.smart.post.domain.vo.CommentVO;
-import cn.goroute.smart.post.feign.FeignUserProfileService;
+import cn.goroute.smart.post.feign.FeignUserService;
 import cn.goroute.smart.post.modules.article.mapper.PostMapper;
 import cn.goroute.smart.post.modules.article.service.UserInteractService;
 import cn.goroute.smart.post.modules.comment.converter.converter.CommentConverter;
@@ -46,7 +46,7 @@ import java.util.Map;
 @Slf4j
 public class CommentManagerService {
 
-    private final FeignUserProfileService feignUserProfileService;
+    private final FeignUserService feignUserService;
     private final CommentMapper commentMapper;
     private final UserInteractService userInteractService;
     private final PostMapper postMapper;
@@ -178,7 +178,7 @@ public class CommentManagerService {
 
         if (CollUtil.isNotEmpty(records)) {
             List<Long> userIds = records.stream().map(CommentVO::getUserId).toList();
-            R<List<UserProfileVO>> resp = feignUserProfileService.batchGetUserProfile(userIds);
+            R<List<UserProfileVO>> resp = feignUserService.batchGetUserProfile(userIds);
             if (resp.getCode() == SystemResultCode.SUCCESS.getCode() && resp.getData() != null) {
 
                 Map<Long, UserProfileVO> userProfileMap = new HashMap<>();
@@ -206,8 +206,8 @@ public class CommentManagerService {
 		String redisKey = PostRedisConstant.PostKey.EXPAND_INFO_KEY + PostItemTypeEnum.POST.getName() + ":" + postId;
         redisUtil.hIncrBy(redisKey, ExpandInfoEntity.Fields.commentCount, 1);
 
-		// 添加进待更新列表
-		redisUtil.sAdd(PostRedisConstant.PostKey.POST_EXPAND_INFO_UPDATE_LIST_KEY, String.valueOf(postId));
+		// 修改数据库
+		postMapper.incrCommentCount(postId, 1);
 
         // 更新用户文章关系
         userInteractService.updateUserCommentRelation(commentEntity, true);

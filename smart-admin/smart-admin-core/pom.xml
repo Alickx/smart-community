@@ -17,9 +17,22 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<knife4j.version>3.0.3</knife4j.version>
 		<tianai-captcha.version>1.3.3</tianai-captcha.version>
+		<tlog.version>1.5.0</tlog.version>
 	</properties>
 
 	<dependencies>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-logging</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
 		<dependency>
 			<groupId>com.hccake</groupId>
 			<artifactId>ballcat-admin-core</artifactId>
@@ -84,6 +97,27 @@
 		<dependency>
 			<groupId>org.glassfish.jaxb</groupId>
 			<artifactId>jaxb-runtime</artifactId>
+		</dependency>
+
+		<!--			日志-->
+		<dependency>
+			<groupId>com.yomahub</groupId>
+			<artifactId>tlog-feign-spring-boot-starter</artifactId>
+			<version>${tlog.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.yomahub</groupId>
+			<artifactId>tlog-web-spring-boot-starter</artifactId>
+			<version>${tlog.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-log4j2</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.yomahub</groupId>
+			<artifactId>tlog-xxljob-spring-boot-starter</artifactId>
+			<version>${tlog.version}</version>
 		</dependency>
 
 	</dependencies>

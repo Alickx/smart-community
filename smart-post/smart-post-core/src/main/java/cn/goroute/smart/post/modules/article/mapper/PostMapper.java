@@ -27,26 +27,27 @@ public interface PostMapper extends BaseMapper<PostEntity> {
                                 @Param("deleted") Integer deleted);
 
     /**
-     * 增加文章点赞数
+     * 递增或递减文章点赞数
      *
-     * @param toId     文章id
+     * @param postId     文章id
      * @param thumbNum 点赞数
      */
-    void incrThumbNum(@Param("toId") long toId, @Param("thumbNum") int thumbNum);
+    void incrThumbCount(@Param("postId") long postId, @Param("thumbNum") int thumbNum);
 
-    /**
-     * 递减文章点赞数
-     *
-     * @param toId     文章id
-     * @param thumbNum 点赞数
-     */
-    void descThumbNum(@Param("toId") long toId, @Param("thumbNum") int thumbNum);
+	/**
+	 * 递增或递减文章评论数
+	 * @param postId 文章id
+	 * @param commentNum 评论数
+	 */
+    void incrCommentCount(@Param("postId") Long postId, @Param("commentNum") int commentNum);
 
-    void incrCommentCount(@Param("postId") Long postId);
+	/**
+	 * 递增或递减文章收藏数
+	 * @param postId 文章id
+	 * @param collectNum 收藏数
+	 */
+	void incrCollectCount(@Param("postId") Long postId, @Param("collectNum") int collectNum);
 
-    void updateCommentCount(@Param("postId") String postId, @Param("commentCount") int commentCount);
-
-	void updateThumbCount(@Param("postId") String postId, @Param("thumbCount") int thumbCount);
 }
 
 

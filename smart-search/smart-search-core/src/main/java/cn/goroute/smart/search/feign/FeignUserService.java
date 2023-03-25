@@ -20,7 +20,7 @@ public interface FeignUserService {
 	 * @param userIds 用户id列表
 	 * @return 用户信息列表
 	 */
-	@GetMapping("/user/batch/profile")
+	@GetMapping("/user/profile/batchGet")
 	R<List<UserProfileVO>> batchGetUserProfile(@RequestParam("userIds") List<Long> userIds);
 
 	@GetMapping("/user/profile")

@@ -26,17 +26,17 @@ rocketmq:
     # 消息跟踪主题的名称值。如果不进行配置，可以使用默认的跟踪主题名称
     customizedTraceTopic: RMQ_SYS_TRACE_TOPIC
 
-xxl:
-  job:
-    admin:
-      addresses: http://localhost:8080/xxl-job-admin
-    executor:
-      appname: ${spring.application.name}
-      ip:
-      port: 6666
-      logpath: /job/logs/${spring.application.name}/scheduling
-      logretentiondays: 30
-    accessToken:
+#xxl:
+#  job:
+#    admin:
+#      addresses: http://localhost:8080/xxl-job-admin
+#    executor:
+#      appname: ${spring.application.name}
+#      ip:
+#      port: 6666
+#      logpath: /job/logs/${spring.application.name}/scheduling
+#      logretentiondays: 30
+#    accessToken:
 
 
 # 日志配置

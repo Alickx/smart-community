@@ -6,19 +6,17 @@ import cn.goroute.smart.common.modules.result.R;
 import cn.goroute.smart.common.modules.result.SystemResultCode;
 import cn.goroute.smart.common.util.RedisUtil;
 import cn.goroute.smart.post.constant.enums.PostItemTypeEnum;
-import cn.goroute.smart.post.domain.ExpandInfoEntity;
 import cn.goroute.smart.post.domain.dto.ContentExpansionDTO;
 import cn.goroute.smart.post.domain.entity.CategoryEntity;
 import cn.goroute.smart.post.domain.entity.PostEntity;
 import cn.goroute.smart.post.domain.entity.TagEntity;
 import cn.goroute.smart.post.domain.entity.UserInteractEntity;
 import cn.goroute.smart.post.domain.vo.PostBaseVO;
-import cn.goroute.smart.post.feign.FeignUserProfileService;
+import cn.goroute.smart.post.feign.FeignUserService;
 import cn.goroute.smart.post.modules.article.converter.CategoryConverter;
 import cn.goroute.smart.post.modules.article.converter.TagConverter;
 import cn.goroute.smart.post.modules.article.mapper.PostMapper;
 import cn.goroute.smart.post.modules.article.service.CategoryService;
-import cn.goroute.smart.post.modules.article.service.ExpandInfoService;
 import cn.goroute.smart.post.modules.article.service.TagService;
 import cn.goroute.smart.post.modules.article.service.UserInteractService;
 import cn.goroute.smart.post.util.MarkdownUtil;
@@ -32,8 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * @Author: 蔡国鹏
@@ -45,13 +41,12 @@ import java.util.stream.Collectors;
 @Slf4j
 public class PostManagerService {
 
-    private final FeignUserProfileService feignUserProfileService;
+    private final FeignUserService feignUserService;
     private final RedisUtil redisUtil;
     private final PostMapper postMapper;
     private final TagService tagService;
     private final CategoryService categoryService;
     private final UserInteractService userInteractService;
-    private final ExpandInfoService expandInfoService;
 
     /**
      * 补充文章作者，板块和标签信息
@@ -67,43 +62,12 @@ public class PostManagerService {
         fillAuthor(records);
         // 补充板块信息
         fillCategory(records);
-        // 查询点赞，收藏，浏览量和评论量
-        fillInfoExpand(records);
         // 补充用户和文章之间的关系信息
         fillUserInteract(records, userId);
         // 补充标签信息
         fillTag(records);
 
-
         return records;
-    }
-
-    private void fillInfoExpand(List<? extends PostBaseVO> records) {
-
-        // 批量查询文章拓展信息，点赞量，收藏量，浏览量，评论量
-        List<Long> postIds = records.stream().map(PostBaseVO::getId).toList();
-        List<ExpandInfoEntity> postExpandInfoEntities = expandInfoService.batchExpandInfo(postIds, PostItemTypeEnum.POST.getCode());
-
-        // Map 以 postId为key，PostExpandInfoEntity为value
-        Map<Long, ExpandInfoEntity> postExpandInfoEntityMap = postExpandInfoEntities
-                .stream()
-                .collect(Collectors.toMap(ExpandInfoEntity::getTargetId, Function.identity()));
-
-        // 遍历填充
-        for (PostBaseVO record : records) {
-            ExpandInfoEntity expandInfoEntity = postExpandInfoEntityMap.get(record.getId());
-            if (expandInfoEntity != null) {
-                record.setThumbCount(expandInfoEntity.getThumbCount());
-                record.setCollectCount(expandInfoEntity.getCollectCount());
-                record.setCommentCount(expandInfoEntity.getCommentCount());
-                record.setViewCount(expandInfoEntity.getViewCount());
-            } else {
-                record.setThumbCount(0);
-                record.setCollectCount(0);
-                record.setCommentCount(0);
-                record.setViewCount(0);
-            }
-        }
     }
 
     /**
@@ -139,7 +103,7 @@ public class PostManagerService {
             List<Long> userIds = records.stream().map(PostBaseVO::getAuthorId).distinct().toList();
             R<List<UserProfileVO>> resp;
             try {
-                resp = feignUserProfileService.batchGetUserProfile(userIds);
+                resp = feignUserService.batchGetUserProfile(userIds);
             } catch (Exception e) {
                 log.error("获取用户信息失败,userIds: [{}],调用用户服务超时或失败", userIds);
                 return;

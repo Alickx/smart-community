@@ -69,6 +69,26 @@ public class PostEntity implements Serializable {
 	 */
 	private String ip;
 
+	/**
+	 * 收藏数量
+	 */
+	private Integer collectCount;
+
+	/**
+	 * 点赞数量
+	 */
+	private Integer thumbCount;
+
+	/**
+	 * 评论数量
+	 */
+	private Integer commentCount;
+
+	/**
+	 * 浏览数量
+	 */
+	private Integer viewCount;
+
     /**
      * 更新时间
      */

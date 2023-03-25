@@ -5,7 +5,7 @@ import cn.goroute.smart.auth.domain.entity.AuthUserEntity;
 import cn.goroute.smart.auth.domain.form.UserLoginForm;
 import cn.goroute.smart.auth.domain.form.UserRegisterForm;
 import cn.goroute.smart.auth.domain.vo.CustomUserDetailsVO;
-import cn.goroute.smart.auth.feign.FeignUserProfileService;
+import cn.goroute.smart.auth.feign.FeignUserService;
 import cn.goroute.smart.auth.module.captcha.CaptchaValidateResult;
 import cn.goroute.smart.auth.module.captcha.CaptchaValidator;
 import cn.goroute.smart.auth.module.login.converter.AuthUserConverter;
@@ -38,7 +38,7 @@ public class AuthUserServiceImpl extends ServiceImpl<AuthUserMapper, AuthUserEnt
         implements AuthUserService {
 
     private final AuthUserMapper authUserMapper;
-    private final FeignUserProfileService feignUserProfileService;
+    private final FeignUserService feignUserService;
     private final CaptchaValidator captchaValidator;
     private final AuthUserManagerService authUserManagerService;
     private final RegisterMessageTemplate registerMessageTemplate;
@@ -80,7 +80,7 @@ public class AuthUserServiceImpl extends ServiceImpl<AuthUserMapper, AuthUserEnt
 
         Long userId = authUserEntity.getId();
 
-        R<UserProfileVO> userProfileResult = feignUserProfileService.getUserProfile(userId);
+        R<UserProfileVO> userProfileResult = feignUserService.getUserProfile(userId);
         if (userProfileResult.getData() == null) {
             throw new BusinessException(ErrorCodeEnum.USER_COMMON_ERROR, "用户信息不存在");
         }

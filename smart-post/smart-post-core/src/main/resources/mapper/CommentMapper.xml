@@ -10,11 +10,6 @@
 		where id = #{id}
 	</update>
 
-	<update id="descThumbNum">
-		update comment
-		set thumb_count = IF(thumb_count > 0, thumb_count - #{thumbNum}, 0)
-		where id = #{id}
-	</update>
     <select id="queryPage" resultType="cn.goroute.smart.post.domain.entity.CommentEntity">
 
 		select * from comment
@@ -32,24 +27,23 @@
 				and first_comment_id = #{commentQO.firstCommentId}
 			</if>
 			<if test="status != null">
-				and state = #{status}
+				and status = #{status}
 			</if>
 			and deleted = 0
 		</where>
 	</select>
 
-    <select id="queryPostIdsByComment" resultType="cn.goroute.smart.post.domain.entity.CommentEntity">
-        select * from comment
+    <select id="queryPostIdsByComment" resultType="long">
+        select distinct post_id from comment
         <where>
             <if test="userId != null">
                 and user_id = #{userId}
             </if>
             <if test="status != null">
-                and state = #{status}
+                and status = #{status}
             </if>
 			and deleted = 0
         </where>
-        group by post_id
     </select>
 
     <select id="queryMoreReply" resultType="cn.goroute.smart.post.domain.entity.CommentEntity">
@@ -68,7 +62,7 @@
 				and first_comment_id = #{commentQO.firstCommentId}
 			</if>
 			<if test="state != null">
-				and state = #{status}
+				and status = #{status}
 			</if>
 			and deleted = 0
 		</where>

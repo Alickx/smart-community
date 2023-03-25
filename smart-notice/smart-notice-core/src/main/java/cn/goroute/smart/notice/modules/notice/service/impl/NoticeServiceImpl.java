@@ -7,13 +7,13 @@ import cn.goroute.smart.common.domain.PageResult;
 import cn.goroute.smart.common.modules.result.R;
 import cn.goroute.smart.notice.constant.enums.MsgTypeEnum;
 import cn.goroute.smart.notice.constant.enums.SourceTypeEnum;
+import cn.goroute.smart.notice.feign.FeignUserService;
 import cn.goroute.smart.notice.modules.notice.converter.NoticeMessageConverter;
 import cn.goroute.smart.notice.domain.dto.NoticeCountVO;
 import cn.goroute.smart.notice.domain.dto.NoticeMessageDTO;
 import cn.goroute.smart.notice.domain.entity.NoticeEntity;
 import cn.goroute.smart.notice.domain.entity.NoticeMessageInfoEntity;
 import cn.goroute.smart.notice.domain.vo.NoticeMessageVO;
-import cn.goroute.smart.notice.feign.FeignUserProfileService;
 import cn.goroute.smart.notice.modules.notice.manager.NoticeManagerService;
 import cn.goroute.smart.notice.modules.notice.mapper.NoticeMapper;
 import cn.goroute.smart.notice.modules.notice.service.NoticeService;
@@ -46,7 +46,7 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, NoticeEntity>
 
 	private final NoticeMapper noticeMapper;
 	private final NoticeManagerService noticeManagerService;
-	private final FeignUserProfileService feignUserProfileService;
+	private final FeignUserService feignUserService;
 
 	@Override
 	public void saveThumbNotice(ThumbDTO thumbDTO) {
@@ -160,7 +160,7 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, NoticeEntity>
 		// 如果集合不为空则查询用户信息
 		List<Long> senderIds = records.stream().map(NoticeMessageDTO::getSenderId).distinct().toList();
 
-		R<List<UserProfileVO>> batchResult = feignUserProfileService.batchGetUserProfile(senderIds);
+		R<List<UserProfileVO>> batchResult = feignUserService.batchGetUserProfile(senderIds);
 
 		List<UserProfileVO> userProfileVOS = batchResult.getData();
 

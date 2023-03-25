@@ -2,6 +2,7 @@ package cn.goroute.smart.common.util;
 
 
 import cn.goroute.smart.common.domain.PageParam;
+import cn.goroute.smart.common.domain.PageResult;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -31,6 +32,19 @@ public final class PageUtil {
 			page.addOrder(orderItem);
 		}
 		return page;
+	}
+
+	/**
+	 * 根据 IPage 生成一个 PageResult 实例
+	 * @param page 分页结果
+	 * @return PageResult<V> 分页结果
+	 * @param <V> 返回的 Record 对象
+	 */
+	public static <V>PageResult<V> prodPageResult(IPage<V> page){
+		PageResult<V> pageResult = new PageResult<>();
+		pageResult.setTotal(page.getTotal());
+		pageResult.setRecords(page.getRecords());
+		return pageResult;
 	}
 
 }

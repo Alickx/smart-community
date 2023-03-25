@@ -1,8 +1,9 @@
 package cn.goroute.smart.user.modules.profile.converter;
 
 import cn.goroute.smart.auth.domain.dto.AuthUserDTO;
-import cn.goroute.smart.user.domain.entity.UserProfileEntity;
 import cn.goroute.smart.user.domain.dto.UserProfileDTO;
+import cn.goroute.smart.user.domain.entity.UserProfileEntity;
+import cn.goroute.smart.user.domain.form.UserProfileUploadForm;
 import cn.goroute.smart.user.domain.vo.UserProfileVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -49,5 +50,7 @@ public interface UserProfileConverter {
 
 
 	UserProfileEntity voToPo(UserProfileVO userProfileVO);
+
+	UserProfileEntity formToPo(UserProfileUploadForm userProfileUploadForm);
 
 }

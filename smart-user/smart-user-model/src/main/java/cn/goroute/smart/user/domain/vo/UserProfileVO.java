@@ -18,11 +18,6 @@ public class UserProfileVO {
 	private Long userId;
 
 	/**
-	 * 用户名
-	 */
-	private String userName;
-
-	/**
 	 * 呢称
 	 */
 	private String nickName;
@@ -55,5 +50,5 @@ public class UserProfileVO {
 	/**
 	 * 用户状态 0 = 正常
 	 */
-	private Integer state;
+	private Integer status;
 }
