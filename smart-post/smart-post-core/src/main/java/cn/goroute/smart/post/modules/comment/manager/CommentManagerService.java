@@ -74,7 +74,7 @@ public class CommentManagerService {
         pageParam.setSize(3);
         PageParam.Sort sort = new PageParam.Sort();
         sort.setField("create_time");
-        sort.setAsc(false);
+        sort.setAsc(true);
         pageParam.setSorts(Lists.newArrayList(sort));
 
         records.forEach(record -> {
