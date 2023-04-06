@@ -17,6 +17,12 @@ spring:
     username: root
     password: root
 
+sa-token:
+  token-name: 'Authorization'
+  timeout: 2592000
+  token-style: simple-uuid
+  is-print: false
+
 ballcat:
   oss:
     endpoint: http://oss-cn-shanghai.aliyuncs.com

@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: @artifactId@
+    name: smart-admin
   profiles:
     active: @profiles.active@  # 当前激活配置，默认dev
   messages:
@@ -33,7 +33,7 @@ mybatis-plus:
 ballcat:
   security:
     # 前端传输密码的 AES 加密密钥
-    password-secret-key: 'JOxioX3DDRgkmnyyeZltxJmcWkApIsrg'
+    password-secret-key: '==BallCat-Auth=='
     oauth2:
       authorizationserver:
         # 登陆验证码是否开启

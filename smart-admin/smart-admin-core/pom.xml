@@ -119,7 +119,18 @@
 			<artifactId>tlog-xxljob-spring-boot-starter</artifactId>
 			<version>${tlog.version}</version>
 		</dependency>
-
+		<!--		用户模块-->
+		<dependency>
+			<groupId>cn.goroute.smart</groupId>
+			<artifactId>smart-user-model</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<!--		认证模块-->
+		<dependency>
+			<groupId>cn.goroute.smart</groupId>
+			<artifactId>smart-auth-model</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<build>

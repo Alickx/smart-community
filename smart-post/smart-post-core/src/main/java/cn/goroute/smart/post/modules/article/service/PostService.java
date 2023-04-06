@@ -4,6 +4,7 @@ import cn.goroute.smart.common.domain.PageParam;
 import cn.goroute.smart.common.domain.PageResult;
 import cn.goroute.smart.common.modules.result.R;
 import cn.goroute.smart.post.domain.entity.PostEntity;
+import cn.goroute.smart.post.domain.form.PostQueryForm;
 import cn.goroute.smart.post.domain.qo.PostQO;
 import cn.goroute.smart.post.domain.vo.PostAbbreviationVO;
 import cn.goroute.smart.post.domain.vo.PostInfoVO;
@@ -71,4 +72,6 @@ public interface PostService extends IService<PostEntity> {
 	 * @param userCollectEventDTO
 	 */
     void collectPostHandle(UserCollectEventDTO userCollectEventDTO);
+
+	PageResult<PostEntity> pageQuery(PageParam pageParam, PostQueryForm form);
 }

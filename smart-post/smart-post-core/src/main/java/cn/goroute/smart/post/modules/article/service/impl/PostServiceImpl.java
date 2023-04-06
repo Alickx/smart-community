@@ -18,6 +18,7 @@ import cn.goroute.smart.post.domain.ExpandInfoEntity;
 import cn.goroute.smart.post.domain.entity.CategoryEntity;
 import cn.goroute.smart.post.domain.entity.PostEntity;
 import cn.goroute.smart.post.domain.entity.TagEntity;
+import cn.goroute.smart.post.domain.form.PostQueryForm;
 import cn.goroute.smart.post.domain.qo.PostQO;
 import cn.goroute.smart.post.domain.vo.PostAbbreviationVO;
 import cn.goroute.smart.post.domain.vo.PostBaseVO;
@@ -33,7 +34,9 @@ import cn.goroute.smart.post.modules.article.service.*;
 import cn.goroute.smart.post.modules.comment.service.CommentService;
 import cn.goroute.smart.user.domain.dto.UserCollectEventDTO;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
@@ -332,6 +335,22 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, PostEntity>
 			default -> throw new BusinessException(ErrorCodeEnum.PARAM_ERROR);
 		}
 
+	}
+
+
+	@Override
+	public PageResult<PostEntity> pageQuery(PageParam pageParam, PostQueryForm form) {
+
+		IPage<PostEntity> prodPage = PageUtil.prodPage(pageParam);
+
+		LambdaQueryWrapper<PostEntity> wrapper = new LambdaQueryWrapper<>();
+		wrapper.eq(StrUtil.isNotBlank(form.getTitle()), PostEntity::getTitle, form.getTitle());
+		wrapper.eq(form.getPostId() != null, PostEntity::getId, form.getPostId());
+		wrapper.eq(form.getUserId() != null, PostEntity::getAuthorId, form.getUserId());
+
+		IPage<PostEntity> selectPage = this.baseMapper.selectPage(prodPage, wrapper);
+
+		return PageUtil.prodPageResult(selectPage);
 	}
 }
 

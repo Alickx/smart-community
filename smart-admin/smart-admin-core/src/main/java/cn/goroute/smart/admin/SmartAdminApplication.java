@@ -13,7 +13,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  */
 @SpringBootApplication
 @EnableDiscoveryClient
-@EnableFeignClients
+@EnableFeignClients(basePackages = { "cn.goroute.smart" })
 @MapperScan("cn.goroute.smart.*.module.*.mapper")
 public class SmartAdminApplication {
 	public static void main(String[] args) {
