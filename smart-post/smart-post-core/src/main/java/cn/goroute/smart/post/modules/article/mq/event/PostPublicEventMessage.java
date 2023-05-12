@@ -18,7 +18,7 @@ public class PostPublicEventMessage extends RocketMqTemplate {
 		rocketMqEntityMessage.setMessage(JSON.toJSONString(postPublicEventDTO));
 		rocketMqEntityMessage.setKey(String.valueOf(userId));
 		rocketMqEntityMessage.setSource("文章发布事件");
-		send(MqBizConstant.PostMqConstant.POST_PUBLISH_EVENT_GROUP, rocketMqEntityMessage);
+		send(MqBizConstant.PostMqConstant.POST_TOPIC,MqBizConstant.PostMqConstant.POST_PUBLISH_EVENT_GROUP, rocketMqEntityMessage);
 	}
 
 }

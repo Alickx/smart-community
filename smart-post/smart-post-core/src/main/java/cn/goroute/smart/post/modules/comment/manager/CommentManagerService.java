@@ -157,17 +157,16 @@ public class CommentManagerService {
         for (CommentVO record : records) {
 
             ContentExpansionDTO contentExpansionDTO = ContentExpansionDTO.create();
-
+			// 判断是否是作者
+			contentExpansionDTO.setIsAuthor(record.getUserId().equals(userId));
             UserInteractEntity userInteractEntity = userInteractMap.get(record.getId());
             if (userInteractEntity != null) {
                 // 查询点赞信息
                 contentExpansionDTO.setIsThumb(userInteractEntity.getIsThumb().equals(BooleanEnum.TRUE.intValue()));
                 // 判断是否拥有更多回复
                 contentExpansionDTO.setIsMoreReply(this.checkIsMoreReply(record));
-                // 判断是否是作者
-                contentExpansionDTO.setIsAuthor(record.getUserId().equals(userId));
                 record.setExpansion(contentExpansionDTO);
-                continue;
+				continue;
             }
             record.setExpansion(contentExpansionDTO);
         }

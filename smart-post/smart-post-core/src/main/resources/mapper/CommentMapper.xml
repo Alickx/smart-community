@@ -31,6 +31,7 @@
 			</if>
 			and deleted = 0
 		</where>
+		ORDER BY create_time
 	</select>
 
     <select id="queryPostIdsByComment" resultType="long">

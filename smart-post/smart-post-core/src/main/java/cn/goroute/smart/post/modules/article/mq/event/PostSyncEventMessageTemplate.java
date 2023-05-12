@@ -21,7 +21,7 @@ public class PostSyncEventMessageTemplate extends RocketMqTemplate {
 		rocketMqEntityMessage.setKey(String.valueOf(postEntity.getId()));
 		rocketMqEntityMessage.setSource("文章更新同步事件");
 		rocketMqEntityMessage.setRetryTimes(3);
-		send(MqBizConstant.PostMqConstant.POST_TOPIC, rocketMqEntityMessage);
+		send(MqBizConstant.PostMqConstant.POST_TOPIC,MqBizConstant.PostMqConstant.POST_SYNC_SAVE_ES_HANDLE_GROUP,rocketMqEntityMessage);
 	}
 
 }
