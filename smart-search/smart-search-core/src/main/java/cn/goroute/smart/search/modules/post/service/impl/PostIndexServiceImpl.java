@@ -67,7 +67,7 @@ public class PostIndexServiceImpl implements PostIndexService {
 
 		PostIndex postIndex = PostIndexConverter.INSTANCE.postToPostIndex(postEntity);
 
-		// 不存在则新增
+		// 更新或者新增
 		postIndexMapper.save(postIndex);
 
 	}

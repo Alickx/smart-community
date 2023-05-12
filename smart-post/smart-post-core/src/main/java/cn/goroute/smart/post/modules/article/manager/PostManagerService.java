@@ -8,7 +8,6 @@ import cn.goroute.smart.common.util.RedisUtil;
 import cn.goroute.smart.post.constant.enums.PostItemTypeEnum;
 import cn.goroute.smart.post.domain.dto.ContentExpansionDTO;
 import cn.goroute.smart.post.domain.entity.CategoryEntity;
-import cn.goroute.smart.post.domain.entity.PostEntity;
 import cn.goroute.smart.post.domain.entity.TagEntity;
 import cn.goroute.smart.post.domain.entity.UserInteractEntity;
 import cn.goroute.smart.post.domain.vo.PostBaseVO;
@@ -19,13 +18,11 @@ import cn.goroute.smart.post.modules.article.mapper.PostMapper;
 import cn.goroute.smart.post.modules.article.service.CategoryService;
 import cn.goroute.smart.post.modules.article.service.TagService;
 import cn.goroute.smart.post.modules.article.service.UserInteractService;
-import cn.goroute.smart.post.util.MarkdownUtil;
 import cn.goroute.smart.user.domain.vo.UserProfileVO;
 import cn.hutool.core.collection.CollUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -57,6 +54,7 @@ public class PostManagerService {
     public List<? extends PostBaseVO> fillInfo(List<? extends PostBaseVO> records) {
 
         Long userId = StpUtil.isLogin() ? StpUtil.getLoginIdAsLong() : null;
+
 
         // 补充作者信息
         fillAuthor(records);
@@ -187,30 +185,5 @@ public class PostManagerService {
             }
         }
 
-    }
-
-    /**
-     * 保存文章到数据库
-     *
-     * @param postEntity 文章实体类
-     */
-    @Transactional(rollbackFor = Exception.class)
-    public void savePost2Db(PostEntity postEntity) {
-
-        postEntity.setSummary(getPostSummary(postEntity.getContent()));
-
-        postMapper.insert(postEntity);
-
-    }
-
-    private String getPostSummary(String content) {
-        // markdown转文本
-        String text = MarkdownUtil.markdownToText(content);
-
-        // 截取前200个字符
-        if (text.length() > 200) {
-            text = text.substring(0, 200);
-        }
-        return text;
     }
 }

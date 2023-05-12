@@ -32,6 +32,7 @@ import cn.goroute.smart.post.modules.article.mq.event.PostPublicEventMessage;
 import cn.goroute.smart.post.modules.article.mq.event.PostSyncEventMessageTemplate;
 import cn.goroute.smart.post.modules.article.service.*;
 import cn.goroute.smart.post.modules.comment.service.CommentService;
+import cn.goroute.smart.post.util.MarkdownUtil;
 import cn.goroute.smart.user.domain.dto.UserCollectEventDTO;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
@@ -82,7 +83,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, PostEntity>
 	 * @return 查询结果
 	 */
 	@Override
-	public R<PageResult<PostAbbreviationVO>> infoPage(PageParam pageParam, PostQO postQO) {
+	public PageResult<PostAbbreviationVO> infoPage(PageParam pageParam, PostQO postQO) {
 
 		IPage<PostEntity> prodPage = PageUtil.prodPage(pageParam);
 
@@ -93,17 +94,14 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, PostEntity>
 		List<PostAbbreviationVO> records = postPage.getRecords();
 
 		if (CollUtil.isEmpty(records)) {
-			return R.ok(new PageResult<>());
+			return new PageResult<>();
 		}
 
 		// 补充文章作者，板块等信息
 		List<? extends PostBaseVO> postDTOList = postManagerService.fillInfo(records);
 
 
-		PageResult<PostAbbreviationVO> pageResult =
-			(PageResult<PostAbbreviationVO>) new PageResult<>(postDTOList, postPage.getTotal());
-
-		return R.ok(pageResult);
+		return (PageResult<PostAbbreviationVO>) new PageResult<>(postDTOList, postPage.getTotal());
 
 	}
 
@@ -183,7 +181,8 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, PostEntity>
 		postEntity.setState(PostStatusEnum.NORMAL.getCode());
 
 		// 保存文章信息
-		postManagerService.savePost2Db(postEntity);
+		postEntity.setSummary(getPostSummary(postEntity.getContent()));
+		this.saveOrUpdate(postEntity);
 
 		// 发送用户发布文章事件
 		postPublicEventMessage.sendEvent(postEntity.getId(), postEntity.getAuthorId());
@@ -192,6 +191,17 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, PostEntity>
 		postAsyncService.getAndSendPostIndexEvent(postEntity.getId());
 
 		return R.ok(postEntity.getId());
+	}
+
+	private String getPostSummary(String content) {
+		// markdown转文本
+		String text = MarkdownUtil.markdownToText(content);
+
+		// 截取前200个字符
+		if (text.length() > 200) {
+			text = text.substring(0, 200);
+		}
+		return text;
 	}
 
 	private boolean checkParams(PostVO postVO) {

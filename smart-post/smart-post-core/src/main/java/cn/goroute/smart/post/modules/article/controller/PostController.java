@@ -38,7 +38,7 @@ public class PostController {
 	 */
 	@GetMapping("/info/page")
 	public R<PageResult<PostAbbreviationVO>> infoPage(@Validated PageParam pageParam, PostQO postQO) {
-		return postService.infoPage(pageParam, postQO);
+		return R.ok(postService.infoPage(pageParam, postQO));
 	}
 
 	/**

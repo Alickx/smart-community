@@ -38,13 +38,13 @@
 	<select id="queryPage" resultType="cn.goroute.smart.post.domain.entity.PostEntity">
         select * from post
         <where>
-            <if test="postQO.categoryName != null and postQO.categoryName != ''">
+            <if test="postQO != null and postQO.categoryName != null and postQO.categoryName != ''">
                 and category_name = #{postQO.categoryName}
             </if>
-            <if test="postQO.tagName != null and postQO.tagName != ''">
+            <if test="postQO != null and postQO.tagName != null and postQO.tagName != ''">
                 and tag_name = #{postQO.tagName}
             </if>
-            <if test="postQO.userId != null">
+            <if test="postQO != null and postQO.userId != null">
                 and author_id = #{postQO.userId}
             </if>
             <if test="status != null">

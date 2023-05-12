@@ -27,7 +27,7 @@ public interface PostService extends IService<PostEntity> {
 	 * @param postQO 查询参数对象
 	 * @return 查询结果
 	 */
-	R<PageResult<PostAbbreviationVO>> infoPage(PageParam pageParam, PostQO postQO);
+	PageResult<PostAbbreviationVO> infoPage(PageParam pageParam, PostQO postQO);
 
 	/**
 	 * 根据文章Id查询文章详情
