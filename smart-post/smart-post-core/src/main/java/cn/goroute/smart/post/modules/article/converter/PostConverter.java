@@ -1,13 +1,15 @@
 package cn.goroute.smart.post.modules.article.converter;
 
+import cn.goroute.smart.post.domain.dto.PostViewRankDTO;
 import cn.goroute.smart.post.domain.entity.PostEntity;
 import cn.goroute.smart.post.domain.vo.PostAbbreviationVO;
 import cn.goroute.smart.post.domain.vo.PostInfoVO;
-import cn.goroute.smart.post.domain.dto.PostViewRankDTO;
 import cn.goroute.smart.post.domain.vo.PostVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
+
+import java.util.List;
 
 /**
  * @Author: Alickx
@@ -44,4 +46,7 @@ public interface PostConverter {
 
 	@Mapping(target = "postId", source = "postEntity.id")
 	PostViewRankDTO poToViewRankDto(PostEntity postEntity);
+
+
+	List<PostAbbreviationVO> poToAbbreviationDto(List<PostEntity> postEntityList);
 }

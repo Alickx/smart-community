@@ -241,9 +241,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, PostEntity>
 			return R.ok(new PageResult<>());
 		}
 
-		List<PostAbbreviationVO> postAbbreviationVOS = postEntities.stream()
-			.map(PostConverter.INSTANCE::poToAbbreviationDto)
-			.toList();
+		List<PostAbbreviationVO> postAbbreviationVOS = PostConverter.INSTANCE.poToAbbreviationDto(postEntities);
 
 		postManagerService.fillInfo(postAbbreviationVOS);
 

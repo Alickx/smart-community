@@ -51,11 +51,6 @@
             <groupId>com.alibaba.fastjson2</groupId>
             <artifactId>fastjson2</artifactId>
         </dependency>
-        <!--			阿里巴巴 ttl-->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>transmittable-thread-local</artifactId>
-        </dependency>
         <!--        校验工具-->
         <dependency>
             <groupId>jakarta.validation</groupId>
