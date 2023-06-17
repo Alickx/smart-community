@@ -149,7 +149,7 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, NoticeEntity>
 	public R<PageResult<NoticeMessageVO>> pageNotice(Integer type, PageParam pageParam) {
 
 		long userId = StpUtil.getLoginIdAsLong();
-		;
+
 
 		Page<NoticeMessageDTO> page = new Page<>(pageParam.getPage(), pageParam.getSize());
 

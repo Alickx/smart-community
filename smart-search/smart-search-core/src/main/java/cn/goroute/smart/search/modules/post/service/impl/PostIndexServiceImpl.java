@@ -64,6 +64,9 @@ public class PostIndexServiceImpl implements PostIndexService {
 	@Override
 	public void postSync(PostEntity postEntity) {
 
+		if (postEntity == null) {
+			return;
+		}
 
 		PostIndex postIndex = PostIndexConverter.INSTANCE.postToPostIndex(postEntity);
 
