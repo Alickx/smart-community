@@ -157,8 +157,6 @@ public class CommentManagerService {
         for (CommentVO record : records) {
 
             ContentExpansionDTO contentExpansionDTO = ContentExpansionDTO.create();
-			// 判断是否是作者
-			contentExpansionDTO.setIsAuthor(record.getUserId().equals(userId));
             UserInteractEntity userInteractEntity = userInteractMap.get(record.getId());
             if (userInteractEntity != null) {
                 // 查询点赞信息

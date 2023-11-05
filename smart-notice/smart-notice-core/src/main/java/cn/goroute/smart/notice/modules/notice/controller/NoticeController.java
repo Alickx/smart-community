@@ -27,12 +27,21 @@ public class NoticeController {
 
 	private final NoticeService noticeService;
 
+	/**
+	 * 查询未读通知总数
+	 * @return 各未读通知数量
+	 */
 	@GetMapping("/queryNoticeCount")
 	public R<List<NoticeCountVO>> queryNoticeCount() {
 		return noticeService.queryNoticeCount();
 	}
 
-
+	/**
+	 * 根据通知类型查询未读通知
+	 * @param type 类型
+	 * @param pageParam 分页参数
+	 * @return
+	 */
 	@GetMapping("/pageNotice/{type}")
 	public R<PageResult<NoticeMessageVO>> pageNotice(@PathVariable("type") Integer type, PageParam pageParam) {
 		return noticeService.pageNotice(type,pageParam);

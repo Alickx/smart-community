@@ -22,7 +22,6 @@ public class UserController {
 
 	private final UserService userService;
 
-	private final
 
 	@GetMapping("/page")
 	public R<PageResult<UserProfileEntity>> page(@Validated PageParam pageParam, UserProfileQueryForm form) {
@@ -40,8 +39,9 @@ public class UserController {
 
 		R<Boolean> result = userService.delete(userProfileEntity);
 		if (result.getCode() == 200 && result.getData()) {
-			authUserService
+			return R.ok(Boolean.TRUE);
 		}
+		return R.ok(false);
 
 	}
 

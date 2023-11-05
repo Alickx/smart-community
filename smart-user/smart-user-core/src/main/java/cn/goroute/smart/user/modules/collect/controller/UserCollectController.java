@@ -33,6 +33,11 @@ public class UserCollectController {
 		return R.ok(userCollectService.saveUserCollect(postId));
 	}
 
+	/**
+	 * 删除收藏
+	 * @param postId 文章id
+	 * @return 删除结果
+	 */
 	@PostMapping("/delete")
 	public R<Boolean> delete(Long postId) {
 		return R.ok(userCollectService.deleteUserCollect(postId));
