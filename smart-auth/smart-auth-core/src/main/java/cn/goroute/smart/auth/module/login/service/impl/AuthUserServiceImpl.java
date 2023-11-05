@@ -110,20 +110,23 @@ public class AuthUserServiceImpl extends ServiceImpl<AuthUserMapper, AuthUserEnt
         CaptchaValidateResult validate = captchaValidator.validate(userRegisterForm.getCaptchaId());
 
         if (!validate.isSuccess()) {
-            return R.failed(ErrorCodeEnum.USER_COMMON_ERROR, "验证码错误");
+			throw new BusinessException(ErrorCodeEnum.USER_COMMON_ERROR, "验证码错误");
         }
 
+		// 通过用户名查找用户
         AuthUserEntity authUserEntity =
                 authUserMapper.selectByUserName(userRegisterForm.getUserName());
 
+		// 如果查找不为空，则为有相同用户名
         if (null != authUserEntity) {
-            return R.failed(ErrorCodeEnum.USER_COMMON_ERROR, "用户名已存在");
+			// 抛出自定义异常
+			throw new BusinessException(ErrorCodeEnum.USER_COMMON_ERROR, "用户名已存在");
         }
 
         AuthUserEntity authUserEntity1 = authUserMapper.selectByUserEmail(userRegisterForm.getUserEmail());
 
         if (null != authUserEntity1) {
-            return R.failed(ErrorCodeEnum.USER_COMMON_ERROR, "用户邮箱已存在");
+			throw new BusinessException(ErrorCodeEnum.USER_COMMON_ERROR, "用户邮箱已存在");
         }
 
         AuthUserEntity entity = AuthUserConverter.INSTANCE.formToEntity(userRegisterForm);
